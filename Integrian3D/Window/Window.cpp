@@ -35,4 +35,9 @@ namespace Integrian3D
 
 		glViewport(0, 0, width, height);
 	}
+
+	void Window::OnResize(GLFWwindow* pWindow, const int width, const int height)
+	{
+		glViewport(0, 0, width, height);
+	}
 }
