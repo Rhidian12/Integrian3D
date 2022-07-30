@@ -72,15 +72,31 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)Build\$(PlatformTarget)\</OutDir>
+    <IntDir>$(SolutionDir)Build-Int\$(PlatformTarget)\</IntDir>
+    <IncludePath>$(SolutionDir)\Libraries\glfw-3.3.8\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)Build\$(PlatformTarget)\</OutDir>
+    <IntDir>$(SolutionDir)Build-Int\$(PlatformTarget)\</IntDir>
+    <IncludePath>$(SolutionDir)\Libraries\glfw-3.3.8\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)Build\$(PlatformTarget)\</OutDir>
+    <IntDir>$(SolutionDir)Build-Int\$(PlatformTarget)\</IntDir>
+    <IncludePath>$(SolutionDir)\Libraries\glfw-3.3.8\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)Build\$(PlatformTarget)\</OutDir>
+    <IntDir>$(SolutionDir)Build-Int\$(PlatformTarget)\</IntDir>
+    <IncludePath>$(SolutionDir)\Libraries\glfw-3.3.8\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -88,12 +104,17 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)Libraries\glfw-3.3.8\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opengl32.lib</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;glfw3_mt.lib;glfw3dll.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy "$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022\*.dll" "$(OutDir)" /y /D </Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -103,14 +124,19 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)Libraries\glfw-3.3.8\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opengl32.lib</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;glfw3_mt.lib;glfw3dll.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy "$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022\*.dll" "$(OutDir)" /y /D </Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -118,12 +144,17 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)Libraries\glfw-3.3.8\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opengl32.lib</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;glfw3_mt.lib;glfw3dll.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy "$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022\*.dll" "$(OutDir)" /y /D </Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -133,14 +164,19 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)Libraries\glfw-3.3.8\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opengl32.lib</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;glfw3_mt.lib;glfw3dll.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy "$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022\*.dll" "$(OutDir)" /y /D </Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
