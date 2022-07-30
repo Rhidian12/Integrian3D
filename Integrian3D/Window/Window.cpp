@@ -4,6 +4,7 @@
 #include <GLFW/glfw3.h>
 
 #include <iostream>
+#include <functional> /* std::bind */
 
 namespace Integrian3D
 {
@@ -15,7 +16,7 @@ namespace Integrian3D
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 		GLFWwindow* pWindow = glfwCreateWindow(width, height, "Integrian3D", nullptr, nullptr);
-		
+
 		if (!pWindow)
 		{
 			/* [TODO]: Replace this with logger */
@@ -34,10 +35,15 @@ namespace Integrian3D
 		}
 
 		glViewport(0, 0, width, height);
+
+		glfwSetFramebufferSizeCallback(pWindow, OnResize);
 	}
 
-	void Window::OnResize(GLFWwindow* pWindow, const int width, const int height)
+	namespace
 	{
-		glViewport(0, 0, width, height);
+		void OnResize(GLFWwindow*, int width, int height)
+		{
+			glViewport(0, 0, width, height);
+		}
 	}
 }

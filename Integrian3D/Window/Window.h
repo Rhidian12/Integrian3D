@@ -1,6 +1,6 @@
 #pragma once
 
-class GLFWwindow;
+struct GLFWwindow;
 namespace Integrian3D
 {
 	class Window final
@@ -8,6 +8,10 @@ namespace Integrian3D
 	public:
 		explicit Window(const int width, const int height);
 
-		void OnResize(GLFWwindow* pWindow, const int width, const int height);
 	};
+
+	namespace
+	{
+		inline void OnResize(GLFWwindow* pWindow, int width, int height);
+	}
 }
