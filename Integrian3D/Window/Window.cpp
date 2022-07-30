@@ -4,7 +4,6 @@
 #include <GLFW/glfw3.h>
 
 #include <iostream>
-#include <functional> /* std::bind */
 
 namespace Integrian3D
 {
@@ -30,6 +29,7 @@ namespace Integrian3D
 
 		if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 		{
+			/* [TODO]: Replace this with logger */
 			std::cout << "Failed to initialize GLAD\n";
 			return;
 		}
