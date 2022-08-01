@@ -3,40 +3,42 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include <iostream>
+#include "../DebugUtility/DebugUtility.h"
 
 namespace Integrian3D
 {
-	Window::Window(const int width, const int height)
+	namespace Detail
 	{
-		glfwInit();
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-		GLFWwindow* pWindow = glfwCreateWindow(width, height, "Integrian3D", nullptr, nullptr);
-
-		if (!pWindow)
+		Window::Window(const int width, const int height)
 		{
-			/* [TODO]: Replace this with logger */
-			std::cout << "Failed to create GLFW window\n";
+			glfwInit();
+			glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+			glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-			glfwTerminate();
-			return;
+			GLFWwindow* pWindow = glfwCreateWindow(width, height, "Integrian3D", nullptr, nullptr);
+
+			if (!pWindow)
+			{
+				Debug::LogError("Failed to create GLFW window", false);
+
+				glfwTerminate();
+				return;
+			}
+
+			glfwMakeContextCurrent(pWindow);
+
+			if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+			{
+				Debug::LogError("Failed to initialize GLAD", false);
+
+				return;
+			}
+
+			glViewport(0, 0, width, height);
+
+			glfwSetFramebufferSizeCallback(pWindow, OnResize);
 		}
-
-		glfwMakeContextCurrent(pWindow);
-
-		if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-		{
-			/* [TODO]: Replace this with logger */
-			std::cout << "Failed to initialize GLAD\n";
-			return;
-		}
-
-		glViewport(0, 0, width, height);
-
-		glfwSetFramebufferSizeCallback(pWindow, OnResize);
 	}
 
 	namespace

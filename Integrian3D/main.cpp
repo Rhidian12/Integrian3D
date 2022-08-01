@@ -1,6 +1,10 @@
-#include <iostream>
+#include "Core/Core.h"
 
 int main()
 {
-    std::cout << "Hello World!\n";
+	using namespace Integrian3D;
+
+	Core core{ 640,480 };
+
+	core.Run();
 }
