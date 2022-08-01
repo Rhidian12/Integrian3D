@@ -56,5 +56,8 @@
     <ClInclude Include="InputManager\InputManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="InputManager\KeyboardInput\KeyboardInput.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

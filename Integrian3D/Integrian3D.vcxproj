@@ -195,6 +195,7 @@
     <ClInclude Include="Core\Core.h" />
     <ClInclude Include="DebugUtility\DebugUtility.h" />
     <ClInclude Include="InputManager\InputManager.h" />
+    <ClInclude Include="InputManager\KeyboardInput\KeyboardInput.h" />
     <ClInclude Include="Logger\Logger.h" />
     <ClInclude Include="Timer\Timer.h" />
     <ClInclude Include="Window\Window.h" />
