@@ -45,6 +45,11 @@ namespace Integrian3D
 			glfwSetFramebufferSizeCallback(pWindow, OnResize);
 		}
 
+		Window::~Window()
+		{
+			glfwTerminate();
+		}
+
 		void Window::Update()
 		{
 			glfwSwapBuffers(pWindow);

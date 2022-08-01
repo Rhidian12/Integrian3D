@@ -9,7 +9,7 @@ namespace Integrian3D
 		{
 		public:
 			explicit Window(const int width, const int height);
-
+			~Window();
 
 			Window(const Window&) noexcept = delete;
 			Window(Window&&) noexcept = delete;
