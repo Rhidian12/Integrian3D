@@ -4,7 +4,7 @@
 
 namespace Integrian3D
 {
-	static volatile bool g_IsRunning{ true };
+	inline volatile bool g_IsRunning{ true };
 
 	class Core final
 	{
