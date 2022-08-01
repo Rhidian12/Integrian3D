@@ -1,5 +1,8 @@
 #include "Core.h"
 
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
 #include "../DebugUtility/DebugUtility.h"
 #include "../Timer/Timer.h"
 
@@ -25,7 +28,7 @@ namespace Integrian3D
 
 			/* [TODO]: Update Renderer */
 
-			/* [TODO]: Update Window */
+			Window.Update();
 		}
 	}
 }
