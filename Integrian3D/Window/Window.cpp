@@ -54,7 +54,7 @@ namespace Integrian3D
 		{
 			glfwSwapBuffers(pWindow);
 
-			g_IsRunning = glfwWindowShouldClose(pWindow);
+			g_IsRunning = !glfwWindowShouldClose(pWindow);
 		}
 	}
 
