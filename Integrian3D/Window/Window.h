@@ -10,7 +10,6 @@ namespace Integrian3D
 		public:
 			explicit Window(const int width, const int height);
 
-			/* [TODO]: Probably needs a destructor to close GLFW correctly */
 
 			Window(const Window&) noexcept = delete;
 			Window(Window&&) noexcept = delete;

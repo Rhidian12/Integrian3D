@@ -3,10 +3,14 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include "../Core/Core.h" /* g_IsRunning */
 #include "../DebugUtility/DebugUtility.h"
 
 namespace Integrian3D
 {
+	/* Defined in Core.h */
+	extern inline volatile bool g_IsRunning;
+
 	namespace Detail
 	{
 		Window::Window(const int width, const int height)
@@ -44,6 +48,8 @@ namespace Integrian3D
 		void Window::Update()
 		{
 			glfwSwapBuffers(pWindow);
+
+			g_IsRunning = glfwWindowShouldClose(pWindow);
 		}
 	}
 
