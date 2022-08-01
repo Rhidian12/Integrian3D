@@ -6,10 +6,14 @@
 #include <WinBase.h> /* FormatMessage() */
 #endif
 
+#include "../Core/Core.h"
 #include "../DebugUtility/DebugUtility.h"
 
 namespace Integrian3D
 {
+	/* Defined in Core.h */
+	extern inline volatile bool g_IsRunning;
+
 	InputManager::InputManager()
 		: PreviousKeyStates{}
 		, CurrentKeyStates{}
@@ -27,6 +31,11 @@ namespace Integrian3D
 
 	void InputManager::ProcessInput()
 	{
+		MSG msg;
+		PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE);
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
+
 		// if (GetKeyboardState(PreviousKeyStates.data()) != 0)
 		// {
 		// 	PreviousKeyStates['A'];
