@@ -7,7 +7,7 @@
 namespace Integrian3D
 {
 #ifdef _WIN32
-	enum class KeyboardInput
+	enum class KeyboardInput : int
 	{
 		A = 'A',
 		B = 'B',
