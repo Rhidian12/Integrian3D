@@ -1,7 +1,8 @@
 #pragma once
 
 #ifdef _WIN32
-#include <WinUser.h> /* Virtual Keys */
+#define WIN32_LEAN_AND_MEAN
+#include <Windows.h> /* Virtual Keys */
 #endif
 
 namespace Integrian3D
