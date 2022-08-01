@@ -2,6 +2,7 @@
 
 #include "../DebugUtility/DebugUtility.h"
 #include "../Timer/Timer.h"
+#include "../InputManager/InputManager.h"
 
 namespace Integrian3D
 {
@@ -14,12 +15,13 @@ namespace Integrian3D
 	void Core::Run()
 	{
 		Timer& timer{ Timer::GetInstance() };
+		InputManager& inputManager{ InputManager::GetInstance() };
 
 		while (g_IsRunning)
 		{
 			timer.Update();
 
-			/* [TODO]: Update Input */
+			inputManager.ProcessInput();
 
 			/* [TODO]: Update Scenes => Update Entities */
 
