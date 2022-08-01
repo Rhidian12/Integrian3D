@@ -16,6 +16,11 @@ namespace Integrian3D
 			Window(Window&&) noexcept = delete;
 			Window& operator=(const Window&) noexcept = delete;
 			Window& operator=(Window&&) noexcept = delete;
+
+			void Update();
+
+		private:
+			GLFWwindow* pWindow;
 		};
 	}
 

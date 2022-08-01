@@ -10,13 +10,14 @@ namespace Integrian3D
 	namespace Detail
 	{
 		Window::Window(const int width, const int height)
+			: pWindow{}
 		{
 			glfwInit();
 			glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 			glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-			GLFWwindow* pWindow = glfwCreateWindow(width, height, "Integrian3D", nullptr, nullptr);
+			pWindow = glfwCreateWindow(width, height, "Integrian3D", nullptr, nullptr);
 
 			if (!pWindow)
 			{
@@ -38,6 +39,11 @@ namespace Integrian3D
 			glViewport(0, 0, width, height);
 
 			glfwSetFramebufferSizeCallback(pWindow, OnResize);
+		}
+
+		void Window::Update()
+		{
+			glfwSwapBuffers(pWindow);
 		}
 	}
 
