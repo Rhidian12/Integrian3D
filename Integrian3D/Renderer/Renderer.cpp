@@ -89,47 +89,46 @@ namespace Integrian3D
 		}
 
 		/* Generate a vertex array ID */
-		{
-			/* Generate the vertex array ID */
-			glGenVertexArrays(1, &VertexArrayID);
-		}
+		glGenVertexArrays(1, &VertexArrayID);
+
+		const float vertices[] = {
+			-0.5f, -0.5f, 0.0f,
+			 0.5f, -0.5f, 0.0f,
+			 0.0f,  0.5f, 0.0f
+		};
 
 		/* Generate a vertex buffer ID */
-		{
-			const float vertices[] = {
-				-0.5f, -0.5f, 0.0f,
-				 0.5f, -0.5f, 0.0f,
-				 0.0f,  0.5f, 0.0f
-			};
+		glGenBuffers(1, &VertexBufferID);
 
-			glGenBuffers(1, &VertexBufferID);
+		/* Bind our Vertex Array */
+		glBindVertexArray(VertexArrayID);
 
-			/* Bind the ID to a vertex buffer */
-			glBindBuffer(GL_ARRAY_BUFFER, VertexBufferID);
+		/* Bind the ID to a vertex buffer */
+		glBindBuffer(GL_ARRAY_BUFFER, VertexBufferID);
 
-			/* Copy our data into the buffer */
+		/* Copy our vertices into an OpenGL buffer */
+		glBindBuffer(GL_ARRAY_BUFFER, VertexBufferID);
+
+		/* Copy our actual points into the buffer */
 			/*
 				GL_STREAM_DRAW: the data is set only once and used by the GPU at most a few times.
 				GL_STATIC_DRAW: the data is set only once and used many times.
 				GL_DYNAMIC_DRAW: the data is changed a lot and used many times.
 			*/
-			glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-		}
+		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
 		/* Set Vertex Buffer Attribute Position layout */
-		{
-			/*		1		  2			3     */
-			/*  |X  Y  Z| |X  Y  Z| |X  Y  Z| */
-			/*
-			Position Attribute:
-			Stride = 12
-			Offset = 0
-			*/
-			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), reinterpret_cast<void*>(0));
+		/*		1		  2			3     */
+		/*  |X  Y  Z| |X  Y  Z| |X  Y  Z| */
+		/*
+		Position Attribute:
+		Stride = 12
+		Offset = 0
+		*/
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), reinterpret_cast<void*>(0));
 
-			/* Enable the Position Attribute */
-			glEnableVertexAttribArray(0);
-		}
+		/* Enable the Position Attribute */
+		glEnableVertexAttribArray(0);
 	}
 
 	Renderer& Renderer::GetInstance()
@@ -150,8 +149,5 @@ namespace Integrian3D
 
 		/* Use our shader program! */
 		glUseProgram(ShaderProgramID);
-
-		/* Bind our Vertex Array */
-		glBindVertexArray(VertexArrayID);
 	}
 }
