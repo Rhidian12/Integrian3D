@@ -61,30 +61,32 @@ namespace Integrian3D
 		}
 
 		/* Create shader program */
-		const uint32_t shaderProgramID{ glCreateProgram() };
-
-		/* Link all previously created shaders to the shader program */
-		glAttachShader(shaderProgramID, vertexShaderID);
-		glAttachShader(shaderProgramID, fragmentShaderID);
-		glLinkProgram(shaderProgramID);
-
-		/* Check if the shader linking succeeded */
-		int success{};
-		char infoLog[512]{};
-		glGetProgramiv(shaderProgramID, GL_LINK_STATUS, &success);
-
-		if (!success)
 		{
-			glGetProgramInfoLog(shaderProgramID, 512, nullptr, infoLog);
-			Debug::LogError(std::string("Shader program linking failed: ") + infoLog, false);
+			const uint32_t shaderProgramID{ glCreateProgram() };
+
+			/* Link all previously created shaders to the shader program */
+			glAttachShader(shaderProgramID, vertexShaderID);
+			glAttachShader(shaderProgramID, fragmentShaderID);
+			glLinkProgram(shaderProgramID);
+
+			/* Check if the shader linking succeeded */
+			int success{};
+			char infoLog[512]{};
+			glGetProgramiv(shaderProgramID, GL_LINK_STATUS, &success);
+
+			if (!success)
+			{
+				glGetProgramInfoLog(shaderProgramID, 512, nullptr, infoLog);
+				Debug::LogError(std::string("Shader program linking failed: ") + infoLog, false);
+			}
+
+			/* Use our shader program! */
+			glUseProgram(shaderProgramID);
+
+			/* Delete our created shaders, they're no longer needed after linking */
+			glDeleteShader(vertexShaderID);
+			glDeleteShader(fragmentShaderID);
 		}
-
-		/* Use our shader program! */
-		glUseProgram(shaderProgramID);
-
-		/* Delete our created shaders, they're no longer needed after linking */
-		glDeleteShader(vertexShaderID);
-		glDeleteShader(fragmentShaderID);
 	}
 
 	Renderer& Renderer::GetInstance()
