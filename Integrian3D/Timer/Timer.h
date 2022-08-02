@@ -13,7 +13,6 @@ namespace Integrian3D
 		Seconds,
 		Minutes,
 		Hours,
-		Days
 	};
 
 	class Timer final
