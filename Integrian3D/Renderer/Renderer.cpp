@@ -10,6 +10,7 @@ namespace Integrian3D
 {
 	Renderer::Renderer()
 		: ShaderProgramID{}
+		, VertexArrayID{}
 	{
 		uint32_t vertexShaderID{}, fragmentShaderID{};
 
@@ -84,6 +85,12 @@ namespace Integrian3D
 			/* Delete our created shaders, they're no longer needed after linking */
 			glDeleteShader(vertexShaderID);
 			glDeleteShader(fragmentShaderID);
+		}
+
+		/* Generate a vertex array ID */
+		{
+			/* Generate the vertex array ID */
+			glGenVertexArrays(1, &VertexArrayID);
 		}
 
 		/* Generate a vertex buffer ID */

@@ -23,5 +23,6 @@ namespace Integrian3D
 		inline static std::unique_ptr<Renderer> Instance{};
 
 		uint32_t ShaderProgramID;
+		uint32_t VertexArrayID;
 	};
 }
