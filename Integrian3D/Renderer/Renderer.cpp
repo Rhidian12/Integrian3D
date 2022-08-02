@@ -131,6 +131,13 @@ namespace Integrian3D
 		glEnableVertexAttribArray(0);
 	}
 
+	Renderer::~Renderer()
+	{
+		glDeleteVertexArrays(1, &VertexArrayID);
+		glDeleteBuffers(1, &VertexBufferID);
+		glDeleteProgram(ShaderProgramID);
+	}
+
 	Renderer& Renderer::GetInstance()
 	{
 		if (!Instance)
