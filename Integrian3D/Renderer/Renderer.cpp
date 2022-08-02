@@ -10,6 +10,7 @@ namespace Integrian3D
 {
 	Renderer::Renderer()
 	{
+		/* Get Vertex shader */
 		{
 			const FileReader reader{ "Resources/VertexShader.txt" };
 
@@ -30,6 +31,30 @@ namespace Integrian3D
 			{
 				glGetShaderInfoLog(vertexShaderID, 512, nullptr, infoLog);
 				Debug::LogError(std::string("Vertex Shader compilation failed: ") + infoLog, false);
+			}
+		}
+
+		/* Get Fragment shader (== pixel shader) */
+		{
+			const FileReader reader{ "Resources/FragmentShader.txt" };
+
+			/* Generate VertexShader ID */
+			const uint32_t fragmentShaderID{ glCreateShader(GL_FRAGMENT_SHADER) };
+
+			/* Attach the VertexShader code to the ID and compile it */
+			const char* fragmentShaderSource{ reader.GetFileContents().c_str() };
+			glShaderSource(fragmentShaderID, 1, &fragmentShaderSource, nullptr);
+			glCompileShader(fragmentShaderID);
+
+			/* Check if the compile */
+			int success{};
+			char infoLog[512]{};
+			glGetShaderiv(fragmentShaderID, GL_COMPILE_STATUS, &success);
+
+			if (!success)
+			{
+				glGetShaderInfoLog(fragmentShaderID, 512, nullptr, infoLog);
+				Debug::LogError(std::string("Fragment Shader compilation failed: ") + infoLog, false);
 			}
 		}
 	}
