@@ -9,6 +9,8 @@ namespace Integrian3D
 	public:
 		static Renderer& GetInstance();
 
+		void Render();
+
 	private:
 		Renderer();
 
