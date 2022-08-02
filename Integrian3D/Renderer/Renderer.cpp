@@ -87,6 +87,19 @@ namespace Integrian3D
 			glDeleteShader(vertexShaderID);
 			glDeleteShader(fragmentShaderID);
 		}
+
+		/* Set Vertex Buffer Attribute Position layout */
+		/*		1		  2			3     */
+		/*  |X  Y  Z| |X  Y  Z| |X  Y  Z| */
+		/*
+		Position Attribute:
+		Stride = 12
+		Offset = 0
+		*/
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), reinterpret_cast<void*>(0));
+
+		/* Enable the Position Attribute */
+		glEnableVertexAttribArray(0);
 	}
 
 	Renderer& Renderer::GetInstance()
