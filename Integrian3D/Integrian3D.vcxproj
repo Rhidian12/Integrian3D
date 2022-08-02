@@ -184,6 +184,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Core\Core.cpp" />
+    <ClCompile Include="FileReader\FileReader.cpp" />
     <ClCompile Include="InputManager\InputManager.cpp" />
     <ClCompile Include="Libraries\glad\src\glad.c" />
     <ClCompile Include="Logger\Logger.cpp" />
@@ -195,6 +196,7 @@
   <ItemGroup>
     <ClInclude Include="Core\Core.h" />
     <ClInclude Include="DebugUtility\DebugUtility.h" />
+    <ClInclude Include="FileReader\FileReader.h" />
     <ClInclude Include="InputManager\InputManager.h" />
     <ClInclude Include="InputManager\KeyboardInput\KeyboardInput.h" />
     <ClInclude Include="Logger\Logger.h" />
