@@ -149,5 +149,11 @@ namespace Integrian3D
 
 		/* Use our shader program! */
 		glUseProgram(ShaderProgramID);
+
+		/* Bind the Vertex Array ID */
+		glBindVertexArray(VertexArrayID);
+
+		/* Render a triangle */
+		glDrawArrays(GL_TRIANGLES, 0, 3);
 	}
 }
