@@ -11,6 +11,7 @@ namespace Integrian3D
 	Renderer::Renderer()
 		: ShaderProgramID{}
 		, VertexArrayID{}
+		, VertexBufferID{}
 	{
 		uint32_t vertexShaderID{}, fragmentShaderID{};
 
@@ -101,11 +102,10 @@ namespace Integrian3D
 				 0.0f,  0.5f, 0.0f
 			};
 
-			uint32_t vertexBufferID{};
-			glGenBuffers(1, &vertexBufferID);
+			glGenBuffers(1, &VertexBufferID);
 
 			/* Bind the ID to a vertex buffer */
-			glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
+			glBindBuffer(GL_ARRAY_BUFFER, VertexBufferID);
 
 			/* Copy our data into the buffer */
 			/*
@@ -151,5 +151,7 @@ namespace Integrian3D
 		/* Use our shader program! */
 		glUseProgram(ShaderProgramID);
 
+		/* Bind our Vertex Array */
+		glBindVertexArray(VertexArrayID);
 	}
 }
