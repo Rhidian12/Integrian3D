@@ -27,5 +27,6 @@ namespace Integrian3D
 		uint32_t ShaderProgramID;
 		uint32_t VertexArrayID;
 		uint32_t VertexBufferID;
+		uint32_t IndexBufferID;
 	};
 }

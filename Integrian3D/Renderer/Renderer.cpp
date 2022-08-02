@@ -88,17 +88,28 @@ namespace Integrian3D
 			glDeleteShader(fragmentShaderID);
 		}
 
+		const float vertices[] =
+		{
+			 0.5f,  0.5f, 0.0f,  // top right
+			 0.5f, -0.5f, 0.0f,  // bottom right
+			-0.5f, -0.5f, 0.0f,  // bottom left
+			-0.5f,  0.5f, 0.0f   // top left 
+		};
+
+		const uint32_t indices[] =
+		{
+			0, 1, 3,   // first triangle
+			1, 2, 3    // second triangle
+		};
+
 		/* Generate a vertex array ID */
 		glGenVertexArrays(1, &VertexArrayID);
 
-		const float vertices[] = {
-			-0.5f, -0.5f, 0.0f,
-			 0.5f, -0.5f, 0.0f,
-			 0.0f,  0.5f, 0.0f
-		};
-
 		/* Generate a vertex buffer ID */
 		glGenBuffers(1, &VertexBufferID);
+
+		/* Generate an Index Buffer ID */
+		glGenBuffers(1, &IndexBufferID);
 
 		/* Bind our Vertex Array */
 		glBindVertexArray(VertexArrayID);
@@ -106,8 +117,8 @@ namespace Integrian3D
 		/* Bind the ID to a vertex buffer */
 		glBindBuffer(GL_ARRAY_BUFFER, VertexBufferID);
 
-		/* Copy our vertices into an OpenGL buffer */
-		glBindBuffer(GL_ARRAY_BUFFER, VertexBufferID);
+		/* Bind the ID to a index buffer */
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IndexBufferID);
 
 		/* Copy our actual points into the buffer */
 			/*
@@ -116,6 +127,9 @@ namespace Integrian3D
 				GL_DYNAMIC_DRAW: the data is changed a lot and used many times.
 			*/
 		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+		/* Copy our actual indices into the buffer */
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 		/* Set Vertex Buffer Attribute Position layout */
 		/*		1		  2			3     */
@@ -160,7 +174,7 @@ namespace Integrian3D
 		/* Bind the Vertex Array ID */
 		glBindVertexArray(VertexArrayID);
 
-		/* Render a triangle */
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		/* Render our rectangle */
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	}
 }
