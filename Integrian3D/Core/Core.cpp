@@ -3,6 +3,7 @@
 #include "../DebugUtility/DebugUtility.h"
 #include "../Timer/Timer.h"
 #include "../InputManager/InputManager.h"
+#include "../Renderer/Renderer.h"
 
 namespace Integrian3D
 {
@@ -16,6 +17,7 @@ namespace Integrian3D
 	{
 		Timer& timer{ Timer::GetInstance() };
 		InputManager& inputManager{ InputManager::GetInstance() };
+		Renderer& renderer{ Renderer::GetInstance() };
 
 		while (g_IsRunning)
 		{
@@ -25,7 +27,7 @@ namespace Integrian3D
 
 			/* [TODO]: Update Scenes => Update Entities */
 
-			/* [TODO]: Update Renderer */
+			renderer.Render();
 
 			Window.Update();
 		}
