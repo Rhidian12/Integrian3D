@@ -9,6 +9,7 @@
 namespace Integrian3D
 {
 	Renderer::Renderer()
+		: ShaderProgramID{}
 	{
 		uint32_t vertexShaderID{}, fragmentShaderID{};
 
@@ -62,44 +63,66 @@ namespace Integrian3D
 
 		/* Create shader program */
 		{
-			const uint32_t shaderProgramID{ glCreateProgram() };
+			ShaderProgramID = glCreateProgram();
 
 			/* Link all previously created shaders to the shader program */
-			glAttachShader(shaderProgramID, vertexShaderID);
-			glAttachShader(shaderProgramID, fragmentShaderID);
-			glLinkProgram(shaderProgramID);
+			glAttachShader(ShaderProgramID, vertexShaderID);
+			glAttachShader(ShaderProgramID, fragmentShaderID);
+			glLinkProgram(ShaderProgramID);
 
 			/* Check if the shader linking succeeded */
 			int success{};
 			char infoLog[512]{};
-			glGetProgramiv(shaderProgramID, GL_LINK_STATUS, &success);
+			glGetProgramiv(ShaderProgramID, GL_LINK_STATUS, &success);
 
 			if (!success)
 			{
-				glGetProgramInfoLog(shaderProgramID, 512, nullptr, infoLog);
+				glGetProgramInfoLog(ShaderProgramID, 512, nullptr, infoLog);
 				Debug::LogError(std::string("Shader program linking failed: ") + infoLog, false);
 			}
-
-			/* Use our shader program! */
-			glUseProgram(shaderProgramID);
 
 			/* Delete our created shaders, they're no longer needed after linking */
 			glDeleteShader(vertexShaderID);
 			glDeleteShader(fragmentShaderID);
 		}
 
-		/* Set Vertex Buffer Attribute Position layout */
-		/*		1		  2			3     */
-		/*  |X  Y  Z| |X  Y  Z| |X  Y  Z| */
-		/*
-		Position Attribute:
-		Stride = 12
-		Offset = 0
-		*/
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), reinterpret_cast<void*>(0));
+		/* Generate a vertex buffer ID */
+		{
+			const float vertices[] = {
+				-0.5f, -0.5f, 0.0f,
+				 0.5f, -0.5f, 0.0f,
+				 0.0f,  0.5f, 0.0f
+			};
 
-		/* Enable the Position Attribute */
-		glEnableVertexAttribArray(0);
+			uint32_t vertexBufferID{};
+			glGenBuffers(1, &vertexBufferID);
+
+			/* Bind the ID to a vertex buffer */
+			glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
+
+			/* Copy our data into the buffer */
+			/*
+				GL_STREAM_DRAW: the data is set only once and used by the GPU at most a few times.
+				GL_STATIC_DRAW: the data is set only once and used many times.
+				GL_DYNAMIC_DRAW: the data is changed a lot and used many times.
+			*/
+			glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+		}
+
+		/* Set Vertex Buffer Attribute Position layout */
+		{
+			/*		1		  2			3     */
+			/*  |X  Y  Z| |X  Y  Z| |X  Y  Z| */
+			/*
+			Position Attribute:
+			Stride = 12
+			Offset = 0
+			*/
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), reinterpret_cast<void*>(0));
+
+			/* Enable the Position Attribute */
+			glEnableVertexAttribArray(0);
+		}
 	}
 
 	Renderer& Renderer::GetInstance()
@@ -114,29 +137,12 @@ namespace Integrian3D
 
 	void Renderer::Render()
 	{
-		const float vertices[] = {
-			-0.5f, -0.5f, 0.0f,
-			 0.5f, -0.5f, 0.0f,
-			 0.0f,  0.5f, 0.0f
-		};
-		
 		/* Sets the Clear Colour */
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		/* Generate a vertex buffer ID */
-		uint32_t vertexBufferID{};
-		glGenBuffers(1, &vertexBufferID);
+		/* Use our shader program! */
+		glUseProgram(ShaderProgramID);
 
-		/* Bind the ID to a vertex buffer */
-		glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
-
-		/* Copy our data into the buffer */
-		/*
-			GL_STREAM_DRAW: the data is set only once and used by the GPU at most a few times.
-			GL_STATIC_DRAW: the data is set only once and used many times.
-			GL_DYNAMIC_DRAW: the data is changed a lot and used many times.
-		*/
-		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 	}
 }

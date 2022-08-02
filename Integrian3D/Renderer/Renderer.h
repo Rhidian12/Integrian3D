@@ -21,5 +21,7 @@ namespace Integrian3D
 
 		friend std::unique_ptr<Renderer> std::make_unique();
 		inline static std::unique_ptr<Renderer> Instance{};
+
+		uint32_t ShaderProgramID;
 	};
 }
