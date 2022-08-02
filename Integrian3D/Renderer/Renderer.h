@@ -9,6 +9,11 @@ namespace Integrian3D
 	public:
 		static Renderer& GetInstance();
 
+		Renderer(const Renderer&) noexcept = delete;
+		Renderer(Renderer&&) noexcept = delete;
+		Renderer& operator=(const Renderer&) noexcept = delete;
+		Renderer& operator=(Renderer&&) noexcept = delete;
+
 		void Render();
 
 	private:
