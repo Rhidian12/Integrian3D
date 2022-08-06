@@ -48,9 +48,6 @@
     <ClCompile Include="Registry\Registry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SparseSet\SparseSet.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window\Window.h">

@@ -192,7 +192,6 @@
     <ClCompile Include="Registry\Registry.cpp" />
     <ClCompile Include="Renderer\Renderer.cpp" />
     <ClCompile Include="Scene\Scene.cpp" />
-    <ClCompile Include="SparseSet\SparseSet.cpp" />
     <ClCompile Include="Timer\Timer.cpp" />
     <ClCompile Include="Window\Window.cpp" />
   </ItemGroup>
