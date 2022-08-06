@@ -9,6 +9,8 @@ namespace Integrian3D
 	public:
 		explicit Scene();
 
+		void AddSceneInitialisation(const std::function<void()>& fn) { InitializeCallback = fn; }
+
 	private:
 		std::function<void()> InitializeCallback;
 	};
