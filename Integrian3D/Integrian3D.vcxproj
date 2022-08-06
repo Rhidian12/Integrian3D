@@ -189,6 +189,7 @@
     <ClCompile Include="Libraries\glad\src\glad.c" />
     <ClCompile Include="Logger\Logger.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Registry\Registry.cpp" />
     <ClCompile Include="Renderer\Renderer.cpp" />
     <ClCompile Include="Scene\Scene.cpp" />
     <ClCompile Include="Timer\Timer.cpp" />
@@ -201,6 +202,7 @@
     <ClInclude Include="InputManager\InputManager.h" />
     <ClInclude Include="InputManager\KeyboardInput\KeyboardInput.h" />
     <ClInclude Include="Logger\Logger.h" />
+    <ClInclude Include="Registry\Registry.h" />
     <ClInclude Include="Renderer\Renderer.h" />
     <ClInclude Include="Scene\Scene.h" />
     <ClInclude Include="Timer\Timer.h" />
