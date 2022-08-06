@@ -193,6 +193,7 @@
     <ClCompile Include="Renderer\Renderer.cpp" />
     <ClCompile Include="Scene\Scene.cpp" />
     <ClCompile Include="Timer\Timer.cpp" />
+    <ClCompile Include="Utils\Utils.cpp" />
     <ClCompile Include="Window\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -209,6 +210,7 @@
     <ClInclude Include="Scene\Scene.h" />
     <ClInclude Include="SparseSet\SparseSet.h" />
     <ClInclude Include="Timer\Timer.h" />
+    <ClInclude Include="Utils\Utils.h" />
     <ClInclude Include="View\View.h" />
     <ClInclude Include="Window\Window.h" />
   </ItemGroup>
