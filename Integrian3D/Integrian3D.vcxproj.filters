@@ -92,5 +92,8 @@
     <ClInclude Include="View\View.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ComponentIDGenerator\ComponentIDGenerator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
