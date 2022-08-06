@@ -198,6 +198,7 @@
   <ItemGroup>
     <ClInclude Include="Core\Core.h" />
     <ClInclude Include="DebugUtility\DebugUtility.h" />
+    <ClInclude Include="EngineConstants\EngineConstants.h" />
     <ClInclude Include="FileReader\FileReader.h" />
     <ClInclude Include="InputManager\InputManager.h" />
     <ClInclude Include="InputManager\KeyboardInput\KeyboardInput.h" />
