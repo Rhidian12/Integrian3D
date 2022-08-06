@@ -2,5 +2,8 @@
 
 namespace Integrian3D
 {
-
+	Scene::Scene()
+		: InitializeCallback{}
+	{
+	}
 }
