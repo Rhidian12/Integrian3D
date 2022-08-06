@@ -183,6 +183,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ComponentArray\ComponentArray.cpp" />
     <ClCompile Include="Core\Core.cpp" />
     <ClCompile Include="FileReader\FileReader.cpp" />
     <ClCompile Include="InputManager\InputManager.cpp" />
@@ -197,6 +198,7 @@
     <ClCompile Include="Window\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ComponentArray\ComponentArray.h" />
     <ClInclude Include="ComponentIDGenerator\ComponentIDGenerator.h" />
     <ClInclude Include="Core\Core.h" />
     <ClInclude Include="DebugUtility\DebugUtility.h" />
