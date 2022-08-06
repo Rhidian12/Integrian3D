@@ -6,4 +6,9 @@ namespace Integrian3D
 		: InitializeCallback{}
 	{
 	}
+
+	void Scene::Start()
+	{
+		InitializeCallback();
+	}
 }
