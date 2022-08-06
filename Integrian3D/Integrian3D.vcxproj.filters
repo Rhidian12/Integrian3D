@@ -86,7 +86,7 @@
     <ClInclude Include="Registry\Registry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="EngineConstants\EngineConstants.h">
+    <ClInclude Include="EngineConstants.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SparseSet\SparseSet.h">

@@ -79,7 +79,7 @@ namespace Integrian3D
 
 			// This is the stop-recursion function
 			template<>
-			constexpr size_t CRC32<size_t(-1)>(const char* str)
+			constexpr size_t CRC32<size_t(-1)>(const char*)
 			{
 				return 0xFFFFFFFF;
 			}

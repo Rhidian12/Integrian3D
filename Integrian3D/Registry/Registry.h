@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../EngineConstants/EngineConstants.h"
+#include "../EngineConstants.h"
 #include "../SparseSet/SparseSet.h"
 #include "../View/View.h"
 #include "../ComponentIDGenerator/ComponentIDGenerator.h"
