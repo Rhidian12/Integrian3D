@@ -183,7 +183,6 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ComponentArray\ComponentArray.cpp" />
     <ClCompile Include="Core\Core.cpp" />
     <ClCompile Include="FileReader\FileReader.cpp" />
     <ClCompile Include="InputManager\InputManager.cpp" />
