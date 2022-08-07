@@ -29,6 +29,18 @@ namespace Integrian3D
 		}
 	}
 
+	void SceneManager::ChangeScene(const std::string_view sceneName)
+	{
+		auto it{ std::find_if(Scenes.begin(), Scenes.end(), [sceneName](const Scene& scene)
+			{
+				return scene.GetSceneName() == sceneName;
+			}) };
+
+		assert(it != Scenes.end());
+
+		pActiveScene = &(*it);
+	}
+
 	Scene& SceneManager::GetScene(const std::string_view sceneName)
 	{
 		const auto it{ std::find_if(Scenes.begin(), Scenes.end(), [sceneName](const Scene& scene)

@@ -15,6 +15,8 @@ namespace Integrian3D
 
 		void AddScene(Scene&& scene);
 
+		void ChangeScene(const std::string_view sceneName);
+
 		Scene& GetScene(const std::string_view sceneName);
 		const Scene& GetScene(const std::string_view sceneName) const;
 
