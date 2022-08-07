@@ -44,6 +44,8 @@ namespace Integrian3D
 
 	private:
 		std::function<void(const Scene&)> InitializeCallback;
+		std::function<void(const Scene&)> OnSceneEnterCallback;
+		std::function<void(const Scene&)> OnSceneLeaveCallback;
 		Registry Registry;
 		std::string SceneName;
 	};
