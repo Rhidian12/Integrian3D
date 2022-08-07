@@ -38,7 +38,11 @@ namespace Integrian3D
 
 		assert(it != Scenes.end());
 
+		pActiveScene->OnSceneLeave();
+
 		pActiveScene = &(*it);
+
+		pActiveScene->OnSceneEnter();
 	}
 
 	Scene& SceneManager::GetScene(const std::string_view sceneName)
