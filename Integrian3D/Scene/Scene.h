@@ -40,6 +40,7 @@ namespace Integrian3D
 		const EntitySignature GetEntitySignature(const Entity entity) const { return Registry.GetEntitySignature(entity); }
 		/* -------------- End of ECS Functionality -------------- */
 
+		const std::string& GetSceneName() const { return SceneName; }
 
 	private:
 		std::function<void(const Scene&)> InitializeCallback;
