@@ -1,6 +1,7 @@
 #pragma once
 
-#include <stdint.h>
+#include <stdint.h> /* uint32_t, ... */
+#include <string_view> /* std::string_view */
 
 namespace Integrian3D
 {
@@ -8,6 +9,7 @@ namespace Integrian3D
 	{
 	public:
 		explicit MeshComponent();
+		explicit MeshComponent(const std::string& filePath);
 
 	private:
 		uint32_t VertexArrayID;
