@@ -25,5 +25,6 @@ namespace Integrian3D
 		inline static std::unique_ptr<SceneManager> Instance{};
 
 		std::vector<Scene> Scenes;
+		Scene* pActiveScene;
 	};
 }
