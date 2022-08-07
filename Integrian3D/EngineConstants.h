@@ -4,6 +4,8 @@
 #include <limits> /* std::numeric_limits */
 #include <bitset> /* std::bitset */
 
+#undef max
+
 namespace Integrian3D
 {
 	using Entity = uint32_t; /* This supports ~4 billion possible entities, seems like enough */
