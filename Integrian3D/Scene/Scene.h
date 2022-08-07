@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../ECS/Registry/Registry.h"
+
 #include <functional> /* std::function */
 
 namespace Integrian3D
@@ -15,5 +17,6 @@ namespace Integrian3D
 
 	private:
 		std::function<void()> InitializeCallback;
+		Registry Registry;
 	};
 }
