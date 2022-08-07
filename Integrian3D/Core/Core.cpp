@@ -5,6 +5,7 @@
 #include "../InputManager/InputManager.h"
 #include "../Renderer/Renderer.h"
 #include "../SceneManager/SceneManager.h"
+#include "../MeshComponent/MeshComponent.h"
 
 namespace Integrian3D
 {
@@ -28,8 +29,13 @@ namespace Integrian3D
 			inputManager.ProcessInput();
 
 			/* [TODO]: Add Scene Update! */
+			Scene& activeScene{ sceneManager.GetActiveScene() };
 
-			renderer.Render();
+			View<MeshComponent> renderView{ activeScene.CreateView<MeshComponent>() };
+			renderView.ForEach([&renderer](const MeshComponent& meshComponent)->void
+				{
+					renderer.Render(meshComponent);
+				});
 
 			Window.Update();
 		}
