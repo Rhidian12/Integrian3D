@@ -38,6 +38,9 @@ namespace Integrian3D
 		size_t GetAmountOfEntities() const { return static_cast<size_t>(Registry.GetAmountOfEntities()); }
 
 		const EntitySignature GetEntitySignature(const Entity entity) const { return Registry.GetEntitySignature(entity); }
+
+		template<typename ... Ts>
+		[[nodiscard]] View<Ts...> CreateView() { return Registry.CreateView<Ts...>(); }
 		/* -------------- End of ECS Functionality -------------- */
 
 		const std::string& GetSceneName() const { return SceneName; }
