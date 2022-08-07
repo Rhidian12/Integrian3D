@@ -77,4 +77,11 @@ namespace Integrian3D
 		/* Enable the Position Attribute */
 		glEnableVertexAttribArray(0);
 	}
+
+	MeshComponent::~MeshComponent()
+	{
+		glDeleteVertexArrays(1, &VertexArrayID);
+		glDeleteBuffers(1, &VertexBufferID);
+		glDeleteBuffers(1, &IndexBufferID);
+	}
 }

@@ -12,6 +12,7 @@ namespace Integrian3D
 		explicit MeshComponent();
 		explicit MeshComponent(const std::string& filePath);
 		explicit MeshComponent(const std::vector<float>& vertices, const std::vector<uint32_t>& indices);
+		~MeshComponent();
 
 	private:
 		uint32_t VertexArrayID;
