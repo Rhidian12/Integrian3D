@@ -192,6 +192,7 @@
     <ClCompile Include="MeshComponent\MeshComponent.cpp" />
     <ClCompile Include="ECS\Registry\Registry.cpp" />
     <ClCompile Include="Renderer\Renderer.cpp" />
+    <ClCompile Include="SceneManager\SceneManager.cpp" />
     <ClCompile Include="Scene\Scene.cpp" />
     <ClCompile Include="Timer\Timer.cpp" />
     <ClCompile Include="Utils\Utils.cpp" />
@@ -210,6 +211,7 @@
     <ClInclude Include="MeshComponent\MeshComponent.h" />
     <ClInclude Include="ECS\Registry\Registry.h" />
     <ClInclude Include="Renderer\Renderer.h" />
+    <ClInclude Include="SceneManager\SceneManager.h" />
     <ClInclude Include="Scene\Scene.h" />
     <ClInclude Include="SparseSet\SparseSet.h" />
     <ClInclude Include="Timer\Timer.h" />
