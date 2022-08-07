@@ -16,6 +16,8 @@ namespace Integrian3D
 		Renderer& operator=(const Renderer&) noexcept = delete;
 		Renderer& operator=(Renderer&&) noexcept = delete;
 
+		void StartRenderLoop();
+
 		void Render(const class MeshComponent& meshComponent);
 
 	private:

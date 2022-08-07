@@ -11,12 +11,16 @@ namespace Integrian3D
 		: VertexArrayID{}
 		, VertexBufferID{}
 		, IndexBufferID{}
+		, Vertices{}
+		, Indices{}
 	{}
 
 	MeshComponent::MeshComponent(const std::string& filePath)
 		: VertexArrayID{}
 		, VertexBufferID{}
 		, IndexBufferID{}
+		, Vertices{}
+		, Indices{}
 	{
 		if (!filePath.empty())
 		{
@@ -34,24 +38,20 @@ namespace Integrian3D
 		: VertexArrayID{}
 		, VertexBufferID{}
 		, IndexBufferID{}
+		, Vertices{ vertices }
+		, Indices{ indices }
 	{
 		/* Generate a vertex array ID */
 		glGenVertexArrays(1, &VertexArrayID);
 
-		/* Generate a vertex buffer ID */
+		/* Generate a vertex buffer ID (VBO) */
 		glGenBuffers(1, &VertexBufferID);
 
-		/* Generate an Index Buffer ID */
+		/* Generate an Index Buffer ID (EBO) */
 		glGenBuffers(1, &IndexBufferID);
 
-		/* Bind our Vertex Array */
+		/* First bind the Vertex Array ID (VAO) */
 		glBindVertexArray(VertexArrayID);
-
-		/* Bind the ID to a vertex buffer */
-		glBindBuffer(GL_ARRAY_BUFFER, VertexBufferID);
-
-		/* Bind the ID to a index buffer */
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IndexBufferID);
 
 		/* Copy our actual points into the buffer */
 			/*
@@ -59,10 +59,15 @@ namespace Integrian3D
 				GL_STATIC_DRAW: the data is set only once and used many times.
 				GL_DYNAMIC_DRAW: the data is changed a lot and used many times.
 			*/
-		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices.data(), GL_STATIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, VertexBufferID);
+		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float) * 3, vertices.data(), GL_STATIC_DRAW);
 
 		/* Copy our actual indices into the buffer */
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices.data(), GL_STATIC_DRAW);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IndexBufferID);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(uint32_t), indices.data(), GL_STATIC_DRAW);
+
+		/* Enable the Position Attribute */
+		glEnableVertexAttribArray(0);
 
 		/* Set Vertex Buffer Attribute Position layout */
 		/*		1		  2			3     */
@@ -74,8 +79,7 @@ namespace Integrian3D
 		*/
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), reinterpret_cast<void*>(0));
 
-		/* Enable the Position Attribute */
-		glEnableVertexAttribArray(0);
+		glBindVertexArray(0);
 	}
 
 	MeshComponent::~MeshComponent()

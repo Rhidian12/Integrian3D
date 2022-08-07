@@ -15,10 +15,18 @@ namespace Integrian3D
 		~MeshComponent();
 
 		uint32_t GetVertexArrayID() const { return VertexArrayID; }
+		uint32_t GetIndexBufferID() const { return IndexBufferID; }
+		uint32_t GetVertexBufferID() const { return VertexBufferID; }
+
+		const std::vector<float> GetVertices() const { return Vertices; }
+		const std::vector<uint32_t> GetIndices() const { return Indices; }
 
 	private:
 		uint32_t VertexArrayID;
 		uint32_t VertexBufferID;
 		uint32_t IndexBufferID;
+
+		std::vector<float> Vertices;
+		std::vector<uint32_t> Indices;
 	};
 }

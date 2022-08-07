@@ -31,6 +31,8 @@ namespace Integrian3D
 			/* [TODO]: Add Scene Update! */
 			Scene& activeScene{ sceneManager.GetActiveScene() };
 
+			renderer.StartRenderLoop();
+
 			View<MeshComponent> renderView{ activeScene.CreateView<MeshComponent>() };
 			renderView.ForEach([&renderer](const MeshComponent& meshComponent)->void
 				{

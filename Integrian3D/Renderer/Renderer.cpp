@@ -103,19 +103,28 @@ namespace Integrian3D
 		return *Instance.get();
 	}
 
-	void Renderer::Render(const class MeshComponent& meshComponent)
+	void Renderer::StartRenderLoop()
 	{
 		/* Sets the Clear Colour */
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
+	}
 
+	void Renderer::Render(const MeshComponent& meshComponent)
+	{
 		/* Use our shader program! */
 		glUseProgram(ShaderProgramID);
 
 		/* Bind the Vertex Array ID */
 		glBindVertexArray(meshComponent.GetVertexArrayID());
 
+		/* Bind the ID to a vertex buffer */
+		glBindBuffer(GL_ARRAY_BUFFER, meshComponent.GetVertexBufferID());
+
+		/* Bind the ID to an index buffer */
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshComponent.GetIndexBufferID());
+
 		/* Render our rectangle */
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(meshComponent.GetIndices().size()), GL_UNSIGNED_INT, 0);
 	}
 }
