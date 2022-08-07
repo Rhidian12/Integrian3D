@@ -17,6 +17,9 @@ namespace Integrian3D
 
 		void ChangeScene(const std::string_view sceneName);
 
+		Scene& GetActiveScene() { assert(pActiveScene); return *pActiveScene; }
+		const Scene& GetActiveScene() const { assert(pActiveScene); return *pActiveScene; }
+
 		Scene& GetScene(const std::string_view sceneName);
 		const Scene& GetScene(const std::string_view sceneName) const;
 
