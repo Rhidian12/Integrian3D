@@ -1,6 +1,9 @@
 #pragma once
 
+#include "../Scene/Scene.h"
+
 #include <memory> /* std::unique_ptr */
+#include <vector> /* std::vector */
 
 namespace Integrian3D
 {
@@ -14,5 +17,7 @@ namespace Integrian3D
 
 		friend std::unique_ptr<SceneManager> std::make_unique();
 		inline static std::unique_ptr<SceneManager> Instance{};
+
+		std::vector<Scene> Scenes;
 	};
 }

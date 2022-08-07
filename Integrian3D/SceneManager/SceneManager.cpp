@@ -3,6 +3,7 @@
 namespace Integrian3D
 {
 	SceneManager::SceneManager()
+		: Scenes{}
 	{}
 
 	SceneManager& SceneManager::GetInstance()
