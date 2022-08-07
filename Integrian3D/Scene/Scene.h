@@ -14,6 +14,8 @@ namespace Integrian3D
 		void Start();
 
 		void AddSceneInitialisation(const std::function<void(const Scene&)>& fn) { InitializeCallback = fn; }
+		void AddOnSceneEnter(const std::function<void(const Scene&)>& fn) { OnSceneEnterCallback = fn; }
+		void AddOnSceneLeave(const std::function<void(const Scene&)>& fn) { OnSceneLeaveCallback = fn; }
 
 		/* -------------- Begin of ECS Functionality -------------- */
 		Entity CreateEntity();
