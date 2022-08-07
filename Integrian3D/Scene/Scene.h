@@ -13,10 +13,10 @@ namespace Integrian3D
 
 		void Start();
 
-		void AddSceneInitialisation(const std::function<void()>& fn) { InitializeCallback = fn; }
+		void AddSceneInitialisation(const std::function<void(const Scene&)>& fn) { InitializeCallback = fn; }
 
 	private:
-		std::function<void()> InitializeCallback;
+		std::function<void(const Scene&)> InitializeCallback;
 		Registry Registry;
 	};
 }

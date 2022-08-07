@@ -9,6 +9,6 @@ namespace Integrian3D
 
 	void Scene::Start()
 	{
-		InitializeCallback();
+		InitializeCallback(*this);
 	}
 }
