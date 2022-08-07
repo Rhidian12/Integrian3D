@@ -10,8 +10,6 @@ namespace Integrian3D
 {
 	Renderer::Renderer()
 		: ShaderProgramID{}
-		, VertexArrayID{}
-		, VertexBufferID{}
 	{
 		uint32_t vertexShaderID{}, fragmentShaderID{};
 
@@ -101,54 +99,10 @@ namespace Integrian3D
 			0, 1, 3,   // first triangle
 			1, 2, 3    // second triangle
 		};
-
-		/* Generate a vertex array ID */
-		glGenVertexArrays(1, &VertexArrayID);
-
-		/* Generate a vertex buffer ID */
-		glGenBuffers(1, &VertexBufferID);
-
-		/* Generate an Index Buffer ID */
-		glGenBuffers(1, &IndexBufferID);
-
-		/* Bind our Vertex Array */
-		glBindVertexArray(VertexArrayID);
-
-		/* Bind the ID to a vertex buffer */
-		glBindBuffer(GL_ARRAY_BUFFER, VertexBufferID);
-
-		/* Bind the ID to a index buffer */
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IndexBufferID);
-
-		/* Copy our actual points into the buffer */
-			/*
-				GL_STREAM_DRAW: the data is set only once and used by the GPU at most a few times.
-				GL_STATIC_DRAW: the data is set only once and used many times.
-				GL_DYNAMIC_DRAW: the data is changed a lot and used many times.
-			*/
-		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-		/* Copy our actual indices into the buffer */
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-		/* Set Vertex Buffer Attribute Position layout */
-		/*		1		  2			3     */
-		/*  |X  Y  Z| |X  Y  Z| |X  Y  Z| */
-		/*
-		Position Attribute:
-		Stride = 12
-		Offset = 0
-		*/
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), reinterpret_cast<void*>(0));
-
-		/* Enable the Position Attribute */
-		glEnableVertexAttribArray(0);
 	}
 
 	Renderer::~Renderer()
 	{
-		glDeleteVertexArrays(1, &VertexArrayID);
-		glDeleteBuffers(1, &VertexBufferID);
 		glDeleteProgram(ShaderProgramID);
 	}
 
@@ -172,7 +126,7 @@ namespace Integrian3D
 		glUseProgram(ShaderProgramID);
 
 		/* Bind the Vertex Array ID */
-		glBindVertexArray(VertexArrayID);
+		// glBindVertexArray(VertexArrayID);
 
 		/* Render our rectangle */
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
