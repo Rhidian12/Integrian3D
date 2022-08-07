@@ -1,5 +1,7 @@
 #include "SceneManager.h"
 
+#include <algorithm> /* std::find_if */
+
 namespace Integrian3D
 {
 	SceneManager::SceneManager()
@@ -14,5 +16,17 @@ namespace Integrian3D
 		}
 
 		return *Instance.get();
+	}
+
+	Scene& SceneManager::GetScene(const std::string_view sceneName)
+	{
+		const auto it{ std::find_if(Scenes.begin(), Scenes.end(), [sceneName](const Scene& scene)
+			{
+				return scene.GetSceneName() == sceneName;
+			}) };
+
+		assert(it != Scenes.end());
+
+		return *it;
 	}
 }

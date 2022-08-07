@@ -4,6 +4,7 @@
 
 #include <memory> /* std::unique_ptr */
 #include <vector> /* std::vector */
+#include <string_view> /* std::string_view */
 
 namespace Integrian3D
 {
@@ -13,6 +14,8 @@ namespace Integrian3D
 		static SceneManager& GetInstance();
 
 		void AddScene(const Scene& scene) { Scenes.push_back(scene); }
+
+		Scene& GetScene(const std::string_view sceneName);
 
 	private:
 		SceneManager();
