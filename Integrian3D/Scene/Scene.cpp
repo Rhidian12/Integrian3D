@@ -11,4 +11,13 @@ namespace Integrian3D
 	{
 		InitializeCallback(*this);
 	}
+
+	Entity Scene::CreateEntity()
+	{
+		const Entity entity{ Registry.CreateEntity() };
+
+		/* [TODO]: Add Transform Component */
+
+		return entity;
+	}
 }

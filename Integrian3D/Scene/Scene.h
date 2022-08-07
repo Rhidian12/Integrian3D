@@ -16,7 +16,7 @@ namespace Integrian3D
 		void AddSceneInitialisation(const std::function<void(const Scene&)>& fn) { InitializeCallback = fn; }
 
 		/* -------------- Begin of ECS Functionality -------------- */
-		Entity CreateEntity() { return Registry.CreateEntity(); }
+		Entity CreateEntity();
 
 		bool ReleaseEntity(const Entity entity) { return Registry.ReleaseEntity(entity); }
 
