@@ -29,4 +29,16 @@ namespace Integrian3D
 
 		return *it;
 	}
+
+	const Scene& SceneManager::GetScene(const std::string_view sceneName) const
+	{
+		const auto cIt{ std::find_if(Scenes.cbegin(), Scenes.cend(), [sceneName](const Scene& scene)
+			{
+				return scene.GetSceneName() == sceneName;
+			}) };
+
+		assert(cIt != Scenes.cend());
+
+		return *cIt;
+	}
 }
