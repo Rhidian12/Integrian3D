@@ -14,6 +14,11 @@ namespace Integrian3D
 		explicit MeshComponent(const std::vector<float>& vertices, const std::vector<uint32_t>& indices);
 		~MeshComponent();
 
+		MeshComponent(const MeshComponent&) noexcept = delete;
+		MeshComponent(MeshComponent&& other) noexcept;
+		MeshComponent& operator=(const MeshComponent&) noexcept = delete;
+		MeshComponent& operator=(MeshComponent&& other) noexcept;
+
 		uint32_t GetVertexArrayID() const { return VertexArrayID; }
 		uint32_t GetIndexBufferID() const { return IndexBufferID; }
 		uint32_t GetVertexBufferID() const { return VertexBufferID; }

@@ -84,8 +84,52 @@ namespace Integrian3D
 
 	MeshComponent::~MeshComponent()
 	{
-		glDeleteVertexArrays(1, &VertexArrayID);
-		glDeleteBuffers(1, &VertexBufferID);
-		glDeleteBuffers(1, &IndexBufferID);
+		if (VertexArrayID != std::numeric_limits<uint32_t>::max())
+		{
+			glDeleteVertexArrays(1, &VertexArrayID);
+		}
+
+		if (VertexBufferID != std::numeric_limits<uint32_t>::max())
+		{
+			glDeleteBuffers(1, &VertexBufferID);
+		}
+
+		if (IndexBufferID != std::numeric_limits<uint32_t>::max())
+		{
+			glDeleteBuffers(1, &IndexBufferID);
+		}
+	}
+
+	MeshComponent::MeshComponent(MeshComponent&& other) noexcept
+		: VertexArrayID{ std::move(other.VertexArrayID) }
+		, VertexBufferID{ std::move(other.VertexBufferID) }
+		, IndexBufferID{ std::move(other.IndexBufferID) }
+		, Vertices{ std::move(other.Vertices) }
+		, Indices{ std::move(other.Indices) }
+	{
+		other.Vertices.clear();
+		other.Indices.clear();
+
+		other.VertexArrayID = std::numeric_limits<uint32_t>::max();
+		other.VertexBufferID = std::numeric_limits<uint32_t>::max();
+		other.IndexBufferID = std::numeric_limits<uint32_t>::max();
+	}
+
+	MeshComponent& MeshComponent::operator=(MeshComponent&& other) noexcept
+	{
+		VertexArrayID = std::move(other.VertexArrayID);
+		VertexBufferID = std::move(other.VertexBufferID);
+		IndexBufferID = std::move(other.IndexBufferID);
+		Vertices = std::move(other.Vertices);
+		Indices = std::move(other.Indices);
+
+		other.Vertices.clear();
+		other.Indices.clear();
+
+		other.VertexArrayID = std::numeric_limits<uint32_t>::max();
+		other.VertexBufferID = std::numeric_limits<uint32_t>::max();
+		other.IndexBufferID = std::numeric_limits<uint32_t>::max();
+
+		return *this;
 	}
 }
