@@ -7,7 +7,9 @@
 namespace Integrian3D
 {
 	MeshComponent::MeshComponent()
-		: MeshComponent("")
+		: VertexArrayID{}
+		, VertexBufferID{}
+		, IndexBufferID{}
 	{}
 
 	MeshComponent::MeshComponent(const std::string& filePath)
@@ -25,5 +27,12 @@ namespace Integrian3D
 
 			/* [TODO]: Parse .obj file */
 		}
+	}
+
+	MeshComponent::MeshComponent(const std::vector<float>& vertices, const std::vector<uint32_t>& indices)
+		: VertexArrayID{}
+		, VertexBufferID{}
+		, IndexBufferID{}
+	{
 	}
 }

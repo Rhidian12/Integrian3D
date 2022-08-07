@@ -2,6 +2,7 @@
 
 #include <stdint.h> /* uint32_t, ... */
 #include <string_view> /* std::string_view */
+#include <vector> /* std::vector */
 
 namespace Integrian3D
 {
@@ -10,6 +11,7 @@ namespace Integrian3D
 	public:
 		explicit MeshComponent();
 		explicit MeshComponent(const std::string& filePath);
+		explicit MeshComponent(const std::vector<float>& vertices, const std::vector<uint32_t>& indices);
 
 	private:
 		uint32_t VertexArrayID;
