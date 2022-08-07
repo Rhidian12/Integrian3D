@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../EngineConstants.h"
-#include "../Utils/Utils.h"
+#include "../../EngineConstants.h"
+#include "../../Utils/Utils.h"
 
 namespace Integrian3D
 {

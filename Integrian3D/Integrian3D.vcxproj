@@ -190,7 +190,7 @@
     <ClCompile Include="Logger\Logger.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MeshComponent\MeshComponent.cpp" />
-    <ClCompile Include="Registry\Registry.cpp" />
+    <ClCompile Include="ECS\Registry\Registry.cpp" />
     <ClCompile Include="Renderer\Renderer.cpp" />
     <ClCompile Include="Scene\Scene.cpp" />
     <ClCompile Include="Timer\Timer.cpp" />
@@ -198,8 +198,8 @@
     <ClCompile Include="Window\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ComponentArray\ComponentArray.h" />
-    <ClInclude Include="ComponentIDGenerator\ComponentIDGenerator.h" />
+    <ClInclude Include="ECS\ComponentArray\ComponentArray.h" />
+    <ClInclude Include="ECS\ComponentIDGenerator\ComponentIDGenerator.h" />
     <ClInclude Include="Core\Core.h" />
     <ClInclude Include="DebugUtility\DebugUtility.h" />
     <ClInclude Include="EngineConstants.h" />
@@ -208,13 +208,13 @@
     <ClInclude Include="InputManager\KeyboardInput\KeyboardInput.h" />
     <ClInclude Include="Logger\Logger.h" />
     <ClInclude Include="MeshComponent\MeshComponent.h" />
-    <ClInclude Include="Registry\Registry.h" />
+    <ClInclude Include="ECS\Registry\Registry.h" />
     <ClInclude Include="Renderer\Renderer.h" />
     <ClInclude Include="Scene\Scene.h" />
     <ClInclude Include="SparseSet\SparseSet.h" />
     <ClInclude Include="Timer\Timer.h" />
     <ClInclude Include="Utils\Utils.h" />
-    <ClInclude Include="View\View.h" />
+    <ClInclude Include="ECS\View\View.h" />
     <ClInclude Include="Window\Window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

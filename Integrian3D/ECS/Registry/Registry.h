@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../EngineConstants.h"
-#include "../SparseSet/SparseSet.h"
+#include "../../EngineConstants.h"
+#include "../../SparseSet/SparseSet.h"
 #include "../View/View.h"
 #include "../ComponentIDGenerator/ComponentIDGenerator.h"
 #include "../ComponentArray/ComponentArray.h"

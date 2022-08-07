@@ -45,7 +45,7 @@
     <ClCompile Include="Scene\Scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Registry\Registry.cpp">
+    <ClCompile Include="ECS\Registry\Registry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Utils\Utils.cpp">
@@ -86,7 +86,7 @@
     <ClInclude Include="Scene\Scene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Registry\Registry.h">
+    <ClInclude Include="ECS\Registry\Registry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="EngineConstants.h">
@@ -95,16 +95,16 @@
     <ClInclude Include="SparseSet\SparseSet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="View\View.h">
+    <ClInclude Include="ECS\View\View.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ComponentIDGenerator\ComponentIDGenerator.h">
+    <ClInclude Include="ECS\ComponentIDGenerator\ComponentIDGenerator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Utils\Utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ComponentArray\ComponentArray.h">
+    <ClInclude Include="ECS\ComponentArray\ComponentArray.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MeshComponent\MeshComponent.h">
