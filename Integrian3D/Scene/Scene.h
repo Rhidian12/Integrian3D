@@ -11,8 +11,6 @@ namespace Integrian3D
 	public:
 		explicit Scene(const std::string& sceneName);
 
-		void Start();
-
 		void AddSceneInitialisation(const std::function<void(const Scene&)>& fn) { InitializeCallback = fn; }
 		void AddOnSceneEnter(const std::function<void(const Scene&)>& fn) { OnSceneEnterCallback = fn; }
 		void AddOnSceneLeave(const std::function<void(const Scene&)>& fn) { OnSceneLeaveCallback = fn; }
@@ -44,10 +42,19 @@ namespace Integrian3D
 
 		const std::string& GetSceneName() const { return SceneName; }
 
+
+		/* -------------- Start of Internal Functionality -------------- */
+		void Start();
+
+		void OnSceneEnter() { OnSceneEnterCallback(*this); }
+
+		void OnSceneLeave() { OnSceneLeaveCallback(*this); }
+		/* -------------- End of Internal Functionality -------------- */
+
 	private:
-		std::function<void(const Scene&)> InitializeCallback;
-		std::function<void(const Scene&)> OnSceneEnterCallback;
-		std::function<void(const Scene&)> OnSceneLeaveCallback;
+		std::function<void(Scene&)> InitializeCallback;
+		std::function<void(Scene&)> OnSceneEnterCallback;
+		std::function<void(Scene&)> OnSceneLeaveCallback;
 		Registry Registry;
 		std::string SceneName;
 	};
