@@ -12,6 +12,8 @@ namespace Integrian3D
 	public:
 		static SceneManager& GetInstance();
 
+		void AddScene(const Scene& scene) { Scenes.push_back(scene); }
+
 	private:
 		SceneManager();
 
