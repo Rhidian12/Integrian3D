@@ -99,6 +99,9 @@ namespace Integrian3D
 			return wrappedName.substr(prefixLength, typeNameLength).data();
 		}
 
-		inline constexpr size_t ConstexprStringHash(const char* pString);
+		inline constexpr size_t ConstexprStringHash(const char* pString)
+		{
+			return CRC32<sizeof(pString) - 2>(pString) ^ 0xFFFFFFFF;
+		}
 	}
 }
