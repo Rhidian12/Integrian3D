@@ -5,6 +5,7 @@
 
 #include "../FileReader/FileReader.h"
 #include "../DebugUtility/DebugUtility.h"
+#include "../MeshComponent/MeshComponent.h"
 
 namespace Integrian3D
 {
@@ -116,7 +117,7 @@ namespace Integrian3D
 		return *Instance.get();
 	}
 
-	void Renderer::Render()
+	void Renderer::Render(const class MeshComponent& meshComponent)
 	{
 		/* Sets the Clear Colour */
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -126,7 +127,7 @@ namespace Integrian3D
 		glUseProgram(ShaderProgramID);
 
 		/* Bind the Vertex Array ID */
-		// glBindVertexArray(VertexArrayID);
+		glBindVertexArray(meshComponent.GetVertexArrayID());
 
 		/* Render our rectangle */
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
