@@ -19,6 +19,16 @@ namespace Integrian3D
 		return *Instance.get();
 	}
 
+	void SceneManager::AddScene(Scene&& scene)
+	{
+		Scenes.push_back(std::move(scene));
+
+		if (!pActiveScene)
+		{
+			pActiveScene = &Scenes.back();
+		}
+	}
+
 	Scene& SceneManager::GetScene(const std::string_view sceneName)
 	{
 		const auto it{ std::find_if(Scenes.begin(), Scenes.end(), [sceneName](const Scene& scene)
