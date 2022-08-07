@@ -86,20 +86,6 @@ namespace Integrian3D
 			glDeleteShader(vertexShaderID);
 			glDeleteShader(fragmentShaderID);
 		}
-
-		const float vertices[] =
-		{
-			 0.5f,  0.5f, 0.0f,  // top right
-			 0.5f, -0.5f, 0.0f,  // bottom right
-			-0.5f, -0.5f, 0.0f,  // bottom left
-			-0.5f,  0.5f, 0.0f   // top left 
-		};
-
-		const uint32_t indices[] =
-		{
-			0, 1, 3,   // first triangle
-			1, 2, 3    // second triangle
-		};
 	}
 
 	Renderer::~Renderer()
