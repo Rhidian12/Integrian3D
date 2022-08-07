@@ -9,7 +9,7 @@ namespace Integrian3D
 	class Scene final
 	{
 	public:
-		explicit Scene();
+		explicit Scene(const std::string& sceneName);
 
 		void Start();
 
@@ -44,5 +44,6 @@ namespace Integrian3D
 	private:
 		std::function<void(const Scene&)> InitializeCallback;
 		Registry Registry;
+		std::string SceneName;
 	};
 }

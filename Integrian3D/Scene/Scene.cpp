@@ -2,8 +2,10 @@
 
 namespace Integrian3D
 {
-	Scene::Scene()
+	Scene::Scene(const std::string& sceneName)
 		: InitializeCallback{}
+		, Registry{}
+		, SceneName{ sceneName }
 	{
 	}
 
