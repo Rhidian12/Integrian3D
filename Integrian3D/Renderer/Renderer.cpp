@@ -6,6 +6,7 @@
 #include "../FileReader/FileReader.h"
 #include "../DebugUtility/DebugUtility.h"
 #include "../MeshComponent/MeshComponent.h"
+#include "../Shader/Shader.h"
 
 namespace Integrian3D
 {
@@ -13,79 +14,25 @@ namespace Integrian3D
 		: ShaderProgramID{}
 		, bShouldRenderWireframe{}
 	{
-		uint32_t vertexShaderID{}, fragmentShaderID{};
-
-		/* Get Vertex shader */
-		{
-			const FileReader reader{ "Resources/VertexShader.txt" };
-
-			/* Generate VertexShader ID */
-			vertexShaderID = glCreateShader(GL_VERTEX_SHADER);
-
-			/* Attach the VertexShader code to the ID and compile it */
-			const char* vertexShaderSource{ reader.GetFileContents().c_str() };
-			glShaderSource(vertexShaderID, 1, &vertexShaderSource, nullptr);
-			glCompileShader(vertexShaderID);
-
-			/* Check if the compilation succeeded */
-			int success{};
-			char infoLog[512]{};
-			glGetShaderiv(vertexShaderID, GL_COMPILE_STATUS, &success);
-
-			if (!success)
-			{
-				glGetShaderInfoLog(vertexShaderID, 512, nullptr, infoLog);
-				Debug::LogError(std::string("Vertex Shader compilation failed: ") + infoLog, false);
-			}
-		}
-
-		/* Get Fragment shader (== pixel shader) */
-		{
-			const FileReader reader{ "Resources/FragmentShader.txt" };
-
-			/* Generate VertexShader ID */
-			fragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
-
-			/* Attach the VertexShader code to the ID and compile it */
-			const char* fragmentShaderSource{ reader.GetFileContents().c_str() };
-			glShaderSource(fragmentShaderID, 1, &fragmentShaderSource, nullptr);
-			glCompileShader(fragmentShaderID);
-
-			/* Check if the compilation succeeded */
-			int success{};
-			char infoLog[512]{};
-			glGetShaderiv(fragmentShaderID, GL_COMPILE_STATUS, &success);
-
-			if (!success)
-			{
-				glGetShaderInfoLog(fragmentShaderID, 512, nullptr, infoLog);
-				Debug::LogError(std::string("Fragment Shader compilation failed: ") + infoLog, false);
-			}
-		}
+		Shader vertexShader{ "Resources/VertexShader.txt" }, fragmentShader{ "Resources/FragmentShader.txt" };
 
 		/* Create shader program */
+		ShaderProgramID = glCreateProgram();
+
+		/* Link all previously created shaders to the shader program */
+		glAttachShader(ShaderProgramID, vertexShader.GetShaderID());
+		glAttachShader(ShaderProgramID, fragmentShader.GetShaderID());
+		glLinkProgram(ShaderProgramID);
+
+		/* Check if the shader linking succeeded */
+		int success{};
+		char infoLog[512]{};
+		glGetProgramiv(ShaderProgramID, GL_LINK_STATUS, &success);
+
+		if (!success)
 		{
-			ShaderProgramID = glCreateProgram();
-
-			/* Link all previously created shaders to the shader program */
-			glAttachShader(ShaderProgramID, vertexShaderID);
-			glAttachShader(ShaderProgramID, fragmentShaderID);
-			glLinkProgram(ShaderProgramID);
-
-			/* Check if the shader linking succeeded */
-			int success{};
-			char infoLog[512]{};
-			glGetProgramiv(ShaderProgramID, GL_LINK_STATUS, &success);
-
-			if (!success)
-			{
-				glGetProgramInfoLog(ShaderProgramID, 512, nullptr, infoLog);
-				Debug::LogError(std::string("Shader program linking failed: ") + infoLog, false);
-			}
-
-			/* Delete our created shaders, they're no longer needed after linking */
-			glDeleteShader(vertexShaderID);
-			glDeleteShader(fragmentShaderID);
+			glGetProgramInfoLog(ShaderProgramID, 512, nullptr, infoLog);
+			Debug::LogError(std::string("Shader program linking failed: ") + infoLog, false);
 		}
 	}
 
