@@ -15,6 +15,8 @@ namespace Integrian3D
 		Shader& operator=(const Shader&) noexcept = delete;
 		Shader& operator=(Shader&& other) noexcept;
 
+		uint32_t GetProgramID() const { return ProgramID; }
+
 	private:
 		uint32_t ProgramID;
 	};

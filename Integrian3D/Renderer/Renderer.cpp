@@ -45,7 +45,7 @@ namespace Integrian3D
 	void Renderer::Render(const MeshComponent& meshComponent)
 	{
 		/* Use our shader program! */
-		glUseProgram(ShaderProgramID);
+		glUseProgram(Shader.GetProgramID());
 
 		/* Bind the Vertex Array ID */
 		glBindVertexArray(meshComponent.GetVertexArrayID());
