@@ -18,8 +18,6 @@ namespace Integrian3D
 
 		void Activate();
 
-		uint32_t GetProgramID() const { return ProgramID; }
-
 	private:
 		uint32_t ProgramID;
 	};
