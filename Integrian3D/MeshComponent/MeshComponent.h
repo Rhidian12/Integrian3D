@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../Vertex/Vertex.h"
+
 #include <stdint.h> /* uint32_t, ... */
 #include <string_view> /* std::string_view */
 #include <vector> /* std::vector */
@@ -11,7 +13,7 @@ namespace Integrian3D
 	public:
 		explicit MeshComponent();
 		explicit MeshComponent(const std::string& filePath);
-		explicit MeshComponent(const std::vector<float>& vertices, const std::vector<uint32_t>& indices);
+		explicit MeshComponent(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices);
 		~MeshComponent();
 
 		MeshComponent(const MeshComponent&) noexcept = delete;
@@ -23,7 +25,7 @@ namespace Integrian3D
 		uint32_t GetIndexBufferID() const { return IndexBufferID; }
 		uint32_t GetVertexBufferID() const { return VertexBufferID; }
 
-		const std::vector<float> GetVertices() const { return Vertices; }
+		const std::vector<Vertex> GetVertices() const { return Vertices; }
 		const std::vector<uint32_t> GetIndices() const { return Indices; }
 
 	private:
@@ -31,7 +33,7 @@ namespace Integrian3D
 		uint32_t VertexBufferID;
 		uint32_t IndexBufferID;
 
-		std::vector<float> Vertices;
+		std::vector<Vertex> Vertices;
 		std::vector<uint32_t> Indices;
 	};
 }
