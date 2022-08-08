@@ -6,13 +6,8 @@ namespace Integrian3D
 {
 	struct RGBColour final
 	{
-		RGBColour()
-			: R{}
-			, G{}
-			, B{}
-			, A{}
-		{}
-		RGBColour(const float r, const float g, const float b, const float a)
+		RGBColour() = default;
+		RGBColour(const float r, const float g, const float b, const float a = 1.f)
 			: R{ r }
 			, G{ g }
 			, B{ b }
