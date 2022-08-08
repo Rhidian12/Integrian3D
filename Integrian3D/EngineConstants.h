@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Math/Vector3.h"
+#include "Math/RGBColour.h"
 
 #include <cstdint> /* uint64_t */
 #include <limits> /* std::numeric_limits */
