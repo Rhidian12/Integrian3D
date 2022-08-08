@@ -17,5 +17,24 @@ namespace Integrian3D
 		{}
 
 		T X, Y, Z;
+
+		T Dot(const Vector3<T>& vec) const
+		{
+			return X * vec.X + Y * vec.Y + Z * vec.Z;
+		}
+
+		T Magnitude() const
+		{
+
+		}
+
+		T MagnitudeSquared() const
+		{
+		}
+
+		Vector3 GetNormalized() const
+		{
+
+		}
 	};
 }
