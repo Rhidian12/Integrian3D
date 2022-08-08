@@ -70,8 +70,8 @@ namespace Integrian3D
 		glEnableVertexAttribArray(0);
 
 		/* Set Vertex Buffer Attribute Position layout */
-		/*			1					2				  3			*/
-		/*  |X  Y  Z  R  G  B| |X  Y  Z  R  G  B| |X  Y  Z  R  G  B|*/
+		/*			  1						2					  3				*/
+		/*  |X  Y  Z  R  G  B  A| |X  Y  Z  R  G  B  A| |X  Y  Z  R  G  B  A|	*/
 		/*
 		Position Attribute:
 		Stride = 24
