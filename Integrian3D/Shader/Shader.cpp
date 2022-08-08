@@ -124,4 +124,9 @@ namespace Integrian3D
 	{
 		glUniform1i(glGetUniformLocation(ProgramID, name.data()), value);
 	}
+
+	void Shader::SetFloat(const std::string_view name, const float value) const
+	{
+		glUniform1f(glGetUniformLocation(ProgramID, name.data()), value);
+	}
 }
