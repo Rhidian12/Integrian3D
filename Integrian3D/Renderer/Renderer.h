@@ -20,6 +20,8 @@ namespace Integrian3D
 
 		void Render(const class MeshComponent& meshComponent);
 
+		void ShouldRenderWireframe(const bool bShouldRenderWireFrame) { bShouldRenderWireframe = bShouldRenderWireFrame; }
+
 	private:
 		Renderer();
 
@@ -27,5 +29,6 @@ namespace Integrian3D
 		inline static std::unique_ptr<Renderer> Instance{};
 
 		uint32_t ShaderProgramID;
+		bool bShouldRenderWireframe;
 	};
 }

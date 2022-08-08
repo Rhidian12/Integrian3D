@@ -11,6 +11,7 @@ namespace Integrian3D
 {
 	Renderer::Renderer()
 		: ShaderProgramID{}
+		, bShouldRenderWireframe{}
 	{
 		uint32_t vertexShaderID{}, fragmentShaderID{};
 
@@ -108,6 +109,15 @@ namespace Integrian3D
 		/* Sets the Clear Colour */
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
+
+		if (!bShouldRenderWireframe)
+		{
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		}
+		else
+		{
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		}
 	}
 
 	void Renderer::Render(const MeshComponent& meshComponent)
