@@ -1,6 +1,7 @@
 #pragma once
 
-#include <math.h> /* sqrtf */
+#include <math.h> /* sqrtf() */
+#include <assert.h> /* assert() */
 
 namespace Integrian3D
 {
@@ -35,9 +36,24 @@ namespace Integrian3D
 			return Dot(*this);
 		}
 
+		Vector3& Normalize()
+		{
+			const T magnitude{ Magnitude() };
+
+			assert(magnitude != static_cast<T>(0.f) && "Vector3::Normalize() > Magnitude may not be 0");
+
+			X /= magnitude;
+			Y /= magnitude;
+			Z /= magnitude;
+
+			return *this;
+		}
+
 		Vector3 GetNormalized() const
 		{
-
+			Vector3<T> temp{ X, Y, Z };
+			temp.Normalize();
+			return temp;
 		}
 	};
 }
