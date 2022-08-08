@@ -9,7 +9,7 @@
 namespace Integrian3D
 {
 	Shader::Shader(const std::string& filePath)
-		: ShaderID{}
+		: ShaderID{ std::numeric_limits<uint32_t>::max() }
 	{
 		const FileReader reader{ filePath };
 
@@ -31,5 +31,28 @@ namespace Integrian3D
 			glGetShaderInfoLog(ShaderID, 512, nullptr, infoLog);
 			Debug::LogError(std::string("Shader compilation failed: ") + infoLog, false);
 		}
+	}
+
+	Shader::~Shader()
+	{
+		if (ShaderID != std::numeric_limits<uint32_t>::max())
+		{
+			glDeleteShader(ShaderID);
+		}
+	}
+
+	Shader::Shader(Shader&& other) noexcept
+		: ShaderID{ std::move(other.ShaderID) }
+	{
+		other.ShaderID = std::numeric_limits<uint32_t>::max();
+	}
+
+	Shader& Shader::operator=(Shader&& other) noexcept
+	{
+		ShaderID = std::move(other.ShaderID);
+
+		other.ShaderID = std::numeric_limits<uint32_t>::max();
+
+		return *this;
 	}
 }
