@@ -2,6 +2,7 @@
 
 #include <string> /* std::string */
 #include <assert.h> /* assert() */
+#include <string_view> /* std::string_view */
 
 namespace Integrian3D
 {
@@ -17,6 +18,8 @@ namespace Integrian3D
 		Shader& operator=(Shader&& other) noexcept;
 
 		void Activate();
+
+		void SetBool(const std::string_view name, const bool value) const;
 
 	private:
 		uint32_t ProgramID;

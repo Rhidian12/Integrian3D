@@ -114,4 +114,9 @@ namespace Integrian3D
 		assert(ProgramID != std::numeric_limits<uint32_t>::max() && "Shader::Activate() > No program set");
 		glUseProgram(ProgramID);
 	}
+
+	void Shader::SetBool(const std::string_view name, const bool value) const
+	{
+		glUniform1i(glGetUniformLocation(ProgramID, name.data()), static_cast<int>(value));
+	}
 }
