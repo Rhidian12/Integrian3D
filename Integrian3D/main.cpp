@@ -13,9 +13,9 @@ int main()
 
 	std::vector<Vertex> vertices =
 	{
-		 Vertex{ 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f },   // bottom right
-		 Vertex{ -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f },   // bottom left
-		 Vertex{ 0.0f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f }    // top
+		 Vertex{ Vector3f{ 0.5f, -0.5f, 0.0f }, RGBColour{ 1.0f, 0.0f, 0.0f } },   // bottom right
+		 Vertex{ Vector3f{ -0.5f, -0.5f, 0.0f }, RGBColour{ 0.0f, 1.0f, 0.0f} },   // bottom left
+		 Vertex{ Vector3f{ 0.0f,  0.5f, 0.0f }, RGBColour{ 0.0f, 0.0f, 1.0f } }    // top
 	};
 
 	std::vector<uint32_t> indices =
