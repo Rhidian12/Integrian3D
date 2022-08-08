@@ -20,6 +20,7 @@ namespace Integrian3D
 		void Activate();
 
 		void SetBool(const std::string_view name, const bool value) const;
+		void SetInt(const std::string_view name, const int value) const;
 
 	private:
 		uint32_t ProgramID;
