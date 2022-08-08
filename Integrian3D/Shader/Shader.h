@@ -7,7 +7,7 @@ namespace Integrian3D
 	class Shader final
 	{
 	public:
-		explicit Shader(const std::string& filePath);
+		Shader(const std::string& vertexShaderPath, const std::string& fragmentShaderPath);
 		~Shader();
 
 		Shader(const Shader&) noexcept = delete;
@@ -15,9 +15,7 @@ namespace Integrian3D
 		Shader& operator=(const Shader&) noexcept = delete;
 		Shader& operator=(Shader&& other) noexcept;
 
-		uint32_t GetShaderID() const { return ShaderID; }
-
 	private:
-		uint32_t ShaderID;
+		uint32_t ProgramID;
 	};
 }

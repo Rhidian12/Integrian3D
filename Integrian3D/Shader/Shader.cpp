@@ -8,50 +8,103 @@
 
 namespace Integrian3D
 {
-	Shader::Shader(const std::string& filePath)
-		: ShaderID{ std::numeric_limits<uint32_t>::max() }
+	Shader::Shader(const std::string& vertexShaderPath, const std::string& fragmentShaderPath)
+		: ProgramID{ std::numeric_limits<uint32_t>::max() }
 	{
-		const FileReader reader{ filePath };
+		uint32_t vertexShaderID{}, fragmentShaderID{};
 
-		/* Generate VertexShader ID */
-		ShaderID = glCreateShader(GL_VERTEX_SHADER);
-
-		/* Attach the VertexShader code to the ID and compile it */
-		const char* pShaderSource{ reader.GetFileContents().c_str() };
-		glShaderSource(ShaderID, 1, &pShaderSource, nullptr);
-		glCompileShader(ShaderID);
-
-		/* Check if the compilation succeeded */
-		int success{};
-		char infoLog[512]{};
-		glGetShaderiv(ShaderID, GL_COMPILE_STATUS, &success);
-
-		if (!success)
+		/* Get Vertex Shader */
 		{
-			glGetShaderInfoLog(ShaderID, 512, nullptr, infoLog);
-			Debug::LogError(std::string("Shader compilation failed: ") + infoLog, false);
+			const FileReader reader{ vertexShaderPath };
+
+			/* Generate VertexShader ID */
+			vertexShaderID = glCreateShader(GL_VERTEX_SHADER);
+
+			/* Attach the VertexShader code to the ID and compile it */
+			const char* pShaderSource{ reader.GetFileContents().c_str() };
+			glShaderSource(vertexShaderID, 1, &pShaderSource, nullptr);
+			glCompileShader(vertexShaderID);
+
+			/* Check if the compilation succeeded */
+			int success{};
+			char infoLog[512]{};
+			glGetShaderiv(vertexShaderID, GL_COMPILE_STATUS, &success);
+
+			if (!success)
+			{
+				glGetShaderInfoLog(vertexShaderID, 512, nullptr, infoLog);
+				Debug::LogError(std::string("Vertex Shader compilation failed: ") + infoLog, false);
+			}
 		}
+
+		/* Get Fragment Shader */
+		{
+			const FileReader reader{ fragmentShaderPath };
+
+			/* Generate VertexShader ID */
+			fragmentShaderID = glCreateShader(GL_VERTEX_SHADER);
+
+			/* Attach the VertexShader code to the ID and compile it */
+			const char* pShaderSource{ reader.GetFileContents().c_str() };
+			glShaderSource(fragmentShaderID, 1, &pShaderSource, nullptr);
+			glCompileShader(fragmentShaderID);
+
+			/* Check if the compilation succeeded */
+			int success{};
+			char infoLog[512]{};
+			glGetShaderiv(fragmentShaderID, GL_COMPILE_STATUS, &success);
+
+			if (!success)
+			{
+				glGetShaderInfoLog(fragmentShaderID, 512, nullptr, infoLog);
+				Debug::LogError(std::string("Fragment Shader compilation failed: ") + infoLog, false);
+			}
+		}
+
+		/* Create shader program */
+		{
+			ProgramID = glCreateProgram();
+
+			/* Link all previously created shaders to the shader program */
+			glAttachShader(ProgramID, vertexShaderID);
+			glAttachShader(ProgramID, fragmentShaderID);
+			glLinkProgram(ProgramID);
+
+			/* Check if the shader linking succeeded */
+			int success{};
+			char infoLog[512]{};
+			glGetProgramiv(ProgramID, GL_LINK_STATUS, &success);
+
+			if (!success)
+			{
+				glGetProgramInfoLog(ProgramID, 512, nullptr, infoLog);
+				Debug::LogError(std::string("Shader program linking failed: ") + infoLog, false);
+			}
+		}
+
+		glDeleteShader(vertexShaderID);
+		glDeleteShader(fragmentShaderID);
 	}
 
 	Shader::~Shader()
 	{
-		if (ShaderID != std::numeric_limits<uint32_t>::max())
+		if (ProgramID != std::numeric_limits<uint32_t>::max())
 		{
-			glDeleteShader(ShaderID);
+			glDeleteProgram(ProgramID);
 		}
 	}
 
 	Shader::Shader(Shader&& other) noexcept
-		: ShaderID{ std::move(other.ShaderID) }
+		: ProgramID{ std::move(other.ProgramID) }
 	{
-		other.ShaderID = std::numeric_limits<uint32_t>::max();
+		other.ProgramID = std::numeric_limits<uint32_t>::max();
 	}
 
 	Shader& Shader::operator=(Shader&& other) noexcept
 	{
-		ShaderID = std::move(other.ShaderID);
+		ProgramID = std::move(other.ProgramID);
 
-		other.ShaderID = std::numeric_limits<uint32_t>::max();
+		other.ProgramID = std::numeric_limits<uint32_t>::max();
 
 		return *this;
 	}

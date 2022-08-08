@@ -1,5 +1,7 @@
 #pragma once 
 
+#include "../Shader/Shader.h"
+
 #include <memory> /* std::unique_ptr */
 
 namespace Integrian3D
@@ -8,8 +10,6 @@ namespace Integrian3D
 	{
 	public:
 		static Renderer& GetInstance();
-
-		~Renderer();
 
 		Renderer(const Renderer&) noexcept = delete;
 		Renderer(Renderer&&) noexcept = delete;
@@ -30,5 +30,6 @@ namespace Integrian3D
 
 		uint32_t ShaderProgramID;
 		bool bShouldRenderWireframe;
+		Shader Shader;
 	};
 }

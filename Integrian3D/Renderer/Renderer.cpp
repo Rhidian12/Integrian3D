@@ -13,33 +13,8 @@ namespace Integrian3D
 	Renderer::Renderer()
 		: ShaderProgramID{}
 		, bShouldRenderWireframe{}
-	{
-		Shader vertexShader{ "Resources/VertexShader.txt" }, fragmentShader{ "Resources/FragmentShader.txt" };
-
-		/* Create shader program */
-		ShaderProgramID = glCreateProgram();
-
-		/* Link all previously created shaders to the shader program */
-		glAttachShader(ShaderProgramID, vertexShader.GetShaderID());
-		glAttachShader(ShaderProgramID, fragmentShader.GetShaderID());
-		glLinkProgram(ShaderProgramID);
-
-		/* Check if the shader linking succeeded */
-		int success{};
-		char infoLog[512]{};
-		glGetProgramiv(ShaderProgramID, GL_LINK_STATUS, &success);
-
-		if (!success)
-		{
-			glGetProgramInfoLog(ShaderProgramID, 512, nullptr, infoLog);
-			Debug::LogError(std::string("Shader program linking failed: ") + infoLog, false);
-		}
-	}
-
-	Renderer::~Renderer()
-	{
-		glDeleteProgram(ShaderProgramID);
-	}
+		, Shader{ "Resources/VertexShader.txt", "Resources/FragmentShader.txt" }
+	{}
 
 	Renderer& Renderer::GetInstance()
 	{
