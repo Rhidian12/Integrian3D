@@ -194,6 +194,7 @@
     <ClCompile Include="Renderer\Renderer.cpp" />
     <ClCompile Include="SceneManager\SceneManager.cpp" />
     <ClCompile Include="Scene\Scene.cpp" />
+    <ClCompile Include="Shader\Shader.cpp" />
     <ClCompile Include="Timer\Timer.cpp" />
     <ClCompile Include="Utils\Utils.cpp" />
     <ClCompile Include="Window\Window.cpp" />
@@ -215,6 +216,7 @@
     <ClInclude Include="Renderer\Renderer.h" />
     <ClInclude Include="SceneManager\SceneManager.h" />
     <ClInclude Include="Scene\Scene.h" />
+    <ClInclude Include="Shader\Shader.h" />
     <ClInclude Include="SparseSet\SparseSet.h" />
     <ClInclude Include="Timer\Timer.h" />
     <ClInclude Include="Utils\Utils.h" />
