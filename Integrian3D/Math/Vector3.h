@@ -23,7 +23,7 @@ namespace Integrian3D
 
 		T X, Y, Z;
 
-		T Dot(const Vector3<T>& vec) const
+		T Dot(const Vector3& vec) const
 		{
 			return X * vec.X + Y * vec.Y + Z * vec.Z;
 		}
