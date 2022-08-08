@@ -6,20 +6,18 @@ namespace Integrian3D
 {
 	struct RGBColour final
 	{
-		explicit RGBColour()
+		RGBColour()
 			: R{}
 			, G{}
 			, B{}
 			, A{}
 		{}
-		explicit RGBColour(const float r, const float g, const float b, const float a)
+		RGBColour(const float r, const float g, const float b, const float a)
 			: R{ r }
 			, G{ g }
 			, B{ b }
 			, A{ a }
 		{}
-
-		float R, G, B, A;
 
 		RGBColour& NormalizeToOne()
 		{
@@ -38,5 +36,7 @@ namespace Integrian3D
 			temp.NormalizeToOne();
 			return temp;
 		}
+
+		float R, G, B, A;
 	};
 }
