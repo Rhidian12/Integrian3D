@@ -60,7 +60,7 @@ namespace Integrian3D
 				GL_DYNAMIC_DRAW: the data is changed a lot and used many times.
 			*/
 		glBindBuffer(GL_ARRAY_BUFFER, VertexBufferID);
-		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float) * 3, vertices.data(), GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vector3f), vertices.data(), GL_STATIC_DRAW);
 
 		/* Copy our actual indices into the buffer */
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IndexBufferID);
@@ -70,14 +70,23 @@ namespace Integrian3D
 		glEnableVertexAttribArray(0);
 
 		/* Set Vertex Buffer Attribute Position layout */
-		/*		1		  2			3     */
-		/*  |X  Y  Z| |X  Y  Z| |X  Y  Z| */
+		/*			1					2				  3			*/
+		/*  |X  Y  Z  R  G  B| |X  Y  Z  R  G  B| |X  Y  Z  R  G  B|*/
 		/*
 		Position Attribute:
-		Stride = 12
+		Stride = 24
 		Offset = 0
+		Colour Attribute:
+		Stride = 24
+		Offset = 12
 		*/
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), reinterpret_cast<void*>(0));
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vector3f) + sizeof(RGBColour), reinterpret_cast<void*>(0));
+
+		/* Enable the Colour Attribute */
+		glEnableVertexAttribArray(1);
+
+		/* Set Vertex Buffer Attribute Colour layout */
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vector3f) + sizeof(RGBColour), reinterpret_cast<void*>(sizeof(Vector3f)));
 
 		glBindVertexArray(0);
 	}
