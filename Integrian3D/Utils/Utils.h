@@ -103,5 +103,12 @@ namespace Integrian3D
 		{
 			return CRC32<sizeof(pString) - 2>(pString) ^ 0xFFFFFFFF;
 		}
+
+		/* This function checks if 2 fundamental types are equal */
+		template<typename T, typename = std::enable_if_t<std::is_fundamental_v<T>>>
+		constexpr bool AreEqual(const T a, const T b)
+		{
+			return static_cast<T>(fabs(a - b)) <= std::numeric_limits<T>::epsilon();
+		}
 	}
 }
