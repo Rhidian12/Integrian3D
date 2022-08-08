@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../Utils/Utils.h"
+
 #include <math.h> /* sqrtf() */
 #include <assert.h> /* assert() */
 
@@ -40,7 +42,7 @@ namespace Integrian3D
 		{
 			const T magnitude{ Magnitude() };
 
-			assert(magnitude != static_cast<T>(0.f) && "Vector3::Normalize() > Magnitude may not be 0");
+			assert(!Utils::AreEqual(magnitude, static_cast<T>(0.f)) && "Vector3::Normalize() > Magnitude may not be 0");
 
 			X /= magnitude;
 			Y /= magnitude;
