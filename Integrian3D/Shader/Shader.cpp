@@ -108,4 +108,10 @@ namespace Integrian3D
 
 		return *this;
 	}
+
+	void Shader::Activate()
+	{
+		assert(ProgramID != std::numeric_limits<uint32_t>::max() && "Shader::Activate() > No program set");
+		glUseProgram(ProgramID);
+	}
 }

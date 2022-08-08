@@ -1,6 +1,7 @@
 #pragma once
 
-#include <string_view>
+#include <string> /* std::string */
+#include <assert.h> /* assert() */
 
 namespace Integrian3D
 {
@@ -14,6 +15,8 @@ namespace Integrian3D
 		Shader(Shader&& other) noexcept;
 		Shader& operator=(const Shader&) noexcept = delete;
 		Shader& operator=(Shader&& other) noexcept;
+
+		void Activate();
 
 		uint32_t GetProgramID() const { return ProgramID; }
 
