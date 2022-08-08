@@ -1,5 +1,7 @@
 #pragma once
 
+#include <math.h> /* sqrtf */
+
 namespace Integrian3D
 {
 	template<typename T>
@@ -25,11 +27,12 @@ namespace Integrian3D
 
 		T Magnitude() const
 		{
-
+			return static_cast<T>(sqrtf(MagnitudeSquared()));
 		}
 
 		T MagnitudeSquared() const
 		{
+			return Dot(*this);
 		}
 
 		Vector3 GetNormalized() const
