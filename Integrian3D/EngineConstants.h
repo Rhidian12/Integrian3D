@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Math/Vector3.h"
+
 #include <cstdint> /* uint64_t */
 #include <limits> /* std::numeric_limits */
 #include <bitset> /* std::bitset */
@@ -18,4 +20,7 @@ namespace Integrian3D
 
 	constexpr Entity InvalidEntityID{ std::numeric_limits<Entity>::max() };
 	constexpr ComponentType InvalidComponentID{ std::numeric_limits<ComponentType>::max() };
+
+	using Vector3f = Vector3<float>;
+	using Vector3d = Vector3<double>;
 }
