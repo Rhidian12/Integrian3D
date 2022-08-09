@@ -41,8 +41,8 @@ namespace Integrian3D
 		{
 			const FileReader reader{ fragmentShaderPath };
 
-			/* Generate VertexShader ID */
-			fragmentShaderID = glCreateShader(GL_VERTEX_SHADER);
+			/* Generate Frament Shader ID */
+			fragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
 
 			/* Attach the VertexShader code to the ID and compile it */
 			const char* pShaderSource{ reader.GetFileContents().c_str() };
