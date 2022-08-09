@@ -212,6 +212,7 @@
     <ClInclude Include="Math\Point2.h" />
     <ClInclude Include="Math\Point3.h" />
     <ClInclude Include="Math\RGBColour.h" />
+    <ClInclude Include="Math\Vector2.h" />
     <ClInclude Include="Math\Vector3.h" />
     <ClInclude Include="MeshComponent\MeshComponent.h" />
     <ClInclude Include="ECS\Registry\Registry.h" />
