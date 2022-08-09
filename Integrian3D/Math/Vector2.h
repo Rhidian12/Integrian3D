@@ -1,5 +1,7 @@
 #pragma once
 
+#include <math.h> /* sqrtf() */
+
 namespace Integrian3D
 {
 	template<typename T>
@@ -19,6 +21,16 @@ namespace Integrian3D
 		T Cross(const Vector2& vec) const
 		{
 			return X * vec.Y - Y * vec.X;
+		}
+
+		T Magnitude() const
+		{
+			return static_cast<T>(sqrtf(MagnitudeSquared()));
+		}
+
+		T MagnitudeSquared() const
+		{
+			return Dot(*this);
 		}
 
 		T X, Y;
