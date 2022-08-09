@@ -1,6 +1,9 @@
 #pragma once
 
+#include "../Utils/Utils.h"
+
 #include <math.h> /* sqrtf() */
+#include <assert.h> /* assert() */
 
 namespace Integrian3D
 {
@@ -31,6 +34,18 @@ namespace Integrian3D
 		T MagnitudeSquared() const
 		{
 			return Dot(*this);
+		}
+
+		Vector2& Normalize()
+		{
+			const T magnitude{ Magnitude() };
+
+			assert(!Utils::AreEqual(magnitude, static_cast<T>(0.f)) && "Vector2::Normalize() > Magnitude may not be 0");
+
+			X /= magnitude;
+			Y /= magnitude;
+
+			return *this;
 		}
 
 		T X, Y;
