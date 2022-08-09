@@ -22,6 +22,16 @@ namespace Integrian3D
 			return X * vec.X + Y * vec.Y + Z * vec.Z;
 		}
 
+		Vector3 Cross(const Vector3& vec) const
+		{
+			return Vector3
+			{
+				Y * vec.Z - Z * vec.Y,
+				X * vec.Y - Y * vec.X,
+				Z * vec.X - X * vec.Z
+			};
+		}
+
 		T Magnitude() const
 		{
 			return static_cast<T>(sqrtf(MagnitudeSquared()));
