@@ -16,6 +16,11 @@ namespace Integrian3D
 			return X * vec.X + Y * vec.Y;
 		}
 
+		T Cross(const Vector2& vec) const
+		{
+			return X * vec.Y - Y * vec.X;
+		}
+
 		T X, Y;
 	};
 }
