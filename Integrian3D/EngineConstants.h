@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Math/Point2.h"
 #include "Math/Vector3.h"
 #include "Math/RGBColour.h"
 
@@ -21,6 +22,9 @@ namespace Integrian3D
 
 	constexpr Entity InvalidEntityID{ std::numeric_limits<Entity>::max() };
 	constexpr ComponentType InvalidComponentID{ std::numeric_limits<ComponentType>::max() };
+
+	using Point2f = Point2<float>;
+	using Point2d = Point2<double>;
 
 	using Vector3f = Vector3<float>;
 	using Vector3d = Vector3<double>;
