@@ -6,7 +6,7 @@ namespace Integrian3D
 	struct Point2 final
 	{
 		Point2() = default;
-		Point2f(const T x, const T y)
+		Point2(const T x, const T y)
 			: X{ x }
 			, Y{ y }
 		{}
