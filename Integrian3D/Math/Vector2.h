@@ -11,6 +11,11 @@ namespace Integrian3D
 			, Y{ y }
 		{}
 
+		T Dot(const Vector2& vec) const
+		{
+			return X * vec.X + Y * vec.Y;
+		}
+
 		T X, Y;
 	};
 }
