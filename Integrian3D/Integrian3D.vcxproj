@@ -212,6 +212,7 @@
     <ClInclude Include="InputManager\KeyboardInput\KeyboardInput.h" />
     <ClInclude Include="Libraries\stb\stb_image.h" />
     <ClInclude Include="Logger\Logger.h" />
+    <ClInclude Include="Math\Matrix.h" />
     <ClInclude Include="Math\Point2.h" />
     <ClInclude Include="Math\Point3.h" />
     <ClInclude Include="Math\RGBColour.h" />
