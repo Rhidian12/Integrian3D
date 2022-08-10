@@ -12,5 +12,6 @@ namespace Integrian3D
 	private:
 		int Width;
 		int Height;
+		uint32_t TextureID;
 	};
 }
