@@ -33,7 +33,15 @@ namespace Integrian3D
 		unsigned char* pData = stbi_load(filePath.data(), &Width, &Height, &nrOfChannels, 0);
 
 		/* Create Texture */
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, Width, Height, 0, GL_RGB, GL_UNSIGNED_BYTE, pData);
+		const std::string_view fileExtension{ filePath.substr(filePath.find_last_of('.')) };
+		if (fileExtension == ".png" || fileExtension == ".tiff")
+		{
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, Width, Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pData);
+		}
+		else
+		{
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, Width, Height, 0, GL_RGB, GL_UNSIGNED_BYTE, pData);
+		}
 
 		/* Generate mipmaps */
 		glGenerateMipmap(TextureID);
