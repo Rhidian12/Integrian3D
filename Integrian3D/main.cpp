@@ -5,6 +5,7 @@
 #include "Scene/Scene.h"
 #include "SceneManager/SceneManager.h"
 #include "MeshComponent/MeshComponent.h"
+#include "TextureManager/TextureManager.h"
 
 int main()
 {
@@ -16,9 +17,11 @@ int main()
 
 	std::vector<Vertex> vertices =
 	{
-		 Vertex{ Vector3f{ 0.5f, -0.5f, 0.0f }, RGBColour{ 1.0f, 0.0f, 0.0f } },   // bottom right
-		 Vertex{ Vector3f{ -0.5f, -0.5f, 0.0f }, RGBColour{ 0.0f, 1.0f, 0.0f} },   // bottom left
-		 Vertex{ Vector3f{ 0.0f,  0.5f, 0.0f }, RGBColour{ 0.0f, 0.0f, 1.0f } }    // top
+		// positions          // colors           // texture coords
+		Vertex{ Vector3f{ 0.5f,  0.5f, 0.0f },   RGBColour{ 1.0f, 0.0f, 0.0f },   Point2f{ 1.0f, 1.0f } },   // top right
+		Vertex{ Vector3f{ 0.5f, -0.5f, 0.0f },   RGBColour{ 0.0f, 1.0f, 0.0f },   Point2f{ 1.0f, 0.0f } },   // bottom right
+		Vertex{ Vector3f{ -0.5f, -0.5f, 0.0f },   RGBColour{ 0.0f, 0.0f, 1.0f },   Point2f{ 0.0f, 0.0f } },   // bottom left
+		Vertex{ Vector3f{ -0.5f,  0.5f, 0.0f },   RGBColour{ 1.0f, 1.0f, 0.0f },   Point2f{ 0.0f, 1.0f } }    // top left 
 	};
 
 	std::vector<uint32_t> indices =
@@ -26,8 +29,10 @@ int main()
 		0, 1, 2,   // first triangle
 	};
 
+	TextureManager::GetInstance().AddTexture("__Wall", "Resources/wall.jpg");
+
 	Entity entity = testScene.CreateEntity();
-	testScene.AddComponent<MeshComponent>(entity, vertices, indices);
+	testScene.AddComponent<MeshComponent>(entity, vertices, indices, TextureManager::GetInstance().GetTexture("__Wall"));
 
 	SceneManager::GetInstance().AddScene(std::move(testScene));
 
