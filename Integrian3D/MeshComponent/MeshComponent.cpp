@@ -7,14 +7,6 @@
 
 namespace Integrian3D
 {
-	MeshComponent::MeshComponent()
-		: VertexArrayID{}
-		, VertexBufferID{}
-		, IndexBufferID{}
-		, Vertices{}
-		, Indices{}
-	{}
-
 	MeshComponent::MeshComponent(const std::string& filePath, Texture* const pTex)
 		: VertexArrayID{}
 		, VertexBufferID{}
