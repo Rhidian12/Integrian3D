@@ -15,6 +15,8 @@ namespace Integrian3D
 		Texture& operator=(const Texture&) noexcept = delete;
 		Texture& operator=(Texture&& other) noexcept;
 
+		int GetWidth() const { return Width; }
+
 	private:
 		int Width;
 		int Height;
