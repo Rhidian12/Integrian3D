@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Config.h"
-
 #include "Math/Point2.h"
 #include "Math/Point3.h"
 #include "Math/Vector3.h"

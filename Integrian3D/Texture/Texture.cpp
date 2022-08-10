@@ -1,6 +1,7 @@
 #include "Texture.h"
 #include "../EngineConstants.h"
 #include "../DebugUtility/DebugUtility.h"
+#include "../Renderer/Renderer.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -15,10 +16,6 @@ namespace Integrian3D
 		, Height{}
 		, TextureID{}
 	{
-		/* Load image using stb */
-		int nrOfChannels{};
-		unsigned char* pData = stbi_load(filePath.data(), &Width, &Height, &nrOfChannels, 0);
-
 		/* Generate texture ID */
 		glGenTextures(1, &TextureID);
 
@@ -28,17 +25,23 @@ namespace Integrian3D
 		/* Set wrapping and filtering options */
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
+		/* Load image using stb */
+		int nrOfChannels{};
+		unsigned char* pData = stbi_load(filePath.data(), &Width, &Height, &nrOfChannels, 0);
+
 		/* Create Texture */
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, Width, Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pData);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, Width, Height, 0, GL_RGB, GL_UNSIGNED_BYTE, pData);
 
 		/* Generate mipmaps */
 		glGenerateMipmap(TextureID);
 
 		/* free stb image */
 		stbi_image_free(pData);
+
+		Renderer::GetInstance().GetShader().SetInt("_Texture", 0);
 	}
 
 	Texture::~Texture()

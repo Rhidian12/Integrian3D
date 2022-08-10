@@ -22,6 +22,8 @@ namespace Integrian3D
 
 		void ShouldRenderWireframe(const bool bShouldRenderWireFrame) { bShouldRenderWireframe = bShouldRenderWireFrame; }
 
+		const Shader& GetShader() const { return Shader; }
+
 	private:
 		Renderer();
 

@@ -1,6 +1,3 @@
-#define ENABLE_VERTEX_COlOUR
-#include "Config.h"
-
 #include "Core/Core.h"
 #include "Scene/Scene.h"
 #include "SceneManager/SceneManager.h"
@@ -26,7 +23,8 @@ int main()
 
 	std::vector<uint32_t> indices =
 	{
-		0, 1, 2,   // first triangle
+		0, 1, 3,   // first triangle
+		1, 2, 3,   // first triangle
 	};
 
 	TextureManager::GetInstance().AddTexture("__Wall", "Resources/wall.jpg");

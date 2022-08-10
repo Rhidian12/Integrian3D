@@ -17,7 +17,7 @@ namespace Integrian3D
 		Shader& operator=(const Shader&) noexcept = delete;
 		Shader& operator=(Shader&& other) noexcept;
 
-		void Activate();
+		void Activate() const;
 
 		void SetBool(const std::string_view name, const bool value) const;
 		void SetInt(const std::string_view name, const int value) const;

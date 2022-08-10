@@ -47,6 +47,9 @@ namespace Integrian3D
 		/* Use our shader program! */
 		Shader.Activate();
 
+		/* Activate the texture */
+		glActiveTexture(GL_TEXTURE0);
+
 		/* Bind the Texture ID */
 		glBindTexture(GL_TEXTURE_2D, meshComponent.GetTexture()->GetTextureID());
 

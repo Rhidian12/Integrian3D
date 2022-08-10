@@ -4,7 +4,6 @@
 
 namespace Integrian3D
 {
-#ifdef __VERTEX_COLOUR__
 	struct Vertex final
 	{
 		Vertex() = default;
@@ -28,21 +27,4 @@ namespace Integrian3D
 		RGBColour Colour;
 		Point2f UV;
 	};
-#else
-	struct Vertex final
-	{
-		Vertex() = default;
-		explicit Vertex(const Vector3f& position)
-			: Position{ position }
-			, UV{}
-		{}
-		Vertex(const Vector3f& position, const Point2f& uv)
-			: Position{ position }
-			, UV{ uv }
-		{}
-
-		Vector3f Position;
-		Point2f UV;
-	};
-#endif
 }

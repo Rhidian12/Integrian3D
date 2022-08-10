@@ -210,7 +210,6 @@
     <ClInclude Include="FileReader\FileReader.h" />
     <ClInclude Include="InputManager\InputManager.h" />
     <ClInclude Include="InputManager\KeyboardInput\KeyboardInput.h" />
-    <ClInclude Include="Config.h" />
     <ClInclude Include="Libraries\stb\stb_image.h" />
     <ClInclude Include="Logger\Logger.h" />
     <ClInclude Include="Math\Point2.h" />

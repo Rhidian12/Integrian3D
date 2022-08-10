@@ -152,9 +152,6 @@
     <ClInclude Include="Libraries\stb\stb_image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Config.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="TextureManager\TextureManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
