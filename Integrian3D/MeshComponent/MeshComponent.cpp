@@ -15,12 +15,13 @@ namespace Integrian3D
 		, Indices{}
 	{}
 
-	MeshComponent::MeshComponent(const std::string& filePath)
+	MeshComponent::MeshComponent(const std::string& filePath, Texture* const pTex)
 		: VertexArrayID{}
 		, VertexBufferID{}
 		, IndexBufferID{}
 		, Vertices{}
 		, Indices{}
+		, pTexture{ pTex }
 	{
 		if (!filePath.empty())
 		{
@@ -34,12 +35,13 @@ namespace Integrian3D
 		}
 	}
 
-	MeshComponent::MeshComponent(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices)
+	MeshComponent::MeshComponent(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices, Texture* const pTex)
 		: VertexArrayID{}
 		, VertexBufferID{}
 		, IndexBufferID{}
 		, Vertices{ vertices }
 		, Indices{ indices }
+		, pTexture{ pTex }
 	{
 		/* Generate a vertex array ID */
 		glGenVertexArrays(1, &VertexArrayID);
@@ -124,6 +126,7 @@ namespace Integrian3D
 		, IndexBufferID{ std::move(other.IndexBufferID) }
 		, Vertices{ std::move(other.Vertices) }
 		, Indices{ std::move(other.Indices) }
+		, pTexture{ std::move(other.pTexture) }
 	{
 		other.Vertices.clear();
 		other.Indices.clear();
@@ -131,6 +134,8 @@ namespace Integrian3D
 		other.VertexArrayID = std::numeric_limits<uint32_t>::max();
 		other.VertexBufferID = std::numeric_limits<uint32_t>::max();
 		other.IndexBufferID = std::numeric_limits<uint32_t>::max();
+
+		other.pTexture = nullptr;
 	}
 
 	MeshComponent& MeshComponent::operator=(MeshComponent&& other) noexcept
@@ -140,6 +145,7 @@ namespace Integrian3D
 		IndexBufferID = std::move(other.IndexBufferID);
 		Vertices = std::move(other.Vertices);
 		Indices = std::move(other.Indices);
+		pTexture = std::move(other.pTexture);
 
 		other.Vertices.clear();
 		other.Indices.clear();
@@ -147,6 +153,8 @@ namespace Integrian3D
 		other.VertexArrayID = std::numeric_limits<uint32_t>::max();
 		other.VertexBufferID = std::numeric_limits<uint32_t>::max();
 		other.IndexBufferID = std::numeric_limits<uint32_t>::max();
+
+		other.pTexture = nullptr;
 
 		return *this;
 	}

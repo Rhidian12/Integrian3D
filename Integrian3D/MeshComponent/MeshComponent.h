@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Vertex/Vertex.h"
+#include "../Texture/Texture.h"
 
 #include <stdint.h> /* uint32_t, ... */
 #include <string_view> /* std::string_view */
@@ -12,8 +13,8 @@ namespace Integrian3D
 	{
 	public:
 		explicit MeshComponent();
-		explicit MeshComponent(const std::string& filePath);
-		explicit MeshComponent(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices);
+		explicit MeshComponent(const std::string& filePath, Texture* const pTex);
+		explicit MeshComponent(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices, Texture* const pTex);
 		~MeshComponent();
 
 		MeshComponent(const MeshComponent&) noexcept = delete;
@@ -28,6 +29,8 @@ namespace Integrian3D
 		const std::vector<Vertex> GetVertices() const { return Vertices; }
 		const std::vector<uint32_t> GetIndices() const { return Indices; }
 
+		const Texture* const GetTexture() const { return pTexture; }
+
 	private:
 		uint32_t VertexArrayID;
 		uint32_t VertexBufferID;
@@ -35,5 +38,7 @@ namespace Integrian3D
 
 		std::vector<Vertex> Vertices;
 		std::vector<uint32_t> Indices;
+
+		Texture* pTexture;
 	};
 }
