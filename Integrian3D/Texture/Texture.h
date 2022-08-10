@@ -17,6 +17,7 @@ namespace Integrian3D
 
 		int GetWidth() const { return Width; }
 		int GetHeight() const { return Height; }
+		uint32_t GetTextureID() const { return TextureID; }
 
 	private:
 		int Width;
