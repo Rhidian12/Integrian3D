@@ -3,6 +3,7 @@
 #include "../ECS/Registry/Registry.h"
 
 #include <functional> /* std::function */
+#include <utility> /* std::forward */
 
 namespace Integrian3D
 {
@@ -24,7 +25,7 @@ namespace Integrian3D
 		T& AddComponent(const Entity entity) { return Registry.AddComponent<T>(entity); }
 
 		template<typename T, typename ... Ts>
-		T& AddComponent(const Entity entity, Ts&& ... args) { return Registry.AddComponent<T, Ts...>(entity, args...); }
+		T& AddComponent(const Entity entity, Ts&& ... args) { return Registry.AddComponent<T, Ts...>(entity, std::forward<Ts>(args)...); }
 
 		template<typename T>
 		void RemoveComponent(const Entity entity) { Registry.RemoveComponent<T>(entity); }

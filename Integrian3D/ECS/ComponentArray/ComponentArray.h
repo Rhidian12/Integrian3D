@@ -24,7 +24,7 @@ namespace Integrian3D
 		template<typename ... Ts>
 		T& AddComponent(Ts&& ... args)
 		{
-			return Components.emplace_back(T{ args... });
+			return Components.emplace_back(T{ std::forward<Ts>(args)... });
 		}
 
 		virtual void Remove(const Entity entity) override

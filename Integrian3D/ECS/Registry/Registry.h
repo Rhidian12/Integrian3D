@@ -54,7 +54,7 @@ namespace Integrian3D
 				pool.reset(new ComponentArray<T>{});
 			}
 
-			return static_cast<ComponentArray<T>*>(pool.get())->AddComponent<Ts...>(args...);
+			return static_cast<ComponentArray<T>*>(pool.get())->AddComponent<Ts...>(std::forward<Ts>(args)...);
 		}
 
 		template<typename T>
