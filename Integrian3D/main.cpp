@@ -1,3 +1,6 @@
+#define ENABLE_VERTEX_COlOUR
+#include "Config.h"
+
 #include "Core/Core.h"
 #include "Scene/Scene.h"
 #include "SceneManager/SceneManager.h"
