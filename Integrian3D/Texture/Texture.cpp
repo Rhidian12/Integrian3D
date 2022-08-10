@@ -40,4 +40,9 @@ namespace Integrian3D
 		/* free stb image */
 		stbi_image_free(pData);
 	}
+
+	Texture::~Texture()
+	{
+		glDeleteTextures(1, &TextureID);
+	}
 }

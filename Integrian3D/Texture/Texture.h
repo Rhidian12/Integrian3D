@@ -8,6 +8,7 @@ namespace Integrian3D
 	{
 	public:
 		explicit Texture(const std::string_view filePath);
+		~Texture();
 
 	private:
 		int Width;
