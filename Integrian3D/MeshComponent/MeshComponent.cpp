@@ -69,24 +69,33 @@ namespace Integrian3D
 		/* Enable the Position Attribute */
 		glEnableVertexAttribArray(0);
 
-		/* Set Vertex Buffer Attribute Position layout */
-		/*			  1						2					  3				*/
-		/*  |X  Y  Z  R  G  B  A| |X  Y  Z  R  G  B  A| |X  Y  Z  R  G  B  A|	*/
+		/* Set Vertex Buffer Position Attribute layout */
+		/*			   1							 2							   3					*/
+		/*  |X  Y  Z  (R  G  B  A)  U  V| |X  Y  Z  (R  G  B  A)  U  V| |X  Y  Z  (R  G  B  A)  U  V|	*/
 		/*
 		Position Attribute:
-		Stride = 24
+		Stride = (36) 20
 		Offset = 0
 		Colour Attribute:
-		Stride = 24
-		Offset = 12
+		Stride = (36) 20
+		Offset = (12) 0
+		UV Attribute:
+		Stride = (36) 20
+		Offset = (28) 12
 		*/
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(0));
 
 		/* Enable the Colour Attribute */
 		glEnableVertexAttribArray(1);
 
-		/* Set Vertex Buffer Attribute Colour layout */
+		/* Set Vertex Buffer Colour Attribute layout */
 		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(sizeof(Vector3f)));
+
+		/* Enable the UV Coord attribute */
+		glEnableVertexAttribArray(2);
+
+		/* Set Vertex Buffer UV Coord Attribute layout */
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(sizeof(Vertex) - sizeof(Point2f)));
 
 		glBindVertexArray(0);
 	}
