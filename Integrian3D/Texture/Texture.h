@@ -10,6 +10,11 @@ namespace Integrian3D
 		explicit Texture(const std::string_view filePath);
 		~Texture();
 
+		Texture(const Texture&) noexcept = delete;
+		Texture(Texture&& other) noexcept;
+		Texture& operator=(const Texture&) noexcept = delete;
+		Texture& operator=(Texture&& other) noexcept;
+
 	private:
 		int Width;
 		int Height;

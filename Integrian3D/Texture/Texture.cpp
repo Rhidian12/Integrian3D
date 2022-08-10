@@ -43,6 +43,28 @@ namespace Integrian3D
 
 	Texture::~Texture()
 	{
-		glDeleteTextures(1, &TextureID);
+		if (TextureID != std::numeric_limits<uint32_t>::max())
+		{
+			glDeleteTextures(1, &TextureID);
+		}
+	}
+
+	Texture::Texture(Texture&& other) noexcept
+		: Width{ std::move(other.Width) }
+		, Height{ std::move(other.Height) }
+		, TextureID{ std::move(other.TextureID) }
+	{
+		other.TextureID = std::numeric_limits<uint32_t>::max();
+	}
+
+	Texture& Texture::operator=(Texture&& other) noexcept
+	{
+		Width = std::move(other.Width);
+		Height = std::move(other.Height);
+		TextureID = std::move(other.TextureID);
+
+		other.TextureID = std::numeric_limits<uint32_t>::max();
+
+		return *this;
 	}
 }
