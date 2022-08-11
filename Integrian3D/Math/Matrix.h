@@ -47,8 +47,13 @@ namespace Integrian3D
 
 		constexpr static Matrix MakeTranslationMatrix(const T x, const T y, const T z)
 		{
-			static_assert(R >= 4, "Matrix::MakeTranslationMatrix(x,y,z) > a 3D translation matrix requires a 4D square matrix");
-			static_assert(C >= 4, "Matrix::MakeTranslationMatrix(x,y,z) > a 3D translation matrix requires a 4D square matrix");
+			return MakeTranslationMatrix(Vector3<T>{ x, y, z });
+		}
+
+		constexpr static Matrix MakeTranslationMatrix(const Vector3<T>& v)
+		{
+			static_assert(R >= 4, "Matrix::MakeTranslationMatrix() > a 3D translation matrix requires a 4D square matrix");
+			static_assert(C >= 4, "Matrix::MakeTranslationMatrix() > a 3D translation matrix requires a 4D square matrix");
 			static_assert(R == C, "Matrix::MakeTranslationMatrix() > Matrix must be square");
 
 			Matrix m{ MakeIdentityMatrix() };
