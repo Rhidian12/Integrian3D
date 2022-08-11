@@ -37,7 +37,7 @@ namespace Integrian3D
 			return Dot(*this);
 		}
 
-		Vector2& Normalize()
+		constexpr Vector2& Normalize()
 		{
 			const T magnitude{ Magnitude() };
 
