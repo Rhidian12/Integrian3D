@@ -45,8 +45,8 @@ namespace Integrian3D
 
 		constexpr static Matrix MakeRotationMatrix(const T x, const T y, const T z)
 		{
-			static_assert(R = > 4, "Matrix::MakeRotationMatrix(x,y,z) > a 3D rotation matrix requires a 4D square matrix");
-			static_assert(C = > 4, "Matrix::MakeRotationMatrix(x,y,z) > a 3D rotation matrix requires a 4D square matrix");
+			static_assert(R >= 4, "Matrix::MakeRotationMatrix(x,y,z) > a 3D rotation matrix requires a 4D square matrix");
+			static_assert(C >= 4, "Matrix::MakeRotationMatrix(x,y,z) > a 3D rotation matrix requires a 4D square matrix");
 			static_assert(R == C, "Matrix::MakeRotationMatrix() > Matrix must be square");
 
 			const T c1 = cos(-x);
