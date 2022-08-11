@@ -10,8 +10,14 @@ namespace Integrian3D
 		TransformComponent();
 
 	private:
-		Matrix3f Transformation;
-		Point2f WorldScale;
-		Point2f LocalScale;
+		Matrix4f Transformation;
+
+		Point3f WorldScale;
+		Point3f LocalScale;
+
+		Point3f WorldAngle; /* In Radians */
+		Point3f LocalAngle; /* In Radians */
+
+		bool bShouldRecalculateTransform;
 	};
 }

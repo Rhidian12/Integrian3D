@@ -4,16 +4,17 @@ namespace Integrian3D
 {
 	TransformComponent::TransformComponent()
 		: Transformation{}
-		, WorldScale{ 1.f, 1.f }
-		, LocalScale{ 1.f, 1.f }
+		, WorldScale{ 1.f, 1.f, 1.f }
+		, LocalScale{ 1.f, 1.f, 1.f }
+		, WorldAngle{}
+		, LocalAngle{}
+		, bShouldRecalculateTransform{}
 	{
-		const Matrix3f translationMatrix{ Matrix3f::MakeIdentityMatrix() };
+		const Matrix4f translationMatrix{};
 
-		const Matrix3f rotationMatrix{ Matrix3f::MakeIdentityMatrix() };
+		const Matrix4f rotationMatrix{ Matrix4f::MakeRotationMatrix(LocalAngle.X, LocalAngle.Y, LocalAngle.Z) };
 
-		Matrix3f scaleMatrix{ Matrix3f::MakeIdentityMatrix() };
-		scaleMatrix(0, 0) = LocalScale.X;
-		scaleMatrix(1, 1) = LocalScale.Y;
+		Matrix4f scaleMatrix{ Matrix4f::MakeScaleMatrix(LocalScale.X, LocalScale.Y, LocalScale.Z) };
 
 		Transformation = translationMatrix * rotationMatrix * scaleMatrix;
 	}
