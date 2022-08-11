@@ -4,19 +4,31 @@ namespace Integrian3D
 {
 	namespace MathUtils
 	{
-		float inline __declspec (naked) __fastcall Sqrtf(const float n)
+		inline constexpr float Sqrtf(const float n)
 		{
 			/* magic lol https://www.codeproject.com/Articles/69941/Best-Square-Root-Method-Algorithm-Function-Precisi */
-			_asm fld qword ptr[esp + 4]
-			_asm fsqrt
-			_asm ret 8
+			union
+			{
+				int i;
+				float x;
+			} u;
+
+			u.x = n;
+			u.i = (1 << 29) + (u.i >> 1) - (1 << 22);
+			return u.x;
 		}
 
-		double inline __declspec (naked) __fastcall Sqrtf(const double n)
+		inline constexpr double Sqrtf(const double n)
 		{
-			_asm fld qword ptr[esp + 4]
-				_asm fsqrt
-			_asm ret 8
+			union
+			{
+				int i;
+				double x;
+			} u;
+
+			u.x = n;
+			u.i = (1 << 29) + (u.i >> 1) - (1 << 22);
+			return u.x;
 		}
 	}
 }
