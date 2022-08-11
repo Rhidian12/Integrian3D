@@ -43,38 +43,9 @@ namespace Integrian3D
 			return matrix;
 		}
 
-		constexpr Matrix GetInverse() const
+		constexpr static Matrix GetCofactor(const Matrix& m, const int rowToIgnore, const int colToIgnore, const int length)
 		{
-			static_assert(R == C, "MatrixUtility::GetInverse() > Matrix must be square");
-
-			const T determinant{ MatrixUtility::GetDeterminant(*this, R) };
-
-			if (Utils::AreEqual(determinant, static_cast<T>(0.f)))
-			{
-				Debug::LogError("Matrix::GetInverse() > Determinant is zero, no inverse matrix exists! Returning Identity Matrix!");
-				return MakeIdentityMatrix();
-			}
-
-			Matrix adjointMatrix{ MatrixUtility::GetAdjoint(*this) };
-
-			Matrix inverseMatrix{};
-
-			for (int r{}; r < Rows; ++r)
-				for (int c{}; c < Columns; ++c)
-					inverseMatrix.data[r][c] = adjointMatrix.data[r][c] / determinant;
-
-			return inverseMatrix;
-		}
-
-		T Data[R][C];
-	};
-
-	namespace MatrixUtility
-	{
-		template<int R, int C, typename T>
-		inline constexpr Matrix<R, C, T> GetCofactor(const Matrix<R, C, T>& m, const int rowToIgnore, const int colToIgnore, const int length) 
-		{
-			static_assert(R == C, "MatrixUtility::GetMatrixCofactor() > Matrix must be square");
+			static_assert(R == C, "Matrix::GetMatrixCofactor() > Matrix must be square");
 
 			Matrix matrix{};
 
@@ -107,10 +78,9 @@ namespace Integrian3D
 			return matrix;
 		}
 
-		template<int R, int C, typename T>
-		inline constexpr T GetDeterminant(const Matrix<R, C, T>& m, const int length)
+		constexpr static T GetDeterminant(const Matrix& m, const int length)
 		{
-			static_assert(R == C, "MatrixUtility::GetDeterminant() > Matrix must be square");
+			static_assert(R == C, "Matrix::GetDeterminant() > Matrix must be square");
 
 			if (length == 1)
 			{
@@ -136,10 +106,9 @@ namespace Integrian3D
 			}
 		}
 
-		template<int R, int C, typename T>
-		inline constexpr Matrix<R, C, T> GetAdjoint(const Matrix<R, C, T>& m)
+		constexpr static Matrix GetAdjoint(const Matrix& m)
 		{
-			static_assert(R == C, "MatrixUtility::GetAdjointMatrix() > Matrix must be square!");
+			static_assert(R == C, "Matrix::GetAdjointMatrix() > Matrix must be square!");
 
 			Matrix matrix{};
 
@@ -166,5 +135,30 @@ namespace Integrian3D
 
 			return matrix;
 		}
-	}
+
+		constexpr Matrix GetInverse() const
+		{
+			static_assert(R == C, "Matrix::GetInverse() > Matrix must be square");
+
+			const T determinant{ GetDeterminant(*this, R) };
+
+			if (Utils::AreEqual(determinant, static_cast<T>(0.f)))
+			{
+				Debug::LogError("Matrix::GetInverse() > Determinant is zero, no inverse matrix exists! Returning Identity Matrix!", false);
+				return MakeIdentityMatrix();
+			}
+
+			Matrix adjointMatrix{ GetAdjoint(*this) };
+
+			Matrix inverseMatrix{};
+
+			for (int r{}; r < R; ++r)
+				for (int c{}; c < C; ++c)
+					inverseMatrix.Data[r][c] = adjointMatrix.Data[r][c] / determinant;
+
+			return inverseMatrix;
+		}
+
+		T Data[R][C];
+	};
 }
