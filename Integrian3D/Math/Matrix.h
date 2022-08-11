@@ -72,8 +72,8 @@ namespace Integrian3D
 
 		constexpr static Matrix MakeRotationMatrix(const Vector3<T>& v)
 		{
-			static_assert(R >= 4, "Matrix::MakeRotationMatrix(x,y,z) > a 3D rotation matrix requires a 4D square matrix");
-			static_assert(C >= 4, "Matrix::MakeRotationMatrix(x,y,z) > a 3D rotation matrix requires a 4D square matrix");
+			static_assert(R >= 4, "Matrix::MakeRotationMatrix() > a 3D rotation matrix requires a 4D square matrix");
+			static_assert(C >= 4, "Matrix::MakeRotationMatrix() > a 3D rotation matrix requires a 4D square matrix");
 			static_assert(R == C, "Matrix::MakeRotationMatrix() > Matrix must be square");
 
 			const T c1 = cos(-v.X);
@@ -107,15 +107,20 @@ namespace Integrian3D
 
 		constexpr static Matrix MakeScaleMatrix(const T x, const T y, const T z)
 		{
-			static_assert(R >= 4, "Matrix::MakeScaleMatrix(x,y,z) > a 3D scale matrix requires a 4D square matrix");
-			static_assert(C >= 4, "Matrix::MakeScaleMatrix(x,y,z) > a 3D scale matrix requires a 4D square matrix");
+			return MakeScaleMatrix(Vector3<T>{ x, y, z });
+		}
+
+		constexpr static Matrix MakeScaleMatrix(const Vector3<T>& v)
+		{
+			static_assert(R >= 4, "Matrix::MakeScaleMatrix() > a 3D scale matrix requires a 4D square matrix");
+			static_assert(C >= 4, "Matrix::MakeScaleMatrix() > a 3D scale matrix requires a 4D square matrix");
 			static_assert(R == C, "Matrix::MakeScaleMatrix() > Matrix must be square");
 
 			Matrix m{ MakeIdentityMatrix() };
 
-			m(0, 0) = x;
-			m(1, 1) = y;
-			m(2, 2) = z;
+			m(0, 0) = v.X;
+			m(1, 1) = v.Y;
+			m(2, 2) = v.Z;
 
 			return m;
 		}
