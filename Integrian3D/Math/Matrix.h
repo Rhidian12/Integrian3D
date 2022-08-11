@@ -1,5 +1,8 @@
 #pragma once
 
+#include "../DebugUtility/DebugUtility.h"
+#include "../Utils/Utils.h"
+
 namespace Integrian3D
 {
 	template<int R, int C, typename T>
@@ -38,6 +41,29 @@ namespace Integrian3D
 			}
 
 			return matrix;
+		}
+
+		constexpr Matrix GetInverse() const
+		{
+			static_assert(R == C, "MatrixUtility::GetInverse() > Matrix must be square");
+
+			const T determinant{ MatrixUtility::GetDeterminant(*this, R) };
+
+			if (Utils::AreEqual(determinant, static_cast<T>(0.f)))
+			{
+				Debug::LogError("Matrix::GetInverse() > Determinant is zero, no inverse matrix exists! Returning Identity Matrix!");
+				return MakeIdentityMatrix();
+			}
+
+			Matrix adjointMatrix{ MatrixUtility::GetAdjoint(*this) };
+
+			Matrix inverseMatrix{};
+
+			for (int r{}; r < Rows; ++r)
+				for (int c{}; c < Columns; ++c)
+					inverseMatrix.data[r][c] = adjointMatrix.data[r][c] / determinant;
+
+			return inverseMatrix;
 		}
 
 		T Data[R][C];
