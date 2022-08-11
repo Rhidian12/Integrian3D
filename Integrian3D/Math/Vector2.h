@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Utils/Utils.h"
+#include "MathUtils.h"
 
 #include <math.h> /* sqrtf() */
 #include <assert.h> /* assert() */
@@ -26,9 +27,9 @@ namespace Integrian3D
 			return X * vec.Y - Y * vec.X;
 		}
 
-		T Magnitude() const
+		constexpr T Magnitude() const
 		{
-			return static_cast<T>(sqrtf(MagnitudeSquared()));
+			return static_cast<T>(MathUtils::Sqrtf(MagnitudeSquared()));
 		}
 
 		T MagnitudeSquared() const
