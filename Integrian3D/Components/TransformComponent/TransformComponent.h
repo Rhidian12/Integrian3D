@@ -22,6 +22,9 @@ namespace Integrian3D
 		const Point3f& GetWorldAngle() const { return WorldAngle; }
 		const Point3f& GetLocalAngle() const { return LocalAngle; }
 
+		bool ShouldRecalculateTransform() const { return bShouldRecalculateTransform; }
+		bool ShouldRecalculateWorldData() const { return bShouldRecalculateWorldData; }
+
 	private:
 		Matrix4f Transformation;
 
