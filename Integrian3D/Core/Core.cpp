@@ -5,7 +5,7 @@
 #include "../InputManager/InputManager.h"
 #include "../Renderer/Renderer.h"
 #include "../SceneManager/SceneManager.h"
-#include "../MeshComponent/MeshComponent.h"
+#include "../Components/MeshComponent/MeshComponent.h"
 
 namespace Integrian3D
 {

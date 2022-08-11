@@ -51,7 +51,7 @@
     <ClCompile Include="Utils\Utils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MeshComponent\MeshComponent.cpp">
+    <ClCompile Include="Components\MeshComponent\MeshComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SceneManager\SceneManager.cpp">
@@ -122,7 +122,7 @@
     <ClInclude Include="ECS\ComponentArray\ComponentArray.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MeshComponent\MeshComponent.h">
+    <ClInclude Include="Components\MeshComponent\MeshComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SceneManager\SceneManager.h">

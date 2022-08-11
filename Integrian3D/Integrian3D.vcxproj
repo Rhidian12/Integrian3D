@@ -190,7 +190,7 @@
     <ClCompile Include="Logger\Logger.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Math\MathUtils.cpp" />
-    <ClCompile Include="MeshComponent\MeshComponent.cpp" />
+    <ClCompile Include="Components\MeshComponent\MeshComponent.cpp" />
     <ClCompile Include="ECS\Registry\Registry.cpp" />
     <ClCompile Include="Renderer\Renderer.cpp" />
     <ClCompile Include="SceneManager\SceneManager.cpp" />
@@ -221,7 +221,7 @@
     <ClInclude Include="Math\RGBColour.h" />
     <ClInclude Include="Math\Vector2.h" />
     <ClInclude Include="Math\Vector3.h" />
-    <ClInclude Include="MeshComponent\MeshComponent.h" />
+    <ClInclude Include="Components\MeshComponent\MeshComponent.h" />
     <ClInclude Include="ECS\Registry\Registry.h" />
     <ClInclude Include="Renderer\Renderer.h" />
     <ClInclude Include="SceneManager\SceneManager.h" />

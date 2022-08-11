@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../Vertex/Vertex.h"
-#include "../Texture/Texture.h"
+#include "../../Vertex/Vertex.h"
+#include "../../Texture/Texture.h"
 
 #include <stdint.h> /* uint32_t, ... */
 #include <string_view> /* std::string_view */

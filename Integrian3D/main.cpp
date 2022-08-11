@@ -1,7 +1,7 @@
 #include "Core/Core.h"
 #include "Scene/Scene.h"
 #include "SceneManager/SceneManager.h"
-#include "MeshComponent/MeshComponent.h"
+#include "Components/MeshComponent/MeshComponent.h"
 #include "TextureManager/TextureManager.h"
 
 int main()
