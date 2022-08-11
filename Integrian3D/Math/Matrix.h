@@ -54,7 +54,8 @@ namespace Integrian3D
 			m(0, 3) = x;
 			m(1, 3) = y;
 			m(2, 3) = z;
-			m(3, 3) = static_cast<T>(1.f);
+
+			return m;
 		}
 
 		constexpr static Matrix MakeRotationMatrix(const T x, const T y, const T z)
@@ -88,6 +89,21 @@ namespace Integrian3D
 			m(2, 2) = c1 * c2;
 
 			m(3, 3) = static_cast<T>(1.f);
+
+			return m;
+		}
+
+		constexpr static Matrix MakeScaleMatrix(const T x, const T y, const T z)
+		{
+			static_assert(R >= 4, "Matrix::MakeScaleMatrix(x,y,z) > a 3D scale matrix requires a 4D square matrix");
+			static_assert(C >= 4, "Matrix::MakeScaleMatrix(x,y,z) > a 3D scale matrix requires a 4D square matrix");
+			static_assert(R == C, "Matrix::MakeScaleMatrix() > Matrix must be square");
+
+			Matrix m{ MakeIdentityMatrix() };
+
+			m(0, 0) = x;
+			m(1, 1) = y;
+			m(2, 2) = z;
 
 			return m;
 		}
