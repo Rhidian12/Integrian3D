@@ -199,6 +199,7 @@
     <ClCompile Include="TextureManager\TextureManager.cpp" />
     <ClCompile Include="Texture\Texture.cpp" />
     <ClCompile Include="Timer\Timer.cpp" />
+    <ClCompile Include="Components\TransformComponent\TransformComponent.cpp" />
     <ClCompile Include="Utils\Utils.cpp" />
     <ClCompile Include="Window\Window.cpp" />
   </ItemGroup>
@@ -231,6 +232,7 @@
     <ClInclude Include="TextureManager\TextureManager.h" />
     <ClInclude Include="Texture\Texture.h" />
     <ClInclude Include="Timer\Timer.h" />
+    <ClInclude Include="Components\TransformComponent\TransformComponent.h" />
     <ClInclude Include="Utils\Utils.h" />
     <ClInclude Include="ECS\View\View.h" />
     <ClInclude Include="Vertex\Vertex.h" />
