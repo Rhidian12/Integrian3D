@@ -5,13 +5,13 @@ namespace Integrian3D
 	template<int R, int C, typename T>
 	struct Matrix final
 	{
-		Matrix() = default;
+		constexpr Matrix() = default;
 
-		T operator()(const int r, const int c) const
+		constexpr T operator()(const int r, const int c) const
 		{
 			return Data[r][c];
 		}
-		T& operator()(const int r, const int c)
+		constexpr T& operator()(const int r, const int c)
 		{
 			return Data[r][c];
 		}
@@ -26,7 +26,7 @@ namespace Integrian3D
 			return C;
 		}
 
-		static Matrix MakeIdentityMatrix()
+		constexpr static Matrix MakeIdentityMatrix()
 		{
 			static_assert(R == C, "Matrix::MakeIdentityMatrix() > Identity Matrices must be square");
 
