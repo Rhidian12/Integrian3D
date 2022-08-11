@@ -21,6 +21,11 @@ namespace Integrian3D
 		Transformation = translationMatrix * rotationMatrix * scaleMatrix;
 	}
 
+	void TransformComponent::SetTransform(const Matrix4f& transform)
+	{
+		Transformation = transform;
+	}
+
 	void TransformComponent::SetLocalLocation(const Point3f& pos)
 	{
 		Transformation(0, 3) = pos.X;

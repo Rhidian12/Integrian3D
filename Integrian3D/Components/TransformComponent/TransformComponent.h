@@ -9,6 +9,8 @@ namespace Integrian3D
 	public:
 		TransformComponent();
 
+		void SetTransform(const Matrix4f& transform);
+
 		void SetLocalLocation(const Point3f& pos);
 		void SetLocalScale(const Point3f& scale);
 		void SetLocalAngle(const Point3f& angleRad);
