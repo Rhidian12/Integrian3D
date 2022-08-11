@@ -26,6 +26,20 @@ namespace Integrian3D
 			return C;
 		}
 
+		static Matrix MakeIdentityMatrix()
+		{
+			static_assert(R == C, "Matrix::MakeIdentityMatrix() > Identity Matrices must be square");
+
+			Matrix matrix{};
+
+			for (int i{}; i < R; ++i)
+			{
+				matrix.Data[i][i] = static_cast<T>(1.f);
+			}
+
+			return matrix;
+		}
+
 		T Data[R][C];
 	};
 }
