@@ -40,7 +40,7 @@ namespace Integrian3D
 			return matrix;
 		}
 
-		constexpr Matrix GetMatrixCofactor(const int rowToIgnore, const int colToIgnore, const int length) const
+		constexpr Matrix GetCofactor(const int rowToIgnore, const int colToIgnore, const int length) const
 		{
 			static_assert(R == C, "Matrix::GetMatrixCofactor() > Matrix must be square");
 
@@ -73,6 +73,34 @@ namespace Integrian3D
 			}
 
 			return m;
+		}
+
+		constexpr T GetDeterminant(const int length)
+		{
+			static_assert(R == C, "Matrix::GetDeterminant() > Matrix must be square");
+
+			if (length == 1)
+			{
+				return Data[0][0];
+			}
+			else if (length == 2)
+			{
+				return (Data[0][0] * Data[1][1]) - (Data[0][1] * Data[1][0]); // ad - bc
+			}
+			else
+			{
+				T determinant{};
+				int sign{ 1 };
+
+				for (int i{}; i < length; ++i)
+				{
+					Matrix m{ GetCofactor(0, i, length) };
+					determinant += sign * Data[0][i] * GetDeterminant(m, length - 1);
+					sign = -sign;
+				}
+
+				return determinant;
+			}
 		}
 
 		T Data[R][C];
