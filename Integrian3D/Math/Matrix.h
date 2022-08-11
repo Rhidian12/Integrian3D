@@ -200,4 +200,13 @@ namespace Integrian3D
 
 		return matrix;
 	}
+
+	template<int R1, int C1, int R2, int C2, typename T>
+	Matrix<R1, C1, T> operator/(const Matrix<R1, C1, T>& m1, const Matrix<R2, C2, T>& m2)
+	{
+		static_assert(R2 == C2, "Matrix::operator/() > The divider must be square!");
+		static_assert(C1 == R2, "Matrix::operator/() > Nr of Columns of left hand matrix must match Nr of Rows of right hand matrix");
+
+		return m1 * m2.GetInverse();
+	}
 }
