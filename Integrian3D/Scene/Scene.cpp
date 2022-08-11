@@ -1,5 +1,7 @@
 #include "Scene.h"
 
+#include "../Components/TransformComponent/TransformComponent.h"
+
 namespace Integrian3D
 {
 	Scene::Scene(const std::string& sceneName)
@@ -20,7 +22,7 @@ namespace Integrian3D
 	{
 		const Entity entity{ Registry.CreateEntity() };
 
-		/* [TODO]: Add Transform Component */
+		AddComponent<TransformComponent>(entity);
 
 		return entity;
 	}
