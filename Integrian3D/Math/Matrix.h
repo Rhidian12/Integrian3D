@@ -40,11 +40,17 @@ namespace Integrian3D
 			return matrix;
 		}
 
-		constexpr Matrix GetCofactor(const int rowToIgnore, const int colToIgnore, const int length) const
-		{
-			static_assert(R == C, "Matrix::GetMatrixCofactor() > Matrix must be square");
+		T Data[R][C];
+	};
 
-			Matrix m{};
+	namespace MatrixUtility
+	{
+		template<int R, int C, typename T>
+		inline constexpr Matrix<R, C, T> GetCofactor(const Matrix<R, C, T>& m, const int rowToIgnore, const int colToIgnore, const int length) 
+		{
+			static_assert(R == C, "MatrixUtility::GetMatrixCofactor() > Matrix must be square");
+
+			Matrix matrix{};
 
 			int rowCounter{}, colCounter{};
 
@@ -62,7 +68,7 @@ namespace Integrian3D
 						continue;
 					}
 
-					m.Data[rowCounter][colCounter++] = Data[r][c];
+					matrix.Data[rowCounter][colCounter++] = m.Data[r][c];
 
 					if (colCounter == length - 1)
 					{
@@ -72,20 +78,21 @@ namespace Integrian3D
 				}
 			}
 
-			return m;
+			return matrix;
 		}
 
-		constexpr T GetDeterminant(const int length)
+		template<int R, int C, typename T>
+		inline constexpr T GetDeterminant(const Matrix<R, C, T>& m, const int length)
 		{
-			static_assert(R == C, "Matrix::GetDeterminant() > Matrix must be square");
+			static_assert(R == C, "MatrixUtility::GetDeterminant() > Matrix must be square");
 
 			if (length == 1)
 			{
-				return Data[0][0];
+				return m.Data[0][0];
 			}
 			else if (length == 2)
 			{
-				return (Data[0][0] * Data[1][1]) - (Data[0][1] * Data[1][0]); // ad - bc
+				return (m.Data[0][0] * m.Data[1][1]) - (m.Data[0][1] * m.Data[1][0]); // ad - bc
 			}
 			else
 			{
@@ -94,8 +101,8 @@ namespace Integrian3D
 
 				for (int i{}; i < length; ++i)
 				{
-					Matrix m{ GetCofactor(0, i, length) };
-					determinant += sign * Data[0][i] * GetDeterminant(m, length - 1);
+					Matrix matrix{ GetCofactor(m, 0, i, length) };
+					determinant += sign * m.Data[0][i] * GetDeterminant(matrix, length - 1);
 					sign = -sign;
 				}
 
@@ -103,6 +110,35 @@ namespace Integrian3D
 			}
 		}
 
-		T Data[R][C];
-	};
+		template<int R, int C, typename T>
+		inline constexpr Matrix<R, C, T> GetAdjoint(const Matrix<R, C, T>& m)
+		{
+			static_assert(R == C, "MatrixUtility::GetAdjointMatrix() > Matrix must be square!");
+
+			Matrix matrix{};
+
+			if constexpr (R == 1)
+			{
+				matrix[0][0] = 1;
+			}
+			else
+			{
+				int sign{ 1 };
+
+				for (int r{}; r < R; ++r)
+				{
+					for (int c{}; c < C; ++c)
+					{
+						Matrix cofactorMatrix{ GetCofactor(m, r, c, R) };
+
+						sign = ((r + c) % 2 == 0) ? 1 : -1;
+
+						matrix.Data[c][r] = sign * GetDeterminant(cofactorMatrix, R - 1);
+					}
+				}
+			}
+
+			return matrix;
+		}
+	}
 }
