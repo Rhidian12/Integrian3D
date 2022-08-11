@@ -37,4 +37,12 @@ namespace Integrian3D
 		bShouldRecalculateTransform = true;
 		bShouldRecalculateWorldData = true;
 	}
+	
+	void TransformComponent::SetLocalAngle(const Point3f& angleRad)
+	{
+		LocalAngle = angleRad;
+
+		bShouldRecalculateTransform = true;
+		bShouldRecalculateWorldData = true;
+	}
 }

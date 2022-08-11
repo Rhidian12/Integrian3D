@@ -10,8 +10,8 @@ namespace Integrian3D
 		TransformComponent();
 
 		void SetLocalLocation(const Point3f& pos);
-
 		void SetLocalScale(const Point3f& scale);
+		void SetLocalAngle(const Point3f& angleRad);
 
 		const Point3f& GetWorldLocation() const { return WorldLocation; }
 		Point3f GetLocalLocation() const { return Point3f{ Transformation(0,3), Transformation(1,3), Transformation(2,3) }; }
