@@ -6,15 +6,15 @@ namespace Integrian3D
 {
 	struct RGBColour final
 	{
-		RGBColour() = default;
-		RGBColour(const float r, const float g, const float b, const float a = 1.f)
+		constexpr RGBColour() = default;
+		constexpr RGBColour(const float r, const float g, const float b, const float a = 1.f)
 			: R{ r }
 			, G{ g }
 			, B{ b }
 			, A{ a }
 		{}
 
-		RGBColour& NormalizeToOne()
+		constexpr RGBColour& NormalizeToOne()
 		{
 			R /= 255.f;
 			B /= 255.f;
@@ -25,7 +25,7 @@ namespace Integrian3D
 			return *this;
 		}
 
-		RGBColour GetNormalized()
+		constexpr RGBColour GetNormalized()
 		{
 			RGBColour temp{ R,G,B,A };
 			temp.NormalizeToOne();
