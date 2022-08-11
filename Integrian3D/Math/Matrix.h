@@ -322,4 +322,27 @@ namespace Integrian3D
 
 		return matrix;
 	}
+
+	template<int R, int C, typename T>
+	bool operator==(const Matrix<R, C, T>& m1, const Matrix<R, C, T>& m2)
+	{
+		for (int r{}; r < R; ++r)
+		{
+			for (int c{}; c < C; ++c)
+			{
+				if (m1(r, c) != m2(r, c))
+				{
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
+
+	template<int R, int C, typename T>
+	bool operator!=(const Matrix<R, C, T>& m1, const Matrix<R, C, T>& m2)
+	{
+		return !(m1 == m2);
+	}
 }
