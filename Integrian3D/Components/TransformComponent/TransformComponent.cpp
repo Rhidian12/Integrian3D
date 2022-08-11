@@ -29,4 +29,12 @@ namespace Integrian3D
 
 		bShouldRecalculateWorldData = true;
 	}
+
+	void TransformComponent::SetLocalScale(const Point3f& scale)
+	{
+		LocalScale = scale;
+
+		bShouldRecalculateTransform = true;
+		bShouldRecalculateWorldData = true;
+	}
 }
