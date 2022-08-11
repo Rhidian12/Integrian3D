@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Point4.h"
-
 namespace Integrian3D
 {
 	template<int R, int C, typename T>
