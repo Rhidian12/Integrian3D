@@ -26,8 +26,8 @@ namespace Integrian3D
 		uint32_t GetIndexBufferID() const { return IndexBufferID; }
 		uint32_t GetVertexBufferID() const { return VertexBufferID; }
 
-		const std::vector<Vertex> GetVertices() const { return Vertices; }
-		const std::vector<uint32_t> GetIndices() const { return Indices; }
+		const std::vector<Vertex>& GetVertices() const { return Vertices; }
+		const std::vector<uint32_t>& GetIndices() const { return Indices; }
 
 		const Texture* const GetTexture() const { return pTexture; }
 
