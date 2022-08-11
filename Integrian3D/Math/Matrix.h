@@ -40,6 +40,41 @@ namespace Integrian3D
 			return matrix;
 		}
 
+		constexpr Matrix GetMatrixCofactor(const int rowToIgnore, const int colToIgnore, const int length) const
+		{
+			static_assert(R == C, "Matrix::GetMatrixCofactor() > Matrix must be square");
+
+			Matrix m{};
+
+			int rowCounter{}, colCounter{};
+
+			for (int r{}; r < length; ++r)
+			{
+				if (r == rowToIgnore)
+				{
+					continue;
+				}
+
+				for (int c{}; c < length; ++c)
+				{
+					if (c == colToIgnore)
+					{
+						continue;
+					}
+
+					m.Data[rowCounter][colCounter++] = Data[r][c];
+
+					if (colCounter == length - 1)
+					{
+						colCounter = 0;
+						++rowCounter;
+					}
+				}
+			}
+
+			return m;
+		}
+
 		T Data[R][C];
 	};
 }
