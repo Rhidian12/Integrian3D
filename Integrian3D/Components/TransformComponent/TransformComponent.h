@@ -11,6 +11,7 @@ namespace Integrian3D
 
 	private:
 		Matrix3f Transformation;
+		Point2f WorldScale;
 		Point2f LocalScale;
 	};
 }

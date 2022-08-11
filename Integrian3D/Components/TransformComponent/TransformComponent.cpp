@@ -4,6 +4,7 @@ namespace Integrian3D
 {
 	TransformComponent::TransformComponent()
 		: Transformation{}
+		, WorldScale{ 1.f, 1.f }
 		, LocalScale{ 1.f, 1.f }
 	{
 		const Matrix3f translationMatrix{ Matrix3f::MakeIdentityMatrix() };
