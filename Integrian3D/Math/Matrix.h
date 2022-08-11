@@ -184,4 +184,20 @@ namespace Integrian3D
 
 		return matrix;
 	}
+
+	template<int R, int C, typename T>
+	Matrix<R, C, T> operator*(const Matrix<R, C, T>& m, const T val)
+	{
+		Matrix<R, C, T> matrix{};
+
+		for (int r{}; r < Rows; ++r)
+		{
+			for (int c{}; c < Columns; ++c)
+			{
+				matrix.Data[r][c] += m.Data[r][c] * val;
+			}
+		}
+
+		return matrix;
+	}
 }
