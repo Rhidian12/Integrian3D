@@ -2,6 +2,8 @@
 
 #include "../DebugUtility/DebugUtility.h"
 #include "../Utils/Utils.h"
+#include "Vector2.h"
+#include "Vector3.h"
 
 namespace Integrian3D
 {
@@ -264,6 +266,31 @@ namespace Integrian3D
 		}
 
 		return matrix;
+	}
+
+	template<int R, int C, typename T>
+	Matrix<R, C, T> operator*(const Matrix<R, C, T>& m, const Vector2<T>& v)
+	{
+		static_assert(C == 2, "Matrix::operator*() > Matrix Nr of Columns does not match Vector2 size");
+
+		Matrix<2, 1, T> matrix{};
+		matrix(0, 0) = v.X;
+		matrix(1, 0) = v.Y;
+
+		return m * matrix;
+	}
+
+	template<int R, int C, typename T>
+	Matrix<R, C, T> operator*(const Matrix<R, C, T>& m, const Vector3<T>& v)
+	{
+		static_assert(C == 3, "Matrix::operator*() > Matrix Nr of Columns does not match Vector3 size");
+
+		Matrix<3, 1, T> matrix{};
+		matrix(0, 0) = v.X;
+		matrix(1, 0) = v.Y;
+		matrix(2, 0) = v.Z;
+
+		return m * matrix;
 	}
 
 	template<int R1, int C1, int R2, int C2, typename T>
