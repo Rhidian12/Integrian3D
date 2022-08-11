@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Utils/Utils.h"
+#include "MathUtils.h"
 
 #include <math.h> /* sqrtf() */
 #include <assert.h> /* assert() */
@@ -10,19 +11,19 @@ namespace Integrian3D
 	template<typename T>
 	struct Vector3 final
 	{
-		Vector3() = default;
-		Vector3(const T x, const T y, const T z)
+		constexpr Vector3() = default;
+		constexpr Vector3(const T x, const T y, const T z)
 			: X{ x }
 			, Y{ y }
 			, Z{ z }
 		{}
 
-		T Dot(const Vector3& vec) const
+		constexpr T Dot(const Vector3& vec) const
 		{
 			return X * vec.X + Y * vec.Y + Z * vec.Z;
 		}
 
-		Vector3 Cross(const Vector3& vec) const
+		constexpr Vector3 Cross(const Vector3& vec) const
 		{
 			return Vector3
 			{
@@ -32,17 +33,17 @@ namespace Integrian3D
 			};
 		}
 
-		T Magnitude() const
+		constexpr T Magnitude() const
 		{
-			return static_cast<T>(sqrtf(MagnitudeSquared()));
+			return static_cast<T>(MathUtils::Sqrtf(MagnitudeSquared()));
 		}
 
-		T MagnitudeSquared() const
+		constexpr T MagnitudeSquared() const
 		{
 			return Dot(*this);
 		}
 
-		Vector3& Normalize()
+		constexpr Vector3& Normalize()
 		{
 			const T magnitude{ Magnitude() };
 
@@ -55,7 +56,7 @@ namespace Integrian3D
 			return *this;
 		}
 
-		Vector3 GetNormalized() const
+		constexpr Vector3 GetNormalized() const
 		{
 			Vector3<T> temp{ X, Y, Z };
 			temp.Normalize();
