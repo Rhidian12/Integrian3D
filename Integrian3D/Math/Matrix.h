@@ -43,6 +43,41 @@ namespace Integrian3D
 			return matrix;
 		}
 
+		constexpr static Matrix MakeRotationMatrix(const T x, const T y, const T z)
+		{
+			static_assert(R = > 4, "Matrix::MakeRotationMatrix(x,y,z) > a 3D rotation matrix requires a 4D square matrix");
+			static_assert(C = > 4, "Matrix::MakeRotationMatrix(x,y,z) > a 3D rotation matrix requires a 4D square matrix");
+			static_assert(R == C, "Matrix::MakeRotationMatrix() > Matrix must be square");
+
+			const T c1 = cos(-x);
+			const T c2 = cos(-y);
+			const T c3 = cos(-z);
+
+			const T s1 = sin(-x);
+			const T s2 = sin(-y);
+			const T s3 = sin(-z);
+
+			Matrix m{};
+
+			m(0, 0) = c2 * c3;
+			m(0, 1) = -c1 * s3 + s1 * s2 * c3;
+			m(0, 2) = s1 * s3 + c1 * s2 * c3;
+			m(0, 3) = static_cast<T>(0.f);
+
+			m(1, 0) = c2 * s3;
+			m(1, 1) = c1 * c3 + s1 * s2 * s3;
+			m(1, 2) = -s1 * c3 + c1 * s2 * s3;
+			m(1, 2) = static_cast<T>(0.f);
+
+			m(2, 0) = -s2;
+			m(2, 1) = s1 * c2;
+			m(2, 2) = c1 * c2;
+
+			m(3, 3) = static_cast<T>(1.f);
+
+			return m;
+		}
+
 		constexpr static Matrix GetCofactor(const Matrix& m, const int rowToIgnore, const int colToIgnore, const int length)
 		{
 			static_assert(R == C, "Matrix::GetMatrixCofactor() > Matrix must be square");
