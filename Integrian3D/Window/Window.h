@@ -8,7 +8,7 @@ namespace Integrian3D
 		class Window final
 		{
 		public:
-			explicit Window(const int width, const int height);
+			Window(const int width, const int height);
 			~Window();
 
 			Window(const Window&) noexcept = delete;
