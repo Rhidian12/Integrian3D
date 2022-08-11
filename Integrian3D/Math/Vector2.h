@@ -49,7 +49,7 @@ namespace Integrian3D
 			return *this;
 		}
 
-		Vector2 GetNormalized() const
+		constexpr Vector2 GetNormalized() const
 		{
 			Vector2 temp{ X, Y };
 			temp.Normalize();
