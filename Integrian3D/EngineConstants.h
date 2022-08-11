@@ -5,6 +5,7 @@
 #include "Math/Point4.h"
 #include "Math/Vector3.h"
 #include "Math/RGBColour.h"
+#include "Math/Matrix.h"
 
 #include <cstdint> /* uint64_t */
 #include <limits> /* std::numeric_limits */
@@ -36,4 +37,10 @@ namespace Integrian3D
 
 	using Vector3f = Vector3<float>;
 	using Vector3d = Vector3<double>;
+
+	using Matrix3f = Matrix<3, 3, float>;
+	using Matrix3d = Matrix<3, 3, double>;
+
+	using Matrix4f = Matrix<4, 4, float>;
+	using Matrix4d = Matrix<4, 4, double>;
 }
