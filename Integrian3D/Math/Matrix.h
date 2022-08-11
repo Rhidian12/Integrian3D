@@ -58,26 +58,31 @@ namespace Integrian3D
 
 			Matrix m{ MakeIdentityMatrix() };
 
-			m(0, 3) = x;
-			m(1, 3) = y;
-			m(2, 3) = z;
+			m(0, 3) = v.X;
+			m(1, 3) = v.Y;
+			m(2, 3) = v.Z;
 
 			return m;
 		}
 
 		constexpr static Matrix MakeRotationMatrix(const T x, const T y, const T z)
 		{
+			return MakeRotationMatrix(Vector3<T>{ x, y, z });
+		}
+
+		constexpr static Matrix MakeRotationMatrix(const Vector3<T>& v)
+		{
 			static_assert(R >= 4, "Matrix::MakeRotationMatrix(x,y,z) > a 3D rotation matrix requires a 4D square matrix");
 			static_assert(C >= 4, "Matrix::MakeRotationMatrix(x,y,z) > a 3D rotation matrix requires a 4D square matrix");
 			static_assert(R == C, "Matrix::MakeRotationMatrix() > Matrix must be square");
 
-			const T c1 = cos(-x);
-			const T c2 = cos(-y);
-			const T c3 = cos(-z);
+			const T c1 = cos(-v.X);
+			const T c2 = cos(-v.Y);
+			const T c3 = cos(-v.Z);
 
-			const T s1 = sin(-x);
-			const T s2 = sin(-y);
-			const T s3 = sin(-z);
+			const T s1 = sin(-v.X);
+			const T s2 = sin(-v.Y);
+			const T s3 = sin(-v.Z);
 
 			Matrix m{};
 
