@@ -21,6 +21,11 @@ namespace Integrian3D
 			return R;
 		}
 
+		constexpr int GetNumberOfColumns() const
+		{
+			return C;
+		}
+
 		T Data[R][C];
 	};
 }
