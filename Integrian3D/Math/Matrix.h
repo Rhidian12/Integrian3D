@@ -16,6 +16,11 @@ namespace Integrian3D
 			return Data[r][c];
 		}
 
+		constexpr int GetNumberOfRows() const
+		{
+			return R;
+		}
+
 		T Data[R][C];
 	};
 }
