@@ -161,4 +161,27 @@ namespace Integrian3D
 
 		T Data[R][C];
 	};
+
+	template<int R1, int C1, int R2, int C2, typename T>
+	Matrix<R1, C2, T> operator*(const Matrix<R1, C1, T>& m1, const Matrix<R2, C2, T>& m2)
+	{
+		static_assert(C1 == R2, "Matrix::operator*() > Nr of Columns of left hand matrix must match Nr of Rows of right hand matrix");
+
+		Matrix<R1, C2, T> matrix{};
+
+		constexpr int maxMatrixLength{ ColumnsM1 };
+
+		for (int r{}; r < RowsM1; ++r)
+		{
+			for (int c{}; c < ColumnsM2; ++c)
+			{
+				for (int i{}; i < maxMatrixLength; ++i)
+				{
+					matrix.Data[r][c] += m1.Data[r][i] * m2.Data[i][c];
+				}
+			}
+		}
+
+		return matrix;
+	}
 }
