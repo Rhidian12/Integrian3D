@@ -4,9 +4,9 @@ namespace Integrian3D
 {
 	namespace MathUtils
 	{
+		/* magic lol https://www.codeproject.com/Articles/69941/Best-Square-Root-Method-Algorithm-Function-Precisi */
 		inline constexpr float Sqrtf(const float n)
 		{
-			/* magic lol https://www.codeproject.com/Articles/69941/Best-Square-Root-Method-Algorithm-Function-Precisi */
 			union
 			{
 				int i;
