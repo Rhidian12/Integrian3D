@@ -225,4 +225,20 @@ namespace Integrian3D
 
 		return matrix;
 	}
+
+	template<int R, int C, typename T>
+	Matrix<R, C, T> operator+(const Matrix<R, C, T>& m1, const Matrix<R, C, T>& m2)
+	{
+		Matrix<R, C, T> matrix{};
+
+		for (int r{}; r < Rows; ++r)
+		{
+			for (int c{}; c < Columns; ++c)
+			{
+				matrix.Data[r][c] = m1.Data[r][c] + m2.Data[r][c];
+			}
+		}
+
+		return matrix;
+	}
 }
