@@ -43,6 +43,20 @@ namespace Integrian3D
 			return matrix;
 		}
 
+		constexpr static Matrix MakeTranslationMatrix(const T x, const T y, const T z)
+		{
+			static_assert(R >= 4, "Matrix::MakeTranslationMatrix(x,y,z) > a 3D translation matrix requires a 4D square matrix");
+			static_assert(C >= 4, "Matrix::MakeTranslationMatrix(x,y,z) > a 3D translation matrix requires a 4D square matrix");
+			static_assert(R == C, "Matrix::MakeTranslationMatrix() > Matrix must be square");
+
+			Matrix m{ MakeIdentityMatrix() };
+
+			m(0, 3) = x;
+			m(1, 3) = y;
+			m(2, 3) = z;
+			m(3, 3) = static_cast<T>(1.f);
+		}
+
 		constexpr static Matrix MakeRotationMatrix(const T x, const T y, const T z)
 		{
 			static_assert(R >= 4, "Matrix::MakeRotationMatrix(x,y,z) > a 3D rotation matrix requires a 4D square matrix");
