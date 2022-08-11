@@ -169,11 +169,11 @@ namespace Integrian3D
 
 		Matrix<R1, C2, T> matrix{};
 
-		constexpr int maxMatrixLength{ ColumnsM1 };
+		constexpr int maxMatrixLength{ C1 };
 
-		for (int r{}; r < RowsM1; ++r)
+		for (int r{}; r < R1; ++r)
 		{
-			for (int c{}; c < ColumnsM2; ++c)
+			for (int c{}; c < C2; ++c)
 			{
 				for (int i{}; i < maxMatrixLength; ++i)
 				{
@@ -190,9 +190,9 @@ namespace Integrian3D
 	{
 		Matrix<R, C, T> matrix{};
 
-		for (int r{}; r < Rows; ++r)
+		for (int r{}; r < R; ++r)
 		{
-			for (int c{}; c < Columns; ++c)
+			for (int c{}; c < C; ++c)
 			{
 				matrix.Data[r][c] += m.Data[r][c] * val;
 			}
@@ -215,9 +215,9 @@ namespace Integrian3D
 	{
 		Matrix<R, C, T> matrix{};
 
-		for (int r{}; r < Rows; ++r)
+		for (int r{}; r < R; ++r)
 		{
-			for (int c{}; c < Columns; ++c)
+			for (int c{}; c < C; ++c)
 			{
 				matrix.Data[r][c] += m.Data[r][c] / val;
 			}
@@ -231,9 +231,9 @@ namespace Integrian3D
 	{
 		Matrix<R, C, T> matrix{};
 
-		for (int r{}; r < Rows; ++r)
+		for (int r{}; r < R; ++r)
 		{
-			for (int c{}; c < Columns; ++c)
+			for (int c{}; c < C; ++c)
 			{
 				matrix.Data[r][c] = m1.Data[r][c] + m2.Data[r][c];
 			}
@@ -247,9 +247,9 @@ namespace Integrian3D
 	{
 		Matrix<R, C, T> matrix{};
 
-		for (int r{}; r < Rows; ++r)
+		for (int r{}; r < R; ++r)
 		{
-			for (int c{}; c < Columns; ++c)
+			for (int c{}; c < C; ++c)
 			{
 				matrix.Data[r][c] = m1.Data[r][c] - m2.Data[r][c];
 			}
