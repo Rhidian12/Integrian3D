@@ -9,6 +9,8 @@ namespace Integrian3D
 	public:
 		TransformComponent();
 
+		void SetLocalLocation(const Point3f& pos);
+
 		const Point3f& GetWorldLocation() const { return WorldLocation; }
 		Point3f GetLocalLocation() const { return Point3f{ Transformation(0,3), Transformation(1,3), Transformation(2,3) }; }
 
@@ -30,5 +32,6 @@ namespace Integrian3D
 		Point3f LocalAngle; /* In Radians */
 
 		bool bShouldRecalculateTransform;
+		bool bShouldRecalculateWorldData;
 	};
 }

@@ -10,6 +10,7 @@ namespace Integrian3D
 		, WorldAngle{}
 		, LocalAngle{}
 		, bShouldRecalculateTransform{}
+		, bShouldRecalculateWorldData{}
 	{
 		const Matrix4f translationMatrix{};
 
@@ -18,5 +19,14 @@ namespace Integrian3D
 		Matrix4f scaleMatrix{ Matrix4f::MakeScaleMatrix(LocalScale.X, LocalScale.Y, LocalScale.Z) };
 
 		Transformation = translationMatrix * rotationMatrix * scaleMatrix;
+	}
+
+	void TransformComponent::SetLocalLocation(const Point3f& pos)
+	{
+		Transformation(0, 3) = pos.X;
+		Transformation(1, 3) = pos.Y;
+		Transformation(2, 3) = pos.Z;
+
+		bShouldRecalculateWorldData = true;
 	}
 }
