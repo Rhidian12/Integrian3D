@@ -32,7 +32,7 @@ namespace Integrian3D
 			return static_cast<T>(MathUtils::Sqrtf(MagnitudeSquared()));
 		}
 
-		T MagnitudeSquared() const
+		constexpr T MagnitudeSquared() const
 		{
 			return Dot(*this);
 		}
