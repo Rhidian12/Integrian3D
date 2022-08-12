@@ -45,7 +45,10 @@ namespace Integrian3D
 
 	void TransformComponent::Scale(const glm::vec3& v)
 	{
-		/// LocalScale
+		LocalScale += v;
+
+		bShouldRecalculateTransform = true;
+		bShouldRecalculateWorldData = true;
 	}
 
 	void TransformComponent::SetLocalLocation(const glm::vec3& pos)
