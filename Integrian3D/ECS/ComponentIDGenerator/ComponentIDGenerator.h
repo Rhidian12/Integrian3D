@@ -10,9 +10,9 @@ namespace Integrian3D
 	{
 		using namespace Utils;
 
-		constexpr const char* typeName(ConstexprTypeName<T>());
+		constexpr std::string_view typeName(ConstexprTypeName<T>());
 
-		constexpr ComponentType hash(static_cast<ComponentType>(ConstexprStringHash(typeName)));
+		constexpr ComponentType hash(static_cast<ComponentType>(ConstexprStringHash(std::string{ typeName }.data())));
 
 		return hash;
 	}

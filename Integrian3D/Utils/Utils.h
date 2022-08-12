@@ -10,16 +10,16 @@ namespace Integrian3D
 		/* Reference for TypeName: https://stackoverflow.com/questions/35941045/can-i-obtain-c-type-names-in-a-constexpr-way */
 
 		template<typename T>
-		constexpr const char* ConstexprTypeName();
+		constexpr std::string_view ConstexprTypeName();
 
 		template<>
-		constexpr const char* ConstexprTypeName<void>() { return "void"; }
+		constexpr std::string_view ConstexprTypeName<void>() { return "void"; }
 
 		/* Should have internal linkage and therefore be unavailable to other files */
 		namespace
 		{
 			template<typename Type>
-			constexpr const char* WrappedTypeName()
+			constexpr std::string_view WrappedTypeName()
 			{
 				return __FUNCSIG__;
 			}
@@ -86,17 +86,24 @@ namespace Integrian3D
 		}
 
 		template <typename T>
-		constexpr const char* ConstexprTypeName()
+		constexpr std::string_view ConstexprTypeName()
 		{
+			//constexpr std::string_view wrappedName(WrappedTypeName<T>());
+			//constexpr std::string_view wrappedVoidName(WrappedTypeName<void>());
+			//constexpr std::string_view voidName(ConstexprTypeName<void>());
+
+			//constexpr size_t prefixLength(wrappedVoidName.find(voidName));
+			//constexpr size_t suffixLength(wrappedVoidName.length() - prefixLength - voidName.length());
+
+			//constexpr size_t typeNameLength(wrappedVoidName.length() - prefixLength - suffixLength);
+			//return wrappedName.substr(prefixLength, typeNameLength);
+
 			constexpr std::string_view wrappedName(WrappedTypeName<T>());
-			constexpr std::string_view wrappedVoidName(WrappedTypeName<void>());
-			constexpr std::string_view voidName(ConstexprTypeName<void>());
 
-			constexpr size_t prefixLength(wrappedVoidName.find(voidName));
-			constexpr size_t suffixLength(wrappedVoidName.length() - prefixLength - voidName.length());
+			constexpr size_t endOfType{ wrappedName.find_last_of('>') };
+			constexpr size_t beginOfType{ std::max(wrappedName.find_last_of(' '), wrappedName.find_last_of('<')) };
 
-			constexpr size_t typeNameLength(wrappedVoidName.length() - prefixLength - suffixLength);
-			return wrappedName.substr(prefixLength, typeNameLength).data();
+			return wrappedName.substr(beginOfType + 1, endOfType - beginOfType - 1);
 		}
 
 		__forceinline constexpr size_t ConstexprStringHash(const char* pString)
