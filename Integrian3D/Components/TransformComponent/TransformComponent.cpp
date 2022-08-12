@@ -26,18 +26,9 @@ namespace Integrian3D
 
 	void TransformComponent::Rotate(const glm::vec3& axis, const float angleRad)
 	{
-		if (MathUtils::AreEqual(axis.x, 1.f))
-		{
-			LocalAngle.x += angleRad;
-		}
-		if (MathUtils::AreEqual(axis.y, 1.f))
-		{
-			LocalAngle.y += angleRad;
-		}
-		if (MathUtils::AreEqual(axis.z, 1.f))
-		{
-			LocalAngle.z += angleRad;
-		}
+		LocalAngle.x += angleRad * axis.x;
+		LocalAngle.y += angleRad * axis.y;
+		LocalAngle.z += angleRad * axis.z;
 
 		bShouldRecalculateTransform = true;
 		bShouldRecalculateWorldData = true;
@@ -65,7 +56,7 @@ namespace Integrian3D
 		bShouldRecalculateTransform = true;
 		bShouldRecalculateWorldData = true;
 	}
-	
+
 	void TransformComponent::SetLocalAngle(const glm::vec3& angleRad)
 	{
 		LocalAngle = angleRad;
