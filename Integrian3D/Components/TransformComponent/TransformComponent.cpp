@@ -21,6 +21,12 @@ namespace Integrian3D
 		Transformation = translationMatrix * rotationMatrix * scaleMatrix;
 	}
 
+	void TransformComponent::Rotate(const Vector3f& axis, const Vector3f& angleRad)
+	{
+		const Matrix4f rotation{ Matrix4f::MakeRotationMatrix(axis) };
+
+	}
+
 	void TransformComponent::SetTransform(const Matrix4f& transform)
 	{
 		Transformation = transform;
