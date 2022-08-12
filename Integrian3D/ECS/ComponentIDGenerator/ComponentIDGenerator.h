@@ -12,7 +12,7 @@ namespace Integrian3D
 
 		constexpr std::string_view typeName(ConstexprTypeName<T>());
 
-		constexpr ComponentType hash(static_cast<ComponentType>(ConstexprStringHash(std::string{ typeName }.data())));
+		constexpr ComponentType hash(static_cast<ComponentType>(ConstexprStringHash(std::string{ typeName }.data(), std::string{ typeName }.size())));
 
 		return hash;
 	}
