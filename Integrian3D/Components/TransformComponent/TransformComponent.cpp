@@ -15,9 +15,18 @@ namespace Integrian3D
 		, bShouldRecalculateWorldData{}
 	{}
 
+	void TransformComponent::Translate(const glm::vec3& v)
+	{
+		Transformation[3] += glm::vec4{ v, 0.f };
+
+		bShouldRecalculateWorldData = true;
+	}
+
 	void TransformComponent::Rotate(const glm::vec3& axis, const float angleRad)
 	{
 		Transformation = glm::rotate(Transformation, angleRad, axis);
+
+		bShouldRecalculateWorldData = true;
 	}
 
 	void TransformComponent::SetLocalLocation(const glm::vec3& pos)

@@ -11,6 +11,7 @@ namespace Integrian3D
 	public:
 		TransformComponent();
 
+		void Translate(const glm::vec3& v);
 		void Rotate(const glm::vec3& axis, const float angleRad);
 
 		void SetLocalLocation(const glm::vec3& pos);
