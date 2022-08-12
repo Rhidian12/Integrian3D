@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Utils/Utils.h"
+#include "../Math/MathUtils.h"
 
 namespace Integrian3D
 {
@@ -20,7 +20,7 @@ namespace Integrian3D
 			B /= 255.f;
 			G /= 255.f;
 
-			Utils::Clamp(A, 0.f, 1.f);
+			MathUtils::Clamp(A, 0.f, 1.f);
 
 			return *this;
 		}

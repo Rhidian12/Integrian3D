@@ -1,5 +1,8 @@
 #pragma once
 
+#include <type_traits> /* std::enable_if */
+#include <limits> /* std::numeric_limits */
+
 namespace Integrian3D
 {
 	namespace MathUtils
@@ -17,6 +20,27 @@ namespace Integrian3D
 			u.x = n;
 			u.i = (1 << 29) + (u.i >> 1) - (1 << 22) - 0x4B0D2;
 			return u.x;
+		}
+
+
+		template<typename T, typename = std::enable_if_t<std::is_fundamental_v<T>>>
+		constexpr bool AreEqual(const T a, const T b)
+		{
+			return static_cast<T>(fabs(a - b)) <= std::numeric_limits<T>::epsilon();
+		}
+
+		template<typename T>
+		constexpr void Clamp(T& value, const T& min, const T& max)
+		{
+			if (value < min)
+			{
+				value = min;
+			}
+
+			if (value > max)
+			{
+				value = max;
+			}
 		}
 	}
 }

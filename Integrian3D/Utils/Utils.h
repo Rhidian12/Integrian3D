@@ -103,25 +103,5 @@ namespace Integrian3D
 		{
 			return CRC32<sizeof(pString) - 2>(pString) ^ 0xFFFFFFFF;
 		}
-
-		template<typename T, typename = std::enable_if_t<std::is_fundamental_v<T>>>
-		constexpr bool AreEqual(const T a, const T b)
-		{
-			return static_cast<T>(fabs(a - b)) <= std::numeric_limits<T>::epsilon();
-		}
-
-		template<typename T>
-		constexpr void Clamp(T& value, const T& min, const T& max)
-		{
-			if (value < min)
-			{
-				value = min;
-			}
-
-			if (value > max)
-			{
-				value = max;
-			}
-		}
 	}
 }
