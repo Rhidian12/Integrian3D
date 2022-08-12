@@ -11,6 +11,11 @@ namespace Integrian3D
 	public:
 		TransformComponent();
 
+		TransformComponent(const TransformComponent&) noexcept = delete;
+		TransformComponent(TransformComponent&& other) noexcept;
+		TransformComponent& operator=(const TransformComponent&) noexcept = delete;
+		TransformComponent& operator=(TransformComponent&& other) noexcept;
+
 		void Translate(const glm::vec3& v);
 		void Rotate(const glm::vec3& axis, const float angleRad);
 		void Scale(const glm::vec3& v);

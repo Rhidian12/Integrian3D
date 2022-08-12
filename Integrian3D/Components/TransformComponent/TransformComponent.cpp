@@ -17,6 +17,37 @@ namespace Integrian3D
 		, bShouldRecalculateWorldData{}
 	{}
 
+	TransformComponent::TransformComponent(TransformComponent&& other) noexcept
+		: Transformation{ std::move(other.Transformation) }
+		, WorldLocation{ std::move(other.WorldLocation) }
+		, WorldScale{ std::move(other.WorldScale) }
+		, LocalScale{ std::move(other.LocalAngle) }
+		, WorldAngle{ std::move(other.WorldAngle) }
+		, LocalAngle{ std::move(other.LocalAngle) }
+		, bShouldRecalculateTransform{ std::move(other.bShouldRecalculateTransform) }
+		, bShouldRecalculateWorldData{ std::move(other.bShouldRecalculateWorldData) }
+	{
+		other.bShouldRecalculateTransform = false;
+		other.bShouldRecalculateWorldData = false;
+	}
+
+	TransformComponent& TransformComponent::operator=(TransformComponent&& other) noexcept
+	{
+		Transformation = std::move(other.Transformation);
+		WorldLocation = std::move(other.WorldLocation);
+		WorldScale = std::move(other.WorldScale);
+		LocalScale = std::move(other.LocalScale);
+		WorldAngle = std::move(other.WorldAngle);
+		LocalAngle = std::move(other.LocalAngle);
+		bShouldRecalculateTransform = std::move(other.bShouldRecalculateTransform);
+		bShouldRecalculateWorldData = std::move(other.bShouldRecalculateWorldData);
+
+		other.bShouldRecalculateTransform = false;
+		other.bShouldRecalculateWorldData = false;
+
+		return *this;
+	}
+
 	void TransformComponent::Translate(const glm::vec3& v)
 	{
 		Transformation[3] += glm::vec4{ v, 0.f };
