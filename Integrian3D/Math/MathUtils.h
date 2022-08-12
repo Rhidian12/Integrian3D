@@ -29,13 +29,13 @@ namespace Integrian3D
 		template<typename T, typename = std::enable_if_t<std::is_floating_point_v<T>>>
 		constexpr T ToRadians(const T deg)
 		{
-			return deg * Pi / static_cast<T>(180.f);
+			return static_cast<T>(deg * Pi / static_cast<T>(180.f));
 		}
 
 		template<typename T, typename = std::enable_if_t<std::is_floating_point_v<T>>>
 		constexpr T ToDegrees(const T rad)
 		{
-			return rad * static_cast<T>(180.f) / Pi;
+			return static_cast<T>(rad * static_cast<T>(180.f) / Pi);
 		}
 
 		template<typename T, typename = std::enable_if_t<std::is_fundamental_v<T>>>
