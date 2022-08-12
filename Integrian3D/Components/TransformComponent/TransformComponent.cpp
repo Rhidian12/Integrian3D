@@ -1,5 +1,7 @@
 #include "TransformComponent.h"
 
+#include "../../Math/MathUtils.h"
+
 #include <gtc/matrix_transform.hpp>
 
 namespace Integrian3D
@@ -24,9 +26,26 @@ namespace Integrian3D
 
 	void TransformComponent::Rotate(const glm::vec3& axis, const float angleRad)
 	{
-		Transformation = glm::rotate(Transformation, angleRad, axis);
+		if (MathUtils::AreEqual(axis.x, 1.f))
+		{
+			LocalAngle.x += angleRad;
+		}
+		if (MathUtils::AreEqual(axis.y, 1.f))
+		{
+			LocalAngle.y += angleRad;
+		}
+		if (MathUtils::AreEqual(axis.z, 1.f))
+		{
+			LocalAngle.z += angleRad;
+		}
 
+		bShouldRecalculateTransform = true;
 		bShouldRecalculateWorldData = true;
+	}
+
+	void TransformComponent::Scale(const glm::vec3& v)
+	{
+		/// LocalScale
 	}
 
 	void TransformComponent::SetLocalLocation(const glm::vec3& pos)

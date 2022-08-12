@@ -13,6 +13,7 @@ namespace Integrian3D
 
 		void Translate(const glm::vec3& v);
 		void Rotate(const glm::vec3& axis, const float angleRad);
+		void Scale(const glm::vec3& v);
 
 		void SetLocalLocation(const glm::vec3& pos);
 		void SetLocalScale(const glm::vec3& scale);
