@@ -70,13 +70,13 @@ namespace Integrian3D
 		T& GetComponent(const Entity entity)
 		{
 			assert(ComponentPools[GenerateComponentID<T>()]);
-			return static_cast<ComponentArray<T>*>(ComponentPools[GenerateComponentID<T>()].get())->GetComponent<T>(Entities.GetIndex(entity));
+			return static_cast<ComponentArray<T>*>(ComponentPools[GenerateComponentID<T>()].get())->GetComponent(Entities.GetIndex(entity));
 		}
 		template<typename T>
 		const T& GetComponent(const Entity entity) const
 		{
 			assert(ComponentPools[GenerateComponentID<T>()]);
-			return static_cast<ComponentArray<T>*>(ComponentPools[GenerateComponentID<T>()].get())->GetComponent<T>(Entities.GetIndex(entity));
+			return static_cast<ComponentArray<T>*>(ComponentPools[GenerateComponentID<T>()].get())->GetComponent(Entities.GetIndex(entity));
 		}
 
 		template<typename T>
