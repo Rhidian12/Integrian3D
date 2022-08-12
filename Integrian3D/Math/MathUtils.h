@@ -32,6 +32,12 @@ namespace Integrian3D
 			return deg * Pi / static_cast<T>(180.f);
 		}
 
+		template<typename T, typename = std::enable_if_t<std::is_floating_point_v<T>>>
+		constexpr T ToDegrees(const T rad)
+		{
+			return rad * static_cast<T>(180.f) / Pi;
+		}
+
 		template<typename T, typename = std::enable_if_t<std::is_fundamental_v<T>>>
 		constexpr bool AreEqual(const T a, const T b)
 		{
