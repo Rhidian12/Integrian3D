@@ -2,29 +2,31 @@
 
 #include "../EngineConstants.h"
 
+#include <glm.hpp>
+
 namespace Integrian3D
 {
 	struct Vertex final
 	{
 		Vertex() = default;
-		explicit Vertex(const Vector3f& position)
+		explicit Vertex(const glm::vec3& position)
 			: Position{ position }
 			, Colour{}
 			, UV{}
 		{}
-		Vertex(const Vector3f& position, const RGBColour& colour)
+		Vertex(const glm::vec3& position, const RGBColour& colour)
 			: Position{ position }
 			, Colour{ colour }
 			, UV{}
 		{}
-		Vertex(const Vector3f& position, const RGBColour& colour, const Point2f& uv)
+		Vertex(const glm::vec3& position, const RGBColour& colour, const glm::vec2& uv)
 			: Position{ position }
 			, Colour{ colour }
 			, UV{ uv }
 		{}
 
-		Vector3f Position;
+		glm::vec3 Position;
 		RGBColour Colour;
-		Point2f UV;
+		glm::vec2 UV;
 	};
 }

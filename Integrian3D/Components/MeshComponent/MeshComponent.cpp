@@ -83,13 +83,13 @@ namespace Integrian3D
 		glEnableVertexAttribArray(1);
 
 		/* Set Vertex Buffer Colour Attribute layout */
-		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(sizeof(Vector3f)));
+		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(sizeof(glm::vec3)));
 
 		/* Enable the UV Coord attribute */
 		glEnableVertexAttribArray(2);
 
 		/* Set Vertex Buffer UV Coord Attribute layout */
-		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(sizeof(Vertex) - sizeof(Point2f)));
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(sizeof(Vertex) - sizeof(glm::vec2)));
 
 		glBindVertexArray(0);
 	}

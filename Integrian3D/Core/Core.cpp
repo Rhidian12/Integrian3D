@@ -8,6 +8,8 @@
 #include "../Components/MeshComponent/MeshComponent.h"
 #include "../Components/TransformComponent/TransformComponent.h"
 
+#include <gtc/matrix_transform.hpp>
+
 namespace Integrian3D
 {
 	Core::Core(const int windowWidth, const int windowHeight)
@@ -44,17 +46,19 @@ namespace Integrian3D
 						{
 							if (transformComponent.bShouldRecalculateTransform)
 							{
-								const Matrix4f translationMatrix{};
+								glm::mat4 translationMatrix{ 1.f };
+								translationMatrix[3] = glm::vec4{ transformComponent.GetLocalLocation(), 1.f };
 
-								const Point3f& localAngle{ transformComponent.GetLocalAngle() };
-								const Matrix4f rotationMatrix{ Matrix4f::MakeRotationMatrix(localAngle.X, localAngle.Y, localAngle.Z) };
+								const glm::vec3& rotation{ transformComponent.GetLocalAngle() };
+								glm::mat4 rotationMatrix{ 1.f };
+								rotationMatrix = glm::rotate(rotationMatrix, rotation.x, glm::vec3{ 1.f, 0.f, 0.f });
+								rotationMatrix = glm::rotate(rotationMatrix, rotation.y, glm::vec3{ 0.f, 1.f, 0.f });
+								rotationMatrix = glm::rotate(rotationMatrix, rotation.z, glm::vec3{ 0.f, 0.f, 1.f });
 
-								const Point3f& localScale{ transformComponent.GetLocalScale() };
-								Matrix4f scaleMatrix{ Matrix4f::MakeScaleMatrix(localScale.X, localScale.Y, localScale.Z) };
+								glm::mat4 scaleMatrix{ 1.f };
+								scaleMatrix = glm::scale(scaleMatrix, transformComponent.GetLocalScale());
 
-								transformComponent.SetTransform(translationMatrix * rotationMatrix * scaleMatrix);
-
-								transformComponent.bShouldRecalculateTransform = false;
+								transformComponent.Transformation = translationMatrix * rotationMatrix * scaleMatrix;
 							}
 						});
 				}

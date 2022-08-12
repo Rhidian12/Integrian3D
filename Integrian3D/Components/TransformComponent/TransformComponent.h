@@ -1,5 +1,7 @@
 #pragma once
 
+#include <glm.hpp>
+
 #include "../../EngineConstants.h"
 
 namespace Integrian3D
@@ -9,35 +11,33 @@ namespace Integrian3D
 	public:
 		TransformComponent();
 
-		void Rotate(const Vector3f& axis, const Vector3f& angleRad);
+		void Rotate(const glm::vec3& axis, const float angleRad);
 
-		void SetTransform(const Matrix4f& transform);
+		void SetLocalLocation(const glm::vec3& pos);
+		void SetLocalScale(const glm::vec3& scale);
+		void SetLocalAngle(const glm::vec3& angleRad);
 
-		void SetLocalLocation(const Point3f& pos);
-		void SetLocalScale(const Point3f& scale);
-		void SetLocalAngle(const Point3f& angleRad);
+		const glm::vec3& GetWorldLocation() const { return WorldLocation; }
+		glm::vec3 GetLocalLocation() const { return Transformation[3]; }
 
-		const Point3f& GetWorldLocation() const { return WorldLocation; }
-		Point3f GetLocalLocation() const { return Point3f{ Transformation(0,3), Transformation(1,3), Transformation(2,3) }; }
+		const glm::vec3& GetWorldScale() const { return WorldScale; }
+		const glm::vec3& GetLocalScale() const { return LocalScale; }
 
-		const Point3f& GetWorldScale() const { return WorldScale; }
-		const Point3f& GetLocalScale() const { return LocalScale; }
+		const glm::vec3& GetWorldAngle() const { return WorldAngle; }
+		const glm::vec3& GetLocalAngle() const { return LocalAngle; }
 
-		const Point3f& GetWorldAngle() const { return WorldAngle; }
-		const Point3f& GetLocalAngle() const { return LocalAngle; }
+		glm::mat4 Transformation;
 
 		bool bShouldRecalculateTransform;
 		bool bShouldRecalculateWorldData;
 
 	private:
-		Matrix4f Transformation;
+		glm::vec3 WorldLocation;
 
-		Point3f WorldLocation;
+		glm::vec3 WorldScale;
+		glm::vec3 LocalScale;
 
-		Point3f WorldScale;
-		Point3f LocalScale;
-
-		Point3f WorldAngle; /* In Radians */
-		Point3f LocalAngle; /* In Radians */
+		glm::vec3 WorldAngle; /* In Radians */
+		glm::vec3 LocalAngle; /* In Radians */
 	};
 }

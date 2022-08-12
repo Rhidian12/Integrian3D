@@ -1,9 +1,11 @@
 #include "TransformComponent.h"
 
+#include <gtc/matrix_transform.hpp>
+
 namespace Integrian3D
 {
 	TransformComponent::TransformComponent()
-		: Transformation{}
+		: Transformation{ glm::mat4{ 1.f } /* Identity matrix */ }
 		, WorldLocation{}
 		, WorldScale{ 1.f, 1.f, 1.f }
 		, LocalScale{ 1.f, 1.f, 1.f }
@@ -11,37 +13,21 @@ namespace Integrian3D
 		, LocalAngle{}
 		, bShouldRecalculateTransform{}
 		, bShouldRecalculateWorldData{}
+	{}
+
+	void TransformComponent::Rotate(const glm::vec3& axis, const float angleRad)
 	{
-		const Matrix4f translationMatrix{};
-
-		const Matrix4f rotationMatrix{ Matrix4f::MakeRotationMatrix(LocalAngle.X, LocalAngle.Y, LocalAngle.Z) };
-
-		Matrix4f scaleMatrix{ Matrix4f::MakeScaleMatrix(LocalScale.X, LocalScale.Y, LocalScale.Z) };
-
-		Transformation = translationMatrix * rotationMatrix * scaleMatrix;
+		Transformation = glm::rotate(Transformation, angleRad, axis);
 	}
 
-	void TransformComponent::Rotate(const Vector3f& axis, const Vector3f& angleRad)
+	void TransformComponent::SetLocalLocation(const glm::vec3& pos)
 	{
-		const Matrix4f rotation{ Matrix4f::MakeRotationMatrix(axis) };
-
-	}
-
-	void TransformComponent::SetTransform(const Matrix4f& transform)
-	{
-		Transformation = transform;
-	}
-
-	void TransformComponent::SetLocalLocation(const Point3f& pos)
-	{
-		Transformation(0, 3) = pos.X;
-		Transformation(1, 3) = pos.Y;
-		Transformation(2, 3) = pos.Z;
+		Transformation[3] = glm::vec4{ pos, 1.f };
 
 		bShouldRecalculateWorldData = true;
 	}
 
-	void TransformComponent::SetLocalScale(const Point3f& scale)
+	void TransformComponent::SetLocalScale(const glm::vec3& scale)
 	{
 		LocalScale = scale;
 
@@ -49,7 +35,7 @@ namespace Integrian3D
 		bShouldRecalculateWorldData = true;
 	}
 	
-	void TransformComponent::SetLocalAngle(const Point3f& angleRad)
+	void TransformComponent::SetLocalAngle(const glm::vec3& angleRad)
 	{
 		LocalAngle = angleRad;
 
