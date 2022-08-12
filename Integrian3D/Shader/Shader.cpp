@@ -2,6 +2,10 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#pragma warning( push )
+#pragma warning( disable:4201 )
+#include <gtc/type_ptr.hpp>
+#pragma warning( pop )
 
 #include "../FileReader/FileReader.h"
 #include "../DebugUtility/DebugUtility.h"
@@ -128,5 +132,10 @@ namespace Integrian3D
 	void Shader::SetFloat(const std::string_view name, const float value) const
 	{
 		glUniform1f(glGetUniformLocation(ProgramID, name.data()), value);
+	}
+
+	void Shader::SetMatrix(const std::string_view name, const glm::mat4& value) const
+	{
+		glUniformMatrix4fv(glGetUniformLocation(ProgramID, name.data()), 1, GL_FALSE, glm::value_ptr(value));
 	}
 }
