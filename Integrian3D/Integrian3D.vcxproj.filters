@@ -134,22 +134,10 @@
     <ClInclude Include="Vertex\Vertex.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Math\Vector3.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Math\RGBColour.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Shader\Shader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\Point2.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\Point3.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\Vector2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Texture\Texture.h">
@@ -159,12 +147,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TextureManager\TextureManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\Matrix.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\Point4.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Math\MathUtils.h">
