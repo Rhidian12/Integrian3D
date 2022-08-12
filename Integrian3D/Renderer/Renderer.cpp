@@ -5,7 +5,7 @@
 
 #include "../FileReader/FileReader.h"
 #include "../DebugUtility/DebugUtility.h"
-#include "../MeshComponent/MeshComponent.h"
+#include "../Components/MeshComponent/MeshComponent.h"
 #include "../Shader/Shader.h"
 
 namespace Integrian3D
