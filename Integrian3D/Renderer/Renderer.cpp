@@ -6,6 +6,7 @@
 #include "../FileReader/FileReader.h"
 #include "../DebugUtility/DebugUtility.h"
 #include "../Components/MeshComponent/MeshComponent.h"
+#include "../Components/TransformComponent/TransformComponent.h"
 #include "../Shader/Shader.h"
 
 namespace Integrian3D
@@ -42,10 +43,13 @@ namespace Integrian3D
 		}
 	}
 
-	void Renderer::Render(const MeshComponent& meshComponent)
+	void Renderer::Render(const MeshComponent& meshComponent, const TransformComponent& transformComponent)
 	{
 		/* Use our shader program! */
 		Shader.Activate();
+
+		/* Set our Matrix */
+		Shader.SetMatrix("_Transform", transformComponent.Transformation);
 
 		/* Activate the texture */
 		glActiveTexture(GL_TEXTURE0);

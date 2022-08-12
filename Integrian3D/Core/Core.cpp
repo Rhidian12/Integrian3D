@@ -67,10 +67,10 @@ namespace Integrian3D
 			/* Rendering */
 			{
 				renderer.StartRenderLoop();
-				View<MeshComponent> renderView{ activeScene.CreateView<MeshComponent>() };
-				renderView.ForEach([&renderer](const MeshComponent& meshComponent)->void
+				View<MeshComponent, TransformComponent> renderView{ activeScene.CreateView<MeshComponent, TransformComponent>() };
+				renderView.ForEach([&renderer](const MeshComponent& meshComponent, const TransformComponent& transformComponent)->void
 					{
-						renderer.Render(meshComponent);
+						renderer.Render(meshComponent, transformComponent);
 					});
 			}
 

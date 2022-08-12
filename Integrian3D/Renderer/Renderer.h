@@ -18,7 +18,7 @@ namespace Integrian3D
 
 		void StartRenderLoop();
 
-		void Render(const class MeshComponent& meshComponent);
+		void Render(const class MeshComponent& meshComponent, const class TransformComponent& transformComponent);
 
 		void ShouldRenderWireframe(const bool bShouldRenderWireFrame) { bShouldRenderWireframe = bShouldRenderWireFrame; }
 
