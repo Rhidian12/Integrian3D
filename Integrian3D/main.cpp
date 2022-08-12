@@ -3,6 +3,7 @@
 #include "SceneManager/SceneManager.h"
 #include "Components/MeshComponent/MeshComponent.h"
 #include "TextureManager/TextureManager.h"
+#include "Components/TransformComponent/TransformComponent.h"
 
 int main()
 {
@@ -31,6 +32,8 @@ int main()
 
 	Entity entity = testScene.CreateEntity();
 	testScene.AddComponent<MeshComponent>(entity, vertices, indices, TextureManager::GetInstance().GetTexture("__Wall"));
+	TransformComponent& transform{ testScene.GetComponent<TransformComponent>(entity) };
+	transform.Rotate(glm::vec3{ 0.f, 0.f, 1.f }, MathUtils::ToRadians(90.f));
 
 	SceneManager::GetInstance().AddScene(std::move(testScene));
 
