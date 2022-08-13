@@ -25,7 +25,7 @@ namespace Integrian3D
 			return *this;
 		}
 
-		constexpr RGBColour GetNormalized()
+		constexpr RGBColour GetNormalized() const
 		{
 			RGBColour temp{ R,G,B,A };
 			temp.NormalizeToOne();
