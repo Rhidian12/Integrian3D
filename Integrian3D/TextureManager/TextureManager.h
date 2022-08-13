@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../EngineConstants.h"
+
 #include <memory> /* std::unique_ptr */
 #include <unordered_map> /* std::unordered_map */
 
@@ -12,7 +14,7 @@ namespace Integrian3D
 
 		void AddTexture(const std::string& name, const std::string& filePath);
 
-		class Texture* GetTexture(const std::string_view name) const;
+		__NODISCARD class Texture* GetTexture(const std::string_view name) const;
 
 	private:
 		TextureManager() = default;
