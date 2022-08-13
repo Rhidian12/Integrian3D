@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../EngineConstants.h"
 #include "../ECS/Registry/Registry.h"
 
 #include <functional> /* std::function */
@@ -17,7 +18,7 @@ namespace Integrian3D
 		void AddOnSceneLeave(const std::function<void(const Scene&)>& fn) { OnSceneLeaveCallback = fn; }
 
 		/* -------------- Begin of ECS Functionality -------------- */
-		Entity CreateEntity();
+		__NODISCARD Entity CreateEntity();
 
 		bool ReleaseEntity(const Entity entity) { return Registry.ReleaseEntity(entity); }
 
@@ -31,20 +32,20 @@ namespace Integrian3D
 		void RemoveComponent(const Entity entity) { Registry.RemoveComponent<T>(entity); }
 
 		template<typename T>
-		T& GetComponent(const Entity entity) { return Registry.GetComponent<T>(entity); }
+		__NODISCARD T& GetComponent(const Entity entity) { return Registry.GetComponent<T>(entity); }
 
 		template<typename T>
-		const T& GetComponent(const Entity entity) const { return Registry.GetComponent<T>(entity); }
+		__NODISCARD const T& GetComponent(const Entity entity) const { return Registry.GetComponent<T>(entity); }
 
-		size_t GetAmountOfEntities() const { return static_cast<size_t>(Registry.GetAmountOfEntities()); }
+		__NODISCARD size_t GetAmountOfEntities() const { return static_cast<size_t>(Registry.GetAmountOfEntities()); }
 
-		const EntitySignature GetEntitySignature(const Entity entity) const { return Registry.GetEntitySignature(entity); }
+		__NODISCARD EntitySignature GetEntitySignature(const Entity entity) const { return Registry.GetEntitySignature(entity); }
 
 		template<typename ... Ts>
-		[[nodiscard]] View<Ts...> CreateView() { return Registry.CreateView<Ts...>(); }
+		__NODISCARD View<Ts...> CreateView() { return Registry.CreateView<Ts...>(); }
 		/* -------------- End of ECS Functionality -------------- */
 
-		const std::string& GetSceneName() const { return SceneName; }
+		__NODISCARD const std::string& GetSceneName() const { return SceneName; }
 
 
 		/* -------------- Start of Internal Functionality -------------- */
