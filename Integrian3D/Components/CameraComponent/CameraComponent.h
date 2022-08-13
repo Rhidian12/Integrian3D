@@ -1,5 +1,7 @@
 #pragma once
 
+#include <glm.hpp>
+
 namespace Integrian3D
 {
 	class CameraComponent final
@@ -11,5 +13,8 @@ namespace Integrian3D
 		float NearPlane;
 		float FarPlane;
 		float FOV;
+
+		glm::mat4 View;
+		glm::mat4 Projection;
 	};
 }
