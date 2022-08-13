@@ -20,4 +20,6 @@ namespace Integrian3D
 
 	constexpr Entity InvalidEntityID{ std::numeric_limits<Entity>::max() };
 	constexpr ComponentType InvalidComponentID{ std::numeric_limits<ComponentType>::max() };
+
+#define __NODISCARD [[nodiscard]]
 }
