@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../../EngineConstants.h"
 #include "../../Vertex/Vertex.h"
 #include "../../Texture/Texture.h"
 
@@ -22,14 +23,14 @@ namespace Integrian3D
 		MeshComponent& operator=(const MeshComponent&) noexcept = delete;
 		MeshComponent& operator=(MeshComponent&& other) noexcept;
 
-		uint32_t GetVertexArrayID() const { return VertexArrayID; }
-		uint32_t GetIndexBufferID() const { return IndexBufferID; }
-		uint32_t GetVertexBufferID() const { return VertexBufferID; }
+		__NODISCARD uint32_t GetVertexArrayID() const { return VertexArrayID; }
+		__NODISCARD uint32_t GetIndexBufferID() const { return IndexBufferID; }
+		__NODISCARD uint32_t GetVertexBufferID() const { return VertexBufferID; }
 
-		const std::vector<Vertex>& GetVertices() const { return Vertices; }
-		const std::vector<uint32_t>& GetIndices() const { return Indices; }
+		__NODISCARD const std::vector<Vertex>& GetVertices() const { return Vertices; }
+		__NODISCARD const std::vector<uint32_t>& GetIndices() const { return Indices; }
 
-		const Texture* const GetTexture() const { return pTexture; }
+		__NODISCARD const Texture* const GetTexture() const { return pTexture; }
 
 	private:
 		uint32_t VertexArrayID;
