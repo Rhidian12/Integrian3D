@@ -24,14 +24,14 @@ namespace Integrian3D
 		void SetLocalScale(const glm::vec3& scale);
 		void SetLocalAngle(const glm::vec3& angleRad);
 
-		const glm::vec3& GetWorldLocation() const { return WorldLocation; }
-		glm::vec3 GetLocalLocation() const { return Transformation[3]; }
+		__NODISCARD const glm::vec3& GetWorldLocation() const { return WorldLocation; }
+		__NODISCARD const glm::vec3& GetLocalLocation() const { return Transformation[3]; }
 
-		const glm::vec3& GetWorldScale() const { return WorldScale; }
-		const glm::vec3& GetLocalScale() const { return LocalScale; }
+		__NODISCARD const glm::vec3& GetWorldScale() const { return WorldScale; }
+		__NODISCARD const glm::vec3& GetLocalScale() const { return LocalScale; }
 
-		const glm::vec3& GetWorldAngle() const { return WorldAngle; }
-		const glm::vec3& GetLocalAngle() const { return LocalAngle; }
+		__NODISCARD const glm::vec3& GetWorldAngle() const { return WorldAngle; }
+		__NODISCARD const glm::vec3& GetLocalAngle() const { return LocalAngle; }
 
 		glm::mat4 Transformation;
 
