@@ -42,6 +42,11 @@ namespace Integrian3D
 		Renderer& renderer{ Renderer::GetInstance() };
 		SceneManager& sceneManager{ SceneManager::GetInstance() };
 
+		for (Scene& scene : sceneManager.GetAllScenes())
+		{
+			scene.Start();
+		}
+
 		while (g_IsRunning)
 		{
 			timer.Update();
