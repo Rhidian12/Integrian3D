@@ -23,7 +23,7 @@ namespace Integrian3D
 		Registry& operator=(Registry&& other) noexcept;
 
 		template<typename ... TComponents>
-		[[nodiscard]] View<TComponents...> CreateView()
+		__NODISCARD View<TComponents...> CreateView()
 		{
 			return View<TComponents...>{ std::tuple<std::vector<TComponents>&...>{ GetComponents<TComponents>()... } };
 		}
@@ -67,26 +67,26 @@ namespace Integrian3D
 		}
 
 		template<typename T>
-		T& GetComponent(const Entity entity)
+		__NODISCARD T& GetComponent(const Entity entity)
 		{
 			assert(ComponentPools[GenerateComponentID<T>()]);
 			return static_cast<ComponentArray<T>*>(ComponentPools[GenerateComponentID<T>()].get())->GetComponent(Entities.GetIndex(entity));
 		}
 		template<typename T>
-		const T& GetComponent(const Entity entity) const
+		__NODISCARD const T& GetComponent(const Entity entity) const
 		{
 			assert(ComponentPools[GenerateComponentID<T>()]);
 			return static_cast<ComponentArray<T>*>(ComponentPools[GenerateComponentID<T>()].get())->GetComponent(Entities.GetIndex(entity));
 		}
 
 		template<typename T>
-		std::vector<T>& GetComponents()
+		__NODISCARD std::vector<T>& GetComponents()
 		{
 			assert(ComponentPools[GenerateComponentID<T>()]);
 			return static_cast<ComponentArray<T>*>(ComponentPools[GenerateComponentID<T>()].get())->GetComponents();
 		}
 		template<typename T>
-		const std::vector<T>& GetComponents() const
+		__NODISCARD const std::vector<T>& GetComponents() const
 		{
 			assert(ComponentPools[GenerateComponentID<T>()]);
 			return static_cast<ComponentArray<T>*>(ComponentPools[GenerateComponentID<T>()].get())->GetComponents();
@@ -94,12 +94,12 @@ namespace Integrian3D
 
 		Entity CreateEntity();
 		bool ReleaseEntity(Entity entity);
-		Entity GetAmountOfEntities() const { return CurrentEntityCounter; }
+		__NODISCARD Entity GetAmountOfEntities() const { return CurrentEntityCounter; }
 
 		void SetEntitySignature(const Entity entity, const EntitySignature sig) { assert(EntitySignatures.find(entity) != EntitySignatures.cend()); EntitySignatures[entity] = sig; }
 		void SetEntitySignature(const Entity entity, const ComponentType id, const bool val = true) { assert(EntitySignatures.find(entity) != EntitySignatures.cend()); EntitySignatures[entity].set(id, val); }
 
-		EntitySignature GetEntitySignature(const Entity entity) const { assert(EntitySignatures.find(entity) != EntitySignatures.cend()); return EntitySignatures.find(entity)->second; }
+		__NODISCARD EntitySignature GetEntitySignature(const Entity entity) const { assert(EntitySignatures.find(entity) != EntitySignatures.cend()); return EntitySignatures.find(entity)->second; }
 
 	private:
 		void RemoveAllComponents(const Entity entity, const EntitySignature& sig);
