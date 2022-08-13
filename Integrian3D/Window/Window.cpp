@@ -15,6 +15,8 @@ namespace Integrian3D
 	{
 		Window::Window(const int width, const int height)
 			: pWindow{}
+			, Width{ width }
+			, Height{ height }
 		{
 			glfwInit();
 			glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -60,6 +62,7 @@ namespace Integrian3D
 
 	namespace
 	{
+		/* [TODO]: Window::Width and Window::Height are not getting changed! */
 		void OnResize(GLFWwindow*, int width, int height)
 		{
 			glViewport(0, 0, width, height);

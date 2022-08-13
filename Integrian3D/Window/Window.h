@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../EngineConstants.h"
+
 struct GLFWwindow;
 namespace Integrian3D
 {
@@ -18,8 +20,13 @@ namespace Integrian3D
 
 			void Update();
 
+			__NODISCARD int GetWidth() const { return Width; }
+			__NODISCARD int GetHeight() const { return Height; }
+
 		private:
 			GLFWwindow* pWindow;
+			int Width;
+			int Height;
 		};
 	}
 
