@@ -24,6 +24,8 @@ namespace Integrian3D
 		__NODISCARD Scene& GetScene(const std::string_view sceneName);
 		__NODISCARD const Scene& GetScene(const std::string_view sceneName) const;
 
+		__NODISCARD const std::vector<Scene>& GetAllScenes() const { return Scenes; }
+
 	private:
 		SceneManager();
 
