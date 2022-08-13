@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../EngineConstants.h"
 #include "../Window/Window.h"
 
 namespace Integrian3D
@@ -17,6 +18,9 @@ namespace Integrian3D
 		Core& operator=(Core&&) noexcept = delete;
 
 		void Run();
+
+		__NODISCARD int GetWindowWidth() const { return Window.GetWidth(); }
+		__NODISCARD int GetWindowHeight() const { return Window.GetHeight(); }
 
 	private:
 		Detail::Window Window;
