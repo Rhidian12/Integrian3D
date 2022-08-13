@@ -22,13 +22,16 @@ namespace Integrian3D
 			const Entity camera{ CreateEntity() };
 			AddComponent<CameraComponent, float, float, float, float>(
 				camera,
-				0.1f, 
+				0.1f,
 				100.f,
 				MathUtils::ToRadians(45.f),
 				static_cast<float>(Core::GetInstance().GetWindowWidth() / Core::GetInstance().GetWindowHeight()));
 		}
 
-		InitializeCallback(*this);
+		if (InitializeCallback)
+		{
+			InitializeCallback(*this);
+		}
 	}
 
 	Entity Scene::CreateEntity()
