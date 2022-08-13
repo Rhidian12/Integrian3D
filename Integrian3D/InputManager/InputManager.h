@@ -1,9 +1,10 @@
 #pragma once
 
+#include "../EngineConstants.h"
+#include "KeyboardInput/KeyboardInput.h"
+
 #include <memory> /* std::unique_ptr */
 #include <array>
-
-#include "KeyboardInput/KeyboardInput.h"
 
 namespace Integrian3D
 {
@@ -14,7 +15,7 @@ namespace Integrian3D
 
 		void ProcessInput();
 
-		bool GetIsKeyPressed(const KeyboardInput input) const;
+		__NODISCARD bool GetIsKeyPressed(const KeyboardInput input) const;
 
 	private:
 		InputManager();
