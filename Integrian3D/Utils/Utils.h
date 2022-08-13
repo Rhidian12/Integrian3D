@@ -1,7 +1,6 @@
 #pragma once
 
 #include <string_view> /* std::string_view */
-#include <limits> /* std::numeric_limits */
 
 namespace Integrian3D
 {
@@ -49,7 +48,7 @@ namespace Integrian3D
 		__forceinline constexpr uint32_t ConstexprStringHash(const char* pKey, size_t count)
 		{
 			uint32_t p = 31;
-			const uint32_t m = (uint32_t)1e9 + 9;
+			const uint32_t m = static_cast<uint32_t>(1e9) + 9;
 			uint32_t hash_value = 0;
 			uint32_t p_pow = 1;
 			const char* c = pKey;
