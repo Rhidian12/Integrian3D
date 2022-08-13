@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../EngineConstants.h"
+
 #include <string_view> /* std::string_view */
 
 namespace Integrian3D
@@ -15,9 +17,9 @@ namespace Integrian3D
 		Texture& operator=(const Texture&) noexcept = delete;
 		Texture& operator=(Texture&& other) noexcept;
 
-		int GetWidth() const { return Width; }
-		int GetHeight() const { return Height; }
-		uint32_t GetTextureID() const { return TextureID; }
+		__NODISCARD int GetWidth() const { return Width; }
+		__NODISCARD int GetHeight() const { return Height; }
+		__NODISCARD uint32_t GetTextureID() const { return TextureID; }
 
 	private:
 		int Width;
