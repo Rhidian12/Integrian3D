@@ -21,7 +21,7 @@ namespace Integrian3D
 		: Transformation{ std::move(other.Transformation) }
 		, WorldLocation{ std::move(other.WorldLocation) }
 		, WorldScale{ std::move(other.WorldScale) }
-		, LocalScale{ std::move(other.LocalAngle) }
+		, LocalScale{ std::move(other.LocalScale) }
 		, WorldAngle{ std::move(other.WorldAngle) }
 		, LocalAngle{ std::move(other.LocalAngle) }
 		, bShouldRecalculateTransform{ std::move(other.bShouldRecalculateTransform) }

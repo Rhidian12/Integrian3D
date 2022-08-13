@@ -46,19 +46,17 @@ namespace Integrian3D
 						{
 							if (transformComponent.bShouldRecalculateTransform)
 							{
-								glm::mat4 translationMatrix{ 1.f };
-								translationMatrix[3] = glm::vec4{ transformComponent.GetLocalLocation(), 1.f };
+								glm::mat4 transformationMatrix{ 1.f };
+								transformationMatrix = glm::translate(transformationMatrix, transformComponent.GetLocalLocation());
 
 								const glm::vec3& rotation{ transformComponent.GetLocalAngle() };
-								glm::mat4 rotationMatrix{ 1.f };
-								rotationMatrix = glm::rotate(rotationMatrix, rotation.x, glm::vec3{ 1.f, 0.f, 0.f });
-								rotationMatrix = glm::rotate(rotationMatrix, rotation.y, glm::vec3{ 0.f, 1.f, 0.f });
-								rotationMatrix = glm::rotate(rotationMatrix, rotation.z, glm::vec3{ 0.f, 0.f, 1.f });
+								transformationMatrix = glm::rotate(transformationMatrix, rotation.x, glm::vec3{ 1.f, 0.f, 0.f });
+								transformationMatrix = glm::rotate(transformationMatrix, rotation.y, glm::vec3{ 0.f, 1.f, 0.f });
+								transformationMatrix = glm::rotate(transformationMatrix, rotation.z, glm::vec3{ 0.f, 0.f, 1.f });
 
-								glm::mat4 scaleMatrix{ 1.f };
-								scaleMatrix = glm::scale(scaleMatrix, transformComponent.GetLocalScale());
+								transformationMatrix = glm::scale(transformationMatrix, transformComponent.GetLocalScale());
 
-								transformComponent.Transformation = translationMatrix * rotationMatrix * scaleMatrix;
+								transformComponent.Transformation = transformationMatrix;
 							}
 						});
 				}
