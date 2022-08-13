@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../EngineConstants.h"
+
 #include <vector> /* std::vector */
 #include <assert.h> /* assert() */
 
@@ -131,10 +133,10 @@ namespace Integrian3D
 			return AddImpl(std::move(value));
 		}
 
-		bool Contains(const T value) const { return (value < Sparse.size()) && (Sparse[value] != InvalidEntityID); }
-		T GetIndex(const T value) const { assert(Contains(value)); return Sparse[value]; }
+		__NODISCARD bool Contains(const T value) const { return (value < Sparse.size()) && (Sparse[value] != InvalidEntityID); }
+		__NODISCARD T GetIndex(const T value) const { assert(Contains(value)); return Sparse[value]; }
 
-		size_t Size() const { return _Size; }
+		__NODISCARD size_t Size() const { return _Size; }
 		void Clear() { Sparse.clear(); Packed.clear(); _Size = 0; }
 
 		bool Remove(const T value)
@@ -153,8 +155,8 @@ namespace Integrian3D
 
 		void Reserve(const size_t capacity) { Sparse.reserve(capacity); Packed.reserve(capacity); }
 
-		T& operator[](const size_t index) { assert(index < _Size); return Packed[index]; }
-		const T operator[](const size_t index) const { assert(index < _Size); return Packed[index]; }
+		__NODISCARD T& operator[](const size_t index) { assert(index < _Size); return Packed[index]; }
+		__NODISCARD const T operator[](const size_t index) const { assert(index < _Size); return Packed[index]; }
 
 		RandomIterator<T> begin() { return RandomIterator(Packed.data()); }
 		RandomIterator<const T> begin() const { return RandomIterator<const T>(Packed.data()); }
