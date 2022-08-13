@@ -9,7 +9,7 @@ namespace Integrian3D
 	class Core final
 	{
 	public:
-		explicit Core(const int windowWidth, const int windowHeight);
+		Core(const int windowWidth, const int windowHeight);
 
 		Core(const Core&) noexcept = delete;
 		Core(Core&&) noexcept = delete;
