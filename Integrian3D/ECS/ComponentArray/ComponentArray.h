@@ -1,7 +1,8 @@
 #pragma once
 
-#include <vector> /* std::vector */
 #include "../../EngineConstants.h"
+
+#include <vector> /* std::vector */
 
 namespace Integrian3D
 {
@@ -32,11 +33,11 @@ namespace Integrian3D
 			Components.erase(Components.begin() + entity);
 		}
 
-		T& GetComponent(const Entity entity) { return Components[entity]; }
-		const T& GetComponent(const Entity entity) const { return Components[entity]; }
+		__NODISCARD T& GetComponent(const Entity entity) { return Components[entity]; }
+		__NODISCARD const T& GetComponent(const Entity entity) const { return Components[entity]; }
 
-		std::vector<T>& GetComponents() { return Components; }
-		const std::vector<T>& GetComponents() const { return Components; }
+		__NODISCARD std::vector<T>& GetComponents() { return Components; }
+		__NODISCARD const std::vector<T>& GetComponents() const { return Components; }
 
 	private:
 		std::vector<T> Components;
