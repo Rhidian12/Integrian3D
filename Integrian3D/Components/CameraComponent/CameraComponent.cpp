@@ -14,9 +14,6 @@ namespace Integrian3D
 		, AspectRatio{ aspectRatio }
 		, View{ 1.f }
 		, Projection{ 1.f }
-	{}
-
-	void CameraComponent::Start()
 	{
 		View = glm::translate(View, glm::vec3{ 0.f, 0.f, -10.f });
 		Projection = glm::perspective(FOV, AspectRatio, NearPlane, FarPlane);

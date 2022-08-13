@@ -9,8 +9,6 @@ namespace Integrian3D
 	public:
 		CameraComponent(const float nearPlane, const float farPlane, const float fov, const float aspectRatio);
 
-		void Start();
-
 	private:
 		float NearPlane;
 		float FarPlane;
