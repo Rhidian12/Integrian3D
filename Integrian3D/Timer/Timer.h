@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../EngineConstants.h"
+
 #include <chrono> /* std::chrono::steady_clock */
 #include <memory> /* std::unique_ptr */
 
@@ -28,59 +30,59 @@ namespace Integrian3D
 		void Start();
 
 		void Update();
-		float GetElapsedSeconds() const { return ElapsedSeconds; }
-		float GetFixedElapsedSeconds() const { return TimePerFrame; }
-		float GetTotalElapsedSeconds() const { return TotalElapsedSeconds; }
-		int GetFPS() const { return FPS; }
-		float GetTimePerFrame() const { return TimePerFrame; }
+		__NODISCARD float GetElapsedSeconds() const { return ElapsedSeconds; }
+		__NODISCARD float GetFixedElapsedSeconds() const { return TimePerFrame; }
+		__NODISCARD float GetTotalElapsedSeconds() const { return TotalElapsedSeconds; }
+		__NODISCARD int GetFPS() const { return FPS; }
+		__NODISCARD float GetTimePerFrame() const { return TimePerFrame; }
 
 		/* Base templated function, should never be called */
 		template<TimeLength T>
 		float GetElapsedTime() const { return 0.f; };
 		template<>
-		float GetElapsedTime<TimeLength::NanoSeconds>() const { return ElapsedSeconds * 216'000; }
+		__NODISCARD float GetElapsedTime<TimeLength::NanoSeconds>() const { return ElapsedSeconds * 216'000; }
 		template<>
-		float GetElapsedTime<TimeLength::MicroSeconds>() const { return ElapsedSeconds * 3600; }
+		__NODISCARD float GetElapsedTime<TimeLength::MicroSeconds>() const { return ElapsedSeconds * 3600; }
 		template<>
-		float GetElapsedTime<TimeLength::MilliSeconds>() const { return ElapsedSeconds * 60; }
+		__NODISCARD float GetElapsedTime<TimeLength::MilliSeconds>() const { return ElapsedSeconds * 60; }
 		template<>
-		float GetElapsedTime<TimeLength::Seconds>() const { return ElapsedSeconds; }
+		__NODISCARD float GetElapsedTime<TimeLength::Seconds>() const { return ElapsedSeconds; }
 		template<>
-		float GetElapsedTime<TimeLength::Minutes>() const { return ElapsedSeconds / 60; }
+		__NODISCARD float GetElapsedTime<TimeLength::Minutes>() const { return ElapsedSeconds / 60; }
 		template<>
-		float GetElapsedTime<TimeLength::Hours>() const { return ElapsedSeconds / 3600; }
+		__NODISCARD float GetElapsedTime<TimeLength::Hours>() const { return ElapsedSeconds / 3600; }
 
 		/* Base templated function, should never be called */
 		template<TimeLength T>
-		float GetFixedElapsedTime() const { return 0.f; }
+		__NODISCARD float GetFixedElapsedTime() const { return 0.f; }
 		template<>
-		float GetFixedElapsedTime<TimeLength::NanoSeconds>() const { return TimePerFrame * 216'000; }
+		__NODISCARD float GetFixedElapsedTime<TimeLength::NanoSeconds>() const { return TimePerFrame * 216'000; }
 		template<>
-		float GetFixedElapsedTime<TimeLength::MicroSeconds>() const { return TimePerFrame * 3600; }
+		__NODISCARD float GetFixedElapsedTime<TimeLength::MicroSeconds>() const { return TimePerFrame * 3600; }
 		template<>
-		float GetFixedElapsedTime<TimeLength::MilliSeconds>() const { return TimePerFrame * 60; }
+		__NODISCARD float GetFixedElapsedTime<TimeLength::MilliSeconds>() const { return TimePerFrame * 60; }
 		template<>
-		float GetFixedElapsedTime<TimeLength::Seconds>() const { return TimePerFrame; }
+		__NODISCARD float GetFixedElapsedTime<TimeLength::Seconds>() const { return TimePerFrame; }
 		template<>
-		float GetFixedElapsedTime<TimeLength::Minutes>() const { return TimePerFrame / 60; }
+		__NODISCARD float GetFixedElapsedTime<TimeLength::Minutes>() const { return TimePerFrame / 60; }
 		template<>
-		float GetFixedElapsedTime<TimeLength::Hours>() const { return TimePerFrame / 3600; }
+		__NODISCARD float GetFixedElapsedTime<TimeLength::Hours>() const { return TimePerFrame / 3600; }
 
 		/* Base templated function, should never be called */
 		template<TimeLength T>
-		float GetTotalElapsedSeconds() const { return 0.f; }
+		__NODISCARD float GetTotalElapsedSeconds() const { return 0.f; }
 		template<>
-		float GetTotalElapsedSeconds<TimeLength::NanoSeconds>() const { return TotalElapsedSeconds * 216'000; }
+		__NODISCARD float GetTotalElapsedSeconds<TimeLength::NanoSeconds>() const { return TotalElapsedSeconds * 216'000; }
 		template<>
-		float GetTotalElapsedSeconds<TimeLength::MicroSeconds>() const { return TotalElapsedSeconds * 3600; }
+		__NODISCARD float GetTotalElapsedSeconds<TimeLength::MicroSeconds>() const { return TotalElapsedSeconds * 3600; }
 		template<>
-		float GetTotalElapsedSeconds<TimeLength::MilliSeconds>() const { return TotalElapsedSeconds * 60; }
+		__NODISCARD float GetTotalElapsedSeconds<TimeLength::MilliSeconds>() const { return TotalElapsedSeconds * 60; }
 		template<>
-		float GetTotalElapsedSeconds<TimeLength::Seconds>() const { return TotalElapsedSeconds; }
+		__NODISCARD float GetTotalElapsedSeconds<TimeLength::Seconds>() const { return TotalElapsedSeconds; }
 		template<>
-		float GetTotalElapsedSeconds<TimeLength::Minutes>() const { return TotalElapsedSeconds / 60; }
+		__NODISCARD float GetTotalElapsedSeconds<TimeLength::Minutes>() const { return TotalElapsedSeconds / 60; }
 		template<>
-		float GetTotalElapsedSeconds<TimeLength::Hours>() const { return TotalElapsedSeconds / 3600; }
+		__NODISCARD float GetTotalElapsedSeconds<TimeLength::Hours>() const { return TotalElapsedSeconds / 3600; }
 
 	private:
 		Timer();
