@@ -72,6 +72,9 @@
     <ClCompile Include="Components\TransformComponent\TransformComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CameraComponent\CameraComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window\Window.h">
@@ -153,6 +156,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Components\TransformComponent\TransformComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraComponent\CameraComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
