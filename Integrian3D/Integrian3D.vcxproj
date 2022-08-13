@@ -183,7 +183,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="CameraComponent\CameraComponent.cpp" />
+    <ClCompile Include="Components\CameraComponent\CameraComponent.cpp" />
     <ClCompile Include="Core\Core.cpp" />
     <ClCompile Include="FileReader\FileReader.cpp" />
     <ClCompile Include="InputManager\InputManager.cpp" />
@@ -205,7 +205,7 @@
     <ClCompile Include="Window\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CameraComponent\CameraComponent.h" />
+    <ClInclude Include="Components\CameraComponent\CameraComponent.h" />
     <ClInclude Include="ECS\ComponentArray\ComponentArray.h" />
     <ClInclude Include="ECS\ComponentIDGenerator\ComponentIDGenerator.h" />
     <ClInclude Include="Core\Core.h" />
