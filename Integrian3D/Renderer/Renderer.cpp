@@ -27,7 +27,7 @@ namespace Integrian3D
 		return *Instance.get();
 	}
 
-	void Renderer::StartRenderLoop()
+	void Renderer::StartRenderLoop() const
 	{
 		/* Sets the Clear Colour */
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -43,7 +43,7 @@ namespace Integrian3D
 		}
 	}
 
-	void Renderer::Render(const MeshComponent& meshComponent, const TransformComponent& transformComponent)
+	void Renderer::Render(const MeshComponent& meshComponent, const TransformComponent& transformComponent) const
 	{
 		/* Use our shader program! */
 		Shader.Activate();

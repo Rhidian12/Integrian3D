@@ -1,5 +1,6 @@
 #pragma once 
 
+#include "../EngineConstants.h"
 #include "../Shader/Shader.h"
 
 #include <memory> /* std::unique_ptr */
@@ -16,13 +17,13 @@ namespace Integrian3D
 		Renderer& operator=(const Renderer&) noexcept = delete;
 		Renderer& operator=(Renderer&&) noexcept = delete;
 
-		void StartRenderLoop();
+		void StartRenderLoop() const;
 
-		void Render(const class MeshComponent& meshComponent, const class TransformComponent& transformComponent);
+		void Render(const class MeshComponent& meshComponent, const class TransformComponent& transformComponent) const;
 
 		void ShouldRenderWireframe(const bool bShouldRenderWireFrame) { bShouldRenderWireframe = bShouldRenderWireFrame; }
 
-		const Shader& GetShader() const { return Shader; }
+		__NODISCARD const Shader& GetShader() const { return Shader; }
 
 	private:
 		Renderer();
