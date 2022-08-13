@@ -18,6 +18,21 @@ namespace Integrian3D
 		Debug::LogMessage("Finished initialisation of engine", false);
 	}
 
+	Core& Core::GetInstance()
+	{
+		return *Instance.get();
+	}
+
+	Core& Core::CreateCore(const int windowWidth, const int windowHeight)
+	{
+		if (!Instance)
+		{
+			Instance = std::unique_ptr<Core>(new Core{ windowWidth, windowHeight });
+		}
+
+		return *Instance.get();
+	}
+
 	void Core::Run()
 	{
 		Timer& timer{ Timer::GetInstance() };

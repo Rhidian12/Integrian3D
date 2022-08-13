@@ -3,6 +3,8 @@
 #include "../EngineConstants.h"
 #include "../Window/Window.h"
 
+#include <memory> /* std::unique_ptr */
+
 namespace Integrian3D
 {
 	inline volatile bool g_IsRunning{ true };
@@ -10,8 +12,9 @@ namespace Integrian3D
 	class Core final
 	{
 	public:
-		Core(const int windowWidth, const int windowHeight);
-
+		static Core& GetInstance();
+		static Core& CreateCore(const int windowWidth, const int windowHeight);
+			
 		Core(const Core&) noexcept = delete;
 		Core(Core&&) noexcept = delete;
 		Core& operator=(const Core&) noexcept = delete;
@@ -23,6 +26,10 @@ namespace Integrian3D
 		__NODISCARD int GetWindowHeight() const { return Window.GetHeight(); }
 
 	private:
+		Core(const int windowWidth, const int windowHeight);
+
 		Detail::Window Window;
+
+		inline static std::unique_ptr<Core> Instance{};
 	};
 }
