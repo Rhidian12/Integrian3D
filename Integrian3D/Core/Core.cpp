@@ -9,6 +9,7 @@
 #include "../Components/TransformComponent/TransformComponent.h"
 
 #include <gtc/matrix_transform.hpp>
+#include <assert.h>
 
 namespace Integrian3D
 {
@@ -20,15 +21,16 @@ namespace Integrian3D
 
 	Core& Core::GetInstance()
 	{
+		assert(Instance != nullptr && "Core::GetInstance() > No core has been created");
+
 		return *Instance.get();
 	}
 
 	Core& Core::CreateCore(const int windowWidth, const int windowHeight)
 	{
-		if (!Instance)
-		{
-			Instance = std::unique_ptr<Core>(new Core{ windowWidth, windowHeight });
-		}
+		assert(Instance == nullptr && "Core::CreateCore() > A core has already been created");
+
+		Instance = std::unique_ptr<Core>(new Core{ windowWidth, windowHeight });
 
 		return *Instance.get();
 	}
