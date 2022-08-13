@@ -13,15 +13,16 @@ namespace Integrian3D
 		, OnSceneLeaveCallback{}
 		, Registry{}
 		, SceneName{ sceneName }
+		, CameraEntity{ InvalidEntityID }
 	{
 	}
 
 	void Scene::Start()
 	{
 		{
-			const Entity camera{ CreateEntity() };
+			CameraEntity = CreateEntity();
 			AddComponent<CameraComponent, float, float, float, float>(
-				camera,
+				CameraEntity,
 				0.1f,
 				100.f,
 				MathUtils::ToRadians(45.f),

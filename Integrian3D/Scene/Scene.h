@@ -13,10 +13,6 @@ namespace Integrian3D
 	public:
 		explicit Scene(const std::string& sceneName);
 
-		void AddSceneInitialisation(const std::function<void(const Scene&)>& fn) { InitializeCallback = fn; }
-		void AddOnSceneEnter(const std::function<void(const Scene&)>& fn) { OnSceneEnterCallback = fn; }
-		void AddOnSceneLeave(const std::function<void(const Scene&)>& fn) { OnSceneLeaveCallback = fn; }
-
 		/* -------------- Begin of ECS Functionality -------------- */
 		__NODISCARD Entity CreateEntity();
 
@@ -45,8 +41,17 @@ namespace Integrian3D
 		__NODISCARD View<Ts...> CreateView() { return Registry.CreateView<Ts...>(); }
 		/* -------------- End of ECS Functionality -------------- */
 
+
+		/* -------------- Begin of Scene Functionality -------------- */
 		__NODISCARD const std::string& GetSceneName() const { return SceneName; }
 
+		void AddSceneInitialisation(const std::function<void(const Scene&)>& fn) { InitializeCallback = fn; }
+
+		void AddOnSceneEnter(const std::function<void(const Scene&)>& fn) { OnSceneEnterCallback = fn; }
+
+		void AddOnSceneLeave(const std::function<void(const Scene&)>& fn) { OnSceneLeaveCallback = fn; }
+
+		__NODISCARD CameraComponent& GetCamera() { return GetComponent<CameraComponent>(CameraEntity); }
 
 		/* -------------- Start of Internal Functionality -------------- */
 		void Start();
@@ -62,5 +67,6 @@ namespace Integrian3D
 		std::function<void(Scene&)> OnSceneLeaveCallback;
 		Registry Registry;
 		std::string SceneName;
+		Entity CameraEntity;
 	};
 }
