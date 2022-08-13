@@ -86,7 +86,7 @@ namespace Integrian3D
 
 			/* Rendering */
 			{
-				renderer.StartRenderLoop();
+				renderer.StartRenderLoop(activeScene.GetCamera());
 				View<MeshComponent, TransformComponent> renderView{ activeScene.CreateView<MeshComponent, TransformComponent>() };
 				renderView.ForEach([&renderer](const MeshComponent& meshComponent, const TransformComponent& transformComponent)->void
 					{

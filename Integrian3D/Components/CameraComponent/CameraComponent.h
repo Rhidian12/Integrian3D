@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../../EngineConstants.h"
+
 #include <glm.hpp>
 
 namespace Integrian3D
@@ -8,6 +10,9 @@ namespace Integrian3D
 	{
 	public:
 		CameraComponent(const float nearPlane, const float farPlane, const float fov, const float aspectRatio);
+
+		__NODISCARD const glm::mat4& GetView() const { return View; }
+		__NODISCARD const glm::mat4& GetProjection() const { return Projection; }
 
 	private:
 		float NearPlane;

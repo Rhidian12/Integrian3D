@@ -2,6 +2,7 @@
 
 #include "../EngineConstants.h"
 #include "../ECS/Registry/Registry.h"
+#include "../Components/CameraComponent/CameraComponent.h"
 
 #include <functional> /* std::function */
 #include <utility> /* std::forward */

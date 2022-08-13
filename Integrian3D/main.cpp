@@ -9,7 +9,7 @@ int main()
 {
 	using namespace Integrian3D;
 
-	Core core{ 640,480 };
+	Core& core{ Core::CreateCore(640,480) };
 
 	Scene testScene{ "TestScene" };
 
@@ -33,7 +33,7 @@ int main()
 	Entity entity = testScene.CreateEntity();
 	testScene.AddComponent<MeshComponent>(entity, vertices, indices, TextureManager::GetInstance().GetTexture("__Wall"));
 	TransformComponent& transform{ testScene.GetComponent<TransformComponent>(entity) };
-	transform.Rotate(glm::vec3{ 0.f, 0.f, 1.f }, MathUtils::ToRadians(45.f));
+	transform.Rotate(glm::vec3{ 1.f, 0.f, 0.f }, MathUtils::ToRadians(-55.f));
 
 	SceneManager::GetInstance().AddScene(std::move(testScene));
 

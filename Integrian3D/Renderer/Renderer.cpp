@@ -7,6 +7,7 @@
 #include "../DebugUtility/DebugUtility.h"
 #include "../Components/MeshComponent/MeshComponent.h"
 #include "../Components/TransformComponent/TransformComponent.h"
+#include "../Components/CameraComponent/CameraComponent.h"
 #include "../Shader/Shader.h"
 
 namespace Integrian3D
@@ -27,7 +28,7 @@ namespace Integrian3D
 		return *Instance.get();
 	}
 
-	void Renderer::StartRenderLoop() const
+	void Renderer::StartRenderLoop(const CameraComponent& camera) const
 	{
 		/* Sets the Clear Colour */
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -41,13 +42,17 @@ namespace Integrian3D
 		{
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		}
+
+		/* Use our shader program! */
+		Shader.Activate();
+
+		Shader.SetMatrix("_View", camera.GetView());
+
+		Shader.SetMatrix("_Projection", camera.GetProjection());
 	}
 
 	void Renderer::Render(const MeshComponent& meshComponent, const TransformComponent& transformComponent) const
 	{
-		/* Use our shader program! */
-		Shader.Activate();
-
 		/* Set our Matrix */
 		Shader.SetMatrix("_Transform", transformComponent.Transformation);
 
