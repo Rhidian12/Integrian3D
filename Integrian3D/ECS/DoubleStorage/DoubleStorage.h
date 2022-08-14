@@ -11,15 +11,19 @@ namespace Integrian3D
 	public:
 		UTree() = default;
 
-		void Add(const TKey& key, const TValue& val)
+		TValue& Add(const TKey& key, const TValue& val)
 		{
 			Keys.push_back(key);
 			Values.push_back(val);
+
+			return Values.back();
 		}
-		void Add(TKey&& key, TValue&& val)
+		TValue& Add(TKey&& key, TValue&& val)
 		{
 			Keys.push_back(std::move(key));
 			Values.push_back(std::move(val));
+
+			return Values.back();
 		}
 
 		void Remove(const TKey& key)
