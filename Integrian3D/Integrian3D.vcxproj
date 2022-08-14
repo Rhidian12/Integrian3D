@@ -185,7 +185,6 @@
   <ItemGroup>
     <ClCompile Include="Components\CameraComponent\CameraComponent.cpp" />
     <ClCompile Include="Core\Core.cpp" />
-    <ClCompile Include="ECS\DoubleStorage\DoubleStorage.cpp" />
     <ClCompile Include="FileReader\FileReader.cpp" />
     <ClCompile Include="InputManager\InputManager.cpp" />
     <ClCompile Include="Libraries\glad\src\glad.c" />
