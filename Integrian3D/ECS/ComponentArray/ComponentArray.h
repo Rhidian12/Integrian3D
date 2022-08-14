@@ -1,8 +1,7 @@
 #pragma once
 
 #include "../../EngineConstants.h"
-
-#include <vector> /* std::vector */
+#include "../DoubleStorage/DoubleStorage.h"
 
 namespace Integrian3D
 {
@@ -18,28 +17,28 @@ namespace Integrian3D
 	class ComponentArray final : public IComponentArray
 	{
 	public:
-		T& AddComponent()
+		T& AddComponent(const Entity entity)
 		{
-			return Components.emplace_back(T{});
+			return Components.Add(entity, T{});
 		}
 		template<typename ... Ts>
-		T& AddComponent(Ts&& ... args)
+		T& AddComponent(const Entity entity, Ts&& ... args)
 		{
-			return Components.emplace_back(T{ std::forward<Ts>(args)... });
+			return Components.Add(entity, T{ std::forward<Ts>(args)... });
 		}
 
 		virtual void Remove(const Entity entity) override
 		{
-			Components.erase(Components.begin() + entity);
+			Components.Remove(entity);
 		}
 
-		__NODISCARD T& GetComponent(const Entity entity) { return Components[entity]; }
-		__NODISCARD const T& GetComponent(const Entity entity) const { return Components[entity]; }
+		__NODISCARD T& GetComponent(const Entity entity) { return Components.GetValue(entity); }
+		__NODISCARD const T& GetComponent(const Entity entity) const { return Components.GetValue(entity); }
 
-		__NODISCARD std::vector<T>& GetComponents() { return Components; }
-		__NODISCARD const std::vector<T>& GetComponents() const { return Components; }
+		__NODISCARD std::vector<T>& GetComponents() { return Components.GetValues(); }
+		__NODISCARD const std::vector<T>& GetComponents() const { return Components.GetValues(); }
 
 	private:
-		std::vector<T> Components;
+		DoubleStorage<Entity, T> Components;
 	};
 }
