@@ -11,17 +11,10 @@ namespace Integrian3D
 	public:
 		DoubleStorage() = default;
 
-		TValue& Add(const TKey& key, const TValue& val)
+		TValue& Add(const TKey& key, TValue&& val)
 		{
-			Keys.push_back(key);
-			Values.push_back(val);
-
-			return Values.back();
-		}
-		TValue& Add(TKey&& key, TValue&& val)
-		{
-			Keys.push_back(std::move(key));
-			Values.push_back(std::move(val));
+			Keys.emplace_back(key);
+			Values.emplace_back(std::forward<TValue>(val));
 
 			return Values.back();
 		}

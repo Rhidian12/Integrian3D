@@ -40,7 +40,7 @@ namespace Integrian3D
 				pool.reset(new ComponentArray<T>{});
 			}
 
-			return static_cast<ComponentArray<T>*>(pool.get())->AddComponent();
+			return static_cast<ComponentArray<T>*>(pool.get())->AddComponent(entity);
 		}
 		template<typename T, typename ... Ts>
 		T& AddComponent(const Entity entity, Ts&& ... args)
@@ -54,7 +54,7 @@ namespace Integrian3D
 				pool.reset(new ComponentArray<T>{});
 			}
 
-			return static_cast<ComponentArray<T>*>(pool.get())->AddComponent<Ts...>(std::forward<Ts>(args)...);
+			return static_cast<ComponentArray<T>*>(pool.get())->AddComponent<Ts...>(entity, std::forward<Ts>(args)...);
 		}
 
 		template<typename T>
@@ -70,13 +70,13 @@ namespace Integrian3D
 		__NODISCARD T& GetComponent(const Entity entity)
 		{
 			assert(ComponentPools[GenerateComponentID<T>()]);
-			return static_cast<ComponentArray<T>*>(ComponentPools[GenerateComponentID<T>()].get())->GetComponent(Entities.GetIndex(entity));
+			return static_cast<ComponentArray<T>*>(ComponentPools[GenerateComponentID<T>()].get())->GetComponent(entity);
 		}
 		template<typename T>
 		__NODISCARD const T& GetComponent(const Entity entity) const
 		{
 			assert(ComponentPools[GenerateComponentID<T>()]);
-			return static_cast<ComponentArray<T>*>(ComponentPools[GenerateComponentID<T>()].get())->GetComponent(Entities.GetIndex(entity));
+			return static_cast<ComponentArray<T>*>(ComponentPools[GenerateComponentID<T>()].get())->GetComponent(entity);
 		}
 
 		template<typename T>
