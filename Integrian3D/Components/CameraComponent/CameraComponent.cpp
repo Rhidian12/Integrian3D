@@ -15,7 +15,7 @@ namespace Integrian3D
 		, View{ 1.f }
 		, Projection{ 1.f }
 	{
-		View = glm::translate(View, glm::vec3{ 0.f, 0.f, -10.f });
+		View = glm::translate(View, glm::vec3{ 0.f, 0.f, -3.f });
 		Projection = glm::perspective(FOV, AspectRatio, NearPlane, FarPlane);
 	}
 }
