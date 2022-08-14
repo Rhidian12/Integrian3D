@@ -53,6 +53,8 @@ namespace Integrian3D
 		void AddOnSceneLeave(const std::function<void(const Scene&)>& fn) { OnSceneLeaveCallback = fn; }
 
 		__NODISCARD CameraComponent& GetCamera() { return GetComponent<CameraComponent>(CameraEntity); }
+		/* -------------- End of Scene Functionality -------------- */
+
 
 		/* -------------- Start of Internal Functionality -------------- */
 		void Start();
