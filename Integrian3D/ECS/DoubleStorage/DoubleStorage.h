@@ -9,7 +9,7 @@ namespace Integrian3D
 	class DoubleStorage final
 	{
 	public:
-		UTree() = default;
+		DoubleStorage() = default;
 
 		TValue& Add(const TKey& key, const TValue& val)
 		{
