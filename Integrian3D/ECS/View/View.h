@@ -1,15 +1,19 @@
 #pragma once
 
 #include <vector> /* std::vector */
+#include <assert.h> /* assert() */
 #include <utility> /* std::move(), ... */
-#include <functional> /* std::function */
+#include <functional> /* std::function, std::reference_wrapper */
+#include <array> /* std::array */
+
+#include "../Memory/Memory.h"
 
 namespace Integrian3D
 {
 	template<typename ... TComponents>
 	class View final
 	{
-		using ViewContainerType = std::tuple<std::vector<TComponents>&...>;
+		using ViewContainerType = std::tuple<std::vector<std::reference_wrapper<TComponents>, STLAllocator<std::reference_wrapper<TComponents>, StackAllocator>>...>;
 
 	public:
 		explicit View(ViewContainerType&& components)

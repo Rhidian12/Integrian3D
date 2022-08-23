@@ -5,6 +5,7 @@
 #include "../View/View.h"
 #include "../ComponentIDGenerator/ComponentIDGenerator.h"
 #include "../ComponentArray/ComponentArray.h"
+#include "../Memory/Memory.h"
 
 #include <assert.h> /* assert() */
 #include <unordered_map> /* unordered_map */
@@ -23,9 +24,21 @@ namespace Integrian3D
 		Registry& operator=(Registry&& other) noexcept;
 
 		template<typename ... TComponents>
-		__NODISCARD View<TComponents...> CreateView()
+		[[nodiscard]] View<TComponents...> CreateView()
 		{
-			return View<TComponents...>{ std::tuple<std::vector<TComponents>&...>{ GetComponents<TComponents>()... } };
+			/* Get all components asked for by the user */
+			std::tuple<std::vector<std::reference_wrapper<TComponents>, STLAllocator<std::reference_wrapper<TComponents>, StackAllocator>>...> comps
+			{
+				std::vector<std::reference_wrapper<TComponents>, STLAllocator<std::reference_wrapper<TComponents>, StackAllocator>>
+				{
+					GetComponents<TComponents>().begin(), GetComponents<TComponents>().end(), Allocator
+				}...
+			};
+
+			/* Loop over a vector and get rid of the elements in the vector that are attached to an entity but does not have all components */
+			FilterVector<TComponents...>(comps, std::make_index_sequence<sizeof ... (TComponents)>{});
+
+			return View<TComponents...>{ std::move(comps) };
 		}
 
 		template<typename T>
@@ -40,7 +53,14 @@ namespace Integrian3D
 				pool.reset(new ComponentArray<T>{});
 			}
 
-			return static_cast<ComponentArray<T>*>(pool.get())->AddComponent(entity);
+			T& comp{ static_cast<ComponentArray<T>*>(pool.get())->AddComponent(entity) };
+
+			if (static_cast<ComponentArray<T>*>(pool.get())->GetComponents().size() * sizeof(T) > Allocator.GetCapacity() * 2.f / 3.f)
+			{
+				Allocator.Reallocate(Allocator.GetCapacity() * 2);
+			}
+
+			return comp;
 		}
 		template<typename T, typename ... Ts>
 		T& AddComponent(const Entity entity, Ts&& ... args)
@@ -54,7 +74,14 @@ namespace Integrian3D
 				pool.reset(new ComponentArray<T>{});
 			}
 
-			return static_cast<ComponentArray<T>*>(pool.get())->AddComponent<Ts...>(entity, std::forward<Ts>(args)...);
+			T& comp{ static_cast<ComponentArray<T>*>(pool.get())->AddComponent<Ts...>(entity, std::forward<Ts>(args)...) };
+
+			if (static_cast<ComponentArray<T>*>(pool.get())->GetComponents().size() * sizeof(T) > Allocator.GetCapacity() * 2.f / 3.f)
+			{
+				Allocator.Reallocate(Allocator.GetCapacity() * 2);
+			}
+
+			return comp;
 		}
 
 		template<typename T>
@@ -62,31 +89,31 @@ namespace Integrian3D
 		{
 			assert(Entities.Contains(entity));
 
-			ComponentPools[GenerateComponentID<T>()]->Remove(Entities.GetIndex(entity));
+			ComponentPools[GenerateComponentID<T>()]->Remove(entity);
 			SetEntitySignature(entity, GenerateComponentID<T>(), false);
 		}
 
 		template<typename T>
-		__NODISCARD T& GetComponent(const Entity entity)
+		T& GetComponent(const Entity entity)
 		{
 			assert(ComponentPools[GenerateComponentID<T>()]);
 			return static_cast<ComponentArray<T>*>(ComponentPools[GenerateComponentID<T>()].get())->GetComponent(entity);
 		}
 		template<typename T>
-		__NODISCARD const T& GetComponent(const Entity entity) const
+		const T& GetComponent(const Entity entity) const
 		{
 			assert(ComponentPools[GenerateComponentID<T>()]);
 			return static_cast<ComponentArray<T>*>(ComponentPools[GenerateComponentID<T>()].get())->GetComponent(entity);
 		}
 
 		template<typename T>
-		__NODISCARD std::vector<T>& GetComponents()
+		std::vector<T>& GetComponents()
 		{
 			assert(ComponentPools[GenerateComponentID<T>()]);
 			return static_cast<ComponentArray<T>*>(ComponentPools[GenerateComponentID<T>()].get())->GetComponents();
 		}
 		template<typename T>
-		__NODISCARD const std::vector<T>& GetComponents() const
+		const std::vector<T>& GetComponents() const
 		{
 			assert(ComponentPools[GenerateComponentID<T>()]);
 			return static_cast<ComponentArray<T>*>(ComponentPools[GenerateComponentID<T>()].get())->GetComponents();
@@ -94,20 +121,45 @@ namespace Integrian3D
 
 		Entity CreateEntity();
 		bool ReleaseEntity(Entity entity);
-		__NODISCARD Entity GetAmountOfEntities() const { return CurrentEntityCounter; }
+		Entity GetAmountOfEntities() const { return CurrentEntityCounter; }
 
 		void SetEntitySignature(const Entity entity, const EntitySignature sig) { assert(EntitySignatures.find(entity) != EntitySignatures.cend()); EntitySignatures[entity] = sig; }
 		void SetEntitySignature(const Entity entity, const ComponentType id, const bool val = true) { assert(EntitySignatures.find(entity) != EntitySignatures.cend()); EntitySignatures[entity].set(id, val); }
 
-		__NODISCARD EntitySignature GetEntitySignature(const Entity entity) const { assert(EntitySignatures.find(entity) != EntitySignatures.cend()); return EntitySignatures.find(entity)->second; }
+		const EntitySignature& GetEntitySignature(const Entity entity) const { assert(EntitySignatures.find(entity) != EntitySignatures.cend()); return EntitySignatures.find(entity)->second; }
 
 	private:
 		void RemoveAllComponents(const Entity entity, const EntitySignature& sig);
+
+		template<typename ... TComponents, size_t ... Indices>
+		void FilterVector(std::tuple<std::vector<std::reference_wrapper<TComponents>, STLAllocator<std::reference_wrapper<TComponents>, StackAllocator>>...>& tuple,
+			std::index_sequence<Indices...>)
+		{
+			for (const Entity entity : Entities)
+			{
+				const EntitySignature& sig{ GetEntitySignature(entity) };
+
+				if (!(sig.test(GenerateComponentID<TComponents>()) && ...))
+				{
+					// (std::get<Indices>(tuple).erase(std::get<Indices>(tuple).begin() + entity), ...);
+					(SafeRemove(std::get<Indices>(tuple), entity), ...);
+				}
+			}
+		}
+
+		template<typename T>
+		void SafeRemove(std::vector<std::reference_wrapper<T>, STLAllocator<std::reference_wrapper<T>, StackAllocator>>& v, const Entity entity)
+		{
+			if (v.cbegin() + entity < v.cend())
+			{
+				v.erase(v.begin() + entity);
+			}
+		}
 
 		std::unordered_map<Entity, EntitySignature> EntitySignatures;
 		SparseSet<Entity> Entities;
 		Entity CurrentEntityCounter;
 		std::unordered_map<ComponentType, std::unique_ptr<IComponentArray>> ComponentPools;
+		StackAllocator Allocator;
 	};
-
 }

@@ -193,6 +193,7 @@
     <ClCompile Include="Math\MathUtils.cpp" />
     <ClCompile Include="Components\MeshComponent\MeshComponent.cpp" />
     <ClCompile Include="ECS\Registry\Registry.cpp" />
+    <ClCompile Include="ECS\Memory\Memory.cpp" />
     <ClCompile Include="Renderer\Renderer.cpp" />
     <ClCompile Include="SceneManager\SceneManager.cpp" />
     <ClCompile Include="Scene\Scene.cpp" />
@@ -221,6 +222,7 @@
     <ClInclude Include="Math\RGBColour.h" />
     <ClInclude Include="Components\MeshComponent\MeshComponent.h" />
     <ClInclude Include="ECS\Registry\Registry.h" />
+    <ClInclude Include="ECS\Memory\Memory.h" />
     <ClInclude Include="Renderer\Renderer.h" />
     <ClInclude Include="SceneManager\SceneManager.h" />
     <ClInclude Include="Scene\Scene.h" />
