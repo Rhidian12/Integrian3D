@@ -141,7 +141,6 @@ namespace Integrian3D
 
 				if (!(sig.test(GenerateComponentID<TComponents>()) && ...))
 				{
-					// (std::get<Indices>(tuple).erase(std::get<Indices>(tuple).begin() + entity), ...);
 					(SafeRemove(std::get<Indices>(tuple), entity), ...);
 				}
 			}
