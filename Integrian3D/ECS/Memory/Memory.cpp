@@ -16,15 +16,27 @@ namespace Integrian3D
 	}
 
 	StackAllocator::StackAllocator(StackAllocator&& other) noexcept
-		: pBuffer{ std::move(other.pBuffer) }
+		: pBuffer{}
 		, StackPointer{ std::move(other.StackPointer) }
 		, Capacity{ std::move(other.Capacity) }
 	{
+		if (pBuffer)
+		{
+			free(pBuffer);
+		}
+
+		pBuffer = std::move(other.pBuffer);
+
 		other.pBuffer = nullptr;
 	}
 
 	StackAllocator& StackAllocator::operator=(StackAllocator&& other) noexcept
 	{
+		if (pBuffer)
+		{
+			free(pBuffer);
+		}
+
 		pBuffer = std::move(other.pBuffer);
 		StackPointer = std::move(other.StackPointer);
 		Capacity = std::move(other.Capacity);
