@@ -15,7 +15,7 @@ int main()
 
 	std::vector<Vertex> vertices =
 	{
-		// positions          // colors           // texture coords
+		// positions										// colors           // texture coords
 		Vertex{ glm::vec3{ 0.5f,  0.5f, 0.0f },   RGBColour{ 1.0f, 0.0f, 0.0f },   glm::vec2{ 1.0f, 1.0f } },   // top right
 		Vertex{ glm::vec3{ 0.5f, -0.5f, 0.0f },   RGBColour{ 0.0f, 1.0f, 0.0f },   glm::vec2{ 1.0f, 0.0f } },   // bottom right
 		Vertex{ glm::vec3{ -0.5f, -0.5f, 0.0f },   RGBColour{ 0.0f, 0.0f, 1.0f },   glm::vec2{ 0.0f, 0.0f } },   // bottom left

@@ -16,7 +16,9 @@ namespace Integrian3D
 		: ShaderProgramID{}
 		, bShouldRenderWireframe{}
 		, Shader{ "Resources/VertexShader.txt", "Resources/FragmentShader.txt" }
-	{}
+	{
+		glEnable(GL_DEPTH_TEST);
+	}
 
 	Renderer& Renderer::GetInstance()
 	{
@@ -32,7 +34,7 @@ namespace Integrian3D
 	{
 		/* Sets the Clear Colour */
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		if (!bShouldRenderWireframe)
 		{
