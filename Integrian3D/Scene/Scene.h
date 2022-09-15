@@ -8,6 +8,7 @@
 #include <utility> /* std::forward */
 #include <string> /* std::string */
 #include <string_view> /* std::string_view */
+#include <vector> /* std::vector */
 
 namespace Integrian3D
 {

@@ -58,6 +58,12 @@ namespace Integrian3D
 			{
 				{
 					/* [TODO]: add user defined updates here */
+					/*
+					for (const std::function<void()>& fn : activeScene.GetUpdates())
+					{
+						activeScene.CreateView<
+					}
+					*/
 				}
 
 				/* Transform update */
@@ -93,6 +99,7 @@ namespace Integrian3D
 					});
 			}
 
+			/* Swap buffers */
 			Window.Update();
 		}
 	}
