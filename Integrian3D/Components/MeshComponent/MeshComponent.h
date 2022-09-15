@@ -13,7 +13,7 @@ namespace Integrian3D
 	class MeshComponent final
 	{
 	public:
-		MeshComponent() = default;
+		explicit MeshComponent() = default;
 		MeshComponent(const std::string& filePath, Texture* const pTex);
 		MeshComponent(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices, Texture* const pTex);
 		~MeshComponent();

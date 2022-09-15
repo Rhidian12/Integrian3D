@@ -13,6 +13,11 @@ namespace Integrian3D
 		explicit FileReader(const std::string& filePath);
 		~FileReader();
 
+		FileReader(const FileReader&) noexcept = delete;
+		FileReader(FileReader&& other) noexcept;
+		FileReader& operator=(const FileReader&) noexcept = delete;
+		FileReader& operator=(FileReader&& other) noexcept;
+
 		__NODISCARD const std::string& GetFilePath() const { return FilePath; }
 		__NODISCARD const std::string& GetFileContents() const { return FileContents; }
 

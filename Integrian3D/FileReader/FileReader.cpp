@@ -15,18 +15,14 @@ namespace Integrian3D
 	{
 		/* open the file */
 		Handle = CreateFileA(filePath.c_str(),
-				GENERIC_READ,
-				FILE_SHARE_READ,
-				nullptr,
-				OPEN_EXISTING,
-				FILE_ATTRIBUTE_NORMAL,
-				nullptr);
+			GENERIC_READ,
+			FILE_SHARE_READ,
+			nullptr,
+			OPEN_EXISTING,
+			FILE_ATTRIBUTE_NORMAL,
+			nullptr);
 
-		if (Handle == INVALID_HANDLE_VALUE)
-		{
-			Debug::LogError("FileReader could not open the provided file", false);
-			return;
-		}
+		__ASSERT(Handle != INVALID_HANDLE_VALUE && "FileReader could not open the provided file");
 
 		/* Get the file size */
 		const DWORD fileSize{ GetFileSize(Handle, nullptr) };
@@ -37,7 +33,6 @@ namespace Integrian3D
 		if (ReadFile(Handle, FileContents.data(), fileSize, &readBytes, nullptr) == 0)
 		{
 			Debug::LogError("FileReader could not read the provided file", false);
-			return;
 		}
 	}
 
@@ -47,5 +42,41 @@ namespace Integrian3D
 		{
 			Debug::LogError("FileReader could not close the provided file", false);
 		}
+	}
+
+	FileReader::FileReader(FileReader&& other) noexcept
+		: Handle{}
+		, FilePath{ std::move(other.FilePath) }
+		, FileContents{ std::move(other.FileContents) }
+	{
+		if (Handle)
+		{
+			if (CloseHandle(Handle) == 0)
+			{
+				Debug::LogError("FileReader could not close the provided file", false);
+			}
+		}
+
+		Handle = std::move(other.Handle);
+		other.Handle = nullptr;
+	}
+
+	FileReader& FileReader::operator=(FileReader&& other) noexcept
+	{
+		FilePath = std::move(other.FilePath);
+		FileContents = std::move(other.FileContents);
+
+		if (Handle)
+		{
+			if (CloseHandle(Handle) == 0)
+			{
+				Debug::LogError("FileReader could not close the provided file", false);
+			}
+		}
+
+		Handle = std::move(other.Handle);
+		other.Handle = nullptr;
+
+		return *this;
 	}
 }

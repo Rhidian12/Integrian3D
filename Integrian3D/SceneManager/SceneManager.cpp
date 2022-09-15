@@ -36,7 +36,7 @@ namespace Integrian3D
 				return scene.GetSceneName() == sceneName;
 			}) };
 
-		assert(it != Scenes.end());
+		__ASSERT(it != Scenes.end() && "SceneManager::ChangeScene() > No scene with the specified name was found");
 
 		pActiveScene->OnSceneLeave();
 
@@ -52,7 +52,7 @@ namespace Integrian3D
 				return scene.GetSceneName() == sceneName;
 			}) };
 
-		assert(it != Scenes.end());
+		__ASSERT(it != Scenes.end() && "SceneManager::GetScene() > No scene with the specified name was found");
 
 		return *it;
 	}
@@ -64,7 +64,7 @@ namespace Integrian3D
 				return scene.GetSceneName() == sceneName;
 			}) };
 
-		assert(cIt != Scenes.cend());
+		__ASSERT(cIt != Scenes.end() && "SceneManager::GetScene() > No scene with the specified name was found");
 
 		return *cIt;
 	}

@@ -1,15 +1,15 @@
 #pragma once
 
-#include <glm.hpp>
-
 #include "../../EngineConstants.h"
+
+#include <glm.hpp> /* GLM */
 
 namespace Integrian3D
 {
 	class TransformComponent final
 	{
 	public:
-		TransformComponent();
+		explicit TransformComponent();
 
 		TransformComponent(const TransformComponent&) noexcept = delete;
 		TransformComponent(TransformComponent&& other) noexcept;

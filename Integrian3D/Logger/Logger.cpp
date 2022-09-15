@@ -116,5 +116,27 @@ namespace Integrian3D
 			SetConsoleTextAttribute(ConsoleHandle, static_cast<WORD>(colour));
 #endif
 		}
+
+		void Logger::LogAssertion(const std::string_view message, const int lineNumber, const std::string_view file, const MessageColour colour, const bool bVerbose)
+		{
+#ifdef _WIN32
+			/* Set text colour to user defined colour */
+			SetConsoleTextAttribute(ConsoleHandle, static_cast<WORD>(colour));
+
+			if (bVerbose)
+			{
+				std::cout << "An assertion was triggered in file: " <<
+					file.substr(file.find_last_of('\\') + 1, file.size()) <<
+					" at line: " << std::to_string(lineNumber) << "\n" << "Assertion: " << message << "\n\n";
+			}
+			else
+			{
+				std::cout << message << "\n";
+			}
+
+			/* Reset text colour to white */
+			SetConsoleTextAttribute(ConsoleHandle, static_cast<WORD>(colour));
+#endif
+		}
 	}
 }

@@ -35,8 +35,6 @@ namespace Integrian3D
 		public:
 			static Logger& GetInstance();
 
-			/* [TODO]: I vaguely remember that string_view does not need a reference since it's non-owning, check this */
-			/* [TODO]: Do we use const std::string& or std::string_view */
 			void LogMessage(
 				const std::string_view message,
 				[[maybe_unused]] const int lineNumber,
@@ -59,6 +57,14 @@ namespace Integrian3D
 			);
 
 			void LogCustomMessage(
+				const std::string_view message,
+				[[maybe_unused]] const int lineNumber,
+				[[maybe_unused]] const std::string_view file,
+				const MessageColour colour,
+				const bool bVerbose = false
+			);
+
+			void LogAssertion(
 				const std::string_view message,
 				[[maybe_unused]] const int lineNumber,
 				[[maybe_unused]] const std::string_view file,

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Math/RGBColour.h"
+#include "Logger/Logger.h"
 
 #include <cstdint> /* uint64_t */
 #include <limits> /* std::numeric_limits */
@@ -22,4 +22,24 @@ namespace Integrian3D
 	constexpr ComponentType InvalidComponentID{ std::numeric_limits<ComponentType>::max() };
 
 #define __NODISCARD [[nodiscard]]
+
+#define __FORCEINLINE __forceinline
+
+#ifdef _DEBUG
+
+#define __BREAK() __debugbreak()
+
+#define __ASSERT(expr) \
+	if ((expr)) {} \
+	else \
+	{ \
+		Debug::Logger::GetInstance().LogAssertion(#expr, __LINE__, __FILE__, Debug::MessageColour::Yellow, true); \
+		__BREAK(); \
+	}
+
+#else
+
+#define __ASSERT(expr)
+
+#endif
 }

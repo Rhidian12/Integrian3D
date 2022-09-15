@@ -6,6 +6,8 @@
 
 #include <functional> /* std::function */
 #include <utility> /* std::forward */
+#include <string> /* std::string */
+#include <string_view> /* std::string_view */
 
 namespace Integrian3D
 {
@@ -44,7 +46,7 @@ namespace Integrian3D
 
 
 		/* -------------- Begin of Scene Functionality -------------- */
-		__NODISCARD const std::string& GetSceneName() const { return SceneName; }
+		__NODISCARD std::string_view GetSceneName() const { return SceneName; }
 
 		void AddSceneInitialisation(const std::function<void(const Scene&)>& fn) { InitializeCallback = fn; }
 

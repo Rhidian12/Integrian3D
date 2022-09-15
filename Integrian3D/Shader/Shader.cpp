@@ -1,14 +1,14 @@
 #include "Shader.h"
 
+#include "../FileReader/FileReader.h"
+#include "../DebugUtility/DebugUtility.h"
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #pragma warning( push )
 #pragma warning( disable:4201 )
 #include <gtc/type_ptr.hpp>
 #pragma warning( pop )
-
-#include "../FileReader/FileReader.h"
-#include "../DebugUtility/DebugUtility.h"
 
 namespace Integrian3D
 {

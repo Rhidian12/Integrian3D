@@ -1,8 +1,9 @@
 #pragma once
 
 #include "../EngineConstants.h"
+#include "../Math/RGBColour.h"
 
-#include <glm.hpp>
+#include <glm.hpp> /* GLM */
 
 namespace Integrian3D
 {

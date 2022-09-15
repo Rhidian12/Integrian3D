@@ -1,13 +1,13 @@
 #include "InputManager.h"
 
+#include "../Core/Core.h"
+#include "../DebugUtility/DebugUtility.h"
+
 #ifdef _WIN32
 #include <WinUser.h> /* Keyboard input */
 #include <errhandlingapi.h> /* Error handling */
 #include <WinBase.h> /* FormatMessage() */
 #endif
-
-#include "../Core/Core.h"
-#include "../DebugUtility/DebugUtility.h"
 
 namespace Integrian3D
 {

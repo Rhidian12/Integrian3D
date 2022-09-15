@@ -1,10 +1,10 @@
 #include "Window.h"
 
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-
 #include "../Core/Core.h" /* g_IsRunning */
 #include "../DebugUtility/DebugUtility.h"
+
+#include <glad/glad.h> /* GLAD */
+#include <GLFW/glfw3.h> /* GLFW */
 
 namespace Integrian3D
 {

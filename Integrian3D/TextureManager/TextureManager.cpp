@@ -1,8 +1,6 @@
 #include "TextureManager.h"
 #include "../Texture/Texture.h"
 
-#include <assert.h>
-
 namespace Integrian3D
 {
 	TextureManager& TextureManager::GetInstance()
@@ -24,7 +22,7 @@ namespace Integrian3D
 	{
 		const auto cIt{ Textures.find(name.data()) };
 
-		assert(cIt != Textures.cend() && "TextureManager::GetTexture() > Name was not added");
+		__ASSERT(cIt != Textures.cend() && "TextureManager::GetTexture() > Name was not added");
 
 		return cIt->second.get();
 	}

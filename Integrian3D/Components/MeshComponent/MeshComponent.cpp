@@ -1,9 +1,8 @@
 #include "MeshComponent.h"
 
-#include <glad/glad.h> /* OpenGL Dependency */
-#include <assert.h> /* assert() */
-
 #include "../../FileReader/FileReader.h"
+
+#include <glad/glad.h> /* OpenGL Dependency */
 
 namespace Integrian3D
 {
@@ -17,7 +16,7 @@ namespace Integrian3D
 	{
 		if (!filePath.empty())
 		{
-			assert(filePath.substr(filePath.find_last_of('.') + 1) == ".obj");
+			__ASSERT(filePath.substr(filePath.find_last_of('.') + 1) == ".obj");
 
 			FileReader reader{ filePath };
 

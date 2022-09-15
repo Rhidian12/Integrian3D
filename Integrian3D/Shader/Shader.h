@@ -3,7 +3,7 @@
 #include <string> /* std::string */
 #include <assert.h> /* assert() */
 #include <string_view> /* std::string_view */
-#include <glm.hpp>
+#include <glm.hpp> /* GLM */
 
 namespace Integrian3D
 {

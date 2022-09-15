@@ -2,7 +2,7 @@
 
 #include "../../EngineConstants.h"
 
-#include <glm.hpp>
+#include <glm.hpp> /* GLM */
 
 namespace Integrian3D
 {

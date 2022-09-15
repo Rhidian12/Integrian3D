@@ -4,7 +4,7 @@
 #include "KeyboardInput/KeyboardInput.h"
 
 #include <memory> /* std::unique_ptr */
-#include <array>
+#include <array> /* std::array */
 
 namespace Integrian3D
 {
