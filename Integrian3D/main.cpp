@@ -58,10 +58,7 @@ int main()
 		Vertex{ glm::vec3{ -0.5f,  0.5f, -0.5f },  glm::vec2{ 0.0f, 1.0f } }
 	};
 
-	std::vector<uint32_t> indices =
-	{
-		
-	};
+	std::vector<uint32_t> indices{};
 
 	for (size_t i{}; i < vertices.size(); ++i)
 	{
