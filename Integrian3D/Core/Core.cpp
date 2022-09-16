@@ -10,13 +10,16 @@
 
 #include <gtc/matrix_transform.hpp>
 
+#pragma warning( push )
+#pragma warning( disable : 4201 )
+#include <gtx/euler_angles.hpp>
+#pragma warning( pop )
+
 namespace Integrian3D
 {
 	Core::Core(const int windowWidth, const int windowHeight)
 		: Window{ windowWidth, windowHeight }
-	{
-		Debug::LogMessage("Finished initialisation of engine", false);
-	}
+	{}
 
 	Core& Core::GetInstance()
 	{
@@ -30,6 +33,12 @@ namespace Integrian3D
 		__ASSERT(Instance == nullptr && "Core::CreateCore() > A core has already been created");
 
 		Instance = std::unique_ptr<Core>(new Core{ windowWidth, windowHeight });
+
+		srand(static_cast<unsigned int>(time(nullptr)));
+
+		MathUtils::Seed = SEED;
+
+		Debug::LogMessage("Finished initialisation of engine", false);
 
 		return *Instance.get();
 	}
@@ -75,11 +84,10 @@ namespace Integrian3D
 								transformationMatrix = glm::translate(transformationMatrix, transformComponent.GetLocalLocation());
 
 								const glm::vec3& rotation{ transformComponent.GetLocalAngle() };
-								transformationMatrix = glm::rotate(transformationMatrix, rotation.x, glm::vec3{ 1.f, 0.f, 0.f });
-								transformationMatrix = glm::rotate(transformationMatrix, rotation.y, glm::vec3{ 0.f, 1.f, 0.f });
-								transformationMatrix = glm::rotate(transformationMatrix, rotation.z, glm::vec3{ 0.f, 0.f, 1.f });
+								transformationMatrix *= glm::eulerAngleXYZ(rotation.x, rotation.y, rotation.z);
 
-								transformationMatrix = glm::scale(transformationMatrix, transformComponent.GetLocalScale());
+								
+								transformationMatrix *= glm::scale(transformationMatrix, transformComponent.GetLocalScale());
 
 								transformComponent.Transformation = transformationMatrix;
 							}

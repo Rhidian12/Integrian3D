@@ -23,7 +23,13 @@ namespace Integrian3D
 
 #define __NODISCARD [[nodiscard]]
 
-#define __FORCEINLINE __forceinline
+#ifdef _WIN32
+#define __INLINE __forceinline
+#endif
+
+#ifndef SEED
+#define SEED rand() % RAND_MAX
+#endif
 
 #ifdef _DEBUG
 

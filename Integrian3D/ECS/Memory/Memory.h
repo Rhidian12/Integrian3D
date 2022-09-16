@@ -1,6 +1,7 @@
 #pragma once
 
-#include <stdexcept> /* std::bad_alloc */
+#include "../../EngineConstants.h"
+#include "../../DebugUtility/DebugUtility.h"
 
 namespace Integrian3D
 {
@@ -29,13 +30,15 @@ namespace Integrian3D
 				return pData;
 			}
 
-			throw std::bad_alloc{};
+			Debug::LogError("StackAllocator ran out of memory!", true);
+			
+			return nullptr;
 		}
 
 		template<typename T>
 		void Deallocate(T* p, const size_t n)
 		{
-			assert(IsPointerInBuffer(p));
+			__ASSERT(IsPointerInBuffer(p));
 
 			StackPointer -= n * sizeof(T);
 		}

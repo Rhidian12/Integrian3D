@@ -17,7 +17,7 @@ namespace Integrian3D
 		TransformComponent& operator=(TransformComponent&& other) noexcept;
 
 		void Translate(const glm::vec3& v);
-		void Rotate(const glm::vec3& axis, const float angleRad);
+		void Rotate(const glm::vec3& rotationRad);
 		void Scale(const glm::vec3& v);
 
 		void SetLocalLocation(const glm::vec3& pos);

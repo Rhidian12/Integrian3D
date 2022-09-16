@@ -4,6 +4,8 @@
 
 #include <type_traits> /* std::enable_if */
 #include <limits> /* std::numeric_limits */
+#include <random> /* std::random_device */
+#include <glm.hpp> /* GLM */
 
 namespace Integrian3D
 {
@@ -12,10 +14,17 @@ namespace Integrian3D
 		inline constexpr double Pi{ 3.14159265358979323846264338327950288 };
 		inline constexpr double Pi_2{ Pi / 2.0 };
 		inline constexpr double Pi_4{ Pi / 4.0 };
+		inline uint32_t Seed{}; /* Set in Core::CreateCore() */
+
+		namespace
+		{
+			std::mt19937 mt{ Seed };
+		}
 
 		/* magic lol https://www.codeproject.com/Articles/69941/Best-Square-Root-Method-Algorithm-Function-Precisi */
 		/* works only for floats since it depends on IEEE 754 single precision floating point format */
-		__FORCEINLINE constexpr float Sqrtf(const float n)
+		/* [TODO]: All __INLINE functions should be profiled to check if it's better to inline them or not */
+		__INLINE constexpr float Sqrtf(const float n)
 		{
 			union
 			{
@@ -58,6 +67,18 @@ namespace Integrian3D
 			{
 				value = max;
 			}
+		}
+
+		__INLINE float RandomF(const float min, const float max)
+		{
+			std::uniform_real_distribution<float> dist(min, max);
+
+			return dist(mt);
+		}
+
+		__INLINE constexpr glm::vec3 RandomVec3(const float min, const float max)
+		{
+			return glm::vec3{ RandomF(min, max),RandomF(min, max),RandomF(min, max) };
 		}
 	}
 }

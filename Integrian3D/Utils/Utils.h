@@ -37,7 +37,7 @@ namespace Integrian3D
 			return wrappedName.substr(beginOfType + 1, endOfType - beginOfType - 1);
 		}
 
-		__FORCEINLINE constexpr uint32_t ConstexprStringHash(const char* pKey, size_t count)
+		__INLINE constexpr uint32_t ConstexprStringHash(const char* pKey, size_t count)
 		{
 			uint32_t p = 31;
 			const uint32_t m = static_cast<uint32_t>(1e9) + 9;

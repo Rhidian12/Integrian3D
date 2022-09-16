@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../EngineConstants.h"
+
 #include <string> /* std::string */
 #include <assert.h> /* assert() */
 #include <string_view> /* std::string_view */

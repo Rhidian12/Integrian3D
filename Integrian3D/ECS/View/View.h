@@ -1,12 +1,13 @@
 #pragma once
 
+#include "../../EngineConstants.h"
+#include "../Memory/Memory.h"
+
 #include <vector> /* std::vector */
 #include <assert.h> /* assert() */
 #include <utility> /* std::move(), ... */
 #include <functional> /* std::function, std::reference_wrapper */
 #include <array> /* std::array */
-
-#include "../Memory/Memory.h"
 
 namespace Integrian3D
 {

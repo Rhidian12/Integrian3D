@@ -27,6 +27,11 @@ namespace Integrian3D
 				100.f,
 				MathUtils::ToRadians(45.f),
 				static_cast<float>(Core::GetInstance().GetWindowWidth()) / Core::GetInstance().GetWindowHeight());
+
+			//CreateView<CameraComponent, TransformComponent>().ForEach([](const CameraComponent&, TransformComponent& transform)->void
+			//	{
+			//		transform.Translate(glm::vec3{ -10.f,0.f,0.f });
+			//	});
 		}
 
 		if (InitializeCallback)

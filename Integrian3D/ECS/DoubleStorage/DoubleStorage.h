@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../../EngineConstants.h"
+
 #include <algorithm> /* std::find */
 #include <vector> /* std::vector */
 

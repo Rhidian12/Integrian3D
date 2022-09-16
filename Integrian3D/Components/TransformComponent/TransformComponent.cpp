@@ -55,11 +55,11 @@ namespace Integrian3D
 		bShouldRecalculateWorldData = true;
 	}
 
-	void TransformComponent::Rotate(const glm::vec3& axis, const float angleRad)
+	void TransformComponent::Rotate(const glm::vec3& rotationRad)
 	{
-		LocalAngle.x += angleRad * axis.x;
-		LocalAngle.y += angleRad * axis.y;
-		LocalAngle.z += angleRad * axis.z;
+		LocalAngle.x += rotationRad.x;
+		LocalAngle.y += rotationRad.y;
+		LocalAngle.z += rotationRad.z;
 
 		bShouldRecalculateTransform = true;
 		bShouldRecalculateWorldData = true;

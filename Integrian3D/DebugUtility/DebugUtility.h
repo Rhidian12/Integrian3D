@@ -1,8 +1,9 @@
 #pragma once
 
-#include <iostream> /* std::cout for users */
-
+#include "../EngineConstants.h"
 #include "../Logger/Logger.h"
+
+#include <iostream> /* std::cout for users */
 
 namespace Integrian3D
 {
