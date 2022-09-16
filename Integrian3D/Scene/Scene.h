@@ -49,13 +49,17 @@ namespace Integrian3D
 		/* -------------- Begin of Scene Functionality -------------- */
 		__NODISCARD std::string_view GetSceneName() const { return SceneName; }
 
-		void AddSceneInitialisation(const std::function<void(const Scene&)>& fn) { InitializeCallback = fn; }
+		void AddSceneInitialisation(const std::function<void(Scene&)>& fn) { InitializeCallback = fn; }
 
-		void AddOnSceneEnter(const std::function<void(const Scene&)>& fn) { OnSceneEnterCallback = fn; }
+		void AddOnSceneEnter(const std::function<void(Scene&)>& fn) { OnSceneEnterCallback = fn; }
 
-		void AddOnSceneLeave(const std::function<void(const Scene&)>& fn) { OnSceneLeaveCallback = fn; }
+		void AddOnSceneLeave(const std::function<void(Scene&)>& fn) { OnSceneLeaveCallback = fn; }
+
+		void AddUpdateCallback(const std::function<void(Scene&)>& fn) { UpdateCallbacks.push_back(fn); }
 
 		__NODISCARD CameraComponent& GetCamera() { return GetComponent<CameraComponent>(CameraEntity); }
+
+		__NODISCARD const std::vector<std::function<void(Scene&)>>& GetUpdateCallbacks() const { return UpdateCallbacks; }
 		/* -------------- End of Scene Functionality -------------- */
 
 
@@ -71,6 +75,7 @@ namespace Integrian3D
 		std::function<void(Scene&)> InitializeCallback;
 		std::function<void(Scene&)> OnSceneEnterCallback;
 		std::function<void(Scene&)> OnSceneLeaveCallback;
+		std::vector<std::function<void(Scene&)>> UpdateCallbacks;
 		Registry Registry;
 		std::string SceneName;
 		Entity CameraEntity;

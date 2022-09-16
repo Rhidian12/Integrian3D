@@ -56,14 +56,12 @@ namespace Integrian3D
 
 			/* Entity update */
 			{
+				/* User-defined update */
 				{
-					/* [TODO]: add user defined updates here */
-					/*
-					for (const std::function<void()>& fn : activeScene.GetUpdates())
+					for (const std::function<void(Scene&)>& fn : activeScene.GetUpdateCallbacks())
 					{
-						activeScene.CreateView<
+						fn(activeScene);
 					}
-					*/
 				}
 
 				/* Transform update */
