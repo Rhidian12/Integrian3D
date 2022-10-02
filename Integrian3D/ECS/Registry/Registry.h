@@ -8,7 +8,8 @@
 #include "../Memory/Memory.h"
 
 #include <assert.h> /* assert() */
-#include <unordered_map> /* unordered_map */
+#include <unordered_map> /* std::unordered_map */
+#include <array> /* std::array */
 
 namespace Integrian3D
 {
@@ -26,8 +27,11 @@ namespace Integrian3D
 		template<typename ... TComponents>
 		[[nodiscard]] View<TComponents...> CreateView()
 		{
+			using ViewContainerType = std::tuple<std::vector<std::reference_wrapper<TComponents>, STLAllocator<std::reference_wrapper<TComponents>, StackAllocator>>...>;
+			using ViewEntityType = std::array<std::vector<Entity>*, sizeof ... (TComponents)>;
+
 			/* Get all components asked for by the user */
-			std::tuple<std::vector<std::reference_wrapper<TComponents>, STLAllocator<std::reference_wrapper<TComponents>, StackAllocator>>...> comps
+			ViewContainerType comps
 			{
 				std::vector<std::reference_wrapper<TComponents>, STLAllocator<std::reference_wrapper<TComponents>, StackAllocator>>
 				{
@@ -35,10 +39,10 @@ namespace Integrian3D
 				}...
 			};
 
-			std::array<std::vector<Entity>*, sizeof ... (TComponents)> ents{};
+			ViewEntityType ents{};
 			FillArray<TComponents...>(ents, std::make_index_sequence<sizeof ... (TComponents)>{});
 
-			return View<TComponents...>{ std::move(comps), std::move(ents), EntitySignatures };
+			return View<TComponents...>{ __MOVE(ViewContainerType, comps), __MOVE(ViewEntityType, ents), EntitySignatures };
 		}
 
 		template<typename T>
@@ -75,7 +79,7 @@ namespace Integrian3D
 				pool.reset(new ComponentArray<T>{});
 			}
 
-			T& comp{ static_cast<ComponentArray<T>*>(pool.get())->AddComponent<Ts...>(entity, std::forward<Ts>(args)...) };
+			T& comp{ static_cast<ComponentArray<T>*>(pool.get())->AddComponent<Ts...>(entity, __FORWARD(Ts, args)...)};
 
 			if (static_cast<ComponentArray<T>*>(pool.get())->GetComponents().size() * sizeof(T) >
 				Allocator.GetCapacity() * 2.f / 3.f)

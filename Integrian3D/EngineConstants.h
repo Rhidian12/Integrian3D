@@ -21,20 +21,22 @@ namespace Integrian3D
 	constexpr Entity InvalidEntityID{ std::numeric_limits<Entity>::max() };
 	constexpr ComponentType InvalidComponentID{ std::numeric_limits<ComponentType>::max() };
 
+	/* [[nodiscard]] */
 #define __NODISCARD [[nodiscard]]
 
+	/* inline */
 #ifdef _WIN32
 #define __INLINE __forceinline
 #endif
 
+	/* RNG seed */
 #ifndef SEED
 #define SEED rand() % RAND_MAX
 #endif
 
+	/* ASSERT() */
 #ifdef _DEBUG
-
 #define __BREAK() __debugbreak()
-
 #define __ASSERT(expr) \
 	if ((expr)) {} \
 	else \
@@ -42,10 +44,21 @@ namespace Integrian3D
 		Debug::Logger::GetInstance().LogAssertion(#expr, __LINE__, __FILE__, Debug::MessageColour::Yellow, true); \
 		__BREAK(); \
 	}
-
 #else
-
 #define __ASSERT(expr)
+#endif
 
+	/* std::move */
+#ifdef _DEBUG
+#define __MOVE(type, val) static_cast<type&&>(val)
+#else
+#define __MOVE(type, val) std::move(val)
+#endif
+
+	/* std::forward */
+#ifdef _DEBUG
+#define __FORWARD(type, val) static_cast<type&&>(val)
+#else
+#define __FORWARD(type, val) std::forward<type>(val)
 #endif
 }

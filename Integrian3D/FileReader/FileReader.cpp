@@ -46,8 +46,8 @@ namespace Integrian3D
 
 	FileReader::FileReader(FileReader&& other) noexcept
 		: Handle{}
-		, FilePath{ std::move(other.FilePath) }
-		, FileContents{ std::move(other.FileContents) }
+		, FilePath{ __MOVE(std::string, other.FilePath) }
+		, FileContents{ __MOVE(std::string, other.FileContents) }
 	{
 		if (Handle)
 		{
@@ -57,14 +57,14 @@ namespace Integrian3D
 			}
 		}
 
-		Handle = std::move(other.Handle);
+		Handle = __MOVE(void*, other.Handle);
 		other.Handle = nullptr;
 	}
 
 	FileReader& FileReader::operator=(FileReader&& other) noexcept
 	{
-		FilePath = std::move(other.FilePath);
-		FileContents = std::move(other.FileContents);
+		FilePath = __MOVE(std::string, other.FilePath);
+		FileContents = __MOVE(std::string, other.FileContents);
 
 		if (Handle)
 		{
@@ -74,7 +74,7 @@ namespace Integrian3D
 			}
 		}
 
-		Handle = std::move(other.Handle);
+		Handle = __MOVE(void*, other.Handle);
 		other.Handle = nullptr;
 
 		return *this;
