@@ -76,37 +76,38 @@ namespace Integrian3D
 				/* Transform update */
 				{
 					View<TransformComponent> transformView{ activeScene.CreateView<TransformComponent>() };
-					transformView.ForEach([](TransformComponent& transformComponent)->void
+					transformView.ForEach(
+						[](TransformComponent& transform)->void
 						{
-							if (transformComponent.bShouldRecalculateTransform)
+							if (transform.bShouldRecalculateTransform)
 							{
-								//glm::mat4 transformationMatrix{ glm::identity<glm::mat4>() };
-								//transformationMatrix = glm::translate(transformationMatrix, transformComponent.GetLocalLocation());
-
-								//const glm::vec3& rotation{ transformComponent.GetLocalAngle() };
-								//transformationMatrix *= glm::eulerAngleXYZ(rotation.x, rotation.y, rotation.z);
-								//
-								//transformationMatrix *= glm::scale(transformationMatrix, transformComponent.GetLocalScale());
-
-								//transformComponent.Transformation = transformationMatrix;
-
-								const glm::vec3& rotation{ transformComponent.GetLocalAngle() };
+								const glm::vec3& rotation{ transform.GetLocalAngle() };
 								const glm::mat4 rotationMat{ glm::eulerAngleXYZ(rotation.x, rotation.y, rotation.z) };
 
 								glm::mat4 translationMat{ glm::identity<glm::mat4>() };
-								translationMat[3] = glm::vec4(transformComponent.GetLocalLocation(), 1.f);
+								translationMat[3] = glm::vec4(transform.GetLocalLocation(), 1.f);
 
-								const glm::vec3& scale{ transformComponent.GetLocalScale() };
+								const glm::vec3& scale{ transform.GetLocalScale() };
 								glm::mat4 scaleMat{ glm::identity<glm::mat4>() };
 								scaleMat[0][0] = scale.x;
 								scaleMat[1][1] = scale.y;
 								scaleMat[2][2] = scale.z;
 
-								transformComponent.Transformation = translationMat * rotationMat * scaleMat;
+								transform.Transformation = translationMat * rotationMat * scaleMat;
 
-								transformComponent.bShouldRecalculateTransform = false;
+								transform.bShouldRecalculateTransform = false;
 							}
-						});
+
+							//if (transform.bShouldRecalculateWorldData)
+							//{
+							//	glm::vec3 worldPos{ transform.GetLocalLocation() };
+							//	glm::vec3 worldScale{ transform.GetLocalScale() };
+							//	glm::vec3 worldRotation{ transform.GetLocalAngle() };
+
+							//	/* Parents dont exist yet so this is completely useless lol */
+							//}
+						}
+					);
 				}
 			}
 
