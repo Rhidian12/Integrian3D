@@ -24,25 +24,18 @@ namespace Integrian3D
 		Registry& operator=(const Registry&) noexcept = delete;
 		Registry& operator=(Registry&& other) noexcept;
 
-		template<typename ... TComponents>
-		[[nodiscard]] View<TComponents...> CreateView()
+		template<typename ... Ts>
+		[[nodiscard]] View<Ts...> CreateView()
 		{
-			using ViewContainerType = std::tuple<std::vector<std::reference_wrapper<TComponents>, STLAllocator<std::reference_wrapper<TComponents>, StackAllocator>>...>;
-			using ViewEntityType = std::array<std::vector<Entity>*, sizeof ... (TComponents)>;
+			using ViewComponentStorage = std::tuple<DoubleStorage<Entity, Ts>&...>;
 
 			/* Get all components asked for by the user */
-			ViewContainerType comps
+			std::tuple<DoubleStorage<Entity, Ts>&...> comps
 			{
-				std::vector<std::reference_wrapper<TComponents>, STLAllocator<std::reference_wrapper<TComponents>, StackAllocator>>
-				{
-					GetComponents<TComponents>().begin(), GetComponents<TComponents>().end(), Allocator
-				}...
+				static_cast<ComponentArray<Ts>*>(ComponentPools[GenerateComponentID<Ts>()].get())->GetStorage()...
 			};
 
-			ViewEntityType ents{};
-			FillArray<TComponents...>(ents, std::make_index_sequence<sizeof ... (TComponents)>{});
-
-			return View<TComponents...>{ __MOVE(ViewContainerType, comps), __MOVE(ViewEntityType, ents), EntitySignatures };
+			return View<Ts...>{ __MOVE(ViewComponentStorage, comps), EntitySignatures };
 		}
 
 		template<typename T>
@@ -57,15 +50,7 @@ namespace Integrian3D
 				pool.reset(new ComponentArray<T>{});
 			}
 
-			T& comp{ static_cast<ComponentArray<T>*>(pool.get())->AddComponent(entity) };
-
-			if (static_cast<ComponentArray<T>*>(pool.get())->GetComponents().size() * sizeof(T) >
-				Allocator.GetCapacity() * 2.f / 3.f)
-			{
-				Allocator.Reallocate(Allocator.GetCapacity() * 2);
-			}
-
-			return comp;
+			return static_cast<ComponentArray<T>*>(pool.get())->AddComponent(entity);
 		}
 		template<typename T, typename ... Ts>
 		T& AddComponent(const Entity entity, Ts&& ... args)
@@ -79,15 +64,7 @@ namespace Integrian3D
 				pool.reset(new ComponentArray<T>{});
 			}
 
-			T& comp{ static_cast<ComponentArray<T>*>(pool.get())->AddComponent<Ts...>(entity, __FORWARD(Ts, args)...)};
-
-			if (static_cast<ComponentArray<T>*>(pool.get())->GetComponents().size() * sizeof(T) >
-				Allocator.GetCapacity() * 2.f / 3.f)
-			{
-				Allocator.Reallocate(Allocator.GetCapacity() * 2);
-			}
-
-			return comp;
+			return static_cast<ComponentArray<T>*>(pool.get())->AddComponent<Ts...>(entity, __FORWARD(Ts, args)...);
 		}
 
 		template<typename T>
@@ -137,19 +114,9 @@ namespace Integrian3D
 	private:
 		void RemoveAllComponents(const Entity entity, const EntitySignature& sig);
 
-		template<typename ... Ts, size_t ... Is>
-		void FillArray(std::array<std::vector<Entity>*, sizeof ... (Ts)>& arr, std::index_sequence<Is...>)
-		{
-			((arr[Is] = &static_cast<ComponentArray<Ts>*>(ComponentPools[GenerateComponentID<Ts>()].get())->GetKeys()), ...);
-		}
-
-		/* [TODO]: Sort Entities based on their EntitySignature
-		Keep pointers to each start and end entry of that sort value
-		so we can make our loop smaller instead of Max Entities */
 		std::unordered_map<Entity, EntitySignature> EntitySignatures;
 		SparseSet<Entity> Entities;
 		Entity CurrentEntityCounter;
 		std::unordered_map<ComponentType, std::unique_ptr<IComponentArray>> ComponentPools;
-		StackAllocator Allocator;
 	};
 }

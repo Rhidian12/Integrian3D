@@ -51,6 +51,9 @@ namespace Integrian3D
 		std::vector<Entity>& GetKeys() { return Components.GetKeys(); }
 		const std::vector<Entity>& GetKeys() const { return Components.GetKeys(); }
 
+		DoubleStorage<Entity, T>& GetStorage() { return Components; }
+		const DoubleStorage<Entity, T>& GetStorage() const { return Components; }
+
 	private:
 		DoubleStorage<Entity, T> Components;
 	};

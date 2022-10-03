@@ -6,7 +6,6 @@ namespace Integrian3D
 		: EntitySignatures{}
 		, Entities{}
 		, CurrentEntityCounter{}
-		, Allocator{}
 	{}
 
 	Registry::~Registry()
@@ -22,7 +21,6 @@ namespace Integrian3D
 		, Entities{ std::move(other.Entities) }
 		, CurrentEntityCounter{ std::move(other.CurrentEntityCounter) }
 		, ComponentPools{ std::move(other.ComponentPools) }
-		, Allocator{ std::move(other.Allocator) }
 	{
 		other.EntitySignatures.clear();
 		other.Entities.Clear();
@@ -36,7 +34,6 @@ namespace Integrian3D
 		Entities = std::move(other.Entities);
 		CurrentEntityCounter = std::move(other.CurrentEntityCounter);
 		ComponentPools = std::move(other.ComponentPools);
-		Allocator = std::move(other.Allocator);
 
 		other.EntitySignatures.clear();
 		other.Entities.Clear();
