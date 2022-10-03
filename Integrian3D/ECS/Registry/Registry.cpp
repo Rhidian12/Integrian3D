@@ -2,6 +2,9 @@
 
 namespace Integrian3D
 {
+	using EMap = std::unordered_map<Entity, EntitySignature>;
+	using CPools = std::unordered_map<ComponentType, std::unique_ptr<IComponentArray>>;
+
 	Registry::Registry()
 		: EntitySignatures{}
 		, Entities{}
@@ -17,10 +20,10 @@ namespace Integrian3D
 	}
 
 	Registry::Registry(Registry&& other) noexcept
-		: EntitySignatures{ std::move(other.EntitySignatures) }
-		, Entities{ std::move(other.Entities) }
-		, CurrentEntityCounter{ std::move(other.CurrentEntityCounter) }
-		, ComponentPools{ std::move(other.ComponentPools) }
+		: EntitySignatures{ __MOVE(EMap, other.EntitySignatures) }
+		, Entities{ __MOVE(SparseSet<Entity>, other.Entities) }
+		, CurrentEntityCounter{ __MOVE(Entity, other.CurrentEntityCounter) }
+		, ComponentPools{ __MOVE(CPools, other.ComponentPools) }
 	{
 		other.EntitySignatures.clear();
 		other.Entities.Clear();
@@ -30,10 +33,10 @@ namespace Integrian3D
 
 	Registry& Registry::operator=(Registry&& other) noexcept
 	{
-		EntitySignatures = std::move(other.EntitySignatures);
-		Entities = std::move(other.Entities);
-		CurrentEntityCounter = std::move(other.CurrentEntityCounter);
-		ComponentPools = std::move(other.ComponentPools);
+		EntitySignatures = __MOVE(EMap, other.EntitySignatures);
+		Entities = __MOVE(SparseSet<Entity>, other.Entities);
+		CurrentEntityCounter = __MOVE(Entity, other.CurrentEntityCounter);
+		ComponentPools = __MOVE(CPools, other.ComponentPools);
 
 		other.EntitySignatures.clear();
 		other.Entities.Clear();

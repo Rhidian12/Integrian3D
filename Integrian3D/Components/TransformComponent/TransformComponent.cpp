@@ -18,14 +18,14 @@ namespace Integrian3D
 	{}
 
 	TransformComponent::TransformComponent(TransformComponent&& other) noexcept
-		: Transformation{ std::move(other.Transformation) }
-		, WorldLocation{ std::move(other.WorldLocation) }
-		, WorldScale{ std::move(other.WorldScale) }
-		, LocalScale{ std::move(other.LocalScale) }
-		, WorldAngle{ std::move(other.WorldAngle) }
-		, LocalAngle{ std::move(other.LocalAngle) }
-		, bShouldRecalculateTransform{ std::move(other.bShouldRecalculateTransform) }
-		, bShouldRecalculateWorldData{ std::move(other.bShouldRecalculateWorldData) }
+		: Transformation{ __MOVE(glm::mat4, other.Transformation) }
+		, WorldLocation{ __MOVE(glm::vec3, other.WorldLocation) }
+		, WorldScale{ __MOVE(glm::vec3, other.WorldScale) }
+		, LocalScale{ __MOVE(glm::vec3, other.LocalScale) }
+		, WorldAngle{ __MOVE(glm::vec3, other.WorldAngle) }
+		, LocalAngle{ __MOVE(glm::vec3, other.LocalAngle) }
+		, bShouldRecalculateTransform{ __MOVE(bool, other.bShouldRecalculateTransform) }
+		, bShouldRecalculateWorldData{ __MOVE(bool, other.bShouldRecalculateWorldData) }
 	{
 		other.bShouldRecalculateTransform = false;
 		other.bShouldRecalculateWorldData = false;
@@ -33,14 +33,14 @@ namespace Integrian3D
 
 	TransformComponent& TransformComponent::operator=(TransformComponent&& other) noexcept
 	{
-		Transformation = std::move(other.Transformation);
-		WorldLocation = std::move(other.WorldLocation);
-		WorldScale = std::move(other.WorldScale);
-		LocalScale = std::move(other.LocalScale);
-		WorldAngle = std::move(other.WorldAngle);
-		LocalAngle = std::move(other.LocalAngle);
-		bShouldRecalculateTransform = std::move(other.bShouldRecalculateTransform);
-		bShouldRecalculateWorldData = std::move(other.bShouldRecalculateWorldData);
+		Transformation = __MOVE(glm::mat4, other.Transformation);
+		WorldLocation = __MOVE(glm::vec3, other.WorldLocation);
+		WorldScale = __MOVE(glm::vec3, other.WorldScale);
+		LocalScale = __MOVE(glm::vec3, other.LocalScale);
+		WorldAngle = __MOVE(glm::vec3, other.WorldAngle);
+		LocalAngle = __MOVE(glm::vec3, other.LocalAngle);
+		bShouldRecalculateTransform = __MOVE(bool, other.bShouldRecalculateTransform);
+		bShouldRecalculateWorldData = __MOVE(bool, other.bShouldRecalculateWorldData);
 
 		other.bShouldRecalculateTransform = false;
 		other.bShouldRecalculateWorldData = false;

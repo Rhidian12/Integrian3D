@@ -99,7 +99,7 @@ int main()
 				});
 		});
 
-	SceneManager::GetInstance().AddScene(std::move(testScene));
+	SceneManager::GetInstance().AddScene(__MOVE(Scene, testScene));
 
 	core.Run();
 }

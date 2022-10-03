@@ -27,7 +27,7 @@ namespace Integrian3D
 		}
 		bool Add(T&& value)
 		{
-			return AddImpl(std::move(value));
+			return AddImpl(__MOVE(T, value));
 		}
 
 		__NODISCARD bool Contains(const T value) const { return (value < Sparse.size()) && (Sparse[value] != InvalidEntityID); }
