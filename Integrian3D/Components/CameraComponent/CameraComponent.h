@@ -11,6 +11,8 @@ namespace Integrian3D
 	public:
 		CameraComponent(const float nearPlane, const float farPlane, const float fov, const float aspectRatio);
 
+		void SetView(const glm::vec3& trans);
+
 		__NODISCARD const glm::mat4& GetView() const { return View; }
 		__NODISCARD const glm::mat4& GetProjection() const { return Projection; }
 

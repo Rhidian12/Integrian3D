@@ -79,7 +79,7 @@ int main()
 		Entity temp = testScene.CreateEntity();
 		testScene.AddComponent<MeshComponent>(temp, vertices, indices, TextureManager::GetInstance().GetTexture("__Wall"));
 		TransformComponent& transf{ testScene.GetComponent<TransformComponent>(temp) };
-		transf.Translate(MathUtils::RandomVec3(-1.f, 1.f));
+		transf.Translate(MathUtils::RandomVec3(-5.f, 5.f));
 		transform.Rotate(glm::vec3{ MathUtils::ToRadians(-55.f), 0.f, 0.f });
 	}
 

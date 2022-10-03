@@ -80,16 +80,31 @@ namespace Integrian3D
 						{
 							if (transformComponent.bShouldRecalculateTransform)
 							{
-								glm::mat4 transformationMatrix{ 1.f };
-								transformationMatrix = glm::translate(transformationMatrix, transformComponent.GetLocalLocation());
+								//glm::mat4 transformationMatrix{ glm::identity<glm::mat4>() };
+								//transformationMatrix = glm::translate(transformationMatrix, transformComponent.GetLocalLocation());
+
+								//const glm::vec3& rotation{ transformComponent.GetLocalAngle() };
+								//transformationMatrix *= glm::eulerAngleXYZ(rotation.x, rotation.y, rotation.z);
+								//
+								//transformationMatrix *= glm::scale(transformationMatrix, transformComponent.GetLocalScale());
+
+								//transformComponent.Transformation = transformationMatrix;
 
 								const glm::vec3& rotation{ transformComponent.GetLocalAngle() };
-								transformationMatrix *= glm::eulerAngleXYZ(rotation.x, rotation.y, rotation.z);
+								const glm::mat4 rotationMat{ glm::eulerAngleXYZ(rotation.x, rotation.y, rotation.z) };
 
-								
-								transformationMatrix *= glm::scale(transformationMatrix, transformComponent.GetLocalScale());
+								glm::mat4 translationMat{ glm::identity<glm::mat4>() };
+								translationMat[3] = glm::vec4(transformComponent.GetLocalLocation(), 1.f);
 
-								transformComponent.Transformation = transformationMatrix;
+								const glm::vec3& scale{ transformComponent.GetLocalScale() };
+								glm::mat4 scaleMat{ glm::identity<glm::mat4>() };
+								scaleMat[0][0] = scale.x;
+								scaleMat[1][1] = scale.y;
+								scaleMat[2][2] = scale.z;
+
+								transformComponent.Transformation = translationMat * rotationMat * scaleMat;
+
+								transformComponent.bShouldRecalculateTransform = false;
 							}
 						});
 				}
