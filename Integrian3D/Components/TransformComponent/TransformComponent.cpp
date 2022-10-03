@@ -3,6 +3,10 @@
 #include "../../Math/MathUtils.h"
 
 #include <gtc/matrix_transform.hpp>
+#pragma warning( push )
+#pragma warning( disable : 4201 )
+#include <gtx/euler_angles.hpp>
+#pragma warning( pop )
 
 namespace Integrian3D
 {
@@ -48,11 +52,36 @@ namespace Integrian3D
 		return *this;
 	}
 
-	void TransformComponent::Translate(const glm::vec3& v)
+	void TransformComponent::RecalculateTransform(bool bForce)
+	{
+		if (bShouldRecalculateTransform || bForce)
+		{
+			const glm::mat4 rotationMat{ glm::eulerAngleXYZ(LocalAngle.x, LocalAngle.y, LocalAngle.z) };
+
+			glm::mat4 translationMat{ glm::identity<glm::mat4>() };
+			translationMat[3] = Transformation[3];
+
+			glm::mat4 scaleMat{ glm::identity<glm::mat4>() };
+			scaleMat[0][0] = LocalScale.x;
+			scaleMat[1][1] = LocalScale.y;
+			scaleMat[2][2] = LocalScale.z;
+
+			Transformation = translationMat * rotationMat * scaleMat;
+
+			bShouldRecalculateTransform = false;
+		}
+	}
+
+	void TransformComponent::Translate(const glm::vec3& v, bool bForce)
 	{
 		Transformation[3] += glm::vec4{ v, 0.f };
 
 		bShouldRecalculateWorldData = true;
+
+		if (bForce)
+		{
+			RecalculateTransform(bForce);
+		}
 	}
 
 	void TransformComponent::Rotate(const glm::vec3& rotationRad)

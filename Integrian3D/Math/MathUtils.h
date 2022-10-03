@@ -16,6 +16,10 @@ namespace Integrian3D
 		inline constexpr double Pi_4{ Pi / 4.0 };
 		inline uint32_t Seed{}; /* Set in Core::CreateCore() */
 
+		inline constexpr glm::vec3 Up{ 0.f, 1.f, 0.f };
+		inline constexpr glm::vec3 Right{ 1.f, 0.f, 0.f };
+		inline constexpr glm::vec3 Forward{ 0.f, 0.f, 1.f };
+
 		namespace
 		{
 			std::mt19937 mt{ Seed };

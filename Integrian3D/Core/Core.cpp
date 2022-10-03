@@ -79,33 +79,7 @@ namespace Integrian3D
 					transformView.ForEach(
 						[](TransformComponent& transform)->void
 						{
-							if (transform.bShouldRecalculateTransform)
-							{
-								const glm::vec3& rotation{ transform.GetLocalAngle() };
-								const glm::mat4 rotationMat{ glm::eulerAngleXYZ(rotation.x, rotation.y, rotation.z) };
-
-								glm::mat4 translationMat{ glm::identity<glm::mat4>() };
-								translationMat[3] = glm::vec4(transform.GetLocalLocation(), 1.f);
-
-								const glm::vec3& scale{ transform.GetLocalScale() };
-								glm::mat4 scaleMat{ glm::identity<glm::mat4>() };
-								scaleMat[0][0] = scale.x;
-								scaleMat[1][1] = scale.y;
-								scaleMat[2][2] = scale.z;
-
-								transform.Transformation = translationMat * rotationMat * scaleMat;
-
-								transform.bShouldRecalculateTransform = false;
-							}
-
-							//if (transform.bShouldRecalculateWorldData)
-							//{
-							//	glm::vec3 worldPos{ transform.GetLocalLocation() };
-							//	glm::vec3 worldScale{ transform.GetLocalScale() };
-							//	glm::vec3 worldRotation{ transform.GetLocalAngle() };
-
-							//	/* Parents dont exist yet so this is completely useless lol */
-							//}
+							transform.RecalculateTransform();
 						}
 					);
 				}

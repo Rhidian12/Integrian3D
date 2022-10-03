@@ -16,7 +16,9 @@ namespace Integrian3D
 		TransformComponent& operator=(const TransformComponent&) noexcept = delete;
 		TransformComponent& operator=(TransformComponent&& other) noexcept;
 
-		void Translate(const glm::vec3& v);
+		void RecalculateTransform(bool bForce = false);
+
+		void Translate(const glm::vec3& v, bool bForce = false);
 		void Rotate(const glm::vec3& rotationRad);
 		void Scale(const glm::vec3& v);
 

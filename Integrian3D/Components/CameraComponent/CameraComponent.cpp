@@ -23,4 +23,9 @@ namespace Integrian3D
 	{
 		View = glm::translate(View, trans);
 	}
+
+	void CameraComponent::SetView(const glm::mat4& view)
+	{
+		View = view;
+	}
 }

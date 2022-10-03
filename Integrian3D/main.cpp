@@ -6,6 +6,7 @@
 #include "TextureManager/TextureManager.h"
 #include "Components/TransformComponent/TransformComponent.h"
 #include "Timer/Timer.h"
+#include "Systems/Systems.h"
 
 int main()
 {
@@ -97,6 +98,8 @@ int main()
 						}
 					);
 				});
+
+			Systems::MoveCamera(-MathUtils::Forward * Timer::GetInstance().GetElapsedSeconds());
 		});
 
 	SceneManager::GetInstance().AddScene(__MOVE(Scene, testScene));
