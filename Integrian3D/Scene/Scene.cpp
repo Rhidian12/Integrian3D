@@ -28,10 +28,10 @@ namespace Integrian3D
 				MathUtils::ToRadians(45.f),
 				static_cast<float>(Core::GetInstance().GetWindowWidth()) / Core::GetInstance().GetWindowHeight());
 
-			//CreateView<CameraComponent, TransformComponent>().ForEach([](const CameraComponent&, TransformComponent& transform)->void
-			//	{
-			//		transform.Translate(glm::vec3{ -10.f,0.f,0.f });
-			//	});
+			CreateView<CameraComponent, TransformComponent>().ForEach([](const CameraComponent&, TransformComponent& transform)->void
+				{
+					transform.Translate(glm::vec3{ -100.f,0.f,-100.f });
+				});
 		}
 
 		if (InitializeCallback)

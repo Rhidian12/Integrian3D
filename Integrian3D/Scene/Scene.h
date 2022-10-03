@@ -59,6 +59,8 @@ namespace Integrian3D
 
 		__NODISCARD CameraComponent& GetCamera() { return GetComponent<CameraComponent>(CameraEntity); }
 
+		__NODISCARD Entity GetCameraEntity() const { return CameraEntity; }
+
 		__NODISCARD const std::vector<std::function<void(Scene&)>>& GetUpdateCallbacks() const { return UpdateCallbacks; }
 		/* -------------- End of Scene Functionality -------------- */
 
