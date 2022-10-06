@@ -51,6 +51,11 @@ namespace Integrian3D
 		return GetKeyState(static_cast<int>(input)) & 0x8000;
 	}
 
+	bool InputManager::GetIsMouseButtonPressed(const MouseInput mouseInput) const
+	{
+		return GetKeyState(static_cast<int>(mouseInput)) & 0x8000;
+	}
+
 	void InputManager::LogInputErrorMessage()
 	{
 		LPVOID messageBuffer;

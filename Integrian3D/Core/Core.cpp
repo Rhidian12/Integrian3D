@@ -66,21 +66,24 @@ namespace Integrian3D
 
 			/* Camera Movement Update */
 			{
-				if (inputManager.GetIsKeyPressed(KeyboardInput::W))
+				if (inputManager.GetIsMouseButtonPressed(MouseInput::RMB))
 				{
-					Systems::TransformCamera(MathUtils::Forward, glm::vec3{});
-				}
-				if (inputManager.GetIsKeyPressed(KeyboardInput::A))
-				{
-					Systems::TransformCamera(MathUtils::Right, glm::vec3{});
-				}
-				if (inputManager.GetIsKeyPressed(KeyboardInput::S))
-				{
-					Systems::TransformCamera(-MathUtils::Forward, glm::vec3{});
-				}
-				if (inputManager.GetIsKeyPressed(KeyboardInput::D))
-				{
-					Systems::TransformCamera(-MathUtils::Right, glm::vec3{});
+					if (inputManager.GetIsKeyPressed(KeyboardInput::W))
+					{
+						Systems::TransformCamera(MathUtils::Forward, glm::vec3{});
+					}
+					if (inputManager.GetIsKeyPressed(KeyboardInput::A))
+					{
+						Systems::TransformCamera(MathUtils::Right, glm::vec3{});
+					}
+					if (inputManager.GetIsKeyPressed(KeyboardInput::S))
+					{
+						Systems::TransformCamera(-MathUtils::Forward, glm::vec3{});
+					}
+					if (inputManager.GetIsKeyPressed(KeyboardInput::D))
+					{
+						Systems::TransformCamera(-MathUtils::Right, glm::vec3{});
+					}
 				}
 
 			}

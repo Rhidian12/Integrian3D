@@ -173,5 +173,8 @@
     <ClInclude Include="Systems\Systems.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="InputManager\MouseInput\MouseInput.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

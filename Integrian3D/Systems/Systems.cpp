@@ -5,8 +5,6 @@
 #include "../Math/MathUtils.h"
 #include "../Timer/Timer.h"
 
-#include <iostream>
-
 namespace Integrian3D
 {
 	namespace Systems

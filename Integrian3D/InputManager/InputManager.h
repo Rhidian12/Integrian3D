@@ -2,6 +2,7 @@
 
 #include "../EngineConstants.h"
 #include "KeyboardInput/KeyboardInput.h"
+#include "MouseInput/MouseInput.h"
 
 #include <memory> /* std::unique_ptr */
 #include <array> /* std::array */
@@ -16,6 +17,7 @@ namespace Integrian3D
 		void ProcessInput();
 
 		__NODISCARD bool GetIsKeyPressed(const KeyboardInput input) const;
+		__NODISCARD bool GetIsMouseButtonPressed(const MouseInput mouseInput) const;
 
 	private:
 		InputManager();
