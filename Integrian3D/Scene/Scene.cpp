@@ -31,7 +31,7 @@ namespace Integrian3D
 			CreateView<CameraComponent, TransformComponent>().ForEach([](CameraComponent& camera, TransformComponent& transform)->void
 				{
 					const glm::vec3 trans{ 0.f, 0.f, -10.f };
-					transform.Translate(trans);
+					transform.Translate(trans, true);
 					camera.SetView(trans);
 				});
 		}

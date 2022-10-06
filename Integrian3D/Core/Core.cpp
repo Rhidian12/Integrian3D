@@ -7,6 +7,7 @@
 #include "../SceneManager/SceneManager.h"
 #include "../Components/MeshComponent/MeshComponent.h"
 #include "../Components/TransformComponent/TransformComponent.h"
+#include "../Systems/Systems.h"
 
 #include <gtc/matrix_transform.hpp>
 
@@ -62,6 +63,27 @@ namespace Integrian3D
 			inputManager.ProcessInput();
 
 			Scene& activeScene{ sceneManager.GetActiveScene() };
+
+			/* Camera Movement Update */
+			{
+				if (inputManager.GetIsKeyPressed(KeyboardInput::W))
+				{
+					Systems::TransformCamera(MathUtils::Forward, glm::vec3{});
+				}
+				if (inputManager.GetIsKeyPressed(KeyboardInput::A))
+				{
+					Systems::TransformCamera(MathUtils::Right, glm::vec3{});
+				}
+				if (inputManager.GetIsKeyPressed(KeyboardInput::S))
+				{
+					Systems::TransformCamera(-MathUtils::Forward, glm::vec3{});
+				}
+				if (inputManager.GetIsKeyPressed(KeyboardInput::D))
+				{
+					Systems::TransformCamera(-MathUtils::Right, glm::vec3{});
+				}
+
+			}
 
 			/* Entity update */
 			{

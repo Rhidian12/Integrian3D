@@ -8,6 +8,6 @@ namespace Integrian3D
 {
 	namespace Systems
 	{
-	void MoveCamera(const glm::vec3& trans);
+		void TransformCamera(const glm::vec3& dir, const glm::vec3& rot);
 	}
 }

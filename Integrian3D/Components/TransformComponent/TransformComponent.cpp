@@ -3,6 +3,7 @@
 #include "../../Math/MathUtils.h"
 
 #include <gtc/matrix_transform.hpp>
+#include <gtx/rotate_vector.hpp>
 #pragma warning( push )
 #pragma warning( disable : 4201 )
 #include <gtx/euler_angles.hpp>
@@ -52,7 +53,7 @@ namespace Integrian3D
 		return *this;
 	}
 
-	void TransformComponent::RecalculateTransform(bool bForce)
+	void TransformComponent::RecalculateTransform(const bool bForce)
 	{
 		if (bShouldRecalculateTransform || bForce)
 		{
@@ -72,10 +73,26 @@ namespace Integrian3D
 		}
 	}
 
-	void TransformComponent::Translate(const glm::vec3& v, bool bForce)
+	void TransformComponent::Translate(const glm::vec3& v, const bool bForce)
 	{
 		Transformation[3] += glm::vec4{ v, 0.f };
 
+		bShouldRecalculateWorldData = true;
+		bShouldRecalculateTransform = true;
+
+		if (bForce)
+		{
+			RecalculateTransform(bForce);
+		}
+	}
+
+	void TransformComponent::Rotate(const glm::vec3& rotationRad, const bool bForce)
+	{
+		LocalAngle.x += rotationRad.x;
+		LocalAngle.y += rotationRad.y;
+		LocalAngle.z += rotationRad.z;
+
+		bShouldRecalculateTransform = true;
 		bShouldRecalculateWorldData = true;
 
 		if (bForce)
@@ -84,22 +101,17 @@ namespace Integrian3D
 		}
 	}
 
-	void TransformComponent::Rotate(const glm::vec3& rotationRad)
-	{
-		LocalAngle.x += rotationRad.x;
-		LocalAngle.y += rotationRad.y;
-		LocalAngle.z += rotationRad.z;
-
-		bShouldRecalculateTransform = true;
-		bShouldRecalculateWorldData = true;
-	}
-
-	void TransformComponent::Scale(const glm::vec3& v)
+	void TransformComponent::Scale(const glm::vec3& v, const bool bForce)
 	{
 		LocalScale += v;
 
 		bShouldRecalculateTransform = true;
 		bShouldRecalculateWorldData = true;
+
+		if (bForce)
+		{
+			RecalculateTransform(bForce);
+		}
 	}
 
 	void TransformComponent::SetLocalLocation(const glm::vec3& pos)
@@ -123,5 +135,16 @@ namespace Integrian3D
 
 		bShouldRecalculateTransform = true;
 		bShouldRecalculateWorldData = true;
+	}
+
+	__NODISCARD glm::vec3 TransformComponent::GetForward() const
+	{
+		glm::vec3 forward{ Transformation[3] };
+
+		forward = glm::rotate(forward, LocalAngle.x, glm::vec3{ 1.f, 0.f, 0.f });
+		forward = glm::rotate(forward, LocalAngle.y, glm::vec3{ 0.f, 1.f, 0.f });
+		forward = glm::rotate(forward, LocalAngle.z, glm::vec3{ 0.f, 0.f, 1.f });
+
+		return glm::normalize(forward);
 	}
 }

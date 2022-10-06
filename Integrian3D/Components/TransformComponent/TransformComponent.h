@@ -16,11 +16,11 @@ namespace Integrian3D
 		TransformComponent& operator=(const TransformComponent&) noexcept = delete;
 		TransformComponent& operator=(TransformComponent&& other) noexcept;
 
-		void RecalculateTransform(bool bForce = false);
+		void RecalculateTransform(const bool bForce = false);
 
-		void Translate(const glm::vec3& v, bool bForce = false);
-		void Rotate(const glm::vec3& rotationRad);
-		void Scale(const glm::vec3& v);
+		void Translate(const glm::vec3& v, const bool bForce = false);
+		void Rotate(const glm::vec3& rotationRad, const bool bForce = false);
+		void Scale(const glm::vec3& v, const bool bForce = false);
 
 		void SetLocalLocation(const glm::vec3& pos);
 		void SetLocalScale(const glm::vec3& scale);
@@ -34,6 +34,8 @@ namespace Integrian3D
 
 		__NODISCARD const glm::vec3& GetWorldAngle() const { return WorldAngle; }
 		__NODISCARD const glm::vec3& GetLocalAngle() const { return LocalAngle; }
+
+		__NODISCARD glm::vec3 GetForward() const;
 
 		glm::mat4 Transformation;
 

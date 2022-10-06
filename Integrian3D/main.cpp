@@ -98,8 +98,6 @@ int main()
 						}
 					);
 				});
-
-			Systems::MoveCamera(-MathUtils::Forward * Timer::GetInstance().GetElapsedSeconds());
 		});
 
 	SceneManager::GetInstance().AddScene(__MOVE(Scene, testScene));
