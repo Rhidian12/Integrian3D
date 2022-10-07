@@ -20,6 +20,9 @@ namespace Integrian3D
 		, LocalAngle{}
 		, bShouldRecalculateTransform{}
 		, bShouldRecalculateWorldData{}
+		, Forward{ 0.f, 0.f, 1.f }
+		, Right{ 1.f, 0.f, 0.f }
+		, Up{ 0.f, 1.f, 0.f }
 	{}
 
 	TransformComponent::TransformComponent(TransformComponent&& other) noexcept
@@ -31,6 +34,9 @@ namespace Integrian3D
 		, LocalAngle{ __MOVE(glm::vec3, other.LocalAngle) }
 		, bShouldRecalculateTransform{ __MOVE(bool, other.bShouldRecalculateTransform) }
 		, bShouldRecalculateWorldData{ __MOVE(bool, other.bShouldRecalculateWorldData) }
+		, Forward{ __MOVE(glm::vec3, other.Forward) }
+		, Right{ __MOVE(glm::vec3, other.Right) }
+		, Up{ __MOVE(glm::vec3, other.Up) }
 	{
 		other.bShouldRecalculateTransform = false;
 		other.bShouldRecalculateWorldData = false;
@@ -46,6 +52,9 @@ namespace Integrian3D
 		LocalAngle = __MOVE(glm::vec3, other.LocalAngle);
 		bShouldRecalculateTransform = __MOVE(bool, other.bShouldRecalculateTransform);
 		bShouldRecalculateWorldData = __MOVE(bool, other.bShouldRecalculateWorldData);
+		Forward = __MOVE(glm::vec3, other.Forward);
+		Right = __MOVE(glm::vec3, other.Right);
+		Up = __MOVE(glm::vec3, other.Up);
 
 		other.bShouldRecalculateTransform = false;
 		other.bShouldRecalculateWorldData = false;
@@ -53,9 +62,9 @@ namespace Integrian3D
 		return *this;
 	}
 
-	void TransformComponent::RecalculateTransform(const bool bForce)
+	void TransformComponent::RecalculateTransform()
 	{
-		if (bShouldRecalculateTransform || bForce)
+		if (bShouldRecalculateTransform)
 		{
 			const glm::mat4 rotationMat{ glm::eulerAngleXYZ(LocalAngle.x, LocalAngle.y, LocalAngle.z) };
 
@@ -68,6 +77,8 @@ namespace Integrian3D
 			scaleMat[2][2] = LocalScale.z;
 
 			Transformation = translationMat * rotationMat * scaleMat;
+
+			RecalculateDirectionVectors();
 
 			bShouldRecalculateTransform = false;
 		}
@@ -82,7 +93,7 @@ namespace Integrian3D
 
 		if (bForce)
 		{
-			RecalculateTransform(bForce);
+			RecalculateTransform();
 		}
 	}
 
@@ -97,7 +108,7 @@ namespace Integrian3D
 
 		if (bForce)
 		{
-			RecalculateTransform(bForce);
+			RecalculateTransform();
 		}
 	}
 
@@ -110,7 +121,7 @@ namespace Integrian3D
 
 		if (bForce)
 		{
-			RecalculateTransform(bForce);
+			RecalculateTransform();
 		}
 	}
 
@@ -121,30 +132,48 @@ namespace Integrian3D
 		bShouldRecalculateWorldData = true;
 	}
 
-	void TransformComponent::SetLocalScale(const glm::vec3& scale)
+	void TransformComponent::SetLocalScale(const glm::vec3& scale, bool bForce)
 	{
 		LocalScale = scale;
 
 		bShouldRecalculateTransform = true;
 		bShouldRecalculateWorldData = true;
+
+		if (bForce)
+		{
+			RecalculateTransform();
+		}
 	}
 
-	void TransformComponent::SetLocalAngle(const glm::vec3& angleRad)
+	void TransformComponent::SetLocalAngle(const glm::vec3& angleRad, bool bForce)
 	{
 		LocalAngle = angleRad;
 
 		bShouldRecalculateTransform = true;
 		bShouldRecalculateWorldData = true;
+
+		if (bForce)
+		{
+			RecalculateTransform();
+		}
 	}
 
-	__NODISCARD glm::vec3 TransformComponent::GetForward() const
+	void TransformComponent::SetForward(const glm::vec3& forward)
 	{
-		glm::vec3 forward{ Transformation[3] };
+		Forward = forward;
 
-		forward = glm::rotate(forward, LocalAngle.x, glm::vec3{ 1.f, 0.f, 0.f });
-		forward = glm::rotate(forward, LocalAngle.y, glm::vec3{ 0.f, 1.f, 0.f });
-		forward = glm::rotate(forward, LocalAngle.z, glm::vec3{ 0.f, 0.f, 1.f });
+		RecalculateTransform();
+	}
 
-		return glm::normalize(forward);
+	void TransformComponent::RecalculateDirectionVectors()
+	{
+		Forward = glm::rotateX(Forward, LocalAngle.x);
+		Forward = glm::rotateY(Forward, LocalAngle.y);
+		Forward = glm::rotateZ(Forward, LocalAngle.z);
+
+		Forward = glm::normalize(Forward);
+
+		Right = glm::normalize(glm::cross(Forward, MathUtils::Up));
+		Up = glm::normalize(glm::cross(Right, Forward));
 	}
 }

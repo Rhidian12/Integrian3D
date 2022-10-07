@@ -20,6 +20,9 @@ namespace Integrian3D
 		inline constexpr glm::vec3 Right{ 1.f, 0.f, 0.f };
 		inline constexpr glm::vec3 Forward{ 0.f, 0.f, 1.f };
 
+		using Vec2D = glm::vec<2, double>;
+		/* [TODO]: Add other type defines! */
+
 		namespace
 		{
 			std::mt19937 mt{ Seed };

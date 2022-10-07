@@ -11,7 +11,6 @@ namespace Integrian3D
 	public:
 		CameraComponent(const float nearPlane, const float farPlane, const float fov, const float aspectRatio, const float speed = 10.f);
 
-		void SetView(const glm::vec3& trans);
 		void SetView(const glm::mat4& view);
 
 		void SetSpeed(const float speed);

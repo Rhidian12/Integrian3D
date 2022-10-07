@@ -5,6 +5,8 @@
 #include "../Math/MathUtils.h"
 #include "../Core/Core.h"
 
+#include <gtc/matrix_transform.hpp>
+
 namespace Integrian3D
 {
 	Scene::Scene(const std::string& sceneName)
@@ -32,7 +34,7 @@ namespace Integrian3D
 				{
 					const glm::vec3 trans{ 0.f, 0.f, -10.f };
 					transform.Translate(trans, true);
-					camera.SetView(trans);
+					camera.SetView(glm::lookAt(transform.GetLocalLocation(), transform.GetLocalLocation() + transform.GetForward(), transform.GetUp()));
 				});
 		}
 

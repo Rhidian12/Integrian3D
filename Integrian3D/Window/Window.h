@@ -34,5 +34,8 @@ namespace Integrian3D
 	{
 		/* Ignore the static compiler, this function is defined in Window.cpp */
 		inline void OnResize(GLFWwindow* pWindow, int width, int height);
+
+		/* Ignore the static compiler, this function is defined in Window.cpp */
+		inline void OnMouseMovement(GLFWwindow* pWindow, double x, double y);
 	}
 }

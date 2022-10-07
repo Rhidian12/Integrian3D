@@ -17,6 +17,8 @@ namespace Integrian3D
 	InputManager::InputManager()
 		: PreviousKeyStates{}
 		, CurrentKeyStates{}
+		, PreviousMousePosition{}
+		, MousePosition{}
 	{}
 
 	InputManager& InputManager::GetInstance()
@@ -54,6 +56,12 @@ namespace Integrian3D
 	bool InputManager::GetIsMouseButtonPressed(const MouseInput mouseInput) const
 	{
 		return GetKeyState(static_cast<int>(mouseInput)) & 0x8000;
+	}
+
+	void InputManager::SetMousePosition(const MathUtils::Vec2D& mousePosition)
+	{
+		PreviousMousePosition = MousePosition;
+		MousePosition = mousePosition;
 	}
 
 	void InputManager::LogInputErrorMessage()

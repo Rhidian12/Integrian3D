@@ -22,11 +22,6 @@ namespace Integrian3D
 		Projection = glm::perspective(FOV, AspectRatio, NearPlane, FarPlane);
 	}
 
-	void CameraComponent::SetView(const glm::vec3& trans)
-	{
-		View = glm::lookAt(trans, trans + MathUtils::Forward, MathUtils::Up);
-	}
-
 	void CameraComponent::SetView(const glm::mat4& view)
 	{
 		View = view;

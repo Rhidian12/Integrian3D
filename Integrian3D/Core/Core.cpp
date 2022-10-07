@@ -68,24 +68,25 @@ namespace Integrian3D
 			{
 				if (inputManager.GetIsMouseButtonPressed(MouseInput::RMB))
 				{
+					Systems::RotateCamera(inputManager.GetMousePosition(), inputManager.GetPreviousMousePosition());
+
 					if (inputManager.GetIsKeyPressed(KeyboardInput::W))
 					{
-						Systems::TransformCamera(MathUtils::Forward, glm::vec3{});
+						Systems::TranslateCamera(MathUtils::Forward);
 					}
 					if (inputManager.GetIsKeyPressed(KeyboardInput::A))
 					{
-						Systems::TransformCamera(MathUtils::Right, glm::vec3{});
+						Systems::TranslateCamera(MathUtils::Right);
 					}
 					if (inputManager.GetIsKeyPressed(KeyboardInput::S))
 					{
-						Systems::TransformCamera(-MathUtils::Forward, glm::vec3{});
+						Systems::TranslateCamera(-MathUtils::Forward);
 					}
 					if (inputManager.GetIsKeyPressed(KeyboardInput::D))
 					{
-						Systems::TransformCamera(-MathUtils::Right, glm::vec3{});
+						Systems::TranslateCamera(-MathUtils::Right);
 					}
 				}
-
 			}
 
 			/* Entity update */
