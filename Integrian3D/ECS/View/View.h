@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../../EngineConstants.h"
-#include "../DoubleStorage/DoubleStorage.h"
+#include "../ComponentArray/ComponentArray.h"
 
 #include <vector> /* std::vector */
 #include <functional> /* std::function, std::reference_wrapper */
@@ -11,13 +11,13 @@ namespace Integrian3D
 	template<typename ... Ts>
 	class View final
 	{
-		using ViewContainerType = std::tuple<DoubleStorage<Entity, Ts>&...>;
+		using ViewContainerType = std::tuple<ComponentArray<Ts>&...>;
 
 	public:
 		explicit View(ViewContainerType&& components, std::unordered_map<Entity, EntitySignature>& sigs)
 			: Components{ __MOVE(ViewContainerType, components) }
 			, EntitySignatures{ sigs }
-			, Entities{ std::get<0>(Components).GetKeys() }
+			, Entities{}
 		{
 			SetEntities(std::make_index_sequence<sizeof ... (Ts)>{});
 		}
@@ -26,19 +26,22 @@ namespace Integrian3D
 		{
 			auto indexSequence{ std::make_index_sequence<sizeof ... (Ts)>{} };
 
-			for (Entity entity : Entities)
+			for (const std::vector<Entity>& list : *Entities)
 			{
-				ForEach(function, __MOVE(Entity, entity), indexSequence);
+				for (const Entity ent : list)
+				{
+					ForEach(function, ent, indexSequence);
+				}
 			}
 		}
 
 	private:
-		template<size_t ... Indices>
-		void ForEach(const std::function<void(Ts&...)>& function, Entity&& ent, std::index_sequence<Indices...>)
+		template<size_t ... Is>
+		void ForEach(const std::function<void(Ts&...)>& function, const Entity ent, std::index_sequence<Is...>)
 		{
 			if ((EntitySignatures.at(ent).test(GenerateComponentID<Ts>()) && ...))
 			{
-				auto tuple{ std::tuple<Ts&...>(std::get<Indices>(Components).GetValue(ent)...) };
+				auto tuple{ std::tuple<Ts&...>(std::get<Is>(Components).GetComponent(ent)...) };
 				std::apply(function, tuple);
 			}
 		}
@@ -46,11 +49,12 @@ namespace Integrian3D
 		template<size_t ... Is>
 		void SetEntities(std::index_sequence<Is...>)
 		{
-			((Entities = std::get<Is>(Components).GetKeys().size() < Entities.size() ? std::get<Is>(Components).GetKeys() : Entities), ...);
+			((Entities = std::get<0>(Components).GetNrOfEntities() > std::get<Is>(Components).GetNrOfEntities() ?
+				&std::get<0>(Components).GetEntities() : &std::get<Is>(Components).GetEntities()), ...);
 		}
 
 		ViewContainerType Components;
 		std::unordered_map<Entity, EntitySignature>& EntitySignatures;
-		std::vector<Entity> Entities;
+		std::vector<std::vector<Entity>>* Entities;
 	};
 }

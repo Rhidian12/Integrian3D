@@ -164,9 +164,6 @@
     <ClInclude Include="Components\CameraComponent\CameraComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ECS\DoubleStorage\DoubleStorage.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Iterator\Iterator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
