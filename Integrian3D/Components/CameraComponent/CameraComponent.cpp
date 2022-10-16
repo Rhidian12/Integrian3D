@@ -8,7 +8,7 @@
 
 namespace Integrian3D
 {
-	CameraComponent::CameraComponent(const float nearPlane, const float farPlane, const float fov, const float aspectRatio, const float speed)
+	CameraComponent::CameraComponent(const float nearPlane, const float farPlane, const float fov, const float aspectRatio, const double speed)
 		: NearPlane{ nearPlane }
 		, FarPlane{ farPlane }
 		, FOV{ fov }

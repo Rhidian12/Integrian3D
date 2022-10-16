@@ -9,7 +9,7 @@ namespace Integrian3D
 {
 	namespace Systems
 	{
-		void TranslateCamera(const glm::vec3& dir);
-		void RotateCamera(const MathUtils::Vec2D& mousePos, const MathUtils::Vec2D& lastMousePos);
+		void TranslateCamera();
+		void RotateCamera();
 	}
 }

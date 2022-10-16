@@ -30,59 +30,59 @@ namespace Integrian3D
 		void Start();
 
 		void Update();
-		__NODISCARD float GetElapsedSeconds() const { return ElapsedSeconds; }
-		__NODISCARD float GetFixedElapsedSeconds() const { return TimePerFrame; }
-		__NODISCARD float GetTotalElapsedSeconds() const { return TotalElapsedSeconds; }
+		__NODISCARD double GetElapsedSeconds() const { return ElapsedSeconds; }
+		__NODISCARD double GetFixedElapsedSeconds() const { return TimePerFrame; }
+		__NODISCARD double GetTotalElapsedSeconds() const { return TotalElapsedSeconds; }
 		__NODISCARD int GetFPS() const { return FPS; }
-		__NODISCARD float GetTimePerFrame() const { return TimePerFrame; }
+		__NODISCARD double GetTimePerFrame() const { return TimePerFrame; }
 
 		/* Base templated function, should never be called */
 		template<TimeLength T>
-		float GetElapsedTime() const { return 0.f; };
+		__NODISCARD double GetElapsedTime() const { return 0; };
 		template<>
-		__NODISCARD float GetElapsedTime<TimeLength::NanoSeconds>() const { return ElapsedSeconds * 216'000; }
+		__NODISCARD double GetElapsedTime<TimeLength::NanoSeconds>() const { return ElapsedSeconds * 216'000; }
 		template<>
-		__NODISCARD float GetElapsedTime<TimeLength::MicroSeconds>() const { return ElapsedSeconds * 3600; }
+		__NODISCARD double GetElapsedTime<TimeLength::MicroSeconds>() const { return ElapsedSeconds * 3600; }
 		template<>
-		__NODISCARD float GetElapsedTime<TimeLength::MilliSeconds>() const { return ElapsedSeconds * 60; }
+		__NODISCARD double GetElapsedTime<TimeLength::MilliSeconds>() const { return ElapsedSeconds * 60; }
 		template<>
-		__NODISCARD float GetElapsedTime<TimeLength::Seconds>() const { return ElapsedSeconds; }
+		__NODISCARD double GetElapsedTime<TimeLength::Seconds>() const { return ElapsedSeconds; }
 		template<>
-		__NODISCARD float GetElapsedTime<TimeLength::Minutes>() const { return ElapsedSeconds / 60; }
+		__NODISCARD double GetElapsedTime<TimeLength::Minutes>() const { return ElapsedSeconds / 60; }
 		template<>
-		__NODISCARD float GetElapsedTime<TimeLength::Hours>() const { return ElapsedSeconds / 3600; }
+		__NODISCARD double GetElapsedTime<TimeLength::Hours>() const { return ElapsedSeconds / 3600; }
 
 		/* Base templated function, should never be called */
 		template<TimeLength T>
-		__NODISCARD float GetFixedElapsedTime() const { return 0.f; }
+		__NODISCARD double GetFixedElapsedTime() const { return 0; }
 		template<>
-		__NODISCARD float GetFixedElapsedTime<TimeLength::NanoSeconds>() const { return TimePerFrame * 216'000; }
+		__NODISCARD double GetFixedElapsedTime<TimeLength::NanoSeconds>() const { return TimePerFrame * 216'000; }
 		template<>
-		__NODISCARD float GetFixedElapsedTime<TimeLength::MicroSeconds>() const { return TimePerFrame * 3600; }
+		__NODISCARD double GetFixedElapsedTime<TimeLength::MicroSeconds>() const { return TimePerFrame * 3600; }
 		template<>
-		__NODISCARD float GetFixedElapsedTime<TimeLength::MilliSeconds>() const { return TimePerFrame * 60; }
+		__NODISCARD double GetFixedElapsedTime<TimeLength::MilliSeconds>() const { return TimePerFrame * 60; }
 		template<>
-		__NODISCARD float GetFixedElapsedTime<TimeLength::Seconds>() const { return TimePerFrame; }
+		__NODISCARD double GetFixedElapsedTime<TimeLength::Seconds>() const { return TimePerFrame; }
 		template<>
-		__NODISCARD float GetFixedElapsedTime<TimeLength::Minutes>() const { return TimePerFrame / 60; }
+		__NODISCARD double GetFixedElapsedTime<TimeLength::Minutes>() const { return TimePerFrame / 60; }
 		template<>
-		__NODISCARD float GetFixedElapsedTime<TimeLength::Hours>() const { return TimePerFrame / 3600; }
+		__NODISCARD double GetFixedElapsedTime<TimeLength::Hours>() const { return TimePerFrame / 3600; }
 
 		/* Base templated function, should never be called */
 		template<TimeLength T>
-		__NODISCARD float GetTotalElapsedSeconds() const { return 0.f; }
+		__NODISCARD double GetTotalElapsedSeconds() const { return 0; }
 		template<>
-		__NODISCARD float GetTotalElapsedSeconds<TimeLength::NanoSeconds>() const { return TotalElapsedSeconds * 216'000; }
+		__NODISCARD double GetTotalElapsedSeconds<TimeLength::NanoSeconds>() const { return TotalElapsedSeconds * 216'000; }
 		template<>
-		__NODISCARD float GetTotalElapsedSeconds<TimeLength::MicroSeconds>() const { return TotalElapsedSeconds * 3600; }
+		__NODISCARD double GetTotalElapsedSeconds<TimeLength::MicroSeconds>() const { return TotalElapsedSeconds * 3600; }
 		template<>
-		__NODISCARD float GetTotalElapsedSeconds<TimeLength::MilliSeconds>() const { return TotalElapsedSeconds * 60; }
+		__NODISCARD double GetTotalElapsedSeconds<TimeLength::MilliSeconds>() const { return TotalElapsedSeconds * 60; }
 		template<>
-		__NODISCARD float GetTotalElapsedSeconds<TimeLength::Seconds>() const { return TotalElapsedSeconds; }
+		__NODISCARD double GetTotalElapsedSeconds<TimeLength::Seconds>() const { return TotalElapsedSeconds; }
 		template<>
-		__NODISCARD float GetTotalElapsedSeconds<TimeLength::Minutes>() const { return TotalElapsedSeconds / 60; }
+		__NODISCARD double GetTotalElapsedSeconds<TimeLength::Minutes>() const { return TotalElapsedSeconds / 60; }
 		template<>
-		__NODISCARD float GetTotalElapsedSeconds<TimeLength::Hours>() const { return TotalElapsedSeconds / 3600; }
+		__NODISCARD double GetTotalElapsedSeconds<TimeLength::Hours>() const { return TotalElapsedSeconds / 3600; }
 
 	private:
 		Timer();
@@ -90,13 +90,13 @@ namespace Integrian3D
 		friend std::unique_ptr<Timer> std::make_unique();
 		inline static std::unique_ptr<Timer> Instance{};
 
-		const float MaxElapsedSeconds;
-		float ElapsedSeconds;
-		float TotalElapsedSeconds;
+		const double MaxElapsedSeconds;
+		double ElapsedSeconds;
+		double TotalElapsedSeconds;
 		int FPS;
 		int FPSCounter;
-		float FPSTimer;
-		float TimePerFrame;
+		double FPSTimer;
+		double TimePerFrame;
 
 		std::chrono::steady_clock::time_point StartTimepoint;
 		std::chrono::steady_clock::time_point PreviousTimepoint;

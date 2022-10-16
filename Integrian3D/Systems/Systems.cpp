@@ -5,54 +5,65 @@
 #include "../Math/MathUtils.h"
 #include "../Timer/Timer.h"
 #include "../DebugUtility/DebugUtility.h"
-
-#include <iostream>
-#include <iomanip>
+#include "../InputManager/InputManager.h"
 
 namespace Integrian3D
 {
 	namespace Systems
 	{
-		void TranslateCamera(const glm::vec3& dir)
+		void TranslateCamera()
 		{
 			SceneManager::GetInstance().GetActiveScene().CreateView<CameraComponent, TransformComponent>().ForEach(
-				[&dir](CameraComponent& camera, TransformComponent& transform)->void
+				[](CameraComponent& camera, TransformComponent& transform)->void
 				{
-					transform.Translate(dir * camera.GetSpeed() * Timer::GetInstance().GetElapsedSeconds(), true);
-					
-					/* Make lookat matrix */
-					glm::mat4 lookAt{ glm::lookAt(transform.GetLocalLocation(), transform.GetLocalLocation() + transform.GetForward(), MathUtils::Up)};
+					MathUtils::Vec2D dir{};
 
-					camera.SetView(lookAt);
+					dir.x += InputManager::GetInstance().GetIsKeyPressed(KeyboardInput::A) ? -1.0 : 0.0;
+					dir.x += InputManager::GetInstance().GetIsKeyPressed(KeyboardInput::D) ? 1.0 : 0.0;
 
-					///* Get camera direction, which is the inverse of what we're looking at */
-					//const glm::vec3 cameraInverseDir{ glm::normalize(transform.GetLocalLocation()) };
+					dir.y += InputManager::GetInstance().GetIsKeyPressed(KeyboardInput::W) ? 1.0 : 0.0;
+					dir.y += InputManager::GetInstance().GetIsKeyPressed(KeyboardInput::S) ? -1.0 : 0.0;
 
-					///* Get the camera right axis */
-					//const glm::vec3 cameraRight{ glm::normalize(glm::cross(MathUtils::Up, cameraInverseDir)) };
+					transform.Translate(transform.GetForward() * dir.y
+						* camera.GetSpeed() * Timer::GetInstance().GetElapsedSeconds(), true);
 
-					///* Get the camera up axis */
-					//const glm::vec3 cameraUp{ glm::cross(cameraInverseDir, cameraRight) }; 
+					transform.Translate(transform.GetRight() * dir.x
+						* camera.GetSpeed() * Timer::GetInstance().GetElapsedSeconds(), true);
+
+					camera.SetView(glm::lookAt(
+						transform.GetLocalLocation(),
+						transform.GetLocalLocation() + transform.GetForward(),
+						transform.GetUp())
+					);
 				}
 			);
 		}
 
-		void RotateCamera(const MathUtils::Vec2D& mousePos, const MathUtils::Vec2D& lastMousePos)
+		void RotateCamera()
 		{
+			const MathUtils::Vec2D& mousePos{ InputManager::GetInstance().GetMousePosition() };
+			const MathUtils::Vec2D& lastMousePos{ InputManager::GetInstance().GetPreviousMousePosition() };
+
 			SceneManager::GetInstance().GetActiveScene().CreateView<CameraComponent, TransformComponent>().ForEach(
 				[&mousePos, &lastMousePos](CameraComponent& camera, TransformComponent& transform)->void
 				{
 					double xOffset{ mousePos.x - lastMousePos.x };
 					double yOffset{ mousePos.y - lastMousePos.y };
 
-					const double sensitivity{ 1.0 };
+					const double speed{ 5.0 };
 
-					xOffset *= sensitivity * Timer::GetInstance().GetElapsedSeconds() * 10.0;
-					yOffset *= sensitivity * Timer::GetInstance().GetElapsedSeconds() * 10.0;
+					xOffset *= speed * Timer::GetInstance().GetElapsedSeconds();
+					yOffset *= speed * Timer::GetInstance().GetElapsedSeconds();
 
 					transform.Rotate(MathUtils::Vec3D{ yOffset, xOffset, 0.0 }, true);
 
-					camera.SetView(glm::lookAt(transform.GetLocalLocation(), transform.GetLocalLocation() + transform.GetForward(), MathUtils::Up));
+					Debug::LogVector(transform.GetLocalAngle(), Debug::MessageColour::White);
+
+					camera.SetView(
+						glm::lookAt(transform.GetLocalLocation(),
+							transform.GetLocalLocation() + transform.GetForward(),
+							transform.GetUp())
+					);
 				}
 			);
 		}

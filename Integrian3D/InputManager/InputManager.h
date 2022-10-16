@@ -18,7 +18,7 @@ namespace Integrian3D
 	{
 	public:
 		static void CreateInputManager(Detail::Window* pWindow);
-		static InputManager& GetInstance();
+		__NODISCARD static InputManager& GetInstance();
 
 		void ProcessInput();
 

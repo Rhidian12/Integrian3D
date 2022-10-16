@@ -70,24 +70,8 @@ namespace Integrian3D
 			{
 				if (inputManager.GetIsMouseButtonPressed(MouseInput::RMB))
 				{
-					Systems::RotateCamera(inputManager.GetMousePosition(), inputManager.GetPreviousMousePosition());
-
-					if (inputManager.GetIsKeyPressed(KeyboardInput::W))
-					{
-						Systems::TranslateCamera(MathUtils::Forward);
-					}
-					if (inputManager.GetIsKeyPressed(KeyboardInput::A))
-					{
-						Systems::TranslateCamera(MathUtils::Right);
-					}
-					if (inputManager.GetIsKeyPressed(KeyboardInput::S))
-					{
-						Systems::TranslateCamera(-MathUtils::Forward);
-					}
-					if (inputManager.GetIsKeyPressed(KeyboardInput::D))
-					{
-						Systems::TranslateCamera(-MathUtils::Right);
-					}
+					Systems::TranslateCamera();
+					Systems::RotateCamera();
 				}
 			}
 
@@ -126,7 +110,7 @@ namespace Integrian3D
 			/* Swap buffers */
 			Window.Update();
 
-			Debug::LogMessage("FPS: " + std::to_string(Timer::GetInstance().GetFPS()), false);
+			// Debug::LogMessage("FPS: " + std::to_string(Timer::GetInstance().GetFPS()), false);
 		}
 	}
 }

@@ -12,7 +12,7 @@ int main()
 {
 	using namespace Integrian3D;
 
-	Core& core{ Core::CreateCore(640,480) };
+	Core& core{ Core::CreateCore(1080,720) };
 
 	Scene testScene{ "TestScene" };
 

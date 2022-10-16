@@ -3,13 +3,13 @@
 namespace Integrian3D
 {
 	Timer::Timer()
-		: MaxElapsedSeconds{ 0.1f }
+		: MaxElapsedSeconds{ 0.1 }
 		, ElapsedSeconds{}
 		, TotalElapsedSeconds{}
 		, FPS{}
 		, FPSCounter{}
 		, FPSTimer{}
-		, TimePerFrame{ 1.f / 60.f }
+		, TimePerFrame{ 1.0 / 60.0 }
 	{
 		Start();
 	}
@@ -33,13 +33,13 @@ namespace Integrian3D
 	{
 		StartTimepoint = std::chrono::steady_clock::now();
 		
-		ElapsedSeconds = std::chrono::duration<float>(StartTimepoint - PreviousTimepoint).count();
+		ElapsedSeconds = std::chrono::duration<double>(StartTimepoint - PreviousTimepoint).count();
 		ElapsedSeconds = std::min(ElapsedSeconds, MaxElapsedSeconds);
 		
 		TotalElapsedSeconds += ElapsedSeconds;
 
 		PreviousTimepoint = StartTimepoint;
 
-		FPS = static_cast<int>(1.f / ElapsedSeconds);
+		FPS = static_cast<int>(1.0 / ElapsedSeconds);
 	}
 }

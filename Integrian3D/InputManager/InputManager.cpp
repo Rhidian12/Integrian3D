@@ -37,7 +37,14 @@ namespace Integrian3D
 		double x{}, y{};
 		glfwGetCursorPos(Core::GetInstance().GetWindow().GetWindow(), &x, &y);
 
+		/* Update MousePosition and PreviousMousePosition */
 		SetMousePosition(MathUtils::Vec2D{ x, y });
+
+		//std::cout << "Previous:\t";
+		//Debug::LogVector(PreviousMousePosition, Debug::MessageColour::White);
+		//std::cout << "Current:\t";
+		//Debug::LogVector(MousePosition, Debug::MessageColour::White);
+		//std::cout << "----------------------\n";
 	}
 
 	bool InputManager::GetIsKeyPressed(const KeyboardInput input) const
