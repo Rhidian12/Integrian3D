@@ -2,44 +2,36 @@
 
 #include "../Core/Core.h"
 #include "../DebugUtility/DebugUtility.h"
-
-#ifdef _WIN32
-#include <WinUser.h> /* Keyboard input */
-#include <errhandlingapi.h> /* Error handling */
-#include <WinBase.h> /* FormatMessage() */
-#endif
-
-#include <GLFW/glfw3.h> /* GLFW */
+#include "../Window/Window.h"
 
 namespace Integrian3D
 {
 	/* Defined in Core.h */
 	extern inline volatile bool g_IsRunning;
 
-	InputManager::InputManager()
-		: PreviousKeyStates{}
-		, CurrentKeyStates{}
-		, PreviousMousePosition{}
+	InputManager::InputManager(Detail::Window* pWindow)
+		: PreviousMousePosition{}
 		, MousePosition{}
+		, pWindow{ pWindow }
 	{}
 
-	InputManager& InputManager::GetInstance()
+	void InputManager::CreateInputManager(Detail::Window* pWindow)
 	{
 		if (!Instance)
 		{
-			Instance = std::make_unique<InputManager>();
+			Instance.reset(new InputManager{ pWindow });
 		}
+	}
+
+	InputManager& InputManager::GetInstance()
+	{
+		__ASSERT(Instance != nullptr && "InputManager::GetInstance() > No InputManager has been created");
 
 		return *Instance.get();
 	}
 
 	void InputManager::ProcessInput()
 	{
-		//MSG msg;
-		//PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE);
-		//TranslateMessage(&msg);
-		//DispatchMessage(&msg);
-
 		glfwPollEvents();
 
 		double x{}, y{};
@@ -50,41 +42,17 @@ namespace Integrian3D
 
 	bool InputManager::GetIsKeyPressed(const KeyboardInput input) const
 	{
-		return GetKeyState(static_cast<int>(input)) & 0x8000;
+		return glfwGetKey(pWindow->GetWindow(), static_cast<int>(input));
 	}
 
 	bool InputManager::GetIsMouseButtonPressed(const MouseInput mouseInput) const
 	{
-		return GetKeyState(static_cast<int>(mouseInput)) & 0x8000;
-	}
-
-	MathUtils::Vec2D InputManager::GetMousePosition() const
-	{
-		return MousePosition;
+		return glfwGetMouseButton(pWindow->GetWindow(), static_cast<int>(mouseInput));
 	}
 
 	void InputManager::SetMousePosition(const MathUtils::Vec2D& mousePosition)
 	{
 		PreviousMousePosition = MousePosition;
 		MousePosition = mousePosition;
-	}
-
-	void InputManager::LogInputErrorMessage()
-	{
-		LPVOID messageBuffer;
-		FormatMessage(
-			FORMAT_MESSAGE_ALLOCATE_BUFFER |
-			FORMAT_MESSAGE_FROM_SYSTEM |
-			FORMAT_MESSAGE_IGNORE_INSERTS,
-			nullptr,
-			GetLastError(),
-			MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-			reinterpret_cast<LPTSTR>(&messageBuffer),
-			0,
-			nullptr);
-
-		Debug::LogError(reinterpret_cast<const char*>(messageBuffer), false);
-
-		LocalFree(messageBuffer);
 	}
 }

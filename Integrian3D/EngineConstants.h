@@ -6,6 +6,9 @@
 #include <limits> /* std::numeric_limits */
 #include <bitset> /* std::bitset */
 
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
 #undef max
 
 namespace Integrian3D

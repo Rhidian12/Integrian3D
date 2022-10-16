@@ -20,7 +20,9 @@ namespace Integrian3D
 {
 	Core::Core(const int windowWidth, const int windowHeight)
 		: Window{ windowWidth, windowHeight }
-	{}
+	{
+		InputManager::CreateInputManager(&Window);
+	}
 
 	Core& Core::GetInstance()
 	{
@@ -123,6 +125,8 @@ namespace Integrian3D
 
 			/* Swap buffers */
 			Window.Update();
+
+			Debug::LogMessage("FPS: " + std::to_string(Timer::GetInstance().GetFPS()), false);
 		}
 	}
 }

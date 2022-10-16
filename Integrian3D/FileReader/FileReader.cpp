@@ -1,9 +1,13 @@
 #include "FileReader.h"
 
+#pragma warning( push )
+#pragma warning( disable:4005 ) /* Macro redefinition */
+/* Win32 and GLFW both define APIENTRY */
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 #endif
+#pragma warning( pop )
 
 #include "../DebugUtility/DebugUtility.h"
 

@@ -6,13 +6,18 @@
 #include "../Math/MathUtils.h"
 
 #include <memory> /* std::unique_ptr */
-#include <array> /* std::array */
 
 namespace Integrian3D
 {
+	namespace Detail
+	{
+		class Window;
+	}
+
 	class InputManager final
 	{
 	public:
+		static void CreateInputManager(Detail::Window* pWindow);
 		static InputManager& GetInstance();
 
 		void ProcessInput();
@@ -22,21 +27,17 @@ namespace Integrian3D
 
 		void SetMousePosition(const MathUtils::Vec2D& mousePos);
 
-		// __NODISCARD const MathUtils::Vec2D& GetMousePosition() const { return MousePosition; }
-		__NODISCARD MathUtils::Vec2D GetMousePosition() const;
+		__NODISCARD const MathUtils::Vec2D& GetMousePosition() const { return MousePosition; }
 		__NODISCARD const MathUtils::Vec2D& GetPreviousMousePosition() const { return PreviousMousePosition; }
 
 	private:
-		InputManager();
-		void LogInputErrorMessage();
+		InputManager(Detail::Window* pWindow);
 
-		friend std::unique_ptr<InputManager> std::make_unique<InputManager>();
 		inline static std::unique_ptr<InputManager> Instance{};
-
-		std::array<PBYTE, 256> PreviousKeyStates;
-		std::array<PBYTE, 256> CurrentKeyStates;
 
 		MathUtils::Vec2D PreviousMousePosition;
 		MathUtils::Vec2D MousePosition;
+
+		Detail::Window* pWindow;
 	};
 }

@@ -4,9 +4,6 @@
 #include "../DebugUtility/DebugUtility.h"
 #include "../InputManager/InputManager.h"
 
-#include <glad/glad.h> /* GLAD */
-#include <GLFW/glfw3.h> /* GLFW */
-
 namespace Integrian3D
 {
 	/* Defined in Core.h */

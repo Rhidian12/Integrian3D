@@ -45,10 +45,10 @@ namespace Integrian3D
 					double xOffset{ mousePos.x - lastMousePos.x };
 					double yOffset{ mousePos.y - lastMousePos.y };
 
-					const double sensitivity{ 10.0 };
+					const double sensitivity{ 1.0 };
 
-					xOffset *= sensitivity * Timer::GetInstance().GetElapsedSeconds();
-					yOffset *= sensitivity * Timer::GetInstance().GetElapsedSeconds();
+					xOffset *= sensitivity * Timer::GetInstance().GetElapsedSeconds() * 10.0;
+					yOffset *= sensitivity * Timer::GetInstance().GetElapsedSeconds() * 10.0;
 
 					transform.Rotate(MathUtils::Vec3D{ yOffset, xOffset, 0.0 }, true);
 
