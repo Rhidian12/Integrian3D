@@ -1,5 +1,7 @@
 #pragma once
 
+#include <glm.hpp> /* GLM */
+
 #include <string> /* std::string */
 #include <string_view> /* std::string_view */
 #include <memory> /* std::unique_ptr */
@@ -71,6 +73,9 @@ namespace Integrian3D
 				const MessageColour colour,
 				const bool bVerbose = false
 			);
+
+			void LogVector(const glm::vec<2, double>& v, const MessageColour colour);
+			void LogVector(const glm::vec<3, double>& v, const MessageColour colour);
 
 		private:
 			Logger();

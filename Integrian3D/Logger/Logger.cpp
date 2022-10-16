@@ -138,5 +138,31 @@ namespace Integrian3D
 			SetConsoleTextAttribute(ConsoleHandle, static_cast<WORD>(colour));
 #endif
 		}
+
+		void Logger::LogVector(const glm::vec<2, double>& v, const MessageColour colour)
+		{
+#ifdef _WIN32
+			/* Set text colour to user defined colour */
+			SetConsoleTextAttribute(ConsoleHandle, static_cast<WORD>(colour));
+
+			std::cout << "x: " << v.x << ", y: " << v.y << "\n";
+
+			/* Reset text colour to white */
+			SetConsoleTextAttribute(ConsoleHandle, static_cast<WORD>(colour));
+#endif
+		}
+
+		void Logger::LogVector(const glm::vec<3, double>& v, const MessageColour colour)
+		{
+#ifdef _WIN32
+			/* Set text colour to user defined colour */
+			SetConsoleTextAttribute(ConsoleHandle, static_cast<WORD>(colour));
+
+			std::cout << "x: " << v.x << ", y: " << v.y << ", z: " << v.z << "\n";
+
+			/* Reset text colour to white */
+			SetConsoleTextAttribute(ConsoleHandle, static_cast<WORD>(colour));
+#endif
+		}
 	}
 }

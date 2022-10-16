@@ -25,6 +25,7 @@ namespace Integrian3D
 
 		__NODISCARD int GetWindowWidth() const { return Window.GetWidth(); }
 		__NODISCARD int GetWindowHeight() const { return Window.GetHeight(); }
+		__NODISCARD const Detail::Window& GetWindow() const { return Window; }
 
 	private:
 		Core(const int windowWidth, const int windowHeight);

@@ -14,5 +14,6 @@ namespace Integrian3D
 #define LogWarning(message, bVerbose) Logger::GetInstance().LogWarning((message), __LINE__, __FILE__, (bVerbose))
 #define LogError(message, bVerbose) Logger::GetInstance().LogError((message), __LINE__, __FILE__, (bVerbose))
 #define LogCustomMessage(message, colour, bVerbose) Logger::GetInstance().LogCustomMessage((message), __LINE__, __FILE__, (colour), (bVerbose))
+#define LogVector(vector, colour) Logger::GetInstance().LogVector((vector), (colour))
 	}
 }

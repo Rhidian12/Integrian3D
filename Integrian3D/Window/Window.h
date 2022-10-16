@@ -22,6 +22,7 @@ namespace Integrian3D
 
 			__NODISCARD int GetWidth() const { return Width; }
 			__NODISCARD int GetHeight() const { return Height; }
+			__NODISCARD GLFWwindow* const GetWindow() const { return pWindow; }
 
 		private:
 			GLFWwindow* pWindow;

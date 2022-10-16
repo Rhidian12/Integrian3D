@@ -9,6 +9,8 @@
 #include <WinBase.h> /* FormatMessage() */
 #endif
 
+#include <GLFW/glfw3.h> /* GLFW */
+
 namespace Integrian3D
 {
 	/* Defined in Core.h */
@@ -33,19 +35,17 @@ namespace Integrian3D
 
 	void InputManager::ProcessInput()
 	{
-		MSG msg;
-		PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE);
-		TranslateMessage(&msg);
-		DispatchMessage(&msg);
+		//MSG msg;
+		//PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE);
+		//TranslateMessage(&msg);
+		//DispatchMessage(&msg);
 
-		// if (GetKeyboardState(PreviousKeyStates.data()) != 0)
-		// {
-		// 	PreviousKeyStates['A'];
-		// }
-		// else
-		// {
-		// 	LogInputErrorMessage();
-		// }
+		glfwPollEvents();
+
+		double x{}, y{};
+		glfwGetCursorPos(Core::GetInstance().GetWindow().GetWindow(), &x, &y);
+
+		SetMousePosition(MathUtils::Vec2D{ x, y });
 	}
 
 	bool InputManager::GetIsKeyPressed(const KeyboardInput input) const
@@ -56,6 +56,11 @@ namespace Integrian3D
 	bool InputManager::GetIsMouseButtonPressed(const MouseInput mouseInput) const
 	{
 		return GetKeyState(static_cast<int>(mouseInput)) & 0x8000;
+	}
+
+	MathUtils::Vec2D InputManager::GetMousePosition() const
+	{
+		return MousePosition;
 	}
 
 	void InputManager::SetMousePosition(const MathUtils::Vec2D& mousePosition)

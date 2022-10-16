@@ -1,8 +1,10 @@
 #pragma once
 
 #include "../EngineConstants.h"
+#include "../Math/MathUtils.h"
 
 #include <string_view> /* std::string_view */
+#include <type_traits> /* std::true_type, ... */
 
 namespace Integrian3D
 {
@@ -32,7 +34,7 @@ namespace Integrian3D
 			constexpr std::string_view wrappedName(WrappedTypeName<T>());
 
 			constexpr size_t endOfType{ wrappedName.find_last_of('>') };
-			constexpr size_t beginOfType{ std::max(wrappedName.find_last_of(' '), wrappedName.find_last_of('<')) };
+			constexpr size_t beginOfType{ MathUtils::Max(wrappedName.find_last_of(' '), wrappedName.find_last_of('<')) };
 
 			return wrappedName.substr(beginOfType + 1, endOfType - beginOfType - 1);
 		}
@@ -54,5 +56,11 @@ namespace Integrian3D
 
 			return hash_value;
 		}
+
+		template <typename T, template <typename ...> typename U>
+		struct Is_Specialization : std::false_type {};
+
+		template <template <typename ...> typename T, typename ... Ts>
+		struct Is_Specialization<T<Ts...>, T> : std::true_type {};
 	}
 }

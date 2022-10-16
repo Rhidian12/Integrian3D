@@ -4,8 +4,10 @@
 #include "../Components/TransformComponent/TransformComponent.h"
 #include "../Math/MathUtils.h"
 #include "../Timer/Timer.h"
+#include "../DebugUtility/DebugUtility.h"
 
 #include <iostream>
+#include <iomanip>
 
 namespace Integrian3D
 {
@@ -43,41 +45,14 @@ namespace Integrian3D
 					double xOffset{ mousePos.x - lastMousePos.x };
 					double yOffset{ mousePos.y - lastMousePos.y };
 
-					std::cout << xOffset << "\n";
+					const double sensitivity{ 10.0 };
 
-					const double sensitivity{ 0.001 };
+					xOffset *= sensitivity * Timer::GetInstance().GetElapsedSeconds();
+					yOffset *= sensitivity * Timer::GetInstance().GetElapsedSeconds();
 
-					xOffset *= sensitivity;
-					yOffset *= sensitivity;
+					transform.Rotate(MathUtils::Vec3D{ yOffset, xOffset, 0.0 }, true);
 
-					glm::vec3 rot{ MathUtils::ToRadians(xOffset), MathUtils::ToRadians(yOffset), 0.f };
-
-					transform.Rotate(rot, true);
-
-					glm::vec3 newRot{ transform.GetLocalAngle() };
-
-					if (newRot.x < MathUtils::ToRadians(-89.f))
-					{
-						newRot.x = MathUtils::ToRadians(-89.f);
-					}
-					else if (newRot.x > MathUtils::ToRadians(89.f))
-					{
-						newRot.x = MathUtils::ToRadians(89.f);
-					}
-
-					transform.SetLocalAngle(newRot);
-
-					rot = glm::vec3
-					{
-						glm::cos(newRot.y) * glm::cos(newRot.x),
-						glm::sin(newRot.x),
-						glm::sin(newRot.y) * glm::cos(newRot.x)
-					};
-
-					auto test = transform.GetForward();
-					auto test2 = glm::normalize(rot);
-
-					camera.SetView(glm::lookAt(transform.GetLocalLocation(), transform.GetLocalLocation() + test, MathUtils::Up));
+					camera.SetView(glm::lookAt(transform.GetLocalLocation(), transform.GetLocalLocation() + transform.GetForward(), MathUtils::Up));
 				}
 			);
 		}

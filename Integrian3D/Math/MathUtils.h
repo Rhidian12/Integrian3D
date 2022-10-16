@@ -11,17 +11,23 @@ namespace Integrian3D
 {
 	namespace MathUtils
 	{
+		using Vec2D = glm::vec<2, double>;
+		using Vec2F = glm::vec<2, float>;
+		using Vec3D = glm::vec<3, double>;
+		using Vec3F = glm::vec<3, float>;
+		using Vec4D = glm::vec<4, double>;
+		using Vec4F = glm::vec<4, float>;
+		using Mat4D = glm::mat<4, 4, double>;
+		using Mat4F = glm::mat<4, 4, double>;
+
 		inline constexpr double Pi{ 3.14159265358979323846264338327950288 };
 		inline constexpr double Pi_2{ Pi / 2.0 };
 		inline constexpr double Pi_4{ Pi / 4.0 };
 		inline uint32_t Seed{}; /* Set in Core::CreateCore() */
 
-		inline constexpr glm::vec3 Up{ 0.f, 1.f, 0.f };
-		inline constexpr glm::vec3 Right{ 1.f, 0.f, 0.f };
-		inline constexpr glm::vec3 Forward{ 0.f, 0.f, 1.f };
-
-		using Vec2D = glm::vec<2, double>;
-		/* [TODO]: Add other type defines! */
+		inline constexpr Vec3D Up{ 0.0, 1.0, 0.0 };
+		inline constexpr Vec3D Right{ 1.0, 0.0, 0.0 };
+		inline constexpr Vec3D Forward{ 0.0, 0.0, 1.0 };
 
 		namespace
 		{
@@ -86,6 +92,12 @@ namespace Integrian3D
 		__INLINE constexpr glm::vec3 RandomVec3(const float min, const float max)
 		{
 			return glm::vec3{ RandomF(min, max),RandomF(min, max),RandomF(min, max) };
+		}
+
+		template<typename T>
+		__INLINE constexpr T Max(const T& a, const T& b)
+		{
+			return a < b ? b : a;
 		}
 	}
 }

@@ -22,7 +22,8 @@ namespace Integrian3D
 
 		void SetMousePosition(const MathUtils::Vec2D& mousePos);
 
-		__NODISCARD const MathUtils::Vec2D& GetMousePosition() const { return MousePosition; }
+		// __NODISCARD const MathUtils::Vec2D& GetMousePosition() const { return MousePosition; }
+		__NODISCARD MathUtils::Vec2D GetMousePosition() const;
 		__NODISCARD const MathUtils::Vec2D& GetPreviousMousePosition() const { return PreviousMousePosition; }
 
 	private:

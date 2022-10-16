@@ -17,7 +17,7 @@ namespace Integrian3D
 		, View{ 1.f }
 		, Projection{ 1.f }
 	{
-		const glm::vec3 startPos{ 0.f, 0.f, -3.f };
+		const MathUtils::Vec3D startPos{ 0.0, 0.0, -3.0 };
 		View = glm::lookAt(startPos, startPos + MathUtils::Forward, MathUtils::Up);
 		Projection = glm::perspective(FOV, AspectRatio, NearPlane, FarPlane);
 	}
