@@ -115,7 +115,7 @@ namespace Integrian3D
 
 	void Shader::Activate() const
 	{
-		assert(ProgramID != std::numeric_limits<uint32_t>::max() && "Shader::Activate() > No program set");
+		__ASSERT(ProgramID != std::numeric_limits<uint32_t>::max() && "Shader::Activate() > No program set");
 		glUseProgram(ProgramID);
 	}
 
