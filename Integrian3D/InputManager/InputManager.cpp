@@ -34,11 +34,11 @@ namespace Integrian3D
 	{
 		glfwPollEvents();
 
-		double x{}, y{};
-		glfwGetCursorPos(Core::GetInstance().GetWindow().GetWindow(), &x, &y);
-
-		/* Update MousePosition and PreviousMousePosition */
-		SetMousePosition(MathUtils::Vec2D{ x, y });
+		 double x{}, y{};
+		 glfwGetCursorPos(Core::GetInstance().GetWindow().GetWindow(), &x, &y);
+		 
+		 /* Update MousePosition and PreviousMousePosition */
+		 SetMousePosition(Math::Vec2D{ x, y });
 
 		//std::cout << "Previous:\t";
 		//Debug::LogVector(PreviousMousePosition, Debug::MessageColour::White);
@@ -57,7 +57,7 @@ namespace Integrian3D
 		return glfwGetMouseButton(pWindow->GetWindow(), static_cast<int>(mouseInput));
 	}
 
-	void InputManager::SetMousePosition(const MathUtils::Vec2D& mousePosition)
+	void InputManager::SetMousePosition(const Math::Vec2D& mousePosition)
 	{
 		PreviousMousePosition = MousePosition;
 		MousePosition = mousePosition;

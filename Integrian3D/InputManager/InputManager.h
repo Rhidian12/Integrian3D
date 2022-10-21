@@ -3,7 +3,7 @@
 #include "../EngineConstants.h"
 #include "KeyboardInput/KeyboardInput.h"
 #include "MouseInput/MouseInput.h"
-#include "../Math/MathUtils.h"
+#include "../Math/Math.h"
 
 #include <memory> /* std::unique_ptr */
 
@@ -25,18 +25,18 @@ namespace Integrian3D
 		__NODISCARD bool GetIsKeyPressed(const KeyboardInput input) const;
 		__NODISCARD bool GetIsMouseButtonPressed(const MouseInput mouseInput) const;
 
-		void SetMousePosition(const MathUtils::Vec2D& mousePos);
+		void SetMousePosition(const Math::Vec2D& mousePos);
 
-		__NODISCARD const MathUtils::Vec2D& GetMousePosition() const { return MousePosition; }
-		__NODISCARD const MathUtils::Vec2D& GetPreviousMousePosition() const { return PreviousMousePosition; }
+		__NODISCARD const Math::Vec2D& GetMousePosition() const { return MousePosition; }
+		__NODISCARD const Math::Vec2D& GetPreviousMousePosition() const { return PreviousMousePosition; }
 
 	private:
 		InputManager(Detail::Window* pWindow);
 
 		inline static std::unique_ptr<InputManager> Instance{};
 
-		MathUtils::Vec2D PreviousMousePosition;
-		MathUtils::Vec2D MousePosition;
+		Math::Vec2D PreviousMousePosition;
+		Math::Vec2D MousePosition;
 
 		Detail::Window* pWindow;
 	};

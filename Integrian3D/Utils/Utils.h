@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../EngineConstants.h"
-#include "../Math/MathUtils.h"
+#include "../Math/Math.h"
 
 #include <string_view> /* std::string_view */
 #include <type_traits> /* std::true_type, ... */
@@ -34,7 +34,7 @@ namespace Integrian3D
 			constexpr std::string_view wrappedName(WrappedTypeName<T>());
 
 			constexpr size_t endOfType{ wrappedName.find_last_of('>') };
-			constexpr size_t beginOfType{ MathUtils::Max(wrappedName.find_last_of(' '), wrappedName.find_last_of('<')) };
+			constexpr size_t beginOfType{ Math::Max(wrappedName.find_last_of(' '), wrappedName.find_last_of('<')) };
 
 			return wrappedName.substr(beginOfType + 1, endOfType - beginOfType - 1);
 		}

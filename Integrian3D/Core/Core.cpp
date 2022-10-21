@@ -39,7 +39,7 @@ namespace Integrian3D
 
 		srand(static_cast<unsigned int>(time(nullptr)));
 
-		MathUtils::Seed = SEED;
+		Math::Seed = SEED;
 
 		Debug::LogMessage("Finished initialisation of engine", false);
 

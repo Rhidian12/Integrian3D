@@ -9,7 +9,7 @@
 
 namespace Integrian3D
 {
-	namespace MathUtils
+	namespace Math
 	{
 		using Vec2D = glm::vec<2, double>;
 		using Vec2F = glm::vec<2, float>;

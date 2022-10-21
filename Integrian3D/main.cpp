@@ -73,15 +73,15 @@ int main()
 	Entity entity = testScene.CreateEntity();
 	testScene.AddComponent<MeshComponent>(entity, vertices, indices, TextureManager::GetInstance().GetTexture("__Wall"));
 	TransformComponent& transform{ testScene.GetComponent<TransformComponent>(entity) };
-	transform.Rotate(glm::vec3{ MathUtils::ToRadians(-55.f), 0.f, 0.f });
+	transform.Rotate(glm::vec3{ Math::ToRadians(-55.f), 0.f, 0.f });
 
 	for (size_t i{}; i < 9; ++i)
 	{
 		Entity temp = testScene.CreateEntity();
 		testScene.AddComponent<MeshComponent>(temp, vertices, indices, TextureManager::GetInstance().GetTexture("__Wall"));
 		TransformComponent& transf{ testScene.GetComponent<TransformComponent>(temp) };
-		transf.Translate(MathUtils::RandomVec3(-5.f, 5.f));
-		transform.Rotate(glm::vec3{ MathUtils::ToRadians(-55.f), 0.f, 0.f });
+		transf.Translate(Math::RandomVec3(-5.f, 5.f));
+		transform.Rotate(glm::vec3{ Math::ToRadians(-55.f), 0.f, 0.f });
 	}
 
 	testScene.AddUpdateCallback([](Scene& scene)->void
@@ -92,8 +92,8 @@ int main()
 					(
 						glm::vec3
 						{
-							MathUtils::ToRadians(25.f) * Timer::GetInstance().GetElapsedSeconds(),
-							MathUtils::ToRadians(50.f) * Timer::GetInstance().GetElapsedSeconds(),
+							Math::ToRadians(25.f) * Timer::GetInstance().GetElapsedSeconds(),
+							Math::ToRadians(50.f) * Timer::GetInstance().GetElapsedSeconds(),
 							0.f
 						}
 					);

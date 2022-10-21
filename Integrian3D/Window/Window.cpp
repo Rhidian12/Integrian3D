@@ -3,6 +3,7 @@
 #include "../Core/Core.h" /* g_IsRunning */
 #include "../DebugUtility/DebugUtility.h"
 #include "../InputManager/InputManager.h"
+#include "../Math/Math.h"
 
 namespace Integrian3D
 {
@@ -45,7 +46,7 @@ namespace Integrian3D
 			glfwSetFramebufferSizeCallback(pWindow, OnResize);
 
 			glfwSetInputMode(pWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-			glfwSetCursorPosCallback(pWindow, OnMouseMovement);
+			// glfwSetCursorPosCallback(pWindow, OnMouseMovement);
 		}
 
 		Window::~Window()
@@ -71,7 +72,7 @@ namespace Integrian3D
 
 		void OnMouseMovement(GLFWwindow*, double x, double y)
 		{
-			InputManager::GetInstance().SetMousePosition(MathUtils::Vec2D{ x, y });
+			InputManager::GetInstance().SetMousePosition(Math::Vec2D{ x, y });
 		}
 	}
 }

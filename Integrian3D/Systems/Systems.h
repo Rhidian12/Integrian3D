@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../EngineConstants.h"
-#include "../Math/MathUtils.h"
+#include "../Math/Math.h"
 
 #include <gtc/matrix_transform.hpp>
 

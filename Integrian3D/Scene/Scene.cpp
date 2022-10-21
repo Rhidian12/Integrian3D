@@ -2,7 +2,7 @@
 
 #include "../Components/TransformComponent/TransformComponent.h"
 #include "../Components/CameraComponent/CameraComponent.h"
-#include "../Math/MathUtils.h"
+#include "../Math/Math.h"
 #include "../Core/Core.h"
 
 #include <gtc/matrix_transform.hpp>
@@ -27,7 +27,7 @@ namespace Integrian3D
 				CameraEntity,
 				0.1f,
 				100.f,
-				MathUtils::ToRadians(45.f),
+				Math::ToRadians(45.f),
 				static_cast<float>(Core::GetInstance().GetWindowWidth()) / Core::GetInstance().GetWindowHeight());
 
 			CreateView<CameraComponent, TransformComponent>().ForEach([](CameraComponent& camera, TransformComponent& transform)->void

@@ -2,7 +2,7 @@
 
 #include "../TransformComponent/TransformComponent.h"
 #include "../../SceneManager/SceneManager.h"
-#include "../../Math/MathUtils.h"
+#include "../../Math/Math.h"
 
 #include <gtc/matrix_transform.hpp>
 
@@ -17,8 +17,8 @@ namespace Integrian3D
 		, View{ 1.f }
 		, Projection{ 1.f }
 	{
-		const MathUtils::Vec3D startPos{ 0.0, 0.0, -3.0 };
-		View = glm::lookAt(startPos, startPos + MathUtils::Forward, MathUtils::Up);
+		const Math::Vec3D startPos{ 0.0, 0.0, -3.0 };
+		View = glm::lookAt(startPos, startPos + Math::Forward, Math::Up);
 		Projection = glm::perspective(FOV, AspectRatio, NearPlane, FarPlane);
 	}
 

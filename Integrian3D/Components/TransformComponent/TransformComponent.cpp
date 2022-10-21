@@ -1,7 +1,5 @@
 #include "TransformComponent.h"
 
-#include "../../Math/MathUtils.h"
-
 #include <gtc/matrix_transform.hpp>
 #include <gtx/rotate_vector.hpp>
 #pragma warning( push )
@@ -12,7 +10,7 @@
 namespace Integrian3D
 {
 	TransformComponent::TransformComponent()
-		: Transformation{ MathUtils::Mat4D{ 1.f } /* Identity matrix */ }
+		: Transformation{ Math::Mat4D{ 1.f } /* Identity matrix */ }
 		, WorldLocation{}
 		, WorldScale{ 1.0, 1.0, 1.0 }
 		, LocalScale{ 1.0, 1.0, 1.0 }
@@ -26,17 +24,17 @@ namespace Integrian3D
 	{}
 
 	TransformComponent::TransformComponent(TransformComponent&& other) noexcept
-		: Transformation{ __MOVE(MathUtils::Mat4D, other.Transformation) }
-		, WorldLocation{ __MOVE(MathUtils::Vec3D, other.WorldLocation) }
-		, WorldScale{ __MOVE(MathUtils::Vec3D, other.WorldScale) }
-		, LocalScale{ __MOVE(MathUtils::Vec3D, other.LocalScale) }
-		, WorldAngle{ __MOVE(MathUtils::Vec3D, other.WorldAngle) }
-		, LocalAngle{ __MOVE(MathUtils::Vec3D, other.LocalAngle) }
+		: Transformation{ __MOVE(Math::Mat4D, other.Transformation) }
+		, WorldLocation{ __MOVE(Math::Vec3D, other.WorldLocation) }
+		, WorldScale{ __MOVE(Math::Vec3D, other.WorldScale) }
+		, LocalScale{ __MOVE(Math::Vec3D, other.LocalScale) }
+		, WorldAngle{ __MOVE(Math::Vec3D, other.WorldAngle) }
+		, LocalAngle{ __MOVE(Math::Vec3D, other.LocalAngle) }
 		, bShouldRecalculateTransform{ __MOVE(bool, other.bShouldRecalculateTransform) }
 		, bShouldRecalculateWorldData{ __MOVE(bool, other.bShouldRecalculateWorldData) }
-		, Forward{ __MOVE(MathUtils::Vec3D, other.Forward) }
-		, Right{ __MOVE(MathUtils::Vec3D, other.Right) }
-		, Up{ __MOVE(MathUtils::Vec3D, other.Up) }
+		, Forward{ __MOVE(Math::Vec3D, other.Forward) }
+		, Right{ __MOVE(Math::Vec3D, other.Right) }
+		, Up{ __MOVE(Math::Vec3D, other.Up) }
 	{
 		other.bShouldRecalculateTransform = false;
 		other.bShouldRecalculateWorldData = false;
@@ -44,17 +42,17 @@ namespace Integrian3D
 
 	TransformComponent& TransformComponent::operator=(TransformComponent&& other) noexcept
 	{
-		Transformation = __MOVE(MathUtils::Mat4D, other.Transformation);
-		WorldLocation = __MOVE(MathUtils::Vec3D, other.WorldLocation);
-		WorldScale = __MOVE(MathUtils::Vec3D, other.WorldScale);
-		LocalScale = __MOVE(MathUtils::Vec3D, other.LocalScale);
-		WorldAngle = __MOVE(MathUtils::Vec3D, other.WorldAngle);
-		LocalAngle = __MOVE(MathUtils::Vec3D, other.LocalAngle);
+		Transformation = __MOVE(Math::Mat4D, other.Transformation);
+		WorldLocation = __MOVE(Math::Vec3D, other.WorldLocation);
+		WorldScale = __MOVE(Math::Vec3D, other.WorldScale);
+		LocalScale = __MOVE(Math::Vec3D, other.LocalScale);
+		WorldAngle = __MOVE(Math::Vec3D, other.WorldAngle);
+		LocalAngle = __MOVE(Math::Vec3D, other.LocalAngle);
 		bShouldRecalculateTransform = __MOVE(bool, other.bShouldRecalculateTransform);
 		bShouldRecalculateWorldData = __MOVE(bool, other.bShouldRecalculateWorldData);
-		Forward = __MOVE(MathUtils::Vec3D, other.Forward);
-		Right = __MOVE(MathUtils::Vec3D, other.Right);
-		Up = __MOVE(MathUtils::Vec3D, other.Up);
+		Forward = __MOVE(Math::Vec3D, other.Forward);
+		Right = __MOVE(Math::Vec3D, other.Right);
+		Up = __MOVE(Math::Vec3D, other.Up);
 
 		other.bShouldRecalculateTransform = false;
 		other.bShouldRecalculateWorldData = false;
@@ -66,12 +64,12 @@ namespace Integrian3D
 	{
 		if (bShouldRecalculateTransform)
 		{
-			const MathUtils::Mat4D rotationMat{ glm::eulerAngleXYZ(LocalAngle.x, LocalAngle.y, LocalAngle.z) };
+			const Math::Mat4D rotationMat{ glm::eulerAngleXYZ(LocalAngle.x, LocalAngle.y, LocalAngle.z) };
 
-			MathUtils::Mat4D translationMat{ glm::identity<MathUtils::Mat4D>() };
+			Math::Mat4D translationMat{ glm::identity<Math::Mat4D>() };
 			translationMat[3] = Transformation[3];
 
-			MathUtils::Mat4D scaleMat{ glm::identity<MathUtils::Mat4D>() };
+			Math::Mat4D scaleMat{ glm::identity<Math::Mat4D>() };
 			scaleMat[0][0] = LocalScale.x;
 			scaleMat[1][1] = LocalScale.y;
 			scaleMat[2][2] = LocalScale.z;
@@ -84,9 +82,9 @@ namespace Integrian3D
 		}
 	}
 
-	void TransformComponent::Translate(const MathUtils::Vec3D& v, const bool bForce)
+	void TransformComponent::Translate(const Math::Vec3D& v, const bool bForce)
 	{
-		Transformation[3] += MathUtils::Vec4D{ v, 0.f };
+		Transformation[3] += Math::Vec4D{ v, 0.f };
 
 		bShouldRecalculateWorldData = true;
 		bShouldRecalculateTransform = true;
@@ -97,7 +95,7 @@ namespace Integrian3D
 		}
 	}
 
-	void TransformComponent::Rotate(const MathUtils::Vec3D& rotationRad, const bool bForce)
+	void TransformComponent::Rotate(const Math::Vec3D& rotationRad, const bool bForce)
 	{
 		LocalAngle.x += rotationRad.x;
 		LocalAngle.y += rotationRad.y;
@@ -112,7 +110,7 @@ namespace Integrian3D
 		}
 	}
 
-	void TransformComponent::Scale(const MathUtils::Vec3D& v, const bool bForce)
+	void TransformComponent::Scale(const Math::Vec3D& v, const bool bForce)
 	{
 		LocalScale += v;
 
@@ -125,14 +123,14 @@ namespace Integrian3D
 		}
 	}
 
-	void TransformComponent::SetLocalLocation(const MathUtils::Vec3D& pos)
+	void TransformComponent::SetLocalLocation(const Math::Vec3D& pos)
 	{
-		Transformation[3] = MathUtils::Vec4D{ pos, 1.f };
+		Transformation[3] = Math::Vec4D{ pos, 1.f };
 
 		bShouldRecalculateWorldData = true;
 	}
 
-	void TransformComponent::SetLocalScale(const MathUtils::Vec3D& scale, bool bForce)
+	void TransformComponent::SetLocalScale(const Math::Vec3D& scale, bool bForce)
 	{
 		LocalScale = scale;
 
@@ -145,7 +143,7 @@ namespace Integrian3D
 		}
 	}
 
-	void TransformComponent::SetLocalAngle(const MathUtils::Vec3D& angleRad, bool bForce)
+	void TransformComponent::SetLocalAngle(const Math::Vec3D& angleRad, bool bForce)
 	{
 		LocalAngle = angleRad;
 
@@ -158,7 +156,7 @@ namespace Integrian3D
 		}
 	}
 
-	void TransformComponent::SetForward(const MathUtils::Vec3D& forward)
+	void TransformComponent::SetForward(const Math::Vec3D& forward)
 	{
 		Forward = forward;
 
@@ -167,7 +165,7 @@ namespace Integrian3D
 
 	void TransformComponent::RecalculateDirectionVectors()
 	{
-		Forward = MathUtils::Vec3D{ 0.0, 0.0, 1.0 };
+		Forward = Math::Vec3D{ 0.0, 0.0, 1.0 };
 
 		Forward = glm::rotateX(Forward, LocalAngle.x);
 		Forward = glm::rotateY(Forward, LocalAngle.y);
@@ -175,7 +173,7 @@ namespace Integrian3D
 
 		Forward = glm::normalize(Forward);
 
-		Right = glm::normalize(glm::cross(Forward, MathUtils::Up));
+		Right = glm::normalize(glm::cross(Forward, Math::Up));
 		Up = glm::normalize(glm::cross(Right, Forward));
 	}
 }
