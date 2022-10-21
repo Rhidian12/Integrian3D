@@ -5,6 +5,7 @@
 #include "../../Texture/Texture.h"
 
 #include <stdint.h> /* uint32_t, ... */
+#include <string> /* std::string */
 #include <string_view> /* std::string_view */
 #include <vector> /* std::vector */
 
@@ -14,7 +15,7 @@ namespace Integrian3D
 	{
 	public:
 		explicit MeshComponent() = default;
-		MeshComponent(const std::string& filePath, Texture* const pTex);
+		MeshComponent(const std::string_view filePath, Texture* const pTex);
 		MeshComponent(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices, Texture* const pTex);
 		~MeshComponent();
 
@@ -33,6 +34,9 @@ namespace Integrian3D
 		__NODISCARD const Texture* const GetTexture() const { return pTexture; }
 
 	private:
+		void InitializeOpenGL();
+		void ParseOBJFile(const std::string& fileContents);
+
 		uint32_t VertexArrayID;
 		uint32_t VertexBufferID;
 		uint32_t IndexBufferID;

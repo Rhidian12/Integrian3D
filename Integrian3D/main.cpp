@@ -16,89 +16,27 @@ int main()
 
 	Scene testScene{ "TestScene" };
 
-	std::vector<Vertex> vertices =
-	{
-		Vertex{ glm::vec3{ -0.5f, -0.5f, -0.5f },  glm::vec2{ 0.0f, 0.0f } },
-		Vertex{ glm::vec3{  0.5f, -0.5f, -0.5f },  glm::vec2{ 1.0f, 0.0f } },
-		Vertex{ glm::vec3{  0.5f,  0.5f, -0.5f },  glm::vec2{ 1.0f, 1.0f } },
-		Vertex{ glm::vec3{  0.5f,  0.5f, -0.5f },  glm::vec2{ 1.0f, 1.0f } },
-		Vertex{ glm::vec3{ -0.5f,  0.5f, -0.5f },  glm::vec2{ 0.0f, 1.0f } },
-		Vertex{ glm::vec3{ -0.5f, -0.5f, -0.5f },  glm::vec2{ 0.0f, 0.0f } },
-
-		Vertex{ glm::vec3{ -0.5f, -0.5f,  0.5f },  glm::vec2{ 0.0f, 0.0f } },
-		Vertex{ glm::vec3{  0.5f, -0.5f,  0.5f },  glm::vec2{ 1.0f, 0.0f } },
-		Vertex{ glm::vec3{  0.5f,  0.5f,  0.5f },  glm::vec2{ 1.0f, 1.0f } },
-		Vertex{ glm::vec3{  0.5f,  0.5f,  0.5f },  glm::vec2{ 1.0f, 1.0f } },
-		Vertex{ glm::vec3{ -0.5f,  0.5f,  0.5f },  glm::vec2{ 0.0f, 1.0f } },
-		Vertex{ glm::vec3{ -0.5f, -0.5f,  0.5f },  glm::vec2{ 0.0f, 0.0f } },
-
-		Vertex{ glm::vec3{ -0.5f,  0.5f,  0.5f },  glm::vec2{ 1.0f, 0.0f } },
-		Vertex{ glm::vec3{ -0.5f,  0.5f, -0.5f },  glm::vec2{ 1.0f, 1.0f } },
-		Vertex{ glm::vec3{ -0.5f, -0.5f, -0.5f },  glm::vec2{ 0.0f, 1.0f } },
-		Vertex{ glm::vec3{ -0.5f, -0.5f, -0.5f },  glm::vec2{ 0.0f, 1.0f } },
-		Vertex{ glm::vec3{ -0.5f, -0.5f,  0.5f },  glm::vec2{ 0.0f, 0.0f } },
-		Vertex{ glm::vec3{ -0.5f,  0.5f,  0.5f },  glm::vec2{ 1.0f, 0.0f } },
-
-		Vertex{ glm::vec3{  0.5f,  0.5f,  0.5f },  glm::vec2{ 1.0f, 0.0f } },
-		Vertex{ glm::vec3{  0.5f,  0.5f, -0.5f },  glm::vec2{ 1.0f, 1.0f } },
-		Vertex{ glm::vec3{  0.5f, -0.5f, -0.5f },  glm::vec2{ 0.0f, 1.0f } },
-		Vertex{ glm::vec3{  0.5f, -0.5f, -0.5f },  glm::vec2{ 0.0f, 1.0f } },
-		Vertex{ glm::vec3{  0.5f, -0.5f,  0.5f },  glm::vec2{ 0.0f, 0.0f } },
-		Vertex{ glm::vec3{  0.5f,  0.5f,  0.5f },  glm::vec2{ 1.0f, 0.0f } },
-
-		Vertex{ glm::vec3{ -0.5f, -0.5f, -0.5f },  glm::vec2{ 0.0f, 1.0f } },
-		Vertex{ glm::vec3{  0.5f, -0.5f, -0.5f },  glm::vec2{ 1.0f, 1.0f } },
-		Vertex{ glm::vec3{  0.5f, -0.5f,  0.5f },  glm::vec2{ 1.0f, 0.0f } },
-		Vertex{ glm::vec3{  0.5f, -0.5f,  0.5f },  glm::vec2{ 1.0f, 0.0f } },
-		Vertex{ glm::vec3{ -0.5f, -0.5f,  0.5f },  glm::vec2{ 0.0f, 0.0f } },
-		Vertex{ glm::vec3{ -0.5f, -0.5f, -0.5f },  glm::vec2{ 0.0f, 1.0f } },
-
-		Vertex{ glm::vec3{ -0.5f,  0.5f, -0.5f },  glm::vec2{ 0.0f, 1.0f } },
-		Vertex{ glm::vec3{  0.5f,  0.5f, -0.5f },  glm::vec2{ 1.0f, 1.0f } },
-		Vertex{ glm::vec3{  0.5f,  0.5f,  0.5f },  glm::vec2{ 1.0f, 0.0f } },
-		Vertex{ glm::vec3{  0.5f,  0.5f,  0.5f },  glm::vec2{ 1.0f, 0.0f } },
-		Vertex{ glm::vec3{ -0.5f,  0.5f,  0.5f },  glm::vec2{ 0.0f, 0.0f } },
-		Vertex{ glm::vec3{ -0.5f,  0.5f, -0.5f },  glm::vec2{ 0.0f, 1.0f } }
-	};
-
-	std::vector<uint32_t> indices{};
-
-	for (Entity i{}; i < vertices.size(); ++i)
-	{
-		indices.push_back(i);
-	}
-
 	TextureManager::GetInstance().AddTexture("__Wall", "Resources/wall.jpg");
 
 	Entity entity = testScene.CreateEntity();
-	testScene.AddComponent<MeshComponent>(entity, vertices, indices, TextureManager::GetInstance().GetTexture("__Wall"));
-	TransformComponent& transform{ testScene.GetComponent<TransformComponent>(entity) };
-	transform.Rotate(glm::vec3{ Math::ToRadians(-55.f), 0.f, 0.f });
+	testScene.AddComponent<MeshComponent>(entity, "Resources/vehicle.obj", TextureManager::GetInstance().GetTexture("__Wall"));
+	testScene.GetComponent<TransformComponent>(entity).SetLocalScale(Math::Vec3D{ 0.1,0.1,0.1 });
 
-	for (size_t i{}; i < 9; ++i)
-	{
-		Entity temp = testScene.CreateEntity();
-		testScene.AddComponent<MeshComponent>(temp, vertices, indices, TextureManager::GetInstance().GetTexture("__Wall"));
-		TransformComponent& transf{ testScene.GetComponent<TransformComponent>(temp) };
-		transf.Translate(Math::RandomVec3(-5.f, 5.f));
-		transform.Rotate(glm::vec3{ Math::ToRadians(-55.f), 0.f, 0.f });
-	}
-
-	testScene.AddUpdateCallback([](Scene& scene)->void
-		{
-			scene.CreateView<TransformComponent, MeshComponent>().ForEach([](TransformComponent& transform, const MeshComponent&)->void
-				{
-					transform.Rotate
-					(
-						glm::vec3
-						{
-							Math::ToRadians(25.f) * Timer::GetInstance().GetElapsedSeconds(),
-							Math::ToRadians(50.f) * Timer::GetInstance().GetElapsedSeconds(),
-							0.f
-						}
-					);
-				});
-		});
+	//testScene.AddUpdateCallback([](Scene& scene)->void
+	//	{
+	//		scene.CreateView<TransformComponent, MeshComponent>().ForEach([](TransformComponent& transform, const MeshComponent&)->void
+	//			{
+	//				transform.Rotate
+	//				(
+	//					glm::vec3
+	//					{
+	//						Math::ToRadians(25.f) * Timer::GetInstance().GetElapsedSeconds(),
+	//						Math::ToRadians(50.f) * Timer::GetInstance().GetElapsedSeconds(),
+	//						0.f
+	//					}
+	//				);
+	//			});
+	//	});
 
 	SceneManager::GetInstance().AddScene(__MOVE(Scene, testScene));
 
