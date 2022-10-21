@@ -39,12 +39,6 @@ namespace Integrian3D
 		 
 		 /* Update MousePosition and PreviousMousePosition */
 		 SetMousePosition(Math::Vec2D{ x, y });
-
-		//std::cout << "Previous:\t";
-		//Debug::LogVector(PreviousMousePosition, Debug::MessageColour::White);
-		//std::cout << "Current:\t";
-		//Debug::LogVector(MousePosition, Debug::MessageColour::White);
-		//std::cout << "----------------------\n";
 	}
 
 	bool InputManager::GetIsKeyPressed(const KeyboardInput input) const
