@@ -17,13 +17,21 @@ namespace Integrian3D
 		{
 			Callbacks.push_back(fn);
 		}
+
 		void Bind(Callback&& fn)
 		{
 			Callbacks.push_back(std::move(fn));
 		}
 
+		template<typename T>
+		void Bind(T* const var, void (T::* fn)(Ts&&...))
+		{
+			var;
+			fn;
+		}
+
 		template<typename ... Us>
-		void Invoke(Us&&... vals)
+		void Invoke(Us&&... vals) const
 		{
 			for (const Callback& fn : Callbacks)
 			{
