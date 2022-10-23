@@ -39,7 +39,7 @@ namespace Integrian3D
 
 		__NODISCARD size_t GetAmountOfEntities() const { return static_cast<size_t>(Registry.GetAmountOfEntities()); }
 
-		__NODISCARD EntitySignature GetEntitySignature(const Entity entity) const { return Registry.GetEntitySignature(entity); }
+		__NODISCARD const EntitySignature& GetEntitySignature(const Entity entity) const { return Registry.GetEntitySignature(entity); }
 
 		template<typename ... Ts>
 		__NODISCARD View<Ts...> CreateView() { return Registry.CreateView<Ts...>(); }
