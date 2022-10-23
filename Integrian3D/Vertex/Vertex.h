@@ -3,23 +3,23 @@
 #include "../EngineConstants.h"
 #include "../Math/RGBColour.h"
 
-#include "../Math/Math.h"
+#include <glm.hpp> /* GLM */
 
 namespace Integrian3D
 {
 	struct Vertex final
 	{
 		Vertex() = default;
-		explicit Vertex(const Math::Vec3D& position)
+		explicit Vertex(const glm::vec3& position)
 			: Position{ position }
 			, UV{}
 		{}
-		Vertex(const Math::Vec3D& position, const Math::Vec2D& uv)
+		Vertex(const glm::vec3& position, const glm::vec2& uv)
 			: Position{ position }
 			, UV{ uv }
 		{}
 
-		Math::Vec3D Position;
-		Math::Vec2D UV;
+		glm::vec3 Position;
+		glm::vec2 UV;
 	};
 }
