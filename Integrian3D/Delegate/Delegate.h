@@ -28,7 +28,7 @@ namespace Integrian3D
 		{
 			for (const Callback& fn : Callbacks)
 			{
-				fn(std::forward<Us>(vals)...);
+				fn(__FORWARD(Us, vals)...);
 			}
 		}
 
