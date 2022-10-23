@@ -11,7 +11,7 @@ namespace Integrian3D
 	class Delegate final
 	{
 	public:
-		using Callback = std::function<void(Ts...)>;
+		using Callback = std::function<void(Ts&&...)>;
 
 		void Bind(const Callback& fn)
 		{
