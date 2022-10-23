@@ -20,7 +20,7 @@ namespace Integrian3D
 
 			FileReader reader{ filePath };
 
-			const std::string fileContents{ reader.GetFileContents() };
+			// const std::string fileContents{ reader.GetFileContents() };
 
 			/* [TODO]: Parse .obj file */
 		}

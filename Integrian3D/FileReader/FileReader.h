@@ -3,7 +3,7 @@
 #include "../EngineConstants.h"
 
 #include <string> /* std::string */
-#include <vector> /* std::vector */ /* [CRINGE]: Use my own implementation */
+#include <vector> /* std::vector */
 
 namespace Integrian3D
 {
@@ -20,10 +20,14 @@ namespace Integrian3D
 
 		__NODISCARD const std::string& GetFilePath() const { return FilePath; }
 		__NODISCARD const std::string& GetFileContents() const { return FileContents; }
+		__NODISCARD const std::vector<std::string>& GetDelimitedFileContents() const { return DelimitedFileContents; }
+
+		__NODISCARD const std::string& GetLine(const size_t lineNumber) const { __ASSERT(lineNumber < DelimitedFileContents.size()); return DelimitedFileContents[lineNumber]; }
 
 	private:
 		void* Handle; /* HANDLE */
 		std::string FilePath;
+		std::vector<std::string> DelimitedFileContents;
 		std::string FileContents;
 	};
 }

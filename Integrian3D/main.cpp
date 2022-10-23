@@ -7,6 +7,7 @@
 #include "Components/TransformComponent/TransformComponent.h"
 #include "Timer/Timer.h"
 #include "Systems/Systems.h"
+#include "FileReader/FileReader.h"
 
 int main()
 {
@@ -101,6 +102,8 @@ int main()
 		});
 
 	SceneManager::GetInstance().AddScene(__MOVE(Scene, testScene));
+
+	FileReader r{ "Resources/VertexShader.txt" };
 
 	core.Run();
 }

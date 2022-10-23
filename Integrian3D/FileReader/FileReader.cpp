@@ -1,5 +1,7 @@
 #include "FileReader.h"
 
+#include "../DebugUtility/DebugUtility.h"
+
 #pragma warning( push )
 #pragma warning( disable:4005 ) /* Macro redefinition */
 /* Win32 and GLFW both define APIENTRY */
@@ -9,13 +11,15 @@
 #endif
 #pragma warning( pop )
 
-#include "../DebugUtility/DebugUtility.h"
+#include <sstream> /* std::stringstream */
 
 namespace Integrian3D
 {
 	FileReader::FileReader(const std::string& filePath)
 		: Handle{}
 		, FilePath{ filePath }
+		, FileContents{}
+		, DelimitedFileContents{}
 	{
 		/* open the file */
 		Handle = CreateFileA(filePath.c_str(),
@@ -34,9 +38,20 @@ namespace Integrian3D
 
 		/* Read the file contents */
 		DWORD readBytes{};
+		FileContents.resize(fileSize);
+
 		if (ReadFile(Handle, FileContents.data(), fileSize, &readBytes, nullptr) == 0)
 		{
 			Debug::LogError("FileReader could not read the provided file", false);
+		}
+
+		std::stringstream ss{ FileContents };
+
+		while (ss)
+		{
+			std::string temp{};
+			ss >> temp;
+			DelimitedFileContents.push_back(temp);
 		}
 	}
 
@@ -52,6 +67,7 @@ namespace Integrian3D
 		: Handle{}
 		, FilePath{ __MOVE(std::string, other.FilePath) }
 		, FileContents{ __MOVE(std::string, other.FileContents) }
+		, DelimitedFileContents{ __MOVE(std::vector<std::string>, other.DelimitedFileContents) }
 	{
 		if (Handle)
 		{
@@ -69,6 +85,7 @@ namespace Integrian3D
 	{
 		FilePath = __MOVE(std::string, other.FilePath);
 		FileContents = __MOVE(std::string, other.FileContents);
+		DelimitedFileContents = __MOVE(std::vector<std::string>, other.DelimitedFileContents);
 
 		if (Handle)
 		{
