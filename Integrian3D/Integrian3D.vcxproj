@@ -207,6 +207,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Components\CameraComponent\CameraComponent.h" />
+    <ClInclude Include="Delegate\Delegate.h" />
     <ClInclude Include="ECS\ComponentArray\ComponentArray.h" />
     <ClInclude Include="ECS\ComponentIDGenerator\ComponentIDGenerator.h" />
     <ClInclude Include="Core\Core.h" />
