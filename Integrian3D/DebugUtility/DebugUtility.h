@@ -1,7 +1,6 @@
 #pragma once
 
 #include "../EngineConstants.h"
-#include "../Logger/Logger.h"
 
 #include <iostream> /* std::cout for users */
 
