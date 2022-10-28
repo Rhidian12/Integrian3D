@@ -176,5 +176,8 @@
     <ClInclude Include="Delegate\Delegate.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Array\Array.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
