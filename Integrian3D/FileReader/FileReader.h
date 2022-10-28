@@ -7,10 +7,11 @@
 
 namespace Integrian3D
 {
+	/* RAII File reader */
 	class FileReader final
 	{
 	public:
-		explicit FileReader(const std::string& filePath);
+		explicit FileReader(const std::string& filePath, const char delimiter = '\n');
 		~FileReader();
 
 		FileReader(const FileReader&) noexcept = delete;

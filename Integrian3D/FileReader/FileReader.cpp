@@ -15,7 +15,7 @@
 
 namespace Integrian3D
 {
-	FileReader::FileReader(const std::string& filePath)
+	FileReader::FileReader(const std::string& filePath, const char delimiter)
 		: Handle{}
 		, FilePath{ filePath }
 		, FileContents{}
@@ -46,11 +46,10 @@ namespace Integrian3D
 		}
 
 		std::stringstream ss{ FileContents };
+		std::string temp{};
 
-		while (ss)
+		while (std::getline(ss, temp, delimiter))
 		{
-			std::string temp{};
-			ss >> temp;
 			DelimitedFileContents.push_back(temp);
 		}
 	}
