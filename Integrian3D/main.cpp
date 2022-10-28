@@ -1,4 +1,6 @@
-//#define SEED 0
+// #define ENGINE
+#ifdef ENGINE
+#include "EngineConstants.h"
 #include "Core/Core.h"
 #include "Scene/Scene.h"
 #include "SceneManager/SceneManager.h"
@@ -6,8 +8,6 @@
 #include "TextureManager/TextureManager.h"
 #include "Components/TransformComponent/TransformComponent.h"
 #include "Timer/Timer.h"
-#include "Systems/Systems.h"
-#include "FileReader/FileReader.h"
 
 int main()
 {
@@ -103,7 +103,38 @@ int main()
 
 	SceneManager::GetInstance().AddScene(__MOVE(Scene, testScene));
 
-	FileReader r{ "Resources/VertexShader.txt" };
-
 	core.Run();
 }
+#else
+#define CATCH_CONFIG_MAIN
+#include "Libraries/Catch2/catch.hpp"
+#include <vld.h>
+
+#include "Array/Array.h"
+TEST_CASE("Testing Basic Array of integers")
+{
+	using namespace Integrian3D;
+
+	Array<int> arr{};
+
+	REQUIRE(arr.Capacity() == 0);
+	REQUIRE(arr.Size() == 0);
+
+	SECTION("Adding 10 elements which causes several reallocations")
+	{
+		const int nrOfElements{ 10 };
+
+		for (int i{}; i < nrOfElements; ++i)
+		{
+			arr.Add(i);
+		}
+
+		REQUIRE(arr.Size() == 10);
+		REQUIRE(arr.Capacity() >= 10);
+		REQUIRE(arr.Front() == 0);
+		REQUIRE(arr.Back() == nrOfElements - 1);
+		REQUIRE(arr[0] == 0);
+		REQUIRE(arr[arr.Size() - 1] == nrOfElements - 1);
+	}
+}
+#endif

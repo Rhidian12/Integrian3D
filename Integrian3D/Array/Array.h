@@ -5,22 +5,28 @@
 namespace Integrian3D
 {
 	/* [TODO]: Add allocator */
+	template<typename T>
 	class Array
 	{
-		using T = int;
 		inline constexpr static uint32_t SizeOfType{ sizeof(T) };
 
 	public:
+#pragma region Ctors and Dtor
 		Array()
 			: Head{}
 			, Tail{}
-			, LastElement{}
-		{}
+			, CurrentEnd{}
+		{
+			Head = static_cast<T*>(malloc(0));
+			Tail = Head;
+			CurrentEnd = Head + 1;
+		}
 		~Array()
 		{
 			DeleteData(Head, Tail);
 			Release(Head);
 		}
+#pragma endregion
 
 #pragma region Adding and Removing Elements
 		void Add(const T& val)
@@ -39,31 +45,26 @@ namespace Integrian3D
 				return;
 			}
 
-			if constexpr (!std::is_trivially_destructible_v<T>)
-			{
-				LastElement->~T();
-			}
-
-			--LastElement;
+			--CurrentEnd->~T();
 		}
 
 		void Clear()
 		{
-			DeleteData(Head, Tail);
+			DeleteData(Head, CurrentEnd - 1);
 
-			LastElement = nullptr;
+			CurrentEnd = nullptr;
 		}
 
 		template<typename ... Ts>
 		T& EmplaceBack(Ts&&... args)
 		{
-			if (!LastElement || ++LastElement >= Tail)
+			/* if we point past our allocated memory we have an issue */
+			if (!CurrentEnd || CurrentEnd > Tail)
 			{
 				Reallocate();
-				++LastElement;
 			}
 
-			return *(new (LastElement) T{ __FORWARD(Ts, args)... });
+			return *(new (CurrentEnd++ - 1) T{ __FORWARD(Ts, args)... });
 		}
 #pragma endregion
 
@@ -75,7 +76,7 @@ namespace Integrian3D
 
 		__NODISCARD constexpr uint64_t Size() const
 		{
-			return LastElement - Head;
+			return CurrentEnd - Head - 1;
 		}
 
 		__NODISCARD constexpr uint64_t Capacity() const
@@ -154,48 +155,51 @@ namespace Integrian3D
 		{
 			__ASSERT(Size() > 0 && "Array::Front() > Array is empty");
 
-			return *(Head + 1);
+			return *Head;
 		}
 		const T& Front() const
 		{
 			__ASSERT(Size() > 0 && "Array::Front() > Array is empty");
 
-			return *(Head + 1);
+			return *Head;
 		}
 
 		T& Back()
 		{
 			__ASSERT(Size() > 0 && "Array::Back() > Array is empty");
 
-			return *LastElement;
+			T* a{ CurrentEnd - 1 };
+			T* b{ CurrentEnd - 2 };
+
+			return *(CurrentEnd - 1);
 		}
 		const T& Back() const
 		{
 			__ASSERT(Size() > 0 && "Array::Back() > Array is empty");
 
-			return *LastElement;
+			return *(CurrentEnd - 1);
 		}
 
 		T& At(const uint64_t index)
 		{
 			__ASSERT((index < Size()) && "Array::At() > Index is out of range");
 
-			return *(Head + index + 1);
+			return *(Head + index);
 		}
 		const T& At(const uint64_t index) const
 		{
 			__ASSERT((index < Size()) && "Array::At() > Index is out of range");
 
-			return *(Head + index + 1);
+			return *(Head + index);
 		}
 
 		T& operator[](const uint64_t index)
 		{
-			return *(Head + index + 1);
+			return *(Head + index);
 		}
 		const T& operator[](const uint64_t index) const
 		{
-			return *(Head + index + 1);
+			return *(Head + index);
 		}
 
 		T* const Data()
@@ -224,15 +228,15 @@ namespace Integrian3D
 			{
 				if constexpr (std::is_move_assignable_v<T>)
 				{
-					new (Head + i) T{ __MOVE(T, *(Head + i)) };
+					new (Head + i) T{ __MOVE(T, *(oldHead + i)) };
 				}
 				else
 				{
-					new (Head + i) T{ *(Head + i) };
+					new (Head + i) T{ *(oldHead + i) };
 				}
 			}
 
-			LastElement = Head + oldSize;
+			CurrentEnd = Head + oldSize + 1;
 
 			DeleteData(oldHead, oldTail);
 			Release(oldHead);
@@ -259,7 +263,7 @@ namespace Integrian3D
 				}
 			}
 
-			LastElement = Head + oldSize;
+			CurrentEnd = Head + oldSize + 1;
 
 			DeleteData(oldHead, oldTail);
 			Release(oldHead);
@@ -305,6 +309,6 @@ namespace Integrian3D
 
 		T* Head;
 		T* Tail;
-		T* LastElement;
+		T* CurrentEnd /* points PAST the last element */;
 	};
 }
