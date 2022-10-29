@@ -137,6 +137,7 @@ TEST_CASE("Testing Basic Array of integers")
 		REQUIRE(arr.Back() == nrOfElements - 1);
 		REQUIRE(arr[0] == 0);
 		REQUIRE(arr[arr.Size() - 1] == nrOfElements - 1);
+		REQUIRE(arr.At(arr.Size() - 1) == nrOfElements - 1);
 	}
 
 	SECTION("Reserving and adding elements")
@@ -251,6 +252,84 @@ TEST_CASE("Testing Basic Array of integers")
 		}
 
 		specialArr.Clear();
+	}
+
+	SECTION("Testing copy ctor")
+	{
+		for (int i{}; i < nrOfElements; ++i)
+		{
+			arr.Add(i);
+		}
+
+		Array<int> newArr{ arr };
+
+		REQUIRE(newArr.Size() == arr.Size());
+		REQUIRE(newArr.Capacity() == arr.Capacity());
+		REQUIRE(newArr.Data() != arr.Data());
+
+		for (int i{}; i < nrOfElements; ++i)
+		{
+			REQUIRE(newArr[i] == arr[i]);
+		}
+	}
+
+	SECTION("Testing copy operator")
+	{
+		for (int i{}; i < nrOfElements; ++i)
+		{
+			arr.Add(i);
+		}
+
+		Array<int> newArr = arr;
+
+		REQUIRE(newArr.Size() == arr.Size());
+		REQUIRE(newArr.Capacity() == arr.Capacity());
+		REQUIRE(newArr.Data() != arr.Data());
+
+		for (int i{}; i < nrOfElements; ++i)
+		{
+			REQUIRE(newArr[i] == arr[i]);
+		}
+	}
+
+	SECTION("Testing move ctor")
+	{
+		for (int i{}; i < nrOfElements; ++i)
+		{
+			arr.Add(i);
+		}
+
+		Array<int> newArr{ __MOVE(Array<int>, arr) };
+
+		REQUIRE(arr.Size() == 0);
+		REQUIRE(arr.Capacity() == 0);
+		REQUIRE(arr.Empty());
+		REQUIRE(arr.Data() == nullptr);
+
+		REQUIRE(newArr.Size() == nrOfElements);
+		REQUIRE(newArr.Capacity() >= nrOfElements);
+		REQUIRE(!newArr.Empty());
+		REQUIRE(newArr.Data() != nullptr);
+	}
+
+	SECTION("Testing move operator")
+	{
+		for (int i{}; i < nrOfElements; ++i)
+		{
+			arr.Add(i);
+		}
+
+		Array<int> newArr = __MOVE(Array<int>, arr);
+
+		REQUIRE(arr.Size() == 0);
+		REQUIRE(arr.Capacity() == 0);
+		REQUIRE(arr.Empty());
+		REQUIRE(arr.Data() == nullptr);
+
+		REQUIRE(newArr.Size() == nrOfElements);
+		REQUIRE(newArr.Capacity() >= nrOfElements);
+		REQUIRE(!newArr.Empty());
+		REQUIRE(newArr.Data() != nullptr);
 	}
 }
 #endif

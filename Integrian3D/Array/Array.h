@@ -24,6 +24,68 @@ namespace Integrian3D
 		}
 #pragma endregion
 
+#pragma region Rule of 5
+		Array(const Array& other) noexcept
+			: Head{}
+			, Tail{}
+			, CurrentEnd{}
+		{
+			const uint64_t cap{ other.Capacity() };
+
+			Head = static_cast<T*>(malloc(cap * SizeOfType));
+			Tail = Head + cap;
+
+			const uint64_t size{ other.Size() };
+
+			for (uint64_t i{}; i < size; ++i)
+			{
+				new (Head + i) T{ *(other.Head + i) }; // dont allow moving 
+			}
+
+			CurrentEnd = Head + size;
+		}
+		Array(Array&& other) noexcept
+			: Head{ __MOVE(T*, other.Head) }
+			, Tail{ __MOVE(T*, other.Tail) }
+			, CurrentEnd{ __MOVE(T*, other.CurrentEnd) }
+		{
+			other.Head = nullptr;
+			other.Tail = nullptr;
+			other.CurrentEnd = nullptr;
+		}
+
+		Array& operator=(const Array& other) noexcept
+		{
+			const uint64_t cap{ other.Capacity() };
+
+			Head = static_cast<T*>(malloc(cap * SizeOfType));
+			Tail = Head + cap;
+
+			const uint64_t size{ other.Size() };
+
+			for (uint64_t i{}; i < size; ++i)
+			{
+				new (Head + i) T{ *(other.Head + i) }; // dont allow moving 
+			}
+
+			CurrentEnd = Head + size;
+
+			return *this;
+		}
+		Array& operator=(Array&& other) noexcept
+		{
+			Head = __MOVE(T*, other.Head);
+			Tail = __MOVE(T*, other.Tail);
+			CurrentEnd = __MOVE(T*, other.CurrentEnd);
+
+			other.Head = nullptr;
+			other.Tail = nullptr;
+			other.CurrentEnd = nullptr;
+
+			return *this;
+		}
+#pragma endregion
+
 #pragma region Adding and Removing Elements
 		void Add(const T& val)
 		{
@@ -238,6 +300,7 @@ namespace Integrian3D
 #pragma endregion
 
 	private:
+#pragma region Internal Helpers
 		void Reallocate()
 		{
 			const uint64_t oldSize{ Size() };
@@ -348,6 +411,7 @@ namespace Integrian3D
 				}
 			}
 		}
+#pragma endregion
 
 		T* Head;
 		T* Tail;
