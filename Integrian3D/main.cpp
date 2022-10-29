@@ -431,5 +431,15 @@ TEST_CASE("Testing Basic Array of integers")
 			REQUIRE(elem == arr[counter++]);
 		}
 	}
+
+	SECTION("Add a range to an array")
+	{
+		arr.AddRange({ 0,1,2,3,4,5 });
+
+		REQUIRE(arr.Size() == 6);
+		REQUIRE(arr.Capacity() >= 6);
+		REQUIRE(arr.At(0) == 0);
+		REQUIRE(arr.At(5) == 5);
+	}
 }
 #endif

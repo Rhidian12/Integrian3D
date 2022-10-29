@@ -149,6 +149,22 @@ namespace Integrian3D
 			EmplaceBack(__MOVE(T, val));
 		}
 
+		void AddRange(std::initializer_list<T> elems)
+		{
+			for (const T& elem : elems)
+			{
+				EmplaceBack(elem);
+			}
+		}
+		void AddRange(Iterator<T, IteratorTag::RandomAccessIt> beg, Iterator<T, IteratorTag::RandomAccessIt> end)
+		{
+			while (beg < end)
+			{
+				EmplaceBack(*beg);
+				++beg;
+			}
+		}
+
 		void Insert(const uint64_t index, const T& val)
 		{
 			Emplace(index, val);
