@@ -110,6 +110,7 @@ int main()
 #include "Libraries/Catch2/catch.hpp"
 #include <vld.h>
 
+#include "DebugUtility/DebugUtility.h"
 #include "Array/Array.h"
 TEST_CASE("Testing Basic Array of integers")
 {
@@ -119,11 +120,12 @@ TEST_CASE("Testing Basic Array of integers")
 
 	REQUIRE(arr.Capacity() == 0);
 	REQUIRE(arr.Size() == 0);
+	REQUIRE(arr.Empty());
+
+	const int nrOfElements{ 10 };
 
 	SECTION("Adding 10 elements which causes several reallocations")
 	{
-		const int nrOfElements{ 10 };
-
 		for (int i{}; i < nrOfElements; ++i)
 		{
 			arr.Add(i);
@@ -135,6 +137,120 @@ TEST_CASE("Testing Basic Array of integers")
 		REQUIRE(arr.Back() == nrOfElements - 1);
 		REQUIRE(arr[0] == 0);
 		REQUIRE(arr[arr.Size() - 1] == nrOfElements - 1);
+	}
+
+	SECTION("Reserving and adding elements")
+	{
+		arr.Reserve(nrOfElements);
+
+		REQUIRE(arr.Capacity() == 10);
+
+		for (int i{}; i < nrOfElements; ++i)
+		{
+			arr.Add(i);
+		}
+
+		REQUIRE(arr.Size() == 10);
+		REQUIRE(arr.Capacity() == 10);
+		REQUIRE(arr.Front() == 0);
+		REQUIRE(arr.Back() == nrOfElements - 1);
+		REQUIRE(arr[0] == 0);
+		REQUIRE(arr[arr.Size() - 1] == nrOfElements - 1);
+	}
+
+	SECTION("Clearing and removing elements")
+	{
+		for (int i{}; i < nrOfElements; ++i)
+		{
+			arr.Add(i);
+		}
+
+		arr.Pop();
+
+		REQUIRE(arr.Size() == 9);
+		REQUIRE(arr.Capacity() >= 10);
+
+		for (size_t i{}; i < 5; ++i)
+		{
+			arr.Pop();
+		}
+
+		REQUIRE(arr.Size() == 4);
+		REQUIRE(arr.Capacity() >= 10);
+
+		arr.Clear();
+
+		REQUIRE(arr.Size() == 0);
+		REQUIRE(arr.Capacity() >= 10);
+	}
+
+	SECTION("Shrinking to size")
+	{
+		for (int i{}; i < nrOfElements; ++i)
+		{
+			arr.Add(i);
+		}
+
+		arr.Pop();
+		arr.Pop();
+		arr.Pop();
+
+		arr.ShrinkToFit();
+
+		REQUIRE(arr.Capacity() == arr.Size());
+	}
+
+	SECTION("Resizing array")
+	{
+		arr.Resize(nrOfElements);
+
+		for (int i{}; i < nrOfElements; ++i)
+		{
+			REQUIRE(arr[i] == 0);
+		}
+
+		arr.Clear();
+
+		arr.Resize(nrOfElements, 15);
+
+		for (int i{}; i < nrOfElements; ++i)
+		{
+			REQUIRE(arr[i] == 15);
+		}
+	}
+
+	SECTION("Inserting elements into the array")
+	{
+		for (int i{}; i < nrOfElements; ++i)
+		{
+			arr.Add(i);
+		}
+
+		arr.Insert(1, 15);
+
+		REQUIRE(arr.Size() == nrOfElements + 1);
+		REQUIRE(arr[1] == 15);
+	}
+
+	SECTION("Making an array with non-trivial destructor type")
+	{
+		class Special
+		{
+		public:
+			~Special()
+			{
+				Debug::LogMessage("Getting destroyed", false);
+			}
+		};
+
+		Array<Special> specialArr{};
+
+		for (int i{}; i < nrOfElements; ++i)
+		{
+			specialArr.Add(Special{});
+		}
+
+		specialArr.Clear();
 	}
 }
 #endif

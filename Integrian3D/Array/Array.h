@@ -16,14 +16,10 @@ namespace Integrian3D
 			: Head{}
 			, Tail{}
 			, CurrentEnd{}
-		{
-			Head = static_cast<T*>(malloc(0));
-			Tail = Head;
-			CurrentEnd = Head + 1;
-		}
+		{}
 		~Array()
 		{
-			DeleteData(Head, Tail);
+			DeleteData(Head, CurrentEnd);
 			Release(Head);
 		}
 #pragma endregion
@@ -35,7 +31,16 @@ namespace Integrian3D
 		}
 		void Add(T&& val)
 		{
-			EmplaceBack(__FORWARD(T, val));
+			EmplaceBack(__MOVE(T, val));
+		}
+
+		void Insert(const uint64_t index, const T& val)
+		{
+			Emplace(index, val);
+		}
+		void Insert(const uint64_t index, T&& val)
+		{
+			Emplace(index, __MOVE(T, val));
 		}
 
 		void Pop()
@@ -45,38 +50,61 @@ namespace Integrian3D
 				return;
 			}
 
-			--CurrentEnd->~T();
+			(--CurrentEnd)->~T();
 		}
 
 		void Clear()
 		{
-			DeleteData(Head, CurrentEnd - 1);
+			DeleteData(Head, CurrentEnd);
 
-			CurrentEnd = nullptr;
+			CurrentEnd = Head;
 		}
 
 		template<typename ... Ts>
 		T& EmplaceBack(Ts&&... args)
 		{
 			/* if we point past our allocated memory we have an issue */
-			if (!CurrentEnd || CurrentEnd > Tail)
+			if (!CurrentEnd || CurrentEnd >= Tail)
 			{
 				Reallocate();
 			}
 
-			return *(new (CurrentEnd++ - 1) T{ __FORWARD(Ts, args)... });
+			return *(new (CurrentEnd++) T{ __FORWARD(Ts, args)... });
+		}
+
+		template<typename ... Ts>
+		T& Emplace(const uint64_t index, Ts&&... args)
+		{
+			__ASSERT(index < Size() && "Array::Emplace() > index is out of range");
+
+			const uint64_t oldSize{ Size() };
+
+			if (oldSize + 1 > Capacity())
+			{
+				Reallocate();
+			}
+
+			if (oldSize == 0 || index == oldSize - 1)
+			{
+				return EmplaceBack(__FORWARD(Ts, args)...);
+			}
+			else
+			{
+				MoveRange(Head + index, CurrentEnd++ - 1, Head + index + 1);
+				return *(new (Head + index) T{ __FORWARD(Ts, args)... });
+			}
 		}
 #pragma endregion
 
 #pragma region Array Information
 		__NODISCARD constexpr bool Empty() const
 		{
-			return Size() > 0;
+			return Size() == 0;
 		}
 
 		__NODISCARD constexpr uint64_t Size() const
 		{
-			return CurrentEnd - Head - 1;
+			return CurrentEnd - Head;
 		}
 
 		__NODISCARD constexpr uint64_t Capacity() const
@@ -168,9 +196,6 @@ namespace Integrian3D
 		{
 			__ASSERT(Size() > 0 && "Array::Back() > Array is empty");
 
-			T* a{ CurrentEnd - 1 };
-			T* b{ CurrentEnd - 2 };
-
 			return *(CurrentEnd - 1);
 		}
 		const T& Back() const
@@ -236,7 +261,7 @@ namespace Integrian3D
 				}
 			}
 
-			CurrentEnd = Head + oldSize + 1;
+			CurrentEnd = Head + oldSize;
 
 			DeleteData(oldHead, oldTail);
 			Release(oldHead);
@@ -263,7 +288,7 @@ namespace Integrian3D
 				}
 			}
 
-			CurrentEnd = Head + oldSize + 1;
+			CurrentEnd = Head + oldSize;
 
 			DeleteData(oldHead, oldTail);
 			Release(oldHead);
@@ -273,7 +298,7 @@ namespace Integrian3D
 		{
 			if constexpr (!std::is_trivially_destructible_v<T>)
 			{
-				while (head <= tail)
+				while (head < tail)
 				{
 					head->~T();
 					++head;
@@ -305,6 +330,23 @@ namespace Integrian3D
 			}
 
 			return newCap;
+		}
+
+		void MoveRange(T* head, T* end, T* newHead) const
+		{
+			__ASSERT(end > head);
+
+			for (uint64_t i{}; i < static_cast<uint64_t>(end - head); ++i)
+			{
+				if constexpr (std::is_move_assignable_v<T>)
+				{
+					new (newHead + i) T{ __MOVE(T, *(head + i)) };
+				}
+				else
+				{
+					new (newHead + i) T{ *(head + i) };
+				}
+			}
 		}
 
 		T* Head;
