@@ -127,6 +127,12 @@ namespace Integrian3D
 
 		constexpr Array& operator=(const Array& other) noexcept
 		{
+			if (Head)
+			{
+				DeleteData(Head, CurrentEnd);
+				Release(Head);
+			}
+
 			const uint64_t cap{ other.Capacity() };
 
 			Head = static_cast<T*>(malloc(cap * SizeOfType));
@@ -145,6 +151,12 @@ namespace Integrian3D
 		}
 		constexpr Array& operator=(Array&& other) noexcept
 		{
+			if (Head)
+			{
+				DeleteData(Head, CurrentEnd);
+				Release(Head);
+			}
+
 			Head = __MOVE(T*, other.Head);
 			Tail = __MOVE(T*, other.Tail);
 			CurrentEnd = __MOVE(T*, other.CurrentEnd);
@@ -484,6 +496,49 @@ namespace Integrian3D
 			}
 
 			return It{ CurrentEnd };
+		}
+
+		constexpr Array FindAll(const T& val) const
+		{
+			Array arr{};
+
+			for (uint64_t i{}; i < Size(); ++i)
+			{
+				if (*(Head + i) == val)
+				{
+					arr.EmplaceBack(*(Head + i));
+				}
+			}
+
+			return arr;
+		}
+		constexpr Array FindAll(const UnaryPred& pred) const
+		{
+			Array arr{};
+
+			for (uint64_t i{}; i < Size(); ++i)
+			{
+				if (pred(*(Head + i)))
+				{
+					arr.EmplaceBack(*(Head + i));
+				}
+			}
+
+			return arr;
+		}
+		constexpr Array FindAll(UnaryPred&& pred) const
+		{
+			Array arr{};
+
+			for (uint64_t i{}; i < Size(); ++i)
+			{
+				if (pred(*(Head + i)))
+				{
+					arr.EmplaceBack(*(Head + i));
+				}
+			}
+
+			return arr;
 		}
 #pragma endregion
 

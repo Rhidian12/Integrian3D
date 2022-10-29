@@ -464,5 +464,25 @@ TEST_CASE("Testing Basic Array of integers")
 
 		REQUIRE(it != arr.end());
 	}
+
+	SECTION("Finding all elements in the array")
+	{
+		for (int i{}; i < 5; ++i)
+		{
+			arr.Add(5);
+		}
+		for (int i{}; i < 5; ++i)
+		{
+			arr.Add(i);
+		}
+
+		Array<int> newArr{ arr.FindAll(5) };
+
+		REQUIRE(newArr.Size() == 5);
+
+		newArr = arr.FindAll(-1);
+		
+		REQUIRE(newArr.Size() == 0);
+	}
 }
 #endif
