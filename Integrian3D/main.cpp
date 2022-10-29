@@ -331,5 +331,25 @@ TEST_CASE("Testing Basic Array of integers")
 		REQUIRE(!newArr.Empty());
 		REQUIRE(newArr.Data() != nullptr);
 	}
+
+	SECTION("Comparing if two arrays are equal")
+	{
+		for (int i{}; i < nrOfElements; ++i)
+		{
+			arr.Add(i);
+		}
+
+		Array<int> newArr{ arr };
+		REQUIRE(arr == newArr);
+
+		newArr.Pop();
+		REQUIRE(arr != newArr);
+
+		arr.Pop();
+		REQUIRE(arr == newArr);
+
+		arr.Back() = 65;
+		REQUIRE(arr != newArr);
+	}
 }
 #endif

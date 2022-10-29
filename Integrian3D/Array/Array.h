@@ -178,6 +178,31 @@ namespace Integrian3D
 		{
 			return std::numeric_limits<uint64_t>::max();
 		}
+
+		__NODISCARD constexpr bool operator==(const Array& other) const
+		{
+			const uint64_t size{ Size() };
+
+			if (size != other.Size())
+			{
+				return false;
+			}
+
+			for (uint64_t i{}; i < size; ++i)
+			{
+				if (*(Head + i) != *(other.Head + i))
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		__NODISCARD constexpr bool operator!=(const Array& other) const
+		{
+			return !(*this == other);
+		}
 #pragma endregion
 
 #pragma region Manipulating Array
