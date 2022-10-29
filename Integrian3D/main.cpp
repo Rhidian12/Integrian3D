@@ -369,5 +369,67 @@ TEST_CASE("Testing Basic Array of integers")
 			REQUIRE(newArr[i] > 5);
 		}
 	}
+
+	SECTION("Create a vector with a start size")
+	{
+		Array<int> newArr{ 10_size, 15 };
+
+		REQUIRE(newArr.Size() == 10);
+		REQUIRE(newArr.Capacity() >= 10);
+
+		for (size_t i{}; i < newArr.Size(); ++i)
+		{
+			REQUIRE(newArr[i] == 15);
+		}
+	}
+
+	SECTION("Create a vector with a start capacity")
+	{
+		Array<int> newArr{ 10_capacity };
+
+		REQUIRE(newArr.Size() == 0);
+		REQUIRE(newArr.Capacity() == 10);
+		REQUIRE(newArr.Empty());
+	}
+
+	SECTION("Using iterators on the array")
+	{
+		for (int i{}; i < nrOfElements; ++i)
+		{
+			arr.Add(i);
+		}
+
+		int counter{};
+		for (int elem : arr)
+		{
+			REQUIRE(elem == counter++);
+		}
+
+		arr.Clear();
+
+		for (int elem : arr)
+		{
+			elem;
+			REQUIRE(false);
+		}
+	}
+
+	SECTION("Initialize array using iterators")
+	{
+		for (int i{}; i < nrOfElements; ++i)
+		{
+			arr.Add(i);
+		}
+
+		Array<int> newArr{ arr.begin(), arr.end() };
+
+		REQUIRE(newArr.Size() == arr.Size());
+		
+		int counter{};
+		for (const int elem : newArr)
+		{
+			REQUIRE(elem == arr[counter++]);
+		}
+	}
 }
 #endif

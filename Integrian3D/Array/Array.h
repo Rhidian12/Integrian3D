@@ -1,11 +1,30 @@
 #pragma once
 
 #include "../EngineConstants.h"
+#include "../Iterator/Iterator.h"
 
 #include <functional> /* std::function */
 
 namespace Integrian3D
 {
+	struct Size final
+	{
+		uint64_t _Size;
+	};
+	struct Capacity final
+	{
+		uint64_t _Capacity;
+	};
+
+	Size operator""_size(const uint64_t i)
+	{
+		return Size{ i };
+	}
+	Capacity operator""_capacity(const uint64_t i)
+	{
+		return Capacity{ i };
+	}
+
 	/* [TODO]: Add allocator */
 	template<typename T>
 	class Array
@@ -15,12 +34,43 @@ namespace Integrian3D
 
 	public:
 #pragma region Ctors and Dtor
-		Array()
-			: Head{}
-			, Tail{}
-			, CurrentEnd{}
-		{}
-		~Array()
+		constexpr Array() = default;
+		/* [TODO]: add allocator to ctors */
+		constexpr Array(const Size size)
+		{
+			for (uint64_t i{}; i < size._Size; ++i)
+			{
+				EmplaceBack(T{});
+			}
+		}
+		constexpr Array(const Size size, const T& val)
+		{
+			for (uint64_t i{}; i < size._Size; ++i)
+			{
+				EmplaceBack(val);
+			}
+		}
+		constexpr Array(const Capacity cap)
+		{
+			Reserve(cap._Capacity);
+		}
+		constexpr Array(std::initializer_list<T> init)
+		{
+			for (const T& elem : init)
+			{
+				EmplaceBack(elem);
+			}
+		}
+		constexpr Array(Iterator<T, IteratorTag::RandomAccessIt> beg, Iterator<T, IteratorTag::RandomAccessIt> end)
+		{
+			while (beg < end)
+			{
+				EmplaceBack(*beg);
+				++beg;
+			}
+		}
+
+		constexpr ~Array()
 		{
 			DeleteData(Head, CurrentEnd);
 			Release(Head);
@@ -28,7 +78,7 @@ namespace Integrian3D
 #pragma endregion
 
 #pragma region Rule of 5
-		Array(const Array& other) noexcept
+		constexpr Array(const Array& other) noexcept
 			: Head{}
 			, Tail{}
 			, CurrentEnd{}
@@ -47,7 +97,7 @@ namespace Integrian3D
 
 			CurrentEnd = Head + size;
 		}
-		Array(Array&& other) noexcept
+		constexpr Array(Array&& other) noexcept
 			: Head{ __MOVE(T*, other.Head) }
 			, Tail{ __MOVE(T*, other.Tail) }
 			, CurrentEnd{ __MOVE(T*, other.CurrentEnd) }
@@ -57,7 +107,7 @@ namespace Integrian3D
 			other.CurrentEnd = nullptr;
 		}
 
-		Array& operator=(const Array& other) noexcept
+		constexpr Array& operator=(const Array& other) noexcept
 		{
 			const uint64_t cap{ other.Capacity() };
 
@@ -75,7 +125,7 @@ namespace Integrian3D
 
 			return *this;
 		}
-		Array& operator=(Array&& other) noexcept
+		constexpr Array& operator=(Array&& other) noexcept
 		{
 			Head = __MOVE(T*, other.Head);
 			Tail = __MOVE(T*, other.Tail);
@@ -209,7 +259,7 @@ namespace Integrian3D
 #pragma endregion
 
 #pragma region Manipulating Array
-		void Reserve(const uint64_t newCap)
+		constexpr void Reserve(const uint64_t newCap)
 		{
 			if (newCap > Capacity())
 			{
@@ -220,14 +270,14 @@ namespace Integrian3D
 			}
 		}
 
-		void Resize(const uint64_t newSize)
+		constexpr void Resize(const uint64_t newSize)
 		{
 			static_assert(std::is_default_constructible_v<T>, "Array::Resize() > T is not default constructable!");
 
 			Resize(newSize, T{});
 		}
 		template<typename U>
-		void Resize(const uint64_t newSize, U&& val)
+		constexpr void Resize(const uint64_t newSize, U&& val)
 		{
 			static_assert(std::is_default_constructible_v<U>, "Array::Resize() > T is not default constructable!");
 			static_assert(std::is_same_v<T, U>, "Array::Resize() > U and T must be the same!");
@@ -259,7 +309,7 @@ namespace Integrian3D
 			}
 		}
 
-		void ShrinkToFit()
+		constexpr void ShrinkToFit()
 		{
 			if (Size() == Capacity())
 				return;
@@ -267,7 +317,7 @@ namespace Integrian3D
 			ReallocateExactly(Size());
 		}
 
-		Array Select(const UnarySelectPred& pred) const
+		constexpr Array Select(const UnarySelectPred& pred) const
 		{
 			const uint64_t size{ Size() };
 
@@ -286,7 +336,7 @@ namespace Integrian3D
 
 			return arr;
 		}
-		Array Select(UnarySelectPred&& pred) const
+		constexpr Array Select(UnarySelectPred&& pred) const
 		{
 			const uint64_t size{ Size() };
 
@@ -308,67 +358,78 @@ namespace Integrian3D
 #pragma endregion
 
 #pragma region Accessing Elements
-		T& Front()
+		constexpr T& Front()
 		{
 			__ASSERT(Size() > 0 && "Array::Front() > Array is empty");
 
 			return *Head;
 		}
-		const T& Front() const
+		constexpr const T& Front() const
 		{
 			__ASSERT(Size() > 0 && "Array::Front() > Array is empty");
 
 			return *Head;
 		}
 
-		T& Back()
+		constexpr T& Back()
 		{
 			__ASSERT(Size() > 0 && "Array::Back() > Array is empty");
 
 			return *(CurrentEnd - 1);
 		}
-		const T& Back() const
+		constexpr const T& Back() const
 		{
 			__ASSERT(Size() > 0 && "Array::Back() > Array is empty");
 
 			return *(CurrentEnd - 1);
 		}
 
-		T& At(const uint64_t index)
+		constexpr T& At(const uint64_t index)
 		{
 			__ASSERT((index < Size()) && "Array::At() > Index is out of range");
 
 			return *(Head + index);
 		}
-		const T& At(const uint64_t index) const
+		constexpr const T& At(const uint64_t index) const
 		{
 			__ASSERT((index < Size()) && "Array::At() > Index is out of range");
 
 			return *(Head + index);
 		}
 
-		T& operator[](const uint64_t index)
+		constexpr T& operator[](const uint64_t index)
 		{
 			return *(Head + index);
 		}
-		const T& operator[](const uint64_t index) const
+		constexpr const T& operator[](const uint64_t index) const
 		{
 			return *(Head + index);
 		}
 
-		T* const Data()
+		constexpr T* const Data()
 		{
 			return Head;
 		}
-		const T* const Data() const
+		constexpr const T* const Data() const
 		{
 			return Head;
 		}
 #pragma endregion
 
+#pragma region Iterators
+		Iterator<T, IteratorTag::RandomAccessIt> begin() { return Head; }
+		ConstIterator<T, IteratorTag::RandomAccessIt> begin() const { return Head; }
+
+		Iterator<T, IteratorTag::RandomAccessIt> end() { return Head + Size(); }
+		ConstIterator<T, IteratorTag::RandomAccessIt> end() const { return Head + Size(); }
+
+		ConstIterator<T, IteratorTag::RandomAccessIt> cbegin() const { return Head; }
+		ConstIterator<T, IteratorTag::RandomAccessIt> cend() const { return Head + Size(); }
+#pragma endregion
+
 	private:
 #pragma region Internal Helpers
-		void Reallocate()
+		constexpr void Reallocate()
 		{
 			const uint64_t oldSize{ Size() };
 			const uint64_t newCap{ CalculateNewCapacity(oldSize + 1) };
@@ -396,7 +457,7 @@ namespace Integrian3D
 			DeleteData(oldHead, oldTail);
 			Release(oldHead);
 		}
-		void ReallocateExactly(const uint64_t newCap)
+		constexpr void ReallocateExactly(const uint64_t newCap)
 		{
 			const uint64_t oldSize{ Size() };
 
@@ -424,7 +485,7 @@ namespace Integrian3D
 			Release(oldHead);
 		}
 
-		void DeleteData(T* head, T* const tail) const
+		constexpr void DeleteData(T* head, T* const tail) const
 		{
 			if constexpr (!std::is_trivially_destructible_v<T>)
 			{
@@ -436,7 +497,7 @@ namespace Integrian3D
 			}
 		}
 
-		void Release(T* head) const
+		constexpr void Release(T* head) const
 		{
 			free(head);
 		}
@@ -462,7 +523,7 @@ namespace Integrian3D
 			return newCap;
 		}
 
-		void MoveRange(T* head, T* end, T* newHead) const
+		constexpr void MoveRange(T* head, T* end, T* newHead) const
 		{
 			__ASSERT(end > head);
 
