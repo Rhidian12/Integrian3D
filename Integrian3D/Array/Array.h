@@ -30,13 +30,19 @@ namespace Integrian3D
 	class Array
 	{
 		inline constexpr static uint32_t SizeOfType{ sizeof(T) };
-		using UnarySelectPred = std::function<bool(const T&)>;
+		using UnaryPred = std::function<bool(const T&)>;
 
 	public:
+		using It = Iterator<T, IteratorTag::RandomAccessIt>;
+		using CIt = ConstIterator<T, IteratorTag::RandomAccessIt>;
+
 #pragma region Ctors and Dtor
 		constexpr Array() = default;
 		/* [TODO]: add allocator to ctors */
 		constexpr Array(const Size size)
+			: Head{}
+			, Tail{}
+			, CurrentEnd{}
 		{
 			for (uint64_t i{}; i < size._Size; ++i)
 			{
@@ -44,6 +50,9 @@ namespace Integrian3D
 			}
 		}
 		constexpr Array(const Size size, const T& val)
+			: Head{}
+			, Tail{}
+			, CurrentEnd{}
 		{
 			for (uint64_t i{}; i < size._Size; ++i)
 			{
@@ -51,17 +60,26 @@ namespace Integrian3D
 			}
 		}
 		constexpr Array(const Capacity cap)
+			: Head{}
+			, Tail{}
+			, CurrentEnd{}
 		{
 			Reserve(cap._Capacity);
 		}
 		constexpr Array(std::initializer_list<T> init)
+			: Head{}
+			, Tail{}
+			, CurrentEnd{}
 		{
 			for (const T& elem : init)
 			{
 				EmplaceBack(elem);
 			}
 		}
-		constexpr Array(Iterator<T, IteratorTag::RandomAccessIt> beg, Iterator<T, IteratorTag::RandomAccessIt> end)
+		constexpr Array(It beg, It end)
+			: Head{}
+			, Tail{}
+			, CurrentEnd{}
 		{
 			while (beg < end)
 			{
@@ -333,7 +351,7 @@ namespace Integrian3D
 			ReallocateExactly(Size());
 		}
 
-		constexpr Array Select(const UnarySelectPred& pred) const
+		constexpr Array Select(const UnaryPred& pred) const
 		{
 			const uint64_t size{ Size() };
 
@@ -352,7 +370,7 @@ namespace Integrian3D
 
 			return arr;
 		}
-		constexpr Array Select(UnarySelectPred&& pred) const
+		constexpr Array Select(UnaryPred&& pred) const
 		{
 			const uint64_t size{ Size() };
 
@@ -430,17 +448,54 @@ namespace Integrian3D
 		{
 			return Head;
 		}
+
+		constexpr It Find(const T& val) const
+		{
+			for (uint64_t i{}; i < Size(); ++i)
+			{
+				if (*(Head + i) == val)
+				{
+					return It{ Head + i };
+				}
+			}
+
+			return It{ CurrentEnd };
+		}
+		constexpr It Find(const UnaryPred& pred) const
+		{
+			for (uint64_t i{}; i < Size(); ++i)
+			{
+				if (pred(*(Head + i)))
+				{
+					return It{ Head + i };
+				}
+			}
+
+			return It{ CurrentEnd };
+		}
+		constexpr It Find(UnaryPred&& pred) const
+		{
+			for (uint64_t i{}; i < Size(); ++i)
+			{
+				if (pred(*(Head + i)))
+				{
+					return It{ Head + i };
+				}
+			}
+
+			return It{ CurrentEnd };
+		}
 #pragma endregion
 
 #pragma region Iterators
-		Iterator<T, IteratorTag::RandomAccessIt> begin() { return Head; }
-		ConstIterator<T, IteratorTag::RandomAccessIt> begin() const { return Head; }
+		It begin() { return Head; }
+		CIt begin() const { return Head; }
 
-		Iterator<T, IteratorTag::RandomAccessIt> end() { return Head + Size(); }
-		ConstIterator<T, IteratorTag::RandomAccessIt> end() const { return Head + Size(); }
+		It end() { return CurrentEnd; }
+		CIt end() const { return CurrentEnd; }
 
-		ConstIterator<T, IteratorTag::RandomAccessIt> cbegin() const { return Head; }
-		ConstIterator<T, IteratorTag::RandomAccessIt> cend() const { return Head + Size(); }
+		CIt cbegin() const { return Head; }
+		CIt cend() const { return CurrentEnd; }
 #pragma endregion
 
 	private:

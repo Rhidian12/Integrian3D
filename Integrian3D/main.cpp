@@ -441,5 +441,28 @@ TEST_CASE("Testing Basic Array of integers")
 		REQUIRE(arr.At(0) == 0);
 		REQUIRE(arr.At(5) == 5);
 	}
+
+	SECTION("Find an element in the array")
+	{
+		for (int i{}; i < nrOfElements; ++i)
+		{
+			arr.Add(i);
+		}
+
+		Array<int>::It it{ arr.Find(5) };
+
+		REQUIRE(it != arr.end());
+
+		it = arr.Find(-1);
+
+		REQUIRE(it == arr.end());
+
+		it = arr.Find([](const int a)->bool
+			{
+				return a == 6;
+			});
+
+		REQUIRE(it != arr.end());
+	}
 }
 #endif
