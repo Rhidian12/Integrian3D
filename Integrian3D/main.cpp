@@ -351,5 +351,23 @@ TEST_CASE("Testing Basic Array of integers")
 		arr.Back() = 65;
 		REQUIRE(arr != newArr);
 	}
+
+	SECTION("Selecting a range of an array")
+	{
+		for (int i{}; i < nrOfElements; ++i)
+		{
+			arr.Add(i);
+		}
+
+		Array<int> newArr{ arr.Select([](const int& a)->bool
+			{
+				return a > 5;
+			}) };
+
+		for (size_t i{}; i < newArr.Size(); ++i)
+		{
+			REQUIRE(newArr[i] > 5);
+		}
+	}
 }
 #endif

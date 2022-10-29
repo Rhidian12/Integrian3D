@@ -2,6 +2,8 @@
 
 #include "../EngineConstants.h"
 
+#include <functional> /* std::function */
+
 namespace Integrian3D
 {
 	/* [TODO]: Add allocator */
@@ -9,6 +11,7 @@ namespace Integrian3D
 	class Array
 	{
 		inline constexpr static uint32_t SizeOfType{ sizeof(T) };
+		using UnarySelectPred = std::function<bool(const T&)>;
 
 	public:
 #pragma region Ctors and Dtor
@@ -262,6 +265,45 @@ namespace Integrian3D
 				return;
 
 			ReallocateExactly(Size());
+		}
+
+		Array Select(const UnarySelectPred& pred) const
+		{
+			const uint64_t size{ Size() };
+
+			Array arr{};
+			arr.Reserve(size); // Change this when a constructor has been added for capacity
+
+			for (uint64_t i{}; i < size; ++i)
+			{
+				const T* const elem{ Head + i };
+
+				if (pred(*elem))
+				{
+					arr.Add(*elem);
+				}
+			}
+
+			return arr;
+		}
+		Array Select(UnarySelectPred&& pred) const
+		{
+			const uint64_t size{ Size() };
+
+			Array arr{};
+			arr.Reserve(size); // Change this when a constructor has been added for capacity
+
+			for (uint64_t i{}; i < size; ++i)
+			{
+				const T* const elem{ Head + i };
+
+				if (pred(*elem))
+				{
+					arr.Add(*elem);
+				}
+			}
+
+			return arr;
 		}
 #pragma endregion
 
