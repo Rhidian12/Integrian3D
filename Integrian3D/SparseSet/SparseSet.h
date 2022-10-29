@@ -55,14 +55,14 @@ namespace Integrian3D
 		__NODISCARD T& operator[](const size_t index) { __ASSERT(index < _Size); return Packed[index]; }
 		__NODISCARD const T operator[](const size_t index) const { __ASSERT(index < _Size); return Packed[index]; }
 
-		Iterator<T> begin() { return Packed.data(); }
-		ConstIterator<T> begin() const { return Packed.data(); }
+		Iterator<T, IteratorTag::RandomAccessIt> begin() { return Packed.data(); }
+		ConstIterator<T, IteratorTag::RandomAccessIt> begin() const { return Packed.data(); }
 
-		Iterator<T> end() { return Packed.data() + Packed.size(); }
-		ConstIterator<T> end() const { return Packed.data() + Packed.size(); }
+		Iterator<T, IteratorTag::RandomAccessIt> end() { return Packed.data() + Packed.size(); }
+		ConstIterator<T, IteratorTag::RandomAccessIt> end() const { return Packed.data() + Packed.size(); }
 
-		ConstIterator<T> cbegin() const { return Packed.data(); }
-		ConstIterator<T> cend() const { return Packed.data() + Packed.size(); }
+		ConstIterator<T, IteratorTag::RandomAccessIt> cbegin() const { return Packed.data(); }
+		ConstIterator<T, IteratorTag::RandomAccessIt> cend() const { return Packed.data() + Packed.size(); }
 
 	private:
 		template<typename U>
