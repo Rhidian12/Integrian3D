@@ -21,7 +21,7 @@ namespace Integrian3D
 		/* Should have internal linkage and therefore be unavailable to other files */
 		namespace
 		{
-			template<typename Type>
+			template<typename T>
 			constexpr std::string_view WrappedTypeName()
 			{
 				return __FUNCSIG__;
