@@ -160,96 +160,96 @@ namespace Integrian3D
 #pragma endregion
 
 #pragma region Arithmetic
-		Iterator& operator++()
+		ConstIterator& operator++()
 		{
 			++pPointer;
 			return *this;
 		}
 
-		Iterator& operator--()
+		ConstIterator& operator--()
 		{
-			static_assert(Tag > IteratorTag::ForwardIt, "Iterator::operator--() > This operator is only available for Bidirectional or Random Access iterators");
+			static_assert(Tag > IteratorTag::ForwardIt, "ConstIterator::operator--() > This operator is only available for Bidirectional or Random Access iterators");
 
 			--pPointer;
 			return *this;
 		}
 
-		Iterator& operator+=(const uint64_t i)
+		ConstIterator& operator+=(const uint64_t i)
 		{
 			pPointer += i;
 			return *this;
 		}
 
-		Iterator& operator-=(const uint64_t i)
+		ConstIterator& operator-=(const uint64_t i)
 		{
 			pPointer -= i;
 			return *this;
 		}
 
-		Iterator operator++(int)
+		ConstIterator operator++(int)
 		{
 			Iterator tmp = *this;
 			++(*this);
 			return tmp;
 		}
 
-		Iterator operator--(int)
+		ConstIterator operator--(int)
 		{
-			static_assert(Tag > IteratorTag::ForwardIt, "Iterator::operator--() > This operator is only available for Bidirectional or Random Access iterators");
+			static_assert(Tag > IteratorTag::ForwardIt, "ConstIterator::operator--() > This operator is only available for Bidirectional or Random Access iterators");
 
 			Iterator tmp = *this;
 			--(*this);
 			return tmp;
 		}
 
-		Iterator operator+(const uint64_t i) const
+		ConstIterator operator+(const uint64_t i) const
 		{
 			return Iterator{ pPointer + i };
 		}
 
-		Iterator operator+(const Iterator& it) const
+		ConstIterator operator+(const ConstIterator& it) const
 		{
 			return Iterator{ pPointer + it.pPointer };
 		}
 
-		Iterator operator-(const uint64_t i) const
+		ConstIterator operator-(const uint64_t i) const
 		{
 			return Iterator{ pPointer - i };
 		}
 
-		Iterator operator-(const Iterator& it) const
+		ConstIterator operator-(const ConstIterator& it) const
 		{
 			return Iterator{ pPointer - it.pPointer };
 		}
 #pragma endregion
 
 #pragma region Comparing Iterators
-		bool operator==(const Iterator& other) const
+		bool operator==(const ConstIterator& other) const
 		{
 			return pPointer == other.pPointer;
 		}
 
-		bool operator!=(const Iterator& other) const
+		bool operator!=(const ConstIterator& other) const
 		{
 			return pPointer != other.pPointer;
 		}
 
-		bool operator>(const Iterator& other) const
+		bool operator>(const ConstIterator& other) const
 		{
 			return pPointer > other.pPointer;
 		}
 
-		bool operator<(const Iterator& other) const
+		bool operator<(const ConstIterator& other) const
 		{
 			return pPointer < other.pPointer;
 		}
 
-		bool operator>=(const Iterator& other) const
+		bool operator>=(const ConstIterator& other) const
 		{
 			return pPointer >= other.pPointer;
 		}
 
-		bool operator<=(const Iterator& other) const
+		bool operator<=(const ConstIterator& other) const
 		{
 			return pPointer <= other.pPointer;
 		}
