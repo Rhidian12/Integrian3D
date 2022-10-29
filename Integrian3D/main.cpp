@@ -110,6 +110,8 @@ int main()
 #include "Libraries/Catch2/catch.hpp"
 #include <vld.h>
 
+#define ARRAY_TESTS
+#ifdef ARRAY_TESTS
 #include "DebugUtility/DebugUtility.h"
 #include "Array/Array.h"
 TEST_CASE("Testing Basic Array of integers")
@@ -485,4 +487,5 @@ TEST_CASE("Testing Basic Array of integers")
 		REQUIRE(newArr.Size() == 0);
 	}
 }
+#endif
 #endif
