@@ -56,11 +56,5 @@ namespace Integrian3D
 
 			return hash_value;
 		}
-
-		template <typename T, template <typename ...> typename U>
-		struct Is_Specialization : std::false_type {};
-
-		template <template <typename ...> typename T, typename ... Ts>
-		struct Is_Specialization<T<Ts...>, T> : std::true_type {};
 	}
 }
