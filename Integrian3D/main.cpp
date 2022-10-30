@@ -140,6 +140,9 @@ TEST_CASE("Testing Basic Array of integers")
 		REQUIRE(arr[0] == 0);
 		REQUIRE(arr[arr.Size() - 1] == nrOfElements - 1);
 		REQUIRE(arr.At(arr.Size() - 1) == nrOfElements - 1);
+
+		arr[0] = 15;
+		REQUIRE(arr.Front() == 15);
 	}
 
 	SECTION("Reserving and adding elements")
@@ -426,7 +429,7 @@ TEST_CASE("Testing Basic Array of integers")
 		Array<int> newArr{ arr.begin(), arr.end() };
 
 		REQUIRE(newArr.Size() == arr.Size());
-		
+
 		int counter{};
 		for (const int elem : newArr)
 		{
@@ -483,8 +486,91 @@ TEST_CASE("Testing Basic Array of integers")
 		REQUIRE(newArr.Size() == 5);
 
 		newArr = arr.FindAll(-1);
-		
+
 		REQUIRE(newArr.Size() == 0);
+	}
+
+	SECTION("Erasing elements in the array")
+	{
+		for (int i{}; i < nrOfElements; ++i)
+		{
+			arr.Add(i);
+		}
+
+		arr.Erase(3);
+
+		REQUIRE(arr.Size() == nrOfElements - 1);
+		REQUIRE(arr.Find(3) == arr.end());
+
+		int counter{};
+		for (int i{}; i < arr.Size(); ++i)
+		{
+			REQUIRE(arr[i] == counter++);
+
+			if (counter == 3)
+				++counter;
+		}
+
+		arr.Erase(arr.begin());
+		REQUIRE(arr.Size() == nrOfElements - 2);
+		REQUIRE(arr[0] == 1);
+	}
+
+	SECTION("Erasing a range of elements in the array")
+	{
+		for (int i{}; i < nrOfElements; ++i)
+		{
+			arr.Add(i);
+		}
+
+		arr.EraseRange(arr.Find(2), arr.Find(9));
+
+		REQUIRE(arr.Size() == 2);
+		REQUIRE(arr.Front() == 0);
+		REQUIRE(arr.Back() == 1);
+
+		arr.Clear();
+
+		for (int i{}; i < nrOfElements; ++i)
+		{
+			arr.Add(i);
+		}
+
+		arr.EraseRange(3, 15); // should not crash
+
+		REQUIRE(arr.Size() == 3);
+	}
+
+	SECTION("Popping off the front of the array")
+	{
+		for (int i{}; i < nrOfElements; ++i)
+		{
+			arr.Add(i);
+		}
+
+		arr.PopFront();
+		REQUIRE(arr.Size() == nrOfElements - 1);
+		REQUIRE(arr.Front() == 1);
+
+		arr.PopFront();
+		REQUIRE(arr.Size() == nrOfElements - 2);
+		REQUIRE(arr.Front() == 2);
+	}
+
+	SECTION("Adding to the front of the array")
+	{
+		for (int i{}; i < nrOfElements; ++i)
+		{
+			arr.Add(i);
+		}
+
+		arr.AddFront(15);
+		REQUIRE(arr.Size() == nrOfElements + 1);
+		REQUIRE(arr[0] == 15);
+
+		arr.AddFront(396);
+		REQUIRE(arr.Size() == nrOfElements + 2);
+		REQUIRE(arr[0] == 396);
 	}
 }
 #endif

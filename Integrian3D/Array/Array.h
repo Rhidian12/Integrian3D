@@ -7,22 +7,22 @@
 
 namespace Integrian3D
 {
-	struct Size final
+	struct Size_P final
 	{
 		uint64_t _Size;
 	};
-	struct Capacity final
+	struct Capacity_P final
 	{
 		uint64_t _Capacity;
 	};
 
-	Size operator""_size(const uint64_t i)
+	Size_P operator""_size(const uint64_t i)
 	{
-		return Size{ i };
+		return Size_P{ i };
 	}
-	Capacity operator""_capacity(const uint64_t i)
+	Capacity_P operator""_capacity(const uint64_t i)
 	{
-		return Capacity{ i };
+		return Capacity_P{ i };
 	}
 
 	/* [TODO]: Add allocator */
@@ -39,7 +39,7 @@ namespace Integrian3D
 #pragma region Ctors and Dtor
 		constexpr Array() = default;
 		/* [TODO]: add allocator to ctors */
-		constexpr Array(const Size size)
+		constexpr Array(const Size_P size)
 			: Head{}
 			, Tail{}
 			, CurrentEnd{}
@@ -49,7 +49,7 @@ namespace Integrian3D
 				EmplaceBack(T{});
 			}
 		}
-		constexpr Array(const Size size, const T& val)
+		constexpr Array(const Size_P size, const T& val)
 			: Head{}
 			, Tail{}
 			, CurrentEnd{}
@@ -59,7 +59,7 @@ namespace Integrian3D
 				EmplaceBack(val);
 			}
 		}
-		constexpr Array(const Capacity cap)
+		constexpr Array(const Capacity_P cap)
 			: Head{}
 			, Tail{}
 			, CurrentEnd{}
@@ -170,23 +170,32 @@ namespace Integrian3D
 #pragma endregion
 
 #pragma region Adding and Removing Elements
-		void Add(const T& val)
+		constexpr void Add(const T& val)
 		{
 			EmplaceBack(val);
 		}
-		void Add(T&& val)
+		constexpr void Add(T&& val)
 		{
 			EmplaceBack(__MOVE(T, val));
 		}
 
-		void AddRange(std::initializer_list<T> elems)
+		constexpr void AddFront(const T& val)
+		{
+			EmplaceFront(val);
+		}
+		constexpr void AddFront(T&& val)
+		{
+			EmplaceFront(__MOVE(T, val));
+		}
+
+		constexpr void AddRange(std::initializer_list<T> elems)
 		{
 			for (const T& elem : elems)
 			{
 				EmplaceBack(elem);
 			}
 		}
-		void AddRange(Iterator<T, IteratorTag::RandomAccessIt> beg, Iterator<T, IteratorTag::RandomAccessIt> end)
+		constexpr void AddRange(It beg, It end)
 		{
 			while (beg < end)
 			{
@@ -195,16 +204,105 @@ namespace Integrian3D
 			}
 		}
 
-		void Insert(const uint64_t index, const T& val)
+		constexpr It Erase(const uint64_t index)
+		{
+			__ASSERT(index < Size() && "Array::Erase() > index is out of range");
+
+			const uint64_t oldSize{ Size() };
+
+			if (index == oldSize - 1)
+			{
+				Pop();
+
+				return end();
+			}
+			else if (index == 0)
+			{
+				PopFront();
+
+				return It{ Head };
+			}
+			else
+			{
+				(Head + index)->~T();
+				MoveRange(Head + index + 1, CurrentEnd--, Head + index);
+
+				return It{ Head + index };
+			}
+		}
+		constexpr It Erase(It pos)
+		{
+			__ASSERT(pos != end() && "Array::Erase() > invalid iterator was passed as a parameter");
+
+			return Erase(*pos);
+		}
+		constexpr It Erase(const T& val)
+		{
+			for (uint64_t i{}; i < Size(); ++i)
+			{
+				if (*(Head + i) == val)
+				{
+					return Erase(i);
+					break;
+				}
+			}
+
+			return end();
+		}
+		constexpr It Erase(const UnaryPred& pred)
+		{
+			It it{ Find(pred) };
+
+			if (it != end())
+			{
+				return Erase(*it);
+			}
+
+			return end();
+		}
+		constexpr It Erase(UnaryPred&& pred)
+		{
+			It it{ Find(__MOVE(UnaryPred, pred)) };
+
+			if (it != end())
+			{
+				return Erase(*it);
+			}
+
+			return end();
+		}
+
+		constexpr void EraseRange(const uint64_t start, const uint64_t count)
+		{
+			__ASSERT(start < Size() && "Array::EraseRange() > Start is out of range");
+
+			EraseRange(It{ Head + start }, It{ Head + start + count });
+		}
+		constexpr void EraseRange(It beg, It endIt)
+		{
+			__ASSERT(beg != end() && "Array::EraseRange() > Cannot iterator past the end");
+
+			if (endIt >= end())
+			{
+				endIt = It{ CurrentEnd - 1 };
+			}
+
+			for (; beg <= endIt; --endIt)
+			{
+				beg = Erase(beg);
+			}
+		}
+
+		constexpr void Insert(const uint64_t index, const T& val)
 		{
 			Emplace(index, val);
 		}
-		void Insert(const uint64_t index, T&& val)
+		constexpr void Insert(const uint64_t index, T&& val)
 		{
 			Emplace(index, __MOVE(T, val));
 		}
 
-		void Pop()
+		constexpr void Pop()
 		{
 			if (Size() == 0)
 			{
@@ -214,7 +312,19 @@ namespace Integrian3D
 			(--CurrentEnd)->~T();
 		}
 
-		void Clear()
+		constexpr void PopFront()
+		{
+			if (Size() == 0)
+			{
+				return;
+			}
+
+			Head->~T();
+
+			MoveRange(Head + 1, CurrentEnd--, Head);
+		}
+
+		constexpr void Clear()
 		{
 			DeleteData(Head, CurrentEnd);
 
@@ -222,7 +332,7 @@ namespace Integrian3D
 		}
 
 		template<typename ... Ts>
-		T& EmplaceBack(Ts&&... args)
+		constexpr T& EmplaceBack(Ts&&... args)
 		{
 			/* if we point past our allocated memory we have an issue */
 			if (!CurrentEnd || CurrentEnd >= Tail)
@@ -234,7 +344,7 @@ namespace Integrian3D
 		}
 
 		template<typename ... Ts>
-		T& Emplace(const uint64_t index, Ts&&... args)
+		constexpr T& Emplace(const uint64_t index, Ts&&... args)
 		{
 			__ASSERT(index < Size() && "Array::Emplace() > index is out of range");
 
@@ -254,6 +364,20 @@ namespace Integrian3D
 				MoveRange(Head + index, CurrentEnd++ - 1, Head + index + 1);
 				return *(new (Head + index) T{ __FORWARD(Ts, args)... });
 			}
+		}
+
+		template<typename ... Ts>
+		constexpr T& EmplaceFront(Ts&&... args)
+		{
+			/* if we point past our allocated memory we have an issue */
+			if (!CurrentEnd || CurrentEnd >= Tail)
+			{
+				Reallocate();
+			}
+
+			MoveRange(Head, CurrentEnd++, Head + 1);
+
+			return *(new (Head) T{ __FORWARD(Ts, args)... });
 		}
 #pragma endregion
 
@@ -543,14 +667,14 @@ namespace Integrian3D
 #pragma endregion
 
 #pragma region Iterators
-		It begin() { return Head; }
-		CIt begin() const { return Head; }
+		constexpr It begin() { return Head; }
+		constexpr CIt begin() const { return Head; }
 
-		It end() { return CurrentEnd; }
-		CIt end() const { return CurrentEnd; }
+		constexpr It end() { return CurrentEnd; }
+		constexpr CIt end() const { return CurrentEnd; }
 
-		CIt cbegin() const { return Head; }
-		CIt cend() const { return CurrentEnd; }
+		constexpr CIt cbegin() const { return Head; }
+		constexpr CIt cend() const { return CurrentEnd; }
 #pragma endregion
 
 	private:
