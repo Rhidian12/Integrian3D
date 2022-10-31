@@ -47,6 +47,13 @@ namespace Integrian3D
 		Debug::Logger::GetInstance().LogAssertion(#expr, __LINE__, __FILE__, Debug::MessageColour::Yellow, true); \
 		__BREAK(); \
 	}
+#define __CASSERT(expr) \
+	if constexpr ((expr)) {} \
+	else \
+	{ \
+		Debug::Logger::GetInstance().LogAssertion(#expr, __LINE__, __FILE__, Debug::MessageColour::Yellow, true); \
+		__BREAK(); \
+	}
 #else
 #define __ASSERT(expr)
 #endif
