@@ -607,6 +607,16 @@ TEST_CASE("Testing the stack allocator")
 
 	REQUIRE(test != nullptr);
 	REQUIRE(alloc.Size() == alloc.MaxSize());
+
+	alloc.Deallocate(test, size / sizeof(int));
+
+	REQUIRE(alloc.Size() == 0);
+
+	test = alloc.Allocate<int>(1);
+	int* test2 = alloc.Allocate<int>(1);
+
+	REQUIRE(test != test2);
+	REQUIRE(alloc.Size() >= sizeof(int) * 2);
 }
 #endif
 #endif
