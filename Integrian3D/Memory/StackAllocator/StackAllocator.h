@@ -24,9 +24,11 @@ namespace Integrian3D::Memory
 			if (memRequirement <= N - StackPointer)
 			{
 				T* data = reinterpret_cast<T*>(&Buffer[StackPointer]);
-				StackPointer += memRequirement;
+				
+				const uint64_t alignment{ AlignForward(data, align) };
+				data += alignment;
 
-				StackPointer += AlignForward(data, align);
+				StackPointer += memRequirement + alignment;
 
 				__ASSERT(StackPointer <= N && "StackAllocator::Allocate() > Ran out of memory");
 
