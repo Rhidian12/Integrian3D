@@ -81,10 +81,9 @@ namespace Integrian3D
 			, Tail{}
 			, CurrentEnd{}
 		{
-			while (beg < end)
+			for (; beg != end; ++beg)
 			{
 				EmplaceBack(*beg);
-				++beg;
 			}
 		}
 
@@ -197,15 +196,10 @@ namespace Integrian3D
 		}
 		constexpr void AddRange(It beg, It end)
 		{
-			uint64_t size{ static_cast<uint64_t>(*end - *beg) };
-			for (uint64_t i{}; i < size; ++i)
+			for (; beg != end; ++beg)
 			{
-				EmplaceBack(*(beg + i));
+				EmplaceBack(*beg);
 			}
-			//for (; beg != end; ++beg)
-			//{
-			//	EmplaceBack(*beg);
-			//}
 		}
 
 		constexpr It Erase(const uint64_t index)
