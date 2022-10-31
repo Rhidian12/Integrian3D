@@ -188,6 +188,7 @@
     <ClCompile Include="FileReader\FileReader.cpp" />
     <ClCompile Include="InputManager\InputManager.cpp" />
     <ClCompile Include="Libraries\glad\src\glad.c" />
+    <ClCompile Include="Memory\LinearAllocator\LinearAllocator.cpp" />
     <ClCompile Include="Logger\Logger.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Math\Math.cpp" />
@@ -221,6 +222,7 @@
     <ClInclude Include="InputManager\MouseInput\MouseInput.h" />
     <ClInclude Include="Iterator\Iterator.h" />
     <ClInclude Include="Libraries\stb\stb_image.h" />
+    <ClInclude Include="Memory\LinearAllocator\LinearAllocator.h" />
     <ClInclude Include="Logger\Logger.h" />
     <ClInclude Include="Math\Math.h" />
     <ClInclude Include="Math\RGBColour.h" />
