@@ -14,6 +14,14 @@ namespace Integrian3D::Memory
 			, StackPointer{}
 		{}
 
+#pragma region Rule of 5
+		StackAllocator(const StackAllocator&) noexcept = delete;
+		StackAllocator(StackAllocator&&) noexcept = delete;
+
+		StackAllocator& operator=(const StackAllocator&) noexcept = delete;
+		StackAllocator& operator=(StackAllocator&&) noexcept = delete;
+#pragma endregion
+
 		template<typename T>
 		__NODISCARD constexpr T* Allocate(const uint64_t nrOfElements, const uint64_t align = alignof(T))
 		{
@@ -67,6 +75,16 @@ namespace Integrian3D::Memory
 		__NODISCARD constexpr const char* Data() const
 		{
 			return Buffer;
+		}
+
+		__NODISCARD constexpr bool operator==(const StackAllocator& other) const
+		{
+			return Buffer == other.Buffer && Size() == other.Size();
+		}
+
+		__NODISCARD constexpr bool operator!=(const StackAllocator& other) const
+		{
+			return !(*this == other);
 		}
 
 	private:
