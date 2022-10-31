@@ -17,6 +17,8 @@ namespace Integrian3D::Memory
 		template<typename T>
 		__NODISCARD constexpr T* Allocate(const uint64_t nrOfElements, const uint64_t align = alignof(T))
 		{
+			__ASSERT(nrOfElements != 0 && "StackAllocator::Allocate() > Cannot allocate 0 elements");
+
 			const uint64_t memRequirement{ nrOfElements * sizeof(T) };
 
 			if (memRequirement <= N - StackPointer)
