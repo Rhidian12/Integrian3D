@@ -575,7 +575,7 @@ TEST_CASE("Testing Basic Array of integers")
 }
 #endif
 
-#define STACK_ALLOCATOR_TESTS
+// #define STACK_ALLOCATOR_TESTS
 #ifdef STACK_ALLOCATOR_TESTS
 #include "Memory/StackAllocator/StackAllocator.h"
 
@@ -617,6 +617,37 @@ TEST_CASE("Testing the stack allocator")
 
 	REQUIRE(test != test2);
 	REQUIRE(alloc.Size() >= sizeof(int) * 2);
+}
+#endif
+
+#define LINEAR_ALLOCATOR_TESTS
+#ifdef LINEAR_ALLOCATOR_TESTS
+#include "Memory/LinearAllocator/LinearAllocator.h"
+
+TEST_CASE("Testing the Linear Allocator")
+{
+	using namespace Integrian3D::Memory;
+
+	constexpr int size{ 512 };
+
+	LinearAllocator alloc{ size };
+
+	REQUIRE(alloc.Size() == 0);
+	REQUIRE(alloc.Capacity() == size);
+	REQUIRE(alloc.MaxSize() == size);
+	REQUIRE(alloc.Data() != nullptr);
+
+	int* test{ alloc.Allocate<int>(1) };
+
+	REQUIRE(test != nullptr);
+	REQUIRE(alloc.Size() >= sizeof(int));
+	REQUIRE(alloc.Capacity() == size);
+	REQUIRE(alloc.MaxSize() == size);
+
+	test = alloc.Allocate<int>(size / sizeof(int) - 1);
+
+	REQUIRE(test != nullptr);
+	REQUIRE(alloc.Size() == alloc.MaxSize());
 }
 #endif
 #endif

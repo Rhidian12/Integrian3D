@@ -1,48 +1,61 @@
 #pragma once
 
 #include "../../EngineConstants.h"
+#include "../MemoryUtils.h"
 
 namespace Integrian3D::Memory
 {
 	class LinearAllocator final
 	{
 	public:
-		explicit LinearAllocator();
-		explicit LinearAllocator(const size_t nrOfBytes);
+		LinearAllocator();
+		explicit LinearAllocator(const uint64_t nrOfBytes);
 		~LinearAllocator();
 
-		template<typename T>
-		T* allocate(const size_t nrOfElements)
-		{
-			if (nrOfElements == 0)
-			{
-				throw std::invalid_argument{ "LinearAllocator::Allocate() > Cannot allocate 0 elements" };
-			}
+#pragma region Rule of 5
+		LinearAllocator(const LinearAllocator&) noexcept = delete;
+		LinearAllocator(LinearAllocator&&) noexcept = delete;
 
-			if (reinterpret_cast<T*>(pCurrent) + nrOfElements >= pEnd)
-			{
-				throw std::bad_alloc{};
-			}
-
-			void* pData{ pCurrent };
-
-			pCurrent = reinterpret_cast<T*>(pCurrent) + nrOfElements;
-
-			return reinterpret_cast<T*>(pData);
-		}
+		LinearAllocator& operator=(const LinearAllocator&) noexcept = delete;
+		LinearAllocator& operator=(LinearAllocator&&) noexcept = delete;
+#pragma endregion
 
 		template<typename T>
-		void deallocate([[maybe_unused]] T* p)
+		__NODISCARD constexpr T* Allocate(const uint64_t nrOfElements, const uint64_t align = alignof(T))
 		{
-			throw std::bad_function_call{};
+			__ASSERT(nrOfElements != 0 && "LinearAllocator::Allocate() > Cannot allocate 0 elements");
+
+			__ASSERT(static_cast<T*>(Current) < End && "LinearAllocator::Allocate() > Ran out of memory");
+
+			T* data{ static_cast<T*>(Current) };
+
+			const uint64_t alignment{ AlignForward(data, align) };
+			data += alignment;
+
+			Current = static_cast<char*>(Current) + nrOfElements * sizeof(T) + alignment;
+
+			__ASSERT(static_cast<T*>(Current) <= End && "LinearAllocator::Allocate() > Ran out of memory");
+
+			return static_cast<T*>(data);
 		}
 
-		size_t capacity() const { return reinterpret_cast<char*>(pEnd) - reinterpret_cast<char*>(pStart) - 1; }
-		size_t size() const { return reinterpret_cast<char*>(pCurrent) - reinterpret_cast<char*>(pStart); }
+		__NODISCARD constexpr uint64_t Capacity() const { return static_cast<char*>(End) - static_cast<char*>(Start); }
+		__NODISCARD constexpr uint64_t Size() const { return static_cast<char*>(Current) - static_cast<char*>(Start); }
+		__NODISCARD constexpr uint64_t MaxSize() const { return Capacity(); }
+		__NODISCARD constexpr const void* Data() const { return Start; }
+
+		__NODISCARD constexpr bool operator==(const LinearAllocator& other) const
+		{
+			return Start == other.Start;
+		}
+		__NODISCARD constexpr bool operator!=(const LinearAllocator& other) const
+		{
+			return Start != other.Start;
+		}
 
 	private:
-		void* pStart;
-		void* pCurrent;
-		void* pEnd; /* points past allocated memory */
+		void* Start;
+		void* Current;
+		void* End; /* points past allocated memory */
 	};
 }
