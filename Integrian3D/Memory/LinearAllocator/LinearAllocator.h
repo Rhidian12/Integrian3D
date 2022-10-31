@@ -17,10 +17,14 @@ namespace Integrian3D::Memory
 
 #pragma region Rule of 5
 		LinearAllocator(const LinearAllocator& other) noexcept
-			: Start{ other.Start }
-			, End{ other.End }
-			, Current{ other.Current }
-		{}
+			: Start{}
+			, End{}
+			, Current{}
+		{
+			Start = malloc(other.Capacity());
+			End = static_cast<char*>(Start) + other.Capacity();
+			Current = static_cast<char*>(Start);
+		}
 		LinearAllocator(LinearAllocator&& other) noexcept
 			: Start{ __MOVE(void*, other.Start) }
 			, End{ __MOVE(void*, other.End) }
@@ -34,9 +38,9 @@ namespace Integrian3D::Memory
 				free(Start);
 			}
 
-			Start = other.Start;
-			End = other.End;
-			Current = other.Current;
+			Start = malloc(other.Capacity());
+			End = static_cast<char*>(Start) + other.Capacity();
+			Current = static_cast<char*>(Start);
 
 			return *this;
 		}

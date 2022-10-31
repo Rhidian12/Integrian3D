@@ -19,8 +19,8 @@ namespace Integrian3D::Memory
 
 #pragma region Rule of 5
 		StackAllocator(const StackAllocator& other) noexcept
-			: Buffer{ other.Buffer }
-			, StackPointer{ other.StackPointer }
+			: Buffer{}
+			, StackPointer{}
 		{}
 		StackAllocator(StackAllocator&& other) noexcept
 			: Buffer{ __MOVE(char*, other.Buffer) }
@@ -29,8 +29,7 @@ namespace Integrian3D::Memory
 
 		StackAllocator& operator=(const StackAllocator& other) noexcept
 		{
-			Buffer = other.Buffer;
-			StackPointer = other.StackPointer;
+			StackPointer = 0;
 
 			return *this;
 		}
