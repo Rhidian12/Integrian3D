@@ -110,7 +110,7 @@ int main()
 #include "Libraries/Catch2/catch.hpp"
 #include <vld.h>
 
-#define ARRAY_TESTS
+// #define ARRAY_TESTS
 #ifdef ARRAY_TESTS
 #include "DebugUtility/DebugUtility.h"
 #include "Array/Array.h"
@@ -572,6 +572,41 @@ TEST_CASE("Testing Basic Array of integers")
 		REQUIRE(arr.Size() == nrOfElements + 2);
 		REQUIRE(arr[0] == 396);
 	}
+}
+#endif
+
+#define STACK_ALLOCATOR_TESTS
+#ifdef STACK_ALLOCATOR_TESTS
+#include "Memory/StackAllocator/StackAllocator.h"
+
+TEST_CASE("Testing the stack allocator")
+{
+	using namespace Integrian3D::Memory;
+
+	constexpr int size{ 512 };
+
+	StackAllocator<size> alloc{};
+
+	REQUIRE(alloc.Size() == 0);
+	REQUIRE(alloc.Capacity() == size);
+	REQUIRE(alloc.MaxSize() == size);
+	REQUIRE(alloc.Data() != nullptr);
+
+	int* test{ alloc.Allocate<int>(1) };
+
+	REQUIRE(test != nullptr);
+	REQUIRE(alloc.Size() >= sizeof(int));
+	REQUIRE(alloc.Capacity() == size);
+	REQUIRE(alloc.MaxSize() == size);
+
+	alloc.Deallocate(test, 1);
+
+	REQUIRE(alloc.Size() == 0);
+
+	test = alloc.Allocate<int>(size / sizeof(int));
+
+	REQUIRE(test != nullptr);
+	REQUIRE(alloc.Size() == alloc.MaxSize());
 }
 #endif
 #endif
