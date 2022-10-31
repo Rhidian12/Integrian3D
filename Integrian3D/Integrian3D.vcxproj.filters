@@ -185,7 +185,7 @@
     <ClInclude Include="Memory\StackAllocator\StackAllocator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Memory\Utils.h">
+    <ClInclude Include="Memory\MemoryUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

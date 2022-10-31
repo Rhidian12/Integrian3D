@@ -7,13 +7,13 @@ namespace Integrian3D
 	namespace Memory
 	{
 		/* https://stackoverflow.com/questions/600293/how-to-check-if-a-number-is-a-power-of-2 */
-		__INLINE constexpr bool IsPowerOfTwo(const uint64_t val)
+		__INLINE __NODISCARD constexpr bool IsPowerOfTwo(const uint64_t val)
 		{
 			return (val & (val - 1)) == 0;
 		}
 
 		/* https://indiegamedev.net/2022/03/27/custom-c20-memory-allocators-for-stl-containers/ */
-		__INLINE constexpr uint64_t AlignForward(const void* const p, const uint64_t alignment)
+		__INLINE __NODISCARD constexpr uint64_t AlignForward(const void* const p, const uint64_t alignment)
 		{
 			// Example: Suppose p = 12 == 0xC and alignment = 8 == 0x8
 			// (12 + (8 - 1)) & ~(8 - 1)
@@ -27,7 +27,7 @@ namespace Integrian3D
 		}
 
 		template<typename ... Ts>
-		constexpr uint64_t AlignForward(const void* const p, const uint64_t alignment)
+		__NODISCARD constexpr uint64_t AlignForward(const void* const p, const uint64_t alignment)
 		{
 			uint64_t adjustment = AlignForward(p, alignment);
 

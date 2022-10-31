@@ -226,7 +226,7 @@
     <ClInclude Include="Math\RGBColour.h" />
     <ClInclude Include="Components\MeshComponent\MeshComponent.h" />
     <ClInclude Include="ECS\Registry\Registry.h" />
-    <ClInclude Include="Memory\Utils.h" />
+    <ClInclude Include="Memory\MemoryUtils.h" />
     <ClInclude Include="Renderer\Renderer.h" />
     <ClInclude Include="SceneManager\SceneManager.h" />
     <ClInclude Include="Scene\Scene.h" />
