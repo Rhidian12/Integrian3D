@@ -78,21 +78,6 @@ namespace Integrian3D::Memory
 			}
 		}
 
-		template<typename T, typename ... Ts>
-		__INLINE __NODISCARD constexpr T* Construct(T* p, Ts&&... args) const
-		{
-			return new (p) T{ __FORWARD(Ts, args)... };
-		}
-
-		template<typename T>
-		__INLINE constexpr void Destroy(T* p) const
-		{
-			if (!std::is_trivially_destructible_v<T>)
-			{
-				p->~T();
-			}
-		}
-
 		__NODISCARD constexpr uint64_t Capacity() const
 		{
 			return N;
