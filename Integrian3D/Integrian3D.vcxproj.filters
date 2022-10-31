@@ -84,6 +84,9 @@
     <ClCompile Include="Memory\LinearAllocator\LinearAllocator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Memory\FreeListAllocator\FreeListAllocator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window\Window.h">
@@ -192,6 +195,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Memory\LinearAllocator\LinearAllocator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory\FreeListAllocator\FreeListAllocator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

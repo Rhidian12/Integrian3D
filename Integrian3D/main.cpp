@@ -674,4 +674,34 @@ TEST_CASE("Testing the Linear Allocator")
 	REQUIRE(alloc.Size() == alloc.MaxSize());
 }
 #endif
+
+#define FREELIST_ALLOCATOR_TESTS
+#ifdef FREELIST_ALLOCATOR_TESTS
+#include "Memory/FreeListAllocator/FreeListAllocator.h"
+
+TEST_CASE("Testing the Free List Allocator")
+{
+	using namespace Integrian3D::Memory;
+
+	FreeListAllocator alloc{};
+
+	REQUIRE(alloc.Size() == 0);
+	REQUIRE(alloc.Capacity() >= 0);
+	REQUIRE(alloc.Data() != nullptr);
+
+	int* test{ alloc.Allocate<int>(1) };
+
+	REQUIRE(test != nullptr);
+	REQUIRE(alloc.Size() == 1);
+
+	test = alloc.Allocate<int>(100);
+
+	REQUIRE(test != nullptr);
+	REQUIRE(alloc.Size() == 2);
+
+	alloc.Deallocate(test);
+
+	REQUIRE(alloc.Size() == 1);
+}
+#endif
 #endif
