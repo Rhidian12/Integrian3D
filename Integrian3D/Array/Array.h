@@ -197,11 +197,15 @@ namespace Integrian3D
 		}
 		constexpr void AddRange(It beg, It end)
 		{
-			while (beg < end)
+			uint64_t size{ static_cast<uint64_t>(*end - *beg) };
+			for (uint64_t i{}; i < size; ++i)
 			{
-				EmplaceBack(*beg);
-				++beg;
+				EmplaceBack(*(beg + i));
 			}
+			//for (; beg != end; ++beg)
+			//{
+			//	EmplaceBack(*beg);
+			//}
 		}
 
 		constexpr It Erase(const uint64_t index)
@@ -220,7 +224,7 @@ namespace Integrian3D
 			{
 				PopFront();
 
-				return It{ Head };
+				return begin();
 			}
 			else
 			{
@@ -777,7 +781,8 @@ namespace Integrian3D
 		{
 			__ASSERT(end > head);
 
-			for (uint64_t i{}; i < static_cast<uint64_t>(end - head); ++i)
+			const uint64_t size{ static_cast<uint64_t>(end - head) };
+			for (uint64_t i{}; i < size; ++i)
 			{
 				if constexpr (std::is_move_assignable_v<T>)
 				{
