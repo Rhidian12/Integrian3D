@@ -194,8 +194,5 @@
     <ClInclude Include="Memory\LinearAllocator\LinearAllocator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Memory\AllocatorTraits\AllocatorTraits.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>

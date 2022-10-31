@@ -16,11 +16,43 @@ namespace Integrian3D::Memory
 		~LinearAllocator();
 
 #pragma region Rule of 5
-		LinearAllocator(const LinearAllocator&) noexcept = delete;
-		LinearAllocator(LinearAllocator&&) noexcept = delete;
+		LinearAllocator(const LinearAllocator& other) noexcept
+			: Start{ other.Start }
+			, End{ other.End }
+			, Current{ other.Current }
+		{}
+		LinearAllocator(LinearAllocator&& other) noexcept
+			: Start{ __MOVE(void*, other.Start) }
+			, End{ __MOVE(void*, other.End) }
+			, Current{ __MOVE(void*, other.Current) }
+		{}
 
-		LinearAllocator& operator=(const LinearAllocator&) noexcept = delete;
-		LinearAllocator& operator=(LinearAllocator&&) noexcept = delete;
+		LinearAllocator& operator=(const LinearAllocator& other) noexcept
+		{
+			if (Start)
+			{
+				free(Start);
+			}
+
+			Start = other.Start;
+			End = other.End;
+			Current = other.Current;
+
+			return *this;
+		}
+		LinearAllocator& operator=(LinearAllocator&& other) noexcept
+		{
+			if (Start)
+			{
+				free(Start);
+			}
+
+			Start = __MOVE(void*, other.Start);
+			End = __MOVE(void*, other.End);
+			Current = __MOVE(void*, other.Current);
+
+			return *this;
+		}
 #pragma endregion
 
 		template<typename T>
