@@ -197,6 +197,7 @@
     <ClCompile Include="SceneManager\SceneManager.cpp" />
     <ClCompile Include="Scene\Scene.cpp" />
     <ClCompile Include="Shader\Shader.cpp" />
+    <ClCompile Include="Memory\StackAllocator\StackAllocator.cpp" />
     <ClCompile Include="Systems\Systems.cpp" />
     <ClCompile Include="TextureManager\TextureManager.cpp" />
     <ClCompile Include="Texture\Texture.cpp" />
@@ -225,11 +226,13 @@
     <ClInclude Include="Math\RGBColour.h" />
     <ClInclude Include="Components\MeshComponent\MeshComponent.h" />
     <ClInclude Include="ECS\Registry\Registry.h" />
+    <ClInclude Include="Memory\Utils.h" />
     <ClInclude Include="Renderer\Renderer.h" />
     <ClInclude Include="SceneManager\SceneManager.h" />
     <ClInclude Include="Scene\Scene.h" />
     <ClInclude Include="Shader\Shader.h" />
     <ClInclude Include="SparseSet\SparseSet.h" />
+    <ClInclude Include="Memory\StackAllocator\StackAllocator.h" />
     <ClInclude Include="Systems\Systems.h" />
     <ClInclude Include="TextureManager\TextureManager.h" />
     <ClInclude Include="Texture\Texture.h" />
