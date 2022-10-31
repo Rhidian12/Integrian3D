@@ -110,7 +110,7 @@ int main()
 #include "Libraries/Catch2/catch.hpp"
 #include <vld.h>
 
-#define ARRAY_TESTS
+// #define ARRAY_TESTS
 #ifdef ARRAY_TESTS
 #include "DebugUtility/DebugUtility.h"
 #include "Array/Array.h"
@@ -450,8 +450,8 @@ TEST_CASE("Testing Basic Array of integers")
 
 		newArr.AddRange(arr.begin(), arr.Find(4));
 
-		REQUIRE(newArr.Back() == 4);
-		REQUIRE(newArr.Size() == arr.Size() - 1);
+		REQUIRE(newArr.Back() == 3);
+		REQUIRE(newArr.Size() == arr.Size() - 2);
 
 		for (size_t i{}; i < newArr.Size(); ++i)
 		{
