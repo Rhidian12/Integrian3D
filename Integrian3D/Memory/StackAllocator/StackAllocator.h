@@ -9,17 +9,38 @@ namespace Integrian3D::Memory
 	class StackAllocator final
 	{
 	public:
+		using CanMove = std::true_type;
+		using CanCopy = std::true_type;
+
 		constexpr StackAllocator()
 			: Buffer{}
 			, StackPointer{}
 		{}
 
 #pragma region Rule of 5
-		StackAllocator(const StackAllocator&) noexcept = delete;
-		StackAllocator(StackAllocator&&) noexcept = delete;
+		StackAllocator(const StackAllocator& other) noexcept
+			: Buffer{ other.Buffer }
+			, StackPointer{ other.StackPointer }
+		{}
+		StackAllocator(StackAllocator&& other) noexcept
+			: Buffer{ __MOVE(char*, other.Buffer) }
+			, StackPointer{ __MOVE(uint64_t, other.StackPointer) }
+		{}
 
-		StackAllocator& operator=(const StackAllocator&) noexcept = delete;
-		StackAllocator& operator=(StackAllocator&&) noexcept = delete;
+		StackAllocator& operator=(const StackAllocator& other) noexcept
+		{
+			Buffer = other.Buffer;
+			StackPointer = other.StackPointer;
+
+			return *this;
+		}
+		StackAllocator& operator=(StackAllocator&& other) noexcept
+		{
+			Buffer = __MOVE(char*, other.Buffer);
+			StackPointer = __MOVE(uint64_t, other.StackPointer);
+
+			return *this;
+		}
 #pragma endregion
 
 		template<typename T>
@@ -32,7 +53,7 @@ namespace Integrian3D::Memory
 			if (memRequirement <= N - StackPointer)
 			{
 				T* data = reinterpret_cast<T*>(&Buffer[StackPointer]);
-				
+
 				const uint64_t alignment{ AlignForward(data, align) };
 				data += alignment;
 
@@ -54,6 +75,21 @@ namespace Integrian3D::Memory
 			if (IsPointerInBuffer(p))
 			{
 				StackPointer -= n * sizeof(T);
+			}
+		}
+
+		template<typename T, typename ... Ts>
+		__INLINE __NODISCARD constexpr T* Construct(T* p, Ts&&... args) const
+		{
+			return new (p) T{ __FORWARD(Ts, args)... };
+		}
+
+		template<typename T>
+		__INLINE constexpr void Destroy(T* p) const
+		{
+			if (!std::is_trivially_destructible_v<T>)
+			{
+				p->~T();
 			}
 		}
 

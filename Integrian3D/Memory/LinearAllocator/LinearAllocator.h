@@ -8,6 +8,9 @@ namespace Integrian3D::Memory
 	class LinearAllocator final
 	{
 	public:
+		using CanMove = std::true_type;
+		using CanCopy = std::true_type;
+
 		LinearAllocator();
 		explicit LinearAllocator(const uint64_t nrOfBytes);
 		~LinearAllocator();
