@@ -3,8 +3,6 @@
 #include "../../EngineConstants.h"
 #include "../MemoryTracker/MemoryTracker.h"
 
-#include <iostream>
-
 void* operator new(size_t n)
 {
 	using namespace Integrian3D;
