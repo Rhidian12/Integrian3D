@@ -102,7 +102,7 @@ namespace Integrian3D
 		{
 			const uint64_t cap{ other.Capacity() };
 
-			Head = static_cast<T*>(malloc(cap * SizeOfType));
+			Head = new T[cap]{};
 			Tail = Head + cap;
 
 			const uint64_t size{ other.Size() };
@@ -134,7 +134,7 @@ namespace Integrian3D
 
 			const uint64_t cap{ other.Capacity() };
 
-			Head = static_cast<T*>(malloc(cap * SizeOfType));
+			Head = new T[cap]{};
 			Tail = Head + cap;
 
 			const uint64_t size{ other.Size() };
@@ -685,7 +685,7 @@ namespace Integrian3D
 			T* oldHead{ Head };
 			T* oldTail{ Tail };
 
-			Head = static_cast<T*>(malloc(SizeOfType * newCap));
+			Head = new T[newCap]{};
 			Tail = Head + newCap;
 
 			for (uint64_t i{}; i < oldSize; ++i)
@@ -712,7 +712,7 @@ namespace Integrian3D
 			T* oldHead{ Head };
 			T* oldTail{ Tail };
 
-			Head = static_cast<T*>(malloc(SizeOfType * newCap));
+			Head = new T[newCap]{};
 			Tail = Head + newCap;
 
 			for (uint64_t i{}; i < oldSize; ++i)
@@ -747,7 +747,7 @@ namespace Integrian3D
 
 		constexpr void Release(T* head) const
 		{
-			free(head);
+			delete[] head;
 		}
 
 		__NODISCARD constexpr uint64_t CalculateNewCapacity(const uint64_t min) const
