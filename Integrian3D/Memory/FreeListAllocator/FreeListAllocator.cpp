@@ -11,7 +11,7 @@ namespace Integrian3D::Memory
 		, m_Size{}
 		, m_Capacity{ size }
 	{
-		m_pStart = malloc(size);
+		m_pStart = new char[size] {};
 		m_pFreeBlocks = static_cast<Block*>(m_pStart);
 
 		m_pFreeBlocks->pNext = nullptr;
@@ -20,7 +20,7 @@ namespace Integrian3D::Memory
 
 	FreeListAllocator::~FreeListAllocator()
 	{
-		free(m_pStart);
+		delete[] m_pStart;
 	}
 
 	FreeListAllocator::FreeListAllocator(const FreeListAllocator& other) noexcept
@@ -29,7 +29,7 @@ namespace Integrian3D::Memory
 		, m_Size{ other.m_Size }
 		, m_Capacity{ other.m_Capacity }
 	{
-		m_pStart = malloc(m_Size);
+		m_pStart = new char[m_Size] {};
 		m_pFreeBlocks = static_cast<Block*>(m_pStart);
 
 		m_pFreeBlocks->pNext = nullptr;
@@ -52,13 +52,13 @@ namespace Integrian3D::Memory
 	{
 		if (m_pStart)
 		{
-			free(m_pStart);
+			delete[] m_pStart;
 		}
 
 		m_Size = other.m_Size;
 		m_Capacity = other.m_Capacity;
 
-		m_pStart = malloc(m_Size);
+		m_pStart = new char[m_Size] {};
 		m_pFreeBlocks = static_cast<Block*>(m_pStart);
 
 		m_pFreeBlocks->pNext = nullptr;
@@ -71,7 +71,7 @@ namespace Integrian3D::Memory
 	{
 		if (m_pStart)
 		{
-			free(m_pStart);
+			delete[] m_pStart;
 		}
 
 		m_pStart = __MOVE(void*, other.m_pStart);
