@@ -110,7 +110,7 @@ int main()
 #include "Libraries/Catch2/catch.hpp"
 #include <vld.h>
 
-// #define ARRAY_TESTS
+#define ARRAY_TESTS
 #ifdef ARRAY_TESTS
 #include "DebugUtility/DebugUtility.h"
 #include "Array/Array.h"
@@ -599,7 +599,7 @@ TEST_CASE("Testing Basic Array of integers")
 }
 #endif
 
-// #define STACK_ALLOCATOR_TESTS
+#define STACK_ALLOCATOR_TESTS
 #ifdef STACK_ALLOCATOR_TESTS
 #include "Memory/StackAllocator/StackAllocator.h"
 

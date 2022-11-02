@@ -186,6 +186,7 @@
     <ClCompile Include="Components\CameraComponent\CameraComponent.cpp" />
     <ClCompile Include="Core\Core.cpp" />
     <ClCompile Include="FileReader\FileReader.cpp" />
+    <ClCompile Include="Memory\MemoryTracker\MemoryTracker.cpp" />
     <ClCompile Include="Memory\FreeListAllocator\FreeListAllocator.cpp" />
     <ClCompile Include="InputManager\InputManager.cpp" />
     <ClCompile Include="Libraries\glad\src\glad.c" />
@@ -195,6 +196,7 @@
     <ClCompile Include="Math\Math.cpp" />
     <ClCompile Include="Components\MeshComponent\MeshComponent.cpp" />
     <ClCompile Include="ECS\Registry\Registry.cpp" />
+    <ClCompile Include="Memory\New\New.cpp" />
     <ClCompile Include="Renderer\Renderer.cpp" />
     <ClCompile Include="SceneManager\SceneManager.cpp" />
     <ClCompile Include="Scene\Scene.cpp" />
@@ -218,6 +220,7 @@
     <ClInclude Include="DebugUtility\DebugUtility.h" />
     <ClInclude Include="EngineConstants.h" />
     <ClInclude Include="FileReader\FileReader.h" />
+    <ClInclude Include="Memory\MemoryTracker\MemoryTracker.h" />
     <ClInclude Include="Memory\FreeListAllocator\FreeListAllocator.h" />
     <ClInclude Include="InputManager\InputManager.h" />
     <ClInclude Include="InputManager\KeyboardInput\KeyboardInput.h" />
