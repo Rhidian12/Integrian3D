@@ -56,6 +56,7 @@ namespace Integrian3D
 	}
 #else
 #define __ASSERT(expr)
+#define __CASSERT(expr)
 #endif
 
 	/* std::move */
