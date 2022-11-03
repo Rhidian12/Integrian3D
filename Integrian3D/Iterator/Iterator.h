@@ -53,12 +53,16 @@ namespace Integrian3D
 
 		Iterator& operator+=(const uint64_t i)
 		{
+			static_assert(Tag == IteratorTag::RandomAccessIt, "Iterator::operator+=() > This operator is only available for Random Acess iterators");
+
 			pPointer += i;
 			return *this;
 		}
 
 		Iterator& operator-=(const uint64_t i)
 		{
+			static_assert(Tag == IteratorTag::RandomAccessIt, "Iterator::operator-=() > This operator is only available for Random Acess iterators");
+
 			pPointer -= i;
 			return *this;
 		}
@@ -81,21 +85,29 @@ namespace Integrian3D
 
 		Iterator operator+(const uint64_t i) const
 		{
+			static_assert(Tag == IteratorTag::RandomAccessIt, "Iterator::operator+() > This operator is only available for Random Acess iterators");
+
 			return Iterator{ pPointer + i };
 		}
 
 		Iterator operator+(const Iterator& it) const
 		{
+			static_assert(Tag == IteratorTag::RandomAccessIt, "Iterator::operator+() > This operator is only available for Random Acess iterators");
+
 			return Iterator{ pPointer + it.pPointer };
 		}
 
 		Iterator operator-(const uint64_t i) const
 		{
+			static_assert(Tag == IteratorTag::RandomAccessIt, "Iterator::operator-() > This operator is only available for Random Acess iterators");
+
 			return Iterator{ pPointer - i };
 		}
 
 		Iterator operator-(const Iterator& it) const
 		{
+			static_assert(Tag == IteratorTag::RandomAccessIt, "Iterator::operator-() > This operator is only available for Random Acess iterators");
+
 			return Iterator{ pPointer - it.pPointer };
 		}
 #pragma endregion
@@ -176,19 +188,23 @@ namespace Integrian3D
 
 		ConstIterator& operator+=(const uint64_t i)
 		{
+			static_assert(Tag == IteratorTag::RandomAccessIt, "ConstIterator::operator+=() > This operator is only available for Random Acess iterators");
+
 			pPointer += i;
 			return *this;
 		}
 
 		ConstIterator& operator-=(const uint64_t i)
 		{
+			static_assert(Tag == IteratorTag::RandomAccessIt, "ConstIterator::operator-=() > This operator is only available for Random Acess iterators");
+
 			pPointer -= i;
 			return *this;
 		}
 
 		ConstIterator operator++(int)
 		{
-			Iterator tmp = *this;
+			ConstIterator tmp = *this;
 			++(*this);
 			return tmp;
 		}
@@ -197,29 +213,37 @@ namespace Integrian3D
 		{
 			static_assert(Tag > IteratorTag::ForwardIt, "ConstIterator::operator--() > This operator is only available for Bidirectional or Random Access iterators");
 
-			Iterator tmp = *this;
+			ConstIterator tmp = *this;
 			--(*this);
 			return tmp;
 		}
 
 		ConstIterator operator+(const uint64_t i) const
 		{
-			return Iterator{ pPointer + i };
+			static_assert(Tag == IteratorTag::RandomAccessIt, "ConstIterator::operator+() > This operator is only available for Random Acess iterators");
+
+			return ConstIterator{ pPointer + i };
 		}
 
 		ConstIterator operator+(const ConstIterator& it) const
 		{
-			return Iterator{ pPointer + it.pPointer };
+			static_assert(Tag == IteratorTag::RandomAccessIt, "ConstIterator::operator+() > This operator is only available for Random Acess iterators");
+
+			return ConstIterator{ pPointer + it.pPointer };
 		}
 
 		ConstIterator operator-(const uint64_t i) const
 		{
-			return Iterator{ pPointer - i };
+			static_assert(Tag == IteratorTag::RandomAccessIt, "ConstIterator::operator-() > This operator is only available for Random Acess iterators");
+
+			return ConstIterator{ pPointer - i };
 		}
 
 		ConstIterator operator-(const ConstIterator& it) const
 		{
-			return Iterator{ pPointer - it.pPointer };
+			static_assert(Tag == IteratorTag::RandomAccessIt, "ConstIterator::operator-() > This operator is only available for Random Acess iterators");
+
+			return ConstIterator{ pPointer - it.pPointer };
 		}
 #pragma endregion
 
