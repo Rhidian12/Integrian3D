@@ -35,7 +35,11 @@ namespace Integrian3D::Memory
 		: Start{ __MOVE(void*, other.Start) }
 		, End{ __MOVE(void*, other.End) }
 		, Current{ __MOVE(void*, other.Current) }
-	{}
+	{
+		other.Start = nullptr;
+		other.End = nullptr;
+		other.Current = nullptr;
+	}
 
 	LinearAllocator& LinearAllocator::operator=(const LinearAllocator& other) noexcept
 	{
@@ -60,6 +64,10 @@ namespace Integrian3D::Memory
 		Start = __MOVE(void*, other.Start);
 		End = __MOVE(void*, other.End);
 		Current = __MOVE(void*, other.Current);
+
+		other.Start = nullptr;
+		other.End = nullptr;
+		other.Current = nullptr;
 
 		return *this;
 	}

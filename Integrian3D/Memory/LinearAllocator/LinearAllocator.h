@@ -42,6 +42,9 @@ namespace Integrian3D::Memory
 			return static_cast<T*>(data);
 		}
 
+		template<typename T>
+		constexpr void Deallocate(T*) {}
+
 		__NODISCARD constexpr uint64_t Capacity() const { return static_cast<char*>(End) - static_cast<char*>(Start); }
 		__NODISCARD constexpr uint64_t Size() const { return static_cast<char*>(Current) - static_cast<char*>(Start); }
 		__NODISCARD constexpr uint64_t MaxSize() const { return Capacity(); }
