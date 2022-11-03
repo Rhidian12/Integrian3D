@@ -34,7 +34,6 @@ namespace Integrian3D
 		return Capacity_P{ i };
 	}
 
-	/* [TODO]: Add allocator */
 	template<typename T, typename Alloc>
 	class Array
 	{
@@ -122,7 +121,6 @@ namespace Integrian3D
 			const uint64_t cap{ other.Capacity() };
 
 			Head = m_Allocator.Allocate<T>(cap);
-			// Head = new T[cap]{};
 			Tail = Head + cap;
 
 			const uint64_t size{ other.Size() };
@@ -158,7 +156,6 @@ namespace Integrian3D
 			const uint64_t cap{ other.Capacity() };
 
 			Head = m_Allocator.Allocate<T>(cap);
-			// Head = new T[cap]{};
 			Tail = Head + cap;
 
 			const uint64_t size{ other.Size() };
@@ -709,7 +706,6 @@ namespace Integrian3D
 			T* oldTail{ Tail };
 
 			Head = m_Allocator.Allocate<T>(newCap);
-			// Head = new T[newCap]{};
 			Tail = Head + newCap;
 
 			for (uint64_t i{}; i < oldSize; ++i)
@@ -737,7 +733,6 @@ namespace Integrian3D
 			T* oldTail{ Tail };
 
 			Head = m_Allocator.Allocate<T>(newCap);
-			// Head = new T[newCap]{};
 			Tail = Head + newCap;
 
 			for (uint64_t i{}; i < oldSize; ++i)
@@ -773,7 +768,6 @@ namespace Integrian3D
 		constexpr void Release(T* head)
 		{
 			m_Allocator.Deallocate(head);
-			// delete[] head;
 		}
 
 		__NODISCARD constexpr uint64_t CalculateNewCapacity(const uint64_t min) const
