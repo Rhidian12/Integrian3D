@@ -46,15 +46,15 @@ namespace Integrian3D
 
 #pragma region Ctors and Dtor
 		constexpr Array(const Alloc& alloc = Alloc{})
-			: Head{}
-			, Tail{}
-			, CurrentEnd{}
+			: m_pHead{}
+			, m_pTail{}
+			, m_pCurrentEnd{}
 			, m_Allocator{ alloc }
 		{}
 		constexpr Array(const Size_P size, const Alloc& alloc = Alloc{})
-			: Head{}
-			, Tail{}
-			, CurrentEnd{}
+			: m_pHead{}
+			, m_pTail{}
+			, m_pCurrentEnd{}
 			, m_Allocator{ alloc }
 		{
 			for (uint64_t i{}; i < size._Size; ++i)
@@ -63,9 +63,9 @@ namespace Integrian3D
 			}
 		}
 		constexpr Array(const Size_P size, const T& val, const Alloc& alloc = Alloc{})
-			: Head{}
-			, Tail{}
-			, CurrentEnd{}
+			: m_pHead{}
+			, m_pTail{}
+			, m_pCurrentEnd{}
 			, m_Allocator{ alloc }
 		{
 			for (uint64_t i{}; i < size._Size; ++i)
@@ -74,17 +74,17 @@ namespace Integrian3D
 			}
 		}
 		constexpr Array(const Capacity_P cap, const Alloc& alloc = Alloc{})
-			: Head{}
-			, Tail{}
-			, CurrentEnd{}
+			: m_pHead{}
+			, m_pTail{}
+			, m_pCurrentEnd{}
 			, m_Allocator{ alloc }
 		{
 			Reserve(cap._Capacity);
 		}
 		constexpr Array(std::initializer_list<T> init, const Alloc& alloc = Alloc{})
-			: Head{}
-			, Tail{}
-			, CurrentEnd{}
+			: m_pHead{}
+			, m_pTail{}
+			, m_pCurrentEnd{}
 			, m_Allocator{ alloc }
 		{
 			for (const T& elem : init)
@@ -93,9 +93,9 @@ namespace Integrian3D
 			}
 		}
 		constexpr Array(It beg, It end, const Alloc& alloc = Alloc{})
-			: Head{}
-			, Tail{}
-			, CurrentEnd{}
+			: m_pHead{}
+			, m_pTail{}
+			, m_pCurrentEnd{}
 			, m_Allocator{ alloc }
 		{
 			for (; beg != end; ++beg)
@@ -106,85 +106,85 @@ namespace Integrian3D
 
 		constexpr ~Array()
 		{
-			DeleteData(Head, CurrentEnd);
-			Release(Head);
+			DeleteData(m_pHead, m_pCurrentEnd);
+			Release(m_pHead);
 		}
 #pragma endregion
 
 #pragma region Rule of 5
 		constexpr Array(const Array& other) noexcept
-			: Head{}
-			, Tail{}
-			, CurrentEnd{}
+			: m_pHead{}
+			, m_pTail{}
+			, m_pCurrentEnd{}
 			, m_Allocator{ other.m_Allocator }
 		{
 			const uint64_t cap{ other.Capacity() };
 
-			Head = m_Allocator.Allocate<T>(cap);
-			Tail = Head + cap;
+			m_pHead = m_Allocator.Allocate<T>(cap);
+			m_pTail = m_pHead + cap;
 
 			const uint64_t size{ other.Size() };
 
 			for (uint64_t i{}; i < size; ++i)
 			{
-				new (Head + i) T{ *(other.Head + i) }; // dont allow moving 
+				new (m_pHead + i) T{ *(other.m_pHead + i) }; // dont allow moving 
 			}
 
-			CurrentEnd = Head + size;
+			m_pCurrentEnd = m_pHead + size;
 		}
 		constexpr Array(Array&& other) noexcept
-			: Head{ __MOVE(T*, other.Head) }
-			, Tail{ __MOVE(T*, other.Tail) }
-			, CurrentEnd{ __MOVE(T*, other.CurrentEnd) }
+			: m_pHead{ __MOVE(T*, other.m_pHead) }
+			, m_pTail{ __MOVE(T*, other.m_pTail) }
+			, m_pCurrentEnd{ __MOVE(T*, other.m_pCurrentEnd) }
 			, m_Allocator{ __MOVE(Alloc, other.m_Allocator) }
 		{
-			other.Head = nullptr;
-			other.Tail = nullptr;
-			other.CurrentEnd = nullptr;
+			other.m_pHead = nullptr;
+			other.m_pTail = nullptr;
+			other.m_pCurrentEnd = nullptr;
 		}
 
 		constexpr Array& operator=(const Array& other) noexcept
 		{
-			if (Head)
+			if (m_pHead)
 			{
-				DeleteData(Head, CurrentEnd);
-				Release(Head);
+				DeleteData(m_pHead, m_pCurrentEnd);
+				Release(m_pHead);
 			}
 			
 			m_Allocator = other.m_Allocator;
 
 			const uint64_t cap{ other.Capacity() };
 
-			Head = m_Allocator.Allocate<T>(cap);
-			Tail = Head + cap;
+			m_pHead = m_Allocator.Allocate<T>(cap);
+			m_pTail = m_pHead + cap;
 
 			const uint64_t size{ other.Size() };
 
 			for (uint64_t i{}; i < size; ++i)
 			{
-				new (Head + i) T{ *(other.Head + i) }; // dont allow moving 
+				new (m_pHead + i) T{ *(other.m_pHead + i) }; // dont allow moving 
 			}
 
-			CurrentEnd = Head + size;
+			m_pCurrentEnd = m_pHead + size;
 
 			return *this;
 		}
 		constexpr Array& operator=(Array&& other) noexcept
 		{
-			if (Head)
+			if (m_pHead)
 			{
-				DeleteData(Head, CurrentEnd);
-				Release(Head);
+				DeleteData(m_pHead, m_pCurrentEnd);
+				Release(m_pHead);
 			}
 
-			Head = __MOVE(T*, other.Head);
-			Tail = __MOVE(T*, other.Tail);
-			CurrentEnd = __MOVE(T*, other.CurrentEnd);
+			m_pHead = __MOVE(T*, other.m_pHead);
+			m_pTail = __MOVE(T*, other.m_pTail);
+			m_pCurrentEnd = __MOVE(T*, other.m_pCurrentEnd);
 			m_Allocator = __MOVE(Alloc, other.m_Allocator);
 
-			other.Head = nullptr;
-			other.Tail = nullptr;
-			other.CurrentEnd = nullptr;
+			other.m_pHead = nullptr;
+			other.m_pTail = nullptr;
+			other.m_pCurrentEnd = nullptr;
 
 			return *this;
 		}
@@ -244,10 +244,10 @@ namespace Integrian3D
 			}
 			else
 			{
-				(Head + index)->~T();
-				MoveRange(Head + index + 1, CurrentEnd--, Head + index);
+				(m_pHead + index)->~T();
+				MoveRange(m_pHead + index + 1, m_pCurrentEnd--, m_pHead + index);
 
-				return It{ Head + index };
+				return It{ m_pHead + index };
 			}
 		}
 		constexpr It Erase(It pos)
@@ -260,7 +260,7 @@ namespace Integrian3D
 		{
 			for (uint64_t i{}; i < Size(); ++i)
 			{
-				if (*(Head + i) == val)
+				if (*(m_pHead + i) == val)
 				{
 					return Erase(i);
 					break;
@@ -296,7 +296,7 @@ namespace Integrian3D
 		{
 			__ASSERT(start < Size() && "Array::EraseRange() > Start is out of range");
 
-			EraseRange(It{ Head + start }, It{ Head + start + count });
+			EraseRange(It{ m_pHead + start }, It{ m_pHead + start + count });
 		}
 		constexpr void EraseRange(It beg, It endIt)
 		{
@@ -304,7 +304,7 @@ namespace Integrian3D
 
 			if (endIt >= end())
 			{
-				endIt = It{ CurrentEnd - 1 };
+				endIt = It{ m_pCurrentEnd - 1 };
 			}
 
 			for (; beg <= endIt; --endIt)
@@ -329,7 +329,7 @@ namespace Integrian3D
 				return;
 			}
 
-			(--CurrentEnd)->~T();
+			(--m_pCurrentEnd)->~T();
 		}
 
 		constexpr void PopFront()
@@ -339,28 +339,28 @@ namespace Integrian3D
 				return;
 			}
 
-			Head->~T();
+			m_pHead->~T();
 
-			MoveRange(Head + 1, CurrentEnd--, Head);
+			MoveRange(m_pHead + 1, m_pCurrentEnd--, m_pHead);
 		}
 
 		constexpr void Clear()
 		{
-			DeleteData(Head, CurrentEnd);
+			DeleteData(m_pHead, m_pCurrentEnd);
 
-			CurrentEnd = Head;
+			m_pCurrentEnd = m_pHead;
 		}
 
 		template<typename ... Ts>
 		constexpr T& EmplaceBack(Ts&&... args)
 		{
 			/* if we point past our allocated memory we have an issue */
-			if (!CurrentEnd || CurrentEnd >= Tail)
+			if (!m_pCurrentEnd || m_pCurrentEnd >= m_pTail)
 			{
 				Reallocate();
 			}
 
-			return *(new (CurrentEnd++) T{ __FORWARD(Ts, args)... });
+			return *(new (m_pCurrentEnd++) T{ __FORWARD(Ts, args)... });
 		}
 
 		template<typename ... Ts>
@@ -381,8 +381,8 @@ namespace Integrian3D
 			}
 			else
 			{
-				MoveRange(Head + index, CurrentEnd++ - 1, Head + index + 1);
-				return *(new (Head + index) T{ __FORWARD(Ts, args)... });
+				MoveRange(m_pHead + index, m_pCurrentEnd++ - 1, m_pHead + index + 1);
+				return *(new (m_pHead + index) T{ __FORWARD(Ts, args)... });
 			}
 		}
 
@@ -390,14 +390,14 @@ namespace Integrian3D
 		constexpr T& EmplaceFront(Ts&&... args)
 		{
 			/* if we point past our allocated memory we have an issue */
-			if (!CurrentEnd || CurrentEnd >= Tail)
+			if (!m_pCurrentEnd || m_pCurrentEnd >= m_pTail)
 			{
 				Reallocate();
 			}
 
-			MoveRange(Head, CurrentEnd++, Head + 1);
+			MoveRange(m_pHead, m_pCurrentEnd++, m_pHead + 1);
 
-			return *(new (Head) T{ __FORWARD(Ts, args)... });
+			return *(new (m_pHead) T{ __FORWARD(Ts, args)... });
 		}
 #pragma endregion
 
@@ -409,12 +409,12 @@ namespace Integrian3D
 
 		__NODISCARD constexpr uint64_t Size() const
 		{
-			return CurrentEnd - Head;
+			return m_pCurrentEnd - m_pHead;
 		}
 
 		__NODISCARD constexpr uint64_t Capacity() const
 		{
-			return Tail - Head;
+			return m_pTail - m_pHead;
 		}
 
 		__NODISCARD constexpr uint64_t MaxSize() const
@@ -433,7 +433,7 @@ namespace Integrian3D
 
 			for (uint64_t i{}; i < size; ++i)
 			{
-				if (*(Head + i) != *(other.Head + i))
+				if (*(m_pHead + i) != *(other.m_pHead + i))
 				{
 					return false;
 				}
@@ -515,7 +515,7 @@ namespace Integrian3D
 
 			for (uint64_t i{}; i < size; ++i)
 			{
-				const T* const elem{ Head + i };
+				const T* const elem{ m_pHead + i };
 
 				if (pred(*elem))
 				{
@@ -533,7 +533,7 @@ namespace Integrian3D
 
 			for (uint64_t i{}; i < size; ++i)
 			{
-				const T* const elem{ Head + i };
+				const T* const elem{ m_pHead + i };
 
 				if (pred(*elem))
 				{
@@ -550,94 +550,94 @@ namespace Integrian3D
 		{
 			__ASSERT(Size() > 0 && "Array::Front() > Array is empty");
 
-			return *Head;
+			return *m_pHead;
 		}
 		constexpr const T& Front() const
 		{
 			__ASSERT(Size() > 0 && "Array::Front() > Array is empty");
 
-			return *Head;
+			return *m_pHead;
 		}
 
 		constexpr T& Back()
 		{
 			__ASSERT(Size() > 0 && "Array::Back() > Array is empty");
 
-			return *(CurrentEnd - 1);
+			return *(m_pCurrentEnd - 1);
 		}
 		constexpr const T& Back() const
 		{
 			__ASSERT(Size() > 0 && "Array::Back() > Array is empty");
 
-			return *(CurrentEnd - 1);
+			return *(m_pCurrentEnd - 1);
 		}
 
 		constexpr T& At(const uint64_t index)
 		{
 			__ASSERT((index < Size()) && "Array::At() > Index is out of range");
 
-			return *(Head + index);
+			return *(m_pHead + index);
 		}
 		constexpr const T& At(const uint64_t index) const
 		{
 			__ASSERT((index < Size()) && "Array::At() > Index is out of range");
 
-			return *(Head + index);
+			return *(m_pHead + index);
 		}
 
 		constexpr T& operator[](const uint64_t index)
 		{
-			return *(Head + index);
+			return *(m_pHead + index);
 		}
 		constexpr const T& operator[](const uint64_t index) const
 		{
-			return *(Head + index);
+			return *(m_pHead + index);
 		}
 
 		constexpr T* const Data()
 		{
-			return Head;
+			return m_pHead;
 		}
 		constexpr const T* const Data() const
 		{
-			return Head;
+			return m_pHead;
 		}
 
 		constexpr It Find(const T& val) const
 		{
 			for (uint64_t i{}; i < Size(); ++i)
 			{
-				if (*(Head + i) == val)
+				if (*(m_pHead + i) == val)
 				{
-					return It{ Head + i };
+					return It{ m_pHead + i };
 				}
 			}
 
-			return It{ CurrentEnd };
+			return It{ m_pCurrentEnd };
 		}
 		constexpr It Find(const UnaryPred& pred) const
 		{
 			for (uint64_t i{}; i < Size(); ++i)
 			{
-				if (pred(*(Head + i)))
+				if (pred(*(m_pHead + i)))
 				{
-					return It{ Head + i };
+					return It{ m_pHead + i };
 				}
 			}
 
-			return It{ CurrentEnd };
+			return It{ m_pCurrentEnd };
 		}
 		constexpr It Find(UnaryPred&& pred) const
 		{
 			for (uint64_t i{}; i < Size(); ++i)
 			{
-				if (pred(*(Head + i)))
+				if (pred(*(m_pHead + i)))
 				{
-					return It{ Head + i };
+					return It{ m_pHead + i };
 				}
 			}
 
-			return It{ CurrentEnd };
+			return It{ m_pCurrentEnd };
 		}
 
 		constexpr Array FindAll(const T& val) const
@@ -646,9 +646,9 @@ namespace Integrian3D
 
 			for (uint64_t i{}; i < Size(); ++i)
 			{
-				if (*(Head + i) == val)
+				if (*(m_pHead + i) == val)
 				{
-					arr.EmplaceBack(*(Head + i));
+					arr.EmplaceBack(*(m_pHead + i));
 				}
 			}
 
@@ -660,9 +660,9 @@ namespace Integrian3D
 
 			for (uint64_t i{}; i < Size(); ++i)
 			{
-				if (pred(*(Head + i)))
+				if (pred(*(m_pHead + i)))
 				{
-					arr.EmplaceBack(*(Head + i));
+					arr.EmplaceBack(*(m_pHead + i));
 				}
 			}
 
@@ -674,9 +674,9 @@ namespace Integrian3D
 
 			for (uint64_t i{}; i < Size(); ++i)
 			{
-				if (pred(*(Head + i)))
+				if (pred(*(m_pHead + i)))
 				{
-					arr.EmplaceBack(*(Head + i));
+					arr.EmplaceBack(*(m_pHead + i));
 				}
 			}
 
@@ -685,14 +685,14 @@ namespace Integrian3D
 #pragma endregion
 
 #pragma region Iterators
-		constexpr It begin() { return Head; }
-		constexpr CIt begin() const { return Head; }
+		constexpr It begin() { return m_pHead; }
+		constexpr CIt begin() const { return m_pHead; }
 
-		constexpr It end() { return CurrentEnd; }
-		constexpr CIt end() const { return CurrentEnd; }
+		constexpr It end() { return m_pCurrentEnd; }
+		constexpr CIt end() const { return m_pCurrentEnd; }
 
-		constexpr CIt cbegin() const { return Head; }
-		constexpr CIt cend() const { return CurrentEnd; }
+		constexpr CIt cbegin() const { return m_pHead; }
+		constexpr CIt cend() const { return m_pCurrentEnd; }
 #pragma endregion
 
 	private:
@@ -702,25 +702,25 @@ namespace Integrian3D
 			const uint64_t oldSize{ Size() };
 			const uint64_t newCap{ CalculateNewCapacity(oldSize + 1) };
 
-			T* oldHead{ Head };
-			T* oldTail{ Tail };
+			T* oldHead{ m_pHead };
+			T* oldTail{ m_pTail };
 
-			Head = m_Allocator.Allocate<T>(newCap);
-			Tail = Head + newCap;
+			m_pHead = m_Allocator.Allocate<T>(newCap);
+			m_pTail = m_pHead + newCap;
 
 			for (uint64_t i{}; i < oldSize; ++i)
 			{
 				if constexpr (std::is_move_assignable_v<T>)
 				{
-					new (Head + i) T{ __MOVE(T, *(oldHead + i)) };
+					new (m_pHead + i) T{ __MOVE(T, *(oldHead + i)) };
 				}
 				else
 				{
-					new (Head + i) T{ *(oldHead + i) };
+					new (m_pHead + i) T{ *(oldHead + i) };
 				}
 			}
 
-			CurrentEnd = Head + oldSize;
+			m_pCurrentEnd = m_pHead + oldSize;
 
 			DeleteData(oldHead, oldTail);
 			Release(oldHead);
@@ -729,25 +729,25 @@ namespace Integrian3D
 		{
 			const uint64_t oldSize{ Size() };
 
-			T* oldHead{ Head };
-			T* oldTail{ Tail };
+			T* oldHead{ m_pHead };
+			T* oldTail{ m_pTail };
 
-			Head = m_Allocator.Allocate<T>(newCap);
-			Tail = Head + newCap;
+			m_pHead = m_Allocator.Allocate<T>(newCap);
+			m_pTail = m_pHead + newCap;
 
 			for (uint64_t i{}; i < oldSize; ++i)
 			{
 				if constexpr (std::is_move_assignable_v<T>)
 				{
-					new (Head + i) T{ __MOVE(T, *(Head + i)) };
+					new (m_pHead + i) T{ __MOVE(T, *(m_pHead + i)) };
 				}
 				else
 				{
-					new (Head + i) T{ *(Head + i) };
+					new (m_pHead + i) T{ *(m_pHead + i) };
 				}
 			}
 
-			CurrentEnd = Head + oldSize;
+			m_pCurrentEnd = m_pHead + oldSize;
 
 			DeleteData(oldHead, oldTail);
 			Release(oldHead);
@@ -810,9 +810,9 @@ namespace Integrian3D
 		}
 #pragma endregion
 
-		T* Head;
-		T* Tail;
-		T* CurrentEnd /* points PAST the last element */;
+		T* m_pHead;
+		T* m_pTail;
+		T* m_pCurrentEnd /* points PAST the last element */;
 		Alloc m_Allocator;
 	};
 
