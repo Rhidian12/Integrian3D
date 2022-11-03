@@ -245,6 +245,7 @@
     <ClInclude Include="Texture\Texture.h" />
     <ClInclude Include="Timer\Timer.h" />
     <ClInclude Include="Components\TransformComponent\TransformComponent.h" />
+    <ClInclude Include="Types\Types.h" />
     <ClInclude Include="Utils\Utils.h" />
     <ClInclude Include="ECS\View\View.h" />
     <ClInclude Include="Vertex\Vertex.h" />

@@ -209,5 +209,8 @@
     <ClInclude Include="Memory\MemoryTracker\MemoryTracker.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Types\Types.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
