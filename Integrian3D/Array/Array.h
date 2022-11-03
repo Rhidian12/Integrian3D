@@ -2,6 +2,7 @@
 
 #include "../EngineConstants.h"
 #include "../Iterator/Iterator.h"
+#include "../Memory/LinearAllocator/LinearAllocator.h"
 
 #include <functional> /* std::function */
 
@@ -9,10 +10,18 @@ namespace Integrian3D
 {
 	struct Size_P final
 	{
+		explicit Size_P(const uint64_t n)
+			: _Size{ n }
+		{}
+
 		uint64_t _Size;
 	};
 	struct Capacity_P final
 	{
+		explicit Capacity_P(const uint64_t n)
+			: _Capacity{ n }
+		{}
+
 		uint64_t _Capacity;
 	};
 
@@ -26,7 +35,7 @@ namespace Integrian3D
 	}
 
 	/* [TODO]: Add allocator */
-	template<typename T>
+	template<typename T, typename Alloc>
 	class Array
 	{
 		inline constexpr static uint32_t SizeOfType{ sizeof(T) };
@@ -37,49 +46,58 @@ namespace Integrian3D
 		using CIt = ConstIterator<T, IteratorTag::RandomAccessIt>;
 
 #pragma region Ctors and Dtor
-		constexpr Array() = default;
-		/* [TODO]: add allocator to ctors */
-		constexpr Array(const Size_P size)
+		constexpr Array(const Alloc& alloc = Alloc{})
 			: Head{}
 			, Tail{}
 			, CurrentEnd{}
+			, m_Allocator{ alloc }
+		{}
+		constexpr Array(const Size_P size, const Alloc& alloc = Alloc{})
+			: Head{}
+			, Tail{}
+			, CurrentEnd{}
+			, m_Allocator{ alloc }
 		{
 			for (uint64_t i{}; i < size._Size; ++i)
 			{
 				EmplaceBack(T{});
 			}
 		}
-		constexpr Array(const Size_P size, const T& val)
+		constexpr Array(const Size_P size, const T& val, const Alloc& alloc = Alloc{})
 			: Head{}
 			, Tail{}
 			, CurrentEnd{}
+			, m_Allocator{ alloc }
 		{
 			for (uint64_t i{}; i < size._Size; ++i)
 			{
 				EmplaceBack(val);
 			}
 		}
-		constexpr Array(const Capacity_P cap)
+		constexpr Array(const Capacity_P cap, const Alloc& alloc = Alloc{})
 			: Head{}
 			, Tail{}
 			, CurrentEnd{}
+			, m_Allocator{ alloc }
 		{
 			Reserve(cap._Capacity);
 		}
-		constexpr Array(std::initializer_list<T> init)
+		constexpr Array(std::initializer_list<T> init, const Alloc& alloc = Alloc{})
 			: Head{}
 			, Tail{}
 			, CurrentEnd{}
+			, m_Allocator{ alloc }
 		{
 			for (const T& elem : init)
 			{
 				EmplaceBack(elem);
 			}
 		}
-		constexpr Array(It beg, It end)
+		constexpr Array(It beg, It end, const Alloc& alloc = Alloc{})
 			: Head{}
 			, Tail{}
 			, CurrentEnd{}
+			, m_Allocator{ alloc }
 		{
 			for (; beg != end; ++beg)
 			{
@@ -99,10 +117,12 @@ namespace Integrian3D
 			: Head{}
 			, Tail{}
 			, CurrentEnd{}
+			, m_Allocator{ other.m_Allocator }
 		{
 			const uint64_t cap{ other.Capacity() };
 
-			Head = new T[cap]{};
+			Head = m_Allocator.Allocate<T>(cap);
+			// Head = new T[cap]{};
 			Tail = Head + cap;
 
 			const uint64_t size{ other.Size() };
@@ -118,6 +138,7 @@ namespace Integrian3D
 			: Head{ __MOVE(T*, other.Head) }
 			, Tail{ __MOVE(T*, other.Tail) }
 			, CurrentEnd{ __MOVE(T*, other.CurrentEnd) }
+			, m_Allocator{ __MOVE(Alloc, other.m_Allocator) }
 		{
 			other.Head = nullptr;
 			other.Tail = nullptr;
@@ -131,10 +152,13 @@ namespace Integrian3D
 				DeleteData(Head, CurrentEnd);
 				Release(Head);
 			}
+			
+			m_Allocator = other.m_Allocator;
 
 			const uint64_t cap{ other.Capacity() };
 
-			Head = new T[cap]{};
+			Head = m_Allocator.Allocate<T>(cap);
+			// Head = new T[cap]{};
 			Tail = Head + cap;
 
 			const uint64_t size{ other.Size() };
@@ -159,6 +183,7 @@ namespace Integrian3D
 			Head = __MOVE(T*, other.Head);
 			Tail = __MOVE(T*, other.Tail);
 			CurrentEnd = __MOVE(T*, other.CurrentEnd);
+			m_Allocator = __MOVE(Alloc, other.m_Allocator);
 
 			other.Head = nullptr;
 			other.Tail = nullptr;
@@ -489,8 +514,7 @@ namespace Integrian3D
 		{
 			const uint64_t size{ Size() };
 
-			Array arr{};
-			arr.Reserve(size); // Change this when a constructor has been added for capacity
+			Array arr{ Capacity_P{ size }, m_Allocator };
 
 			for (uint64_t i{}; i < size; ++i)
 			{
@@ -508,8 +532,7 @@ namespace Integrian3D
 		{
 			const uint64_t size{ Size() };
 
-			Array arr{};
-			arr.Reserve(size); // Change this when a constructor has been added for capacity
+			Array arr{ Capacity_P{ size }, m_Allocator };
 
 			for (uint64_t i{}; i < size; ++i)
 			{
@@ -685,7 +708,8 @@ namespace Integrian3D
 			T* oldHead{ Head };
 			T* oldTail{ Tail };
 
-			Head = new T[newCap]{};
+			Head = m_Allocator.Allocate<T>(newCap);
+			// Head = new T[newCap]{};
 			Tail = Head + newCap;
 
 			for (uint64_t i{}; i < oldSize; ++i)
@@ -712,7 +736,8 @@ namespace Integrian3D
 			T* oldHead{ Head };
 			T* oldTail{ Tail };
 
-			Head = new T[newCap]{};
+			Head = m_Allocator.Allocate<T>(newCap);
+			// Head = new T[newCap]{};
 			Tail = Head + newCap;
 
 			for (uint64_t i{}; i < oldSize; ++i)
@@ -745,9 +770,10 @@ namespace Integrian3D
 			}
 		}
 
-		constexpr void Release(T* head) const
+		constexpr void Release(T* head)
 		{
-			delete[] head;
+			m_Allocator.Deallocate(head);
+			// delete[] head;
 		}
 
 		__NODISCARD constexpr uint64_t CalculateNewCapacity(const uint64_t min) const
@@ -793,5 +819,9 @@ namespace Integrian3D
 		T* Head;
 		T* Tail;
 		T* CurrentEnd /* points PAST the last element */;
+		Alloc m_Allocator;
 	};
+
+	template<typename T>
+	using TArray = Array<T, Memory::LinearAllocator>;
 }

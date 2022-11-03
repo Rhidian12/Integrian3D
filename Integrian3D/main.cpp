@@ -118,7 +118,7 @@ TEST_CASE("Testing Basic Array of integers")
 {
 	using namespace Integrian3D;
 
-	Array<int> arr{};
+	TArray<int> arr{};
 
 	REQUIRE(arr.Capacity() == 0);
 	REQUIRE(arr.Size() == 0);
@@ -249,7 +249,7 @@ TEST_CASE("Testing Basic Array of integers")
 			}
 		};
 
-		Array<Special> specialArr{};
+		TArray<Special> specialArr{};
 
 		for (int i{}; i < nrOfElements; ++i)
 		{
@@ -266,7 +266,7 @@ TEST_CASE("Testing Basic Array of integers")
 			arr.Add(i);
 		}
 
-		Array<int> newArr{ arr };
+		TArray<int> newArr{ arr };
 
 		REQUIRE(newArr.Size() == arr.Size());
 		REQUIRE(newArr.Capacity() == arr.Capacity());
@@ -285,7 +285,7 @@ TEST_CASE("Testing Basic Array of integers")
 			arr.Add(i);
 		}
 
-		Array<int> newArr = arr;
+		TArray<int> newArr = arr;
 
 		REQUIRE(newArr.Size() == arr.Size());
 		REQUIRE(newArr.Capacity() == arr.Capacity());
@@ -304,7 +304,7 @@ TEST_CASE("Testing Basic Array of integers")
 			arr.Add(i);
 		}
 
-		Array<int> newArr{ __MOVE(Array<int>, arr) };
+		TArray<int> newArr{ __MOVE(TArray<int>, arr) };
 
 		REQUIRE(arr.Size() == 0);
 		REQUIRE(arr.Capacity() == 0);
@@ -324,7 +324,7 @@ TEST_CASE("Testing Basic Array of integers")
 			arr.Add(i);
 		}
 
-		Array<int> newArr = __MOVE(Array<int>, arr);
+		TArray<int> newArr = __MOVE(TArray<int>, arr);
 
 		REQUIRE(arr.Size() == 0);
 		REQUIRE(arr.Capacity() == 0);
@@ -344,7 +344,7 @@ TEST_CASE("Testing Basic Array of integers")
 			arr.Add(i);
 		}
 
-		Array<int> newArr{ arr };
+		TArray<int> newArr{ arr };
 		REQUIRE(arr == newArr);
 
 		newArr.Pop();
@@ -364,7 +364,7 @@ TEST_CASE("Testing Basic Array of integers")
 			arr.Add(i);
 		}
 
-		Array<int> newArr{ arr.Select([](const int& a)->bool
+		TArray<int> newArr{ arr.Select([](const int& a)->bool
 			{
 				return a > 5;
 			}) };
@@ -377,7 +377,7 @@ TEST_CASE("Testing Basic Array of integers")
 
 	SECTION("Create a vector with a start size")
 	{
-		Array<int> newArr{ 10_size, 15 };
+		TArray<int> newArr{ 10_size, 15 };
 
 		REQUIRE(newArr.Size() == 10);
 		REQUIRE(newArr.Capacity() >= 10);
@@ -390,7 +390,7 @@ TEST_CASE("Testing Basic Array of integers")
 
 	SECTION("Create a vector with a start capacity")
 	{
-		Array<int> newArr{ 10_capacity };
+		TArray<int> newArr{ 10_capacity };
 
 		REQUIRE(newArr.Size() == 0);
 		REQUIRE(newArr.Capacity() == 10);
@@ -426,7 +426,7 @@ TEST_CASE("Testing Basic Array of integers")
 			arr.Add(i);
 		}
 
-		Array<int> newArr{ arr.begin(), arr.end() };
+		TArray<int> newArr{ arr.begin(), arr.end() };
 
 		REQUIRE(newArr.Size() == arr.Size());
 
@@ -446,7 +446,7 @@ TEST_CASE("Testing Basic Array of integers")
 		REQUIRE(arr.At(0) == 0);
 		REQUIRE(arr.At(5) == 5);
 
-		Array<int> newArr{};
+		TArray<int> newArr{};
 
 		newArr.AddRange(arr.begin(), arr.Find(4));
 
@@ -478,7 +478,7 @@ TEST_CASE("Testing Basic Array of integers")
 			arr.Add(i);
 		}
 
-		Array<int>::It it{ arr.Find(5) };
+		TArray<int>::It it{ arr.Find(5) };
 
 		REQUIRE(it != arr.end());
 
@@ -505,7 +505,7 @@ TEST_CASE("Testing Basic Array of integers")
 			arr.Add(i);
 		}
 
-		Array<int> newArr{ arr.FindAll(5) };
+		TArray<int> newArr{ arr.FindAll(5) };
 
 		REQUIRE(newArr.Size() == 5);
 
@@ -702,6 +702,6 @@ TEST_CASE("Testing the Free List Allocator")
 	alloc.Deallocate(test);
 
 	REQUIRE(alloc.Size() == 1);
-}
+	}
 #endif
 #endif
