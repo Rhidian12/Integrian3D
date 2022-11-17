@@ -1,4 +1,6 @@
-// #define ENGINE
+#define ENGINE
+// #define TESTS
+// #define BENCHMARKS
 #ifdef ENGINE
 #include "EngineConstants.h"
 #include "Core/Core.h"
@@ -8,10 +10,15 @@
 #include "TextureManager/TextureManager.h"
 #include "Components/TransformComponent/TransformComponent.h"
 #include "Timer/Timer.h"
+#include "Memory/Allocator/Allocator.h"
+#include "Memory/LinearAllocator/LinearAllocator.h"
 
 int main()
 {
 	using namespace Integrian3D;
+	using namespace Integrian3D::Memory;
+
+	Allocator<LinearAllocator> test;
 
 	Core& core{ Core::CreateCore(1080,720) };
 
@@ -105,12 +112,12 @@ int main()
 
 	core.Run();
 }
-#else
+#elif defined TESTS
 #define CATCH_CONFIG_MAIN
 #include "Libraries/Catch2/catch.hpp"
 #include <vld.h>
 
-#define ARRAY_TESTS
+//#define ARRAY_TESTS
 #ifdef ARRAY_TESTS
 #include "DebugUtility/DebugUtility.h"
 #include "Array/Array.h"
@@ -599,7 +606,7 @@ TEST_CASE("Testing Basic Array of integers")
 }
 #endif
 
-#define STACK_ALLOCATOR_TESTS
+//#define STACK_ALLOCATOR_TESTS
 #ifdef STACK_ALLOCATOR_TESTS
 #include "Memory/StackAllocator/StackAllocator.h"
 
@@ -644,7 +651,7 @@ TEST_CASE("Testing the stack allocator")
 }
 #endif
 
-#define LINEAR_ALLOCATOR_TESTS
+//#define LINEAR_ALLOCATOR_TESTS
 #ifdef LINEAR_ALLOCATOR_TESTS
 #include "Memory/LinearAllocator/LinearAllocator.h"
 
@@ -683,25 +690,151 @@ TEST_CASE("Testing the Free List Allocator")
 {
 	using namespace Integrian3D::Memory;
 
-	FreeListAllocator alloc{};
+	SECTION("Basic functionality")
+	{
+		FreeListAllocator alloc{};
 
-	REQUIRE(alloc.Size() == 0);
-	REQUIRE(alloc.Capacity() >= 0);
-	REQUIRE(alloc.Data() != nullptr);
+		REQUIRE(alloc.Size() == 0);
+		REQUIRE(alloc.Capacity() >= 0);
+		REQUIRE(alloc.Data() != nullptr);
 
-	int* test{ alloc.Allocate<int>(1) };
+		int* test{ alloc.Allocate<int>(1) };
 
-	REQUIRE(test != nullptr);
-	REQUIRE(alloc.Size() == 1);
+		REQUIRE(test != nullptr);
+		REQUIRE(alloc.Size() == 1);
 
-	test = alloc.Allocate<int>(100);
+		test = alloc.Allocate<int>(100);
 
-	REQUIRE(test != nullptr);
-	REQUIRE(alloc.Size() == 2);
+		REQUIRE(test != nullptr);
+		REQUIRE(alloc.Size() == 2);
 
-	alloc.Deallocate(test);
+		alloc.Deallocate(test);
 
-	REQUIRE(alloc.Size() == 1);
+		REQUIRE(alloc.Size() == 1);
+	}
+
+	SECTION("Testing reallocation")
+	{
+		FreeListAllocator alloc{ 40 };
+
+		REQUIRE(alloc.Capacity() == 40);
+		REQUIRE(alloc.Size() == 0);
+
+		int* test = alloc.Allocate<int>(1); // should be fine
+
+		REQUIRE(test != nullptr);
+		REQUIRE(alloc.Size() == 1);
+
+		int* test2 = alloc.Allocate<int>(1); // should fire a reallocation
+		
+		REQUIRE(test2 != nullptr);
+		REQUIRE(alloc.Size() == 2);
+		REQUIRE(alloc.Capacity() == 77); // hardcoded w/e i didnt ask
+
+		alloc.Deallocate(test2);
+		test2 = nullptr;
+
+		REQUIRE(alloc.Size() == 1);
+
+		test2 = alloc.Allocate<int>(1);
+
+		REQUIRE(test2 != nullptr);
+		REQUIRE(alloc.Size() == 2);
+		REQUIRE(alloc.Capacity() == 77); // hardcoded w/e i didnt ask
+
+		alloc.Deallocate(test);
+		test = nullptr;
+
+		REQUIRE(alloc.Size() == 1);
+
+		test = alloc.Allocate<int>(1);
+		REQUIRE(test != nullptr);
+		REQUIRE(alloc.Size() == 2);
+		REQUIRE(alloc.Capacity() == 77); // hardcoded w/e i didnt ask
+	}
+}
+#endif
+#elif defined BENCHMARKS
+#include <chrono>
+#include <numeric>
+#include <deque>
+#include <iostream>
+
+template<typename Fn>
+double Benchmark(Fn&& fn)
+{
+	using Clock = std::chrono::high_resolution_clock;
+
+	Clock::time_point t1{ Clock::now() };
+
+	fn();
+
+	Clock::time_point t2{ Clock::now() };
+
+	return std::chrono::duration<double>{t2 - t1}.count();
+}
+
+double GetAverage(const std::deque<double>& arr)
+{
+	return std::accumulate(arr.cbegin(), arr.cend(), 0.0);
+}
+
+#define ARRAY_BENCHMARKS
+#ifdef ARRAY_BENCHMARKS
+#include "Array/Array.h"
+#include <deque>
+
+int main()
+{
+	using namespace Integrian3D;
+	using namespace Memory;
+
+	constexpr uint64_t iterations{ 100'000u };
+	std::deque<double> arrTimes{};
+	std::deque<double> vectorTimes{};
+
+	constexpr uint64_t amountOfPushbacks{ 1000u };
+
+	for (uint64_t i{}; i < iterations; ++i)
+	{
+		arrTimes.push_back(Benchmark([amountOfPushbacks]()->void
+			{
+				LinearAllocator alloc{ sizeof(uint64_t) * amountOfPushbacks };
+				Array<uint64_t, LinearAllocator> arr{ alloc };
+				for (uint64_t i{}; i < amountOfPushbacks; ++i)
+				{
+					arr.Add(i);
+				}
+			}));
+
+		vectorTimes.push_back(Benchmark([amountOfPushbacks]()->void
+			{
+				std::vector<uint64_t> vec{};
+				for (uint64_t i{}; i < amountOfPushbacks; ++i)
+				{
+					vec.push_back(i);
+				}
+			}));
+	}
+
+	for (uint64_t i{}; i < iterations / 10u; ++i)
+	{
+		arrTimes.pop_back();
+		arrTimes.pop_front();
+
+		vectorTimes.pop_back();
+		vectorTimes.pop_front();
+	}
+
+#ifdef _DEBUG
+	std::cout << "Mode: Debug\n";
+#else
+	std::cout << "Mode: Release\n";
+#endif
+	std::cout << "Amount of iterations: " << iterations << "\n";
+	std::cout << "Amount of push_backs: " << amountOfPushbacks << "\n";
+	std::cout << "Array time: " << GetAverage(arrTimes) << "\n";
+	std::cout << "Array time: " << GetAverage(vectorTimes) << "\n";
 	}
 #endif
 #endif

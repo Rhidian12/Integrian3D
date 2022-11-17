@@ -212,5 +212,11 @@
     <ClInclude Include="Types\Types.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Memory\Allocator\Allocator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory\AllocatorTraits\AllocatorTraits.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

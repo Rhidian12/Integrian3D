@@ -220,6 +220,8 @@
     <ClInclude Include="DebugUtility\DebugUtility.h" />
     <ClInclude Include="EngineConstants.h" />
     <ClInclude Include="FileReader\FileReader.h" />
+    <ClInclude Include="Memory\AllocatorTraits\AllocatorTraits.h" />
+    <ClInclude Include="Memory\Allocator\Allocator.h" />
     <ClInclude Include="Memory\MemoryTracker\MemoryTracker.h" />
     <ClInclude Include="Memory\FreeListAllocator\FreeListAllocator.h" />
     <ClInclude Include="InputManager\InputManager.h" />

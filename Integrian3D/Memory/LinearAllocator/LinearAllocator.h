@@ -28,16 +28,18 @@ namespace Integrian3D::Memory
 		{
 			__ASSERT(nrOfElements != 0 && "LinearAllocator::Allocate() > Cannot allocate 0 elements");
 
-			__ASSERT(static_cast<T*>(Current) < End && "LinearAllocator::Allocate() > Ran out of memory");
+			const uint64_t alignment{ AlignForward(Current, align) };
+
+			if (static_cast<char*>(Current) + nrOfElements * sizeof(T) + alignment >= End)
+			{
+				Reallocate<T>();
+			}
 
 			T* data{ static_cast<T*>(Current) };
 
-			const uint64_t alignment{ AlignForward(data, align) };
 			data += alignment;
 
 			Current = static_cast<char*>(Current) + nrOfElements * sizeof(T) + alignment;
-
-			__ASSERT(static_cast<T*>(Current) <= End && "LinearAllocator::Allocate() > Ran out of memory");
 
 			return static_cast<T*>(data);
 		}
@@ -47,7 +49,7 @@ namespace Integrian3D::Memory
 
 		__NODISCARD constexpr uint64_t Capacity() const { return static_cast<char*>(End) - static_cast<char*>(Start); }
 		__NODISCARD constexpr uint64_t Size() const { return static_cast<char*>(Current) - static_cast<char*>(Start); }
-		__NODISCARD constexpr uint64_t MaxSize() const { return Capacity(); }
+		__NODISCARD constexpr uint64_t MaxSize() const { return std::numeric_limits<uint64_t>::max(); }
 		__NODISCARD constexpr const void* Data() const { return Start; }
 
 		__NODISCARD constexpr bool operator==(const LinearAllocator& other) const
@@ -60,6 +62,44 @@ namespace Integrian3D::Memory
 		}
 
 	private:
+		template<typename T>
+		constexpr void Reallocate()
+		{
+			const uint64_t size{ Size() };
+			const uint64_t newCap{ CalculateNewCapacity(size + 1 + sizeof(T)) };
+
+			void* pData = new char[newCap] {};
+
+			memcpy(pData, Start, size);
+
+			delete[] Start;
+
+			Start = pData;
+			End = static_cast<char*>(pData) + newCap;
+			Current = static_cast<char*>(pData) + size;
+		}
+
+		__NODISCARD constexpr uint64_t CalculateNewCapacity(const uint64_t min) const
+		{
+			const uint64_t oldCap{ Capacity() };
+			const uint64_t maxCap{ MaxSize() };
+
+			if (oldCap > maxCap - oldCap / 2u)
+			{
+				return maxCap;
+			}
+
+			const uint64_t newCap{ oldCap + oldCap / 2u };
+
+			// If our growth is insufficient, return just the bare minimum
+			if (newCap < min)
+			{
+				return min;
+			}
+
+			return newCap;
+		}
+
 		void* Start;
 		void* Current;
 		void* End; /* points past allocated memory */
