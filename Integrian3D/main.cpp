@@ -1,5 +1,5 @@
-#define ENGINE
-// #define TESTS
+// #define ENGINE
+#define TESTS
 // #define BENCHMARKS
 #ifdef ENGINE
 #include "EngineConstants.h"
@@ -17,8 +17,6 @@ int main()
 {
 	using namespace Integrian3D;
 	using namespace Integrian3D::Memory;
-
-	Allocator<LinearAllocator> test;
 
 	Core& core{ Core::CreateCore(1080,720) };
 
@@ -116,6 +114,39 @@ int main()
 #define CATCH_CONFIG_MAIN
 #include "Libraries/Catch2/catch.hpp"
 #include <vld.h>
+
+#define ALLOCATOR_TESTS
+#ifdef ALLOCATOR_TESTS
+#include "Memory/Allocator/Allocator.h"
+#include "Memory/LinearAllocator/LinearAllocator.h"
+
+TEST_CASE("Testing the Allocator Interface")
+{
+	using namespace Integrian3D::Memory;
+
+	LinearAllocator alloc{ 4 };
+	Allocator<LinearAllocator> allocInterface{ alloc };
+
+	auto a = allocInterface.Allocate<int>(1);
+	*a = 5;
+	REQUIRE(*a == 5);
+
+	auto b = allocInterface.Allocate<int>(1);
+	*b = 15;
+	REQUIRE(*a == 5);
+	REQUIRE(*b == 15);
+
+	auto c = allocInterface.Allocate<int>(50);
+	REQUIRE(*a == 5);
+	REQUIRE(*b == 15);
+
+	auto d = allocInterface.Allocate<int>(1);
+	*d = 25;
+	REQUIRE(*a == 5);
+	REQUIRE(*b == 15);
+	REQUIRE(*d == 25);
+}
+#endif
 
 //#define ARRAY_TESTS
 #ifdef ARRAY_TESTS
@@ -682,7 +713,7 @@ TEST_CASE("Testing the Linear Allocator")
 }
 #endif
 
-#define FREELIST_ALLOCATOR_TESTS
+// #define FREELIST_ALLOCATOR_TESTS
 #ifdef FREELIST_ALLOCATOR_TESTS
 #include "Memory/FreeListAllocator/FreeListAllocator.h"
 

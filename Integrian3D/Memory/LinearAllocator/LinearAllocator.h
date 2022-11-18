@@ -8,9 +8,6 @@ namespace Integrian3D::Memory
 	class LinearAllocator final
 	{
 	public:
-		using CanMove = std::true_type;
-		using CanCopy = std::true_type;
-
 		LinearAllocator();
 		explicit LinearAllocator(const uint64_t nrOfBytes);
 		~LinearAllocator();
@@ -45,11 +42,18 @@ namespace Integrian3D::Memory
 		}
 
 		template<typename T>
-		constexpr void Deallocate(T*) {}
+		constexpr void Deallocate(T* const pData)
+		{
+			if (!pData)
+				return;
+
+			pData->~T();
+		}
 
 		__NODISCARD constexpr uint64_t Capacity() const { return static_cast<char*>(End) - static_cast<char*>(Start); }
 		__NODISCARD constexpr uint64_t Size() const { return static_cast<char*>(Current) - static_cast<char*>(Start); }
 		__NODISCARD constexpr uint64_t MaxSize() const { return std::numeric_limits<uint64_t>::max(); }
+		__NODISCARD constexpr void* Data() { return Start; }
 		__NODISCARD constexpr const void* Data() const { return Start; }
 
 		__NODISCARD constexpr bool operator==(const LinearAllocator& other) const
