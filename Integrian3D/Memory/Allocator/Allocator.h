@@ -14,10 +14,28 @@ namespace Integrian3D::Memory
 			, m_MemoryLocation{ memLoc }
 		{}
 
-		constexpr Handle(const Handle&) noexcept = delete;
-		constexpr Handle(Handle&&) noexcept = delete;
-		constexpr Handle& operator=(const Handle&) noexcept = delete;
-		constexpr Handle& operator=(Handle&&) noexcept = delete;
+		constexpr Handle(const Handle& other) noexcept
+			: m_Allocator{ other.m_Allocator }
+			, m_MemoryLocation{ other.m_MemoryLocation }
+		{}
+		constexpr Handle(Handle&& other) noexcept
+			: m_Allocator{ __MOVE(Alloc, other.m_Allocator) }
+			, m_MemoryLocation{ __MOVE(uint64_t, other.m_MemoryLocation) }
+		{}
+		constexpr Handle& operator=(const Handle& other) noexcept
+		{
+			m_Allocator = other.m_Allocator;
+			m_MemoryLocation = other.m_MemoryLocation;
+
+			return *this;
+		}
+		constexpr Handle& operator=(Handle&& other) noexcept
+		{
+			m_Allocator = __MOVE(Alloc, other.m_Allocator);
+			m_MemoryLocation = __MOVE(uint64_t, other.m_MemoryLocation);
+
+			return *this;
+		}
 
 		__NODISCARD __INLINE constexpr T* operator->()
 		{
@@ -96,7 +114,7 @@ namespace Integrian3D::Memory
 			m_Allocator.Allocate<U>(nrOfElements, align);
 #pragma warning ( pop )
 
-			return Handle<U, T>{ m_Allocator, m_Key++ * nrOfElements };
+			return Handle<U, T>{ m_Allocator, m_Key++* nrOfElements };
 		}
 
 		template<typename U>
@@ -107,6 +125,20 @@ namespace Integrian3D::Memory
 			m_Allocator.Deallocate(pData);
 
 			--m_Key;
+		}
+
+		__NODISCARD __INLINE constexpr uint64_t Capacity() const
+		{
+			static_assert(Traits::HasCapacity, "uint64_t T::Capacity() has not been defined");
+
+			return m_Allocator.Capacity();
+		}
+
+		__NODISCARD __INLINE constexpr uint64_t Size() const
+		{
+			static_assert(Traits::HasSize, "uint64_t T::Size() has not been defined");
+
+			return m_Allocator.Size();
 		}
 
 	private:

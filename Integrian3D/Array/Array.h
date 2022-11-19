@@ -2,7 +2,8 @@
 
 #include "../EngineConstants.h"
 #include "../Iterator/Iterator.h"
-#include "../Memory/LinearAllocator/LinearAllocator.h"
+#include "../Memory/Allocator/Allocator.h"
+#include "../Memory/FreeListAllocator/FreeListAllocator.h"
 #include "../Types/Types.h"
 
 #include <functional> /* std::function */
@@ -21,15 +22,11 @@ namespace Integrian3D
 
 #pragma region Ctors and Dtor
 		constexpr Array(const Alloc& alloc = Alloc{})
-			: m_pHead{}
-			, m_pTail{}
-			, m_pCurrentEnd{}
+			: m_Handle{ alloc, 0 }
 			, m_Allocator{ alloc }
 		{}
 		constexpr Array(const Size_P size, const Alloc& alloc = Alloc{})
-			: m_pHead{}
-			, m_pTail{}
-			, m_pCurrentEnd{}
+			: m_Handle{ alloc, 0 }
 			, m_Allocator{ alloc }
 		{
 			for (uint64_t i{}; i < size._Size; ++i)
@@ -38,9 +35,7 @@ namespace Integrian3D
 			}
 		}
 		constexpr Array(const Size_P size, const T& val, const Alloc& alloc = Alloc{})
-			: m_pHead{}
-			, m_pTail{}
-			, m_pCurrentEnd{}
+			: m_Handle{ alloc, 0 }
 			, m_Allocator{ alloc }
 		{
 			for (uint64_t i{}; i < size._Size; ++i)
@@ -49,17 +44,13 @@ namespace Integrian3D
 			}
 		}
 		constexpr Array(const Capacity_P cap, const Alloc& alloc = Alloc{})
-			: m_pHead{}
-			, m_pTail{}
-			, m_pCurrentEnd{}
+			: m_Handle{ alloc, 0 }
 			, m_Allocator{ alloc }
 		{
 			Reserve(cap._Capacity);
 		}
 		constexpr Array(std::initializer_list<T> init, const Alloc& alloc = Alloc{})
-			: m_pHead{}
-			, m_pTail{}
-			, m_pCurrentEnd{}
+			: m_Handle{ alloc, 0 }
 			, m_Allocator{ alloc }
 		{
 			for (const T& elem : init)
@@ -68,9 +59,7 @@ namespace Integrian3D
 			}
 		}
 		constexpr Array(It beg, It end, const Alloc& alloc = Alloc{})
-			: m_pHead{}
-			, m_pTail{}
-			, m_pCurrentEnd{}
+			: m_Handle{ alloc, 0 }
 			, m_Allocator{ alloc }
 		{
 			for (; beg != end; ++beg)
@@ -86,13 +75,14 @@ namespace Integrian3D
 		}
 #pragma endregion
 
-#pragma region Rule of 5
+#pragma region RuleOf5
 		constexpr Array(const Array& other) noexcept
-			: m_pHead{}
-			, m_pTail{}
-			, m_pCurrentEnd{}
+			: m_Handle{ other.m_Allocator, 0 }
 			, m_Allocator{ other.m_Allocator }
 		{
+			const uint64_t cap{ other.m_Allocator.Capacity() };
+			m_Handle = m_Allocator.Allocate<T>(cap);
+
 			const uint64_t cap{ other.Capacity() };
 
 			m_pHead = m_Allocator.Allocate<T>(cap);
@@ -125,7 +115,7 @@ namespace Integrian3D
 				DeleteData(m_pHead, m_pCurrentEnd);
 				Release(m_pHead);
 			}
-			
+
 			m_Allocator = other.m_Allocator;
 
 			const uint64_t cap{ other.Capacity() };
@@ -785,12 +775,10 @@ namespace Integrian3D
 		}
 #pragma endregion
 
-		T* m_pHead;
-		T* m_pTail;
-		T* m_pCurrentEnd /* points PAST the last element */;
+		Memory::Handle<T, Alloc> m_Handle;
 		Alloc m_Allocator;
 	};
 
 	template<typename T>
-	using TArray = Array<T, Memory::LinearAllocator>;
+	using TArray = Array<T, Memory::Allocator<Memory::FreeListAllocator>>;
 }
