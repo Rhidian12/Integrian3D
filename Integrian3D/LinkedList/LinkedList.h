@@ -118,8 +118,8 @@ namespace Integrian3D
 					continue;
 				}
 
-				pCurrent = pCurrent->pNext;
 				pPrevious = pCurrent;
+				pCurrent = pCurrent->pNext;
 			}
 		}
 
