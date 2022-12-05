@@ -127,20 +127,20 @@ TEST_CASE("Testing the Allocator Interface")
 	FreeListAllocator alloc{ 36 };
 	Allocator<FreeListAllocator> allocInterface{ std::move(alloc) };
 
-	auto a = allocInterface.Allocate<int>(1);
+	auto& a = allocInterface.Allocate<int>(1);
 	 *a = 5;
 	 REQUIRE(*a == 5);
 
-	auto b = allocInterface.Allocate<int>(1);
+	auto& b = allocInterface.Allocate<int>(1);
 	*b = 15;
 	REQUIRE(*a == 5);
 	REQUIRE(*b == 15);
 
-	auto c = allocInterface.Allocate<int>(50);
+	auto& c = allocInterface.Allocate<int>(50);
 	REQUIRE(*a == 5);
 	REQUIRE(*b == 15);
 
-	auto d = allocInterface.Allocate<int>(1);
+	auto& d = allocInterface.Allocate<int>(1);
 	*d = 25;
 	REQUIRE(*a == 5);
 	REQUIRE(*b == 15);
@@ -151,7 +151,7 @@ TEST_CASE("Testing the Allocator Interface")
 	REQUIRE(*b == 15);
 	REQUIRE(*d == 25);
 
-	auto e = allocInterface.Allocate<double>(1);
+	auto& e = allocInterface.Allocate<double>(1);
 	*e = 36.0;
 	REQUIRE(*a == 5);
 	REQUIRE(*b == 15);

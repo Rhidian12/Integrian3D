@@ -4,6 +4,7 @@
 #include "../AllocatorTraits/AllocatorTraits.h"
 
 #include <vector> /* std::vector */
+#include <memory> /* std::unique_ptr */
 
 namespace Integrian3D::Memory
 {
@@ -11,36 +12,76 @@ namespace Integrian3D::Memory
 	class Allocator
 	{
 		using Traits = AllocatorTraits<T>;
+
+		class IHandle
+		{
+		public:
+			constexpr IHandle(const uint64_t memLoc)
+				: m_MemoryLocation{ memLoc }
+			{}
+			constexpr virtual ~IHandle() = default;
+
+#pragma region RuleOf5
+			IHandle(const IHandle& other) noexcept
+				: m_MemoryLocation{ other.m_MemoryLocation }
+			{}
+			IHandle(IHandle&& other) noexcept
+				: m_MemoryLocation{ __MOVE(other.m_MemoryLocation) }
+			{}
+			IHandle& operator=(const IHandle& other) noexcept
+			{
+				m_MemoryLocation = other.m_MemoryLocation;
+
+				return *this;
+			}
+			IHandle& operator=(IHandle&& other) noexcept
+			{
+				m_MemoryLocation = __MOVE(other.m_MemoryLocation);
+
+				return *this;
+			}
+#pragma endregion
+
+			__NODISCARD constexpr uint64_t GetMemoryLocation() const
+			{
+				return m_MemoryLocation;
+			}
+
+		protected:
+			friend class Allocator;
+
+			uint64_t m_MemoryLocation;
+		};
 	public:
 		template<typename U>
-		class Handle final
+		class Handle final : public IHandle
 		{
 		public:
 			explicit constexpr Handle(T& alloc, const uint64_t memLoc)
-				: m_Allocator{ alloc }
-				, m_MemoryLocation{ memLoc }
+				: IHandle{ memLoc }
+				, m_Allocator{ alloc }
 			{}
 
 #pragma region RuleOf5
 			constexpr Handle(const Handle& other) noexcept
-				: m_Allocator{ other.m_Allocator }
-				, m_MemoryLocation{ other.m_MemoryLocation }
+				: IHandle{ other }
+				, m_Allocator{ other.m_Allocator }
 			{}
 			constexpr Handle(Handle&& other) noexcept
-				: m_Allocator{ __MOVE(other.m_Allocator) }
-				, m_MemoryLocation{ __MOVE(other.m_MemoryLocation) }
+				: IHandle{ __MOVE(other) }
+				, m_Allocator{ __MOVE(other.m_Allocator) }
 			{}
 			constexpr Handle& operator=(const Handle& other) noexcept
 			{
+				IHandle::operator=(other);
 				m_Allocator = other.m_Allocator;
-				m_MemoryLocation = other.m_MemoryLocation;
 
 				return *this;
 			}
 			constexpr Handle& operator=(Handle&& other) noexcept
 			{
+				IHandle::operator=(__MOVE(other));
 				m_Allocator = __MOVE(other.m_Allocator);
-				m_MemoryLocation = __MOVE(other.m_MemoryLocation);
 
 				return *this;
 			}
@@ -49,34 +90,43 @@ namespace Integrian3D::Memory
 #pragma region Pointer
 			__NODISCARD __INLINE constexpr U* operator->()
 			{
-				return static_cast<U*>(m_Allocator.Get(m_MemoryLocation));
+				return static_cast<U*>(m_Allocator.Get(this->m_MemoryLocation));
 			}
 			__NODISCARD __INLINE constexpr const U* operator->() const
 			{
-				return static_cast<U*>(m_Allocator.Get(m_MemoryLocation));
+				return static_cast<U*>(m_Allocator.Get(this->m_MemoryLocation));
 			}
 
 			__NODISCARD __INLINE constexpr U& operator*()
 			{
-				return *static_cast<U*>(m_Allocator.Get(m_MemoryLocation));
+				return *static_cast<U*>(m_Allocator.Get(this->m_MemoryLocation));
 			}
 			__NODISCARD __INLINE constexpr const U& operator*() const
 			{
-				return *static_cast<U*>(m_Allocator.Get(m_MemoryLocation));
+				return *static_cast<U*>(m_Allocator.Get(this->m_MemoryLocation));
+			}
+#pragma endregion
+
+#pragma region MemoryInfo
+			__NODISCARD constexpr uint64_t Size() const
+			{
+				return m_Allocator.GetAllocationSize(this->m_MemoryLocation);
 			}
 #pragma endregion
 
 		private:
-			friend class Allocator;
-
 			T& m_Allocator;
-			uint64_t m_MemoryLocation;
 		};
 
 		constexpr explicit Allocator(const T& alloc = T{})
 			: m_Allocator{ alloc }
 			, m_TakenMemoryLocations{}
 		{}
+		constexpr ~Allocator()
+		{
+			for (IHandle* const pHandle : m_Handles)
+				delete pHandle;
+		}
 
 #pragma region RuleOf5
 		constexpr Allocator(const Allocator& other) noexcept
@@ -115,7 +165,7 @@ namespace Integrian3D::Memory
 #pragma endregion
 
 		template<typename U>
-		__NODISCARD constexpr Handle<U> Allocate(const uint64_t nrOfElements, const uint64_t align = alignof(U))
+		__NODISCARD constexpr Handle<U>& Allocate(const uint64_t nrOfElements, const uint64_t align = alignof(U))
 		{
 			static_assert(Traits::template CanAllocate<U>, "T::Allocate() has not been defined");
 			static_assert(Traits::HasGet, "T::Get() has not been defined");
@@ -134,13 +184,18 @@ namespace Integrian3D::Memory
 
 			m_TakenMemoryLocations.push_back(memLoc);
 
-			return Handle<U>{ m_Allocator, memLoc };
+			Handle<U>* pHandle{ new Handle<U>{ m_Allocator, memLoc } };
+			m_Handles.push_back(pHandle);
+
+			return *pHandle;
 		}
 
 		template<typename U>
 		constexpr void Deallocate(Handle<U>& handle)
 		{
 			static_assert(Traits::CanDeallocate, "T::Deallocate() has not been defined");
+
+			m_Allocator.Deallocate(&(*handle));
 
 			m_TakenMemoryLocations.erase
 			(
@@ -153,11 +208,28 @@ namespace Integrian3D::Memory
 				m_TakenMemoryLocations.end()
 			);
 
-#pragma warning ( push )
-#pragma warning ( disable : 4245 ) /* warning C4245: '=': conversion from 'int' to 'uint64_t', signed/unsigned mismatch */
-			/* This should be completely invalid */
-			handle.m_MemoryLocation = -1;
-#pragma warning ( pop )
+			auto it
+			{
+				std::find_if
+					(
+						m_Handles.cbegin(), m_Handles.cend(),
+						[&handle](const IHandle* const pHandle)->bool
+						{
+							return handle.m_MemoryLocation == pHandle->m_MemoryLocation;
+						}
+					)
+			};
+
+			for (IHandle* pHandle : m_Handles)
+				if (pHandle->m_MemoryLocation > handle.m_MemoryLocation)
+					--pHandle->m_MemoryLocation;
+
+			for (uint64_t& memLoc : m_TakenMemoryLocations)
+				if (memLoc > handle.m_MemoryLocation)
+					--memLoc;
+
+			delete (*it);
+			m_Handles.erase(it);
 		}
 
 		__NODISCARD __INLINE constexpr uint64_t Capacity() const
@@ -177,5 +249,6 @@ namespace Integrian3D::Memory
 	private:
 		T m_Allocator;
 		std::vector<uint64_t> m_TakenMemoryLocations;
+		std::vector<IHandle*> m_Handles;
 	};
 }

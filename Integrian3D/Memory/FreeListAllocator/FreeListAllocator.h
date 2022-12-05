@@ -45,7 +45,7 @@ namespace Integrian3D::Memory
 		FreeListAllocator& operator=(FreeListAllocator&& other) noexcept;
 
 		template<typename T>
-		T* Allocate(const uint64_t n, const uint64_t alignment)
+		__NODISCARD T* Allocate(const uint64_t n, const uint64_t alignment)
 		{
 			__ASSERT(n > 0 && "Allocation size must be bigger");
 
@@ -98,7 +98,7 @@ namespace Integrian3D::Memory
 
 			AllocationHeader* pAllHeader{ reinterpret_cast<AllocationHeader*>(reinterpret_cast<uint64_t>(p) - sizeof(AllocationHeader)) };
 			FreeHeader* pFreeHeader{ reinterpret_cast<FreeHeader*>(reinterpret_cast<uint64_t>(pAllHeader) - sizeof(FreeHeader)) };
-			pFreeHeader->Size = pAllHeader->Size;
+			pFreeHeader->Size = pAllHeader->Size + pAllHeader->Padding;
 
 			m_FreeList.Add(pFreeHeader);
 
@@ -109,12 +109,20 @@ namespace Integrian3D::Memory
 			/* [TODO]: merge nodes together */
 		}
 
-		void* Get(const uint64_t n) const
+		__NODISCARD void* Get(const uint64_t n) const
 		{
 			if (n >= m_Size)
 				return nullptr;
 
 			return reinterpret_cast<void*>(reinterpret_cast<uint64_t>(*m_UsedList.At(n)) + sizeof(AllocationHeader));
+		}
+
+		__NODISCARD uint64_t GetAllocationSize(const uint64_t n) const
+		{
+			if (n >= m_Size)
+				return 0u;
+
+			return (*m_UsedList.At(n))->Size;
 		}
 
 		__NODISCARD constexpr uint64_t Capacity() const
