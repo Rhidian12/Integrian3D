@@ -93,6 +93,9 @@
     <ClCompile Include="Memory\New\New.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="LinkedList\LinkedList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window\Window.h">
@@ -216,6 +219,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Memory\AllocatorTraits\AllocatorTraits.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LinkedList\LinkedList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

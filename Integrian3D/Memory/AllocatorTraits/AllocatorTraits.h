@@ -15,11 +15,11 @@ namespace Integrian3D::Memory
 		template<typename T, typename U>
 		struct _CanAllocate<T, U, Void<decltype(std::declval<T>().Allocate<U>(0, 0))>> : public std::true_type {};
 
-		template<typename T, typename U, typename = void>
+		template<typename T, typename = void>
 		struct _CanDeallocate : public std::false_type {};
 
-		template<typename T, typename U>
-		struct _CanDeallocate<T, U, Void<decltype(std::declval<T>().Deallocate<U>(nullptr))>> : public std::true_type {};
+		template<typename T>
+		struct _CanDeallocate<T, Void<decltype(std::declval<T>().Deallocate(nullptr))>> : public std::true_type {};
 
 		template<typename T, typename = void>
 		struct _HasData : public std::false_type {};
@@ -38,6 +38,12 @@ namespace Integrian3D::Memory
 
 		template<typename T>
 		struct _HasSize<T, Void<decltype(std::declval<T>().Size())>> : public std::true_type {};
+
+		template<typename T, typename = void>
+		struct _HasGet : public std::false_type {};
+
+		template<typename T>
+		struct _HasGet<T, Void<decltype(std::declval<T>().Get(0))>> : public std::true_type {};
 	}
 
 	template<typename T>
@@ -48,10 +54,11 @@ namespace Integrian3D::Memory
 		template<typename U>
 		constexpr static auto CanAllocate = _CanAllocate<T, U>::value;
 
-		template<typename U>
-		constexpr static auto CanDeallocate = _CanDeallocate<T, U>::value;
+		constexpr static auto CanDeallocate = _CanDeallocate<T>::value;
 
 		constexpr static auto HasData = _HasData<T>::value;
+
+		constexpr static auto HasGet = _HasGet<T>::value;
 
 		constexpr static auto HasCapacity = _HasCapacity<T>::value;
 		constexpr static auto HasSize = _HasSize<T>::value;

@@ -118,18 +118,18 @@ int main()
 #define ALLOCATOR_TESTS
 #ifdef ALLOCATOR_TESTS
 #include "Memory/Allocator/Allocator.h"
-#include "Memory/LinearAllocator/LinearAllocator.h"
+#include "Memory/FreeListAllocator/FreeListAllocator.h"
 
 TEST_CASE("Testing the Allocator Interface")
 {
 	using namespace Integrian3D::Memory;
 
-	LinearAllocator alloc{ 4 };
-	Allocator<LinearAllocator> allocInterface{ alloc };
+	FreeListAllocator alloc{ 36 };
+	Allocator<FreeListAllocator> allocInterface{ std::move(alloc) };
 
 	auto a = allocInterface.Allocate<int>(1);
-	*a = 5;
-	REQUIRE(*a == 5);
+	 *a = 5;
+	 REQUIRE(*a == 5);
 
 	auto b = allocInterface.Allocate<int>(1);
 	*b = 15;
@@ -145,6 +145,18 @@ TEST_CASE("Testing the Allocator Interface")
 	REQUIRE(*a == 5);
 	REQUIRE(*b == 15);
 	REQUIRE(*d == 25);
+
+	allocInterface.Deallocate(c);
+	REQUIRE(*a == 5);
+	REQUIRE(*b == 15);
+	REQUIRE(*d == 25);
+
+	auto e = allocInterface.Allocate<double>(1);
+	*e = 36.0;
+	REQUIRE(*a == 5);
+	REQUIRE(*b == 15);
+	REQUIRE(*d == 25);
+	REQUIRE(*e == 36.0);
 }
 #endif
 
@@ -757,7 +769,7 @@ TEST_CASE("Testing the Free List Allocator")
 		REQUIRE(alloc.Size() == 1);
 
 		int* test2 = alloc.Allocate<int>(1); // should fire a reallocation
-		
+
 		REQUIRE(test2 != nullptr);
 		REQUIRE(alloc.Size() == 2);
 		REQUIRE(alloc.Capacity() == 77); // hardcoded w/e i didnt ask
@@ -866,6 +878,6 @@ int main()
 	std::cout << "Amount of push_backs: " << amountOfPushbacks << "\n";
 	std::cout << "Array time: " << GetAverage(arrTimes) << "\n";
 	std::cout << "Array time: " << GetAverage(vectorTimes) << "\n";
-	}
+}
 #endif
 #endif

@@ -2,29 +2,40 @@
 
 #include "../../EngineConstants.h"
 #include "../MemoryUtils.h"
+#include "../../LinkedList/LinkedList.h"
+
+#include <iostream>
 
 namespace Integrian3D::Memory
 {
 	class FreeListAllocator final
 	{
-		struct Block final
+	public:
+		enum class PlacementPolicy
 		{
-			uint64_t Size;
-			Block* pNext;
+			FIND_FIRST_FIT,
+			FIND_BEST_FIT
 		};
 
-		struct Header final
+	private:
+		/* [CRINGE]: Do we really need 2 seperate structs for this kind of stuff? Could we not re-use the FreeHeader? */
+		struct FreeHeader final
 		{
 			uint64_t Size;
-			uint64_t Adjustment;
 		};
+
+		/* [CRINGE]: Is this Padding necessary? Could we not just keep track of the entire Size instead of splitting it up? */
+		struct AllocationHeader final
+		{
+			uint64_t Size;
+			uint64_t Padding;
+		};
+
+		inline constexpr static uint64_t m_NodePadding{ sizeof(FreeHeader) + sizeof(AllocationHeader) + sizeof(FreeHeader*) };
 
 	public:
-		using CanMove = std::true_type;
-		using CanCopy = std::true_type;
-
-		FreeListAllocator();
-		explicit FreeListAllocator(const uint64_t size);
+		FreeListAllocator(const PlacementPolicy policy = PlacementPolicy::FIND_FIRST_FIT);
+		explicit FreeListAllocator(const uint64_t size, const PlacementPolicy policy = PlacementPolicy::FIND_FIRST_FIT);
 
 		~FreeListAllocator();
 
@@ -34,186 +45,163 @@ namespace Integrian3D::Memory
 		FreeListAllocator& operator=(FreeListAllocator&& other) noexcept;
 
 		template<typename T>
-		__NODISCARD constexpr T* Allocate(const uint64_t nrOfElements, const size_t align = alignof(T))
+		T* Allocate(const uint64_t n, const uint64_t alignment)
 		{
-			__ASSERT(nrOfElements != 0 && "FreeListAllocators::Allocate() > Cannot allocate 0 elements");
+			__ASSERT(n > 0 && "Allocation size must be bigger");
 
-			Block* pPreviousBlock = nullptr;
-			Block* pFreeBlock = m_pFreeBlocks;
+			const uint64_t allocationSize{ n * sizeof(T) };
 
-			Block* pPreviousBestFit = nullptr;
-			Block* pBestFit = nullptr;
+			// Search through the free list for a free block that has enough space to allocate our data
+			// padding takes alignment into account
+			uint64_t padding{};
+			FreeHeader* pFreeHeader{};
+			Find(allocationSize, alignment, padding, pFreeHeader);
 
-			size_t bestFitAdjustment = 0;
-			size_t bestFitTotalSize = 0;
+			const uint64_t totalAllocationSize{ allocationSize + padding };
 
-			while (pFreeBlock)
+			if (!pFreeHeader)
 			{
-				/* Alignment adjustment needed to store the Header */
-				bestFitAdjustment = AlignForward<Header, Block>(pFreeBlock, align);
+				Reallocate(totalAllocationSize + sizeof(FreeHeader*));
 
-				/* Calculate total size */
-				bestFitTotalSize = nrOfElements * sizeof(T) + bestFitAdjustment;
-
-				/* Is the current block a better fit than the current best fit? */
-				if (pFreeBlock->Size >= bestFitTotalSize && (!pBestFit || pFreeBlock->Size < pBestFit->Size))
-				{
-					pPreviousBestFit = pPreviousBlock;
-					pBestFit = pFreeBlock;
-
-					/* Is the new current block a perfect fit? */
-					if (pFreeBlock->Size == bestFitTotalSize)
-					{
-						break;
-					}
-				}
-
-				pPreviousBlock = pFreeBlock;
-				pFreeBlock = pFreeBlock->pNext;
+				return Allocate<T>(n, alignment);
 			}
 
-			// __ASSERT(pBestFit != nullptr && "FreeListAllocator::Allocate() > Ran out of memory");
+			const uint64_t rest{ pFreeHeader->Size - totalAllocationSize };
 
-			if (!pBestFit)
+			if (rest > 0)
 			{
-				Reallocate<T>(nrOfElements);
+				// We have to split the block into the data block and a free block of size 'rest'
+				FreeHeader* pNewNode{ reinterpret_cast<FreeHeader*>(reinterpret_cast<uint64_t>(pFreeHeader) + totalAllocationSize) };
+				pNewNode->Size = rest;
 
-				return Allocate<T>(nrOfElements, align);
+				m_FreeList.Add(pNewNode);
 			}
 
-			/* Can the best fit be split into two parts? */
-			if (pBestFit->Size - bestFitTotalSize > sizeof(Header))
-			{
-				/* Split the block into memory for the allocation and the remainder */
+			m_FreeList.Erase(pFreeHeader);
 
-				/* New block starts at best fit + size */
-				Block* const pNewBlock{ reinterpret_cast<Block*>(reinterpret_cast<size_t>(pBestFit) + bestFitTotalSize) };
+			/* Set up data */
+			AllocationHeader* pAllHeader{ reinterpret_cast<AllocationHeader*>(reinterpret_cast<uint64_t>(pFreeHeader) + sizeof(FreeHeader)) };
+			pAllHeader->Size = allocationSize;
+			pAllHeader->Padding = padding;
 
-				/* The new block has the remaining size */
-				pNewBlock->Size = pBestFit->Size - bestFitTotalSize;
-				/* The new block now points to the original block's next */
-				pNewBlock->pNext = pBestFit->pNext;
-
-				/* Instert the new block into the list */
-				/* By not pointing towards pNewBlock instead of pBestFit, we're removing it from the list */
-				if (pPreviousBestFit)
-				{
-					pPreviousBestFit->pNext = pNewBlock;
-				}
-				else
-				{
-					m_pFreeBlocks = pNewBlock;
-				}
-			}
-			else /* we can't split it into two */
-			{
-				/* Update the size to the entire best fit block size */
-				bestFitTotalSize = pBestFit->Size;
-
-				/* Remove pBestFit from the linked list */
-				if (pPreviousBestFit)
-				{
-					pPreviousBestFit->pNext = pBestFit->pNext;
-				}
-				else
-				{
-					m_pFreeBlocks = pBestFit->pNext;
-				}
-			}
-
-			/* Get the aligned address */
-			const size_t alignedAddress{ reinterpret_cast<size_t>(pBestFit) + bestFitAdjustment };
-
-			/* Get the header from this aligned address */
-			Header* const pHeader{ reinterpret_cast<Header*>(alignedAddress - sizeof(Header)) };
-
-			pHeader->Size = bestFitTotalSize;
-			pHeader->Adjustment = bestFitAdjustment;
+			m_UsedList.Add(pAllHeader);
 
 			++m_Size;
 
-			return reinterpret_cast<T*>(alignedAddress);
+			return reinterpret_cast<T*>(reinterpret_cast<uint64_t>(pAllHeader) + sizeof(AllocationHeader));
 		}
 
-		constexpr void Deallocate(void* p)
+		void Deallocate(void* p)
 		{
 			if (!p)
-			{
 				return;
-			}
 
-			/* Get the header from the memory we allocated */
-			Header* const pHeader{ reinterpret_cast<Header*>(reinterpret_cast<size_t>(p) - sizeof(Header)) };
+			AllocationHeader* pAllHeader{ reinterpret_cast<AllocationHeader*>(reinterpret_cast<uint64_t>(p) - sizeof(AllocationHeader)) };
+			FreeHeader* pFreeHeader{ reinterpret_cast<FreeHeader*>(reinterpret_cast<uint64_t>(pAllHeader) - sizeof(FreeHeader)) };
+			pFreeHeader->Size = pAllHeader->Size;
 
-			/* Get the actual start of the allocation by moving backwards the amount specified by the header */
-			const size_t blockStart{ reinterpret_cast<size_t>(p) - pHeader->Adjustment };
-			const size_t blockSize{ pHeader->Size };
-			const size_t blockEnd{ blockStart + blockSize };
+			m_FreeList.Add(pFreeHeader);
 
-			Block* pPreviousFreeBlock{};
-			Block* pFreeBlock{ m_pFreeBlocks };
-
-			/* Find the first block that starts after this heap of allocated memory */
-			while (pFreeBlock)
-			{
-				if (reinterpret_cast<size_t>(pFreeBlock) >= blockEnd)
-				{
-					break;
-				}
-
-				pPreviousFreeBlock = pFreeBlock;
-				pFreeBlock = pFreeBlock->pNext;
-			}
-
-			if (!pPreviousFreeBlock)
-			{
-				/* There is no free block after this heap of allocated memory, so add it to the start of the list */
-				pPreviousFreeBlock = reinterpret_cast<Block*>(blockStart);
-				pPreviousFreeBlock->Size = blockSize;
-				pPreviousFreeBlock->pNext = m_pFreeBlocks;
-
-				m_pFreeBlocks = pPreviousFreeBlock;
-			}
-			else if (reinterpret_cast<size_t>(pPreviousFreeBlock) + pPreviousFreeBlock->Size == blockStart)
-			{
-				/* The block before (pPreviousFreeBlock) the block we're freeing (pFreeBlock) ends right on the boundary of the heap of allocated memory */
-				/* So we can merge the previous block and our heap of allocated memory together */
-
-				pPreviousFreeBlock->Size += blockSize;
-			}
-			else
-			{
-				/* The block before (pPreviousBlock) the block we're freeing (pFreeBlock) does NOT end rightt on the boundary of the heap of allocated memory */
-				/* Therefore we cannot merge the two */
-				/* So, we have to create a new Block */
-
-				Block* const pTemp{ reinterpret_cast<Block*>(blockStart) };
-
-				pTemp->Size = blockSize;
-				pTemp->pNext = pPreviousFreeBlock->pNext;
-
-				pPreviousFreeBlock->pNext = pTemp;
-				pPreviousFreeBlock = pTemp;
-			}
-
-			if (reinterpret_cast<size_t>(pPreviousFreeBlock) + pPreviousFreeBlock->Size ==
-				reinterpret_cast<size_t>(pPreviousFreeBlock->pNext))
-			{
-				/* The new or merged block ends right on the next block of list, so we can merge these again */
-				pPreviousFreeBlock->Size += pPreviousFreeBlock->pNext->Size;
-				pPreviousFreeBlock->pNext = pPreviousFreeBlock->pNext->pNext;
-			}
+			m_UsedList.Erase(pAllHeader);
 
 			--m_Size;
+
+			/* [TODO]: merge nodes together */
 		}
 
-		__NODISCARD constexpr uint64_t Capacity() const { return m_Capacity; }
-		__NODISCARD constexpr uint64_t Size() const { return m_Size; }
-		__NODISCARD constexpr uint64_t MaxSize() const { return std::numeric_limits<uint64_t>::max(); }
-		__NODISCARD constexpr const void* Data() const { return m_pStart; }
+		void* Get(const uint64_t n) const
+		{
+			if (n >= m_Size)
+				return nullptr;
 
+			return reinterpret_cast<void*>(reinterpret_cast<uint64_t>(*m_UsedList.At(n)) + sizeof(AllocationHeader));
+		}
+
+		__NODISCARD constexpr uint64_t Capacity() const
+		{
+			return m_Capacity;
+		}
+		__NODISCARD constexpr uint64_t Size() const
+		{
+			return m_Size;
+		}
+		__NODISCARD constexpr uint64_t MaxSize() const
+		{
+			return std::numeric_limits<uint64_t>::max();
+		}
 
 	private:
+		constexpr void Find(const uint64_t size, const uint64_t alignment, uint64_t& padding, FreeHeader*& pFreeHeader)
+		{
+			switch (m_PlacementPolicy)
+			{
+			case PlacementPolicy::FIND_FIRST_FIT:
+				FindFirst(size, alignment, padding, pFreeHeader);
+				break;
+			case PlacementPolicy::FIND_BEST_FIT:
+				FindBest(size, alignment, padding, pFreeHeader);
+				break;
+			}
+		}
+
+		void FindFirst(const uint64_t size, const uint64_t alignment, uint64_t& padding, FreeHeader*& pFreeHeader)
+		{
+			/* [TODO]: Use iterators */
+			for (uint64_t i{}; i < m_FreeList.Size(); ++i)
+			{
+				FreeHeader* pHeader{ *m_FreeList.At(i) };
+
+				if (!pHeader)
+					return;
+
+				padding = AlignForward<FreeHeader, AllocationHeader>(&pHeader, alignment);
+
+				const uint64_t requiredSpace{ size + padding };
+
+				if (pHeader->Size >= requiredSpace + sizeof(FreeHeader*))
+				{
+					pFreeHeader = pHeader;
+					break;
+				}
+			}
+		}
+
+		void FindBest(const uint64_t size, const uint64_t alignment, uint64_t& padding, FreeHeader*& pFreeHeader)
+		{
+			/* [TODO]: Use iterators */
+			FreeHeader* pBestFit{};
+			for (uint64_t i{}; i < m_FreeList.Size(); ++i)
+			{
+				FreeHeader* pHeader{ *m_FreeList.At(i) };
+
+				if (!pHeader)
+					return;
+
+				padding = AlignForward<FreeHeader, AllocationHeader>(&pHeader, alignment);
+
+				const uint64_t requiredSpace{ size + padding };
+
+				if (pHeader->Size >= requiredSpace + sizeof(FreeHeader*))
+				{
+					if (pHeader->Size == requiredSpace + sizeof(FreeHeader*))
+					{
+						pFreeHeader = pHeader;
+						break;
+					}
+
+					if (pBestFit)
+					{
+						if (pHeader->Size < pBestFit->Size)
+							pBestFit = pHeader;
+					}
+					else
+						pBestFit = pHeader;
+				}
+			}
+
+			pFreeHeader = pBestFit;
+		}
+		
 		__NODISCARD constexpr uint64_t CalculateNewCapacity(const uint64_t min) const
 		{
 			const uint64_t oldCap{ Capacity() };
@@ -235,72 +223,68 @@ namespace Integrian3D::Memory
 			return newCap;
 		}
 
-		template<typename T>
-		constexpr void Reallocate(const uint64_t nrOfElements)
+		void Reallocate(const uint64_t requiredSize)
 		{
-			const uint64_t newCap{ CalculateNewCapacity(m_Capacity + sizeof(T) * nrOfElements + sizeof(Header) + sizeof(Block) + 1) };
-			Block* const pNewStart{ static_cast<Block*>(malloc(newCap)) };
+			const uint64_t newCap{ CalculateNewCapacity(m_Capacity + requiredSize + m_NodePadding + 1u) };
+			FreeHeader* const pNewStart{ reinterpret_cast<FreeHeader*>(new char[newCap] {}) };
+			pNewStart->Size = newCap;
 
-			Block* pCurrentBlock{ static_cast<Block*>(m_pStart) };
-			Block* pNewCurrentBlock{ pNewStart };
+			LinkedList<FreeHeader*> freeList{};
+			LinkedList<AllocationHeader*> usedList{};
+			freeList.Add(pNewStart);
+			uint64_t totalAllocatedMem{};
 
-			uint64_t sizeToReallocate{ newCap };
-
-			while (pCurrentBlock)
+			/* loop over every allocated piece of memory and copy it over */
+			for (uint64_t i{}; i < m_UsedList.Size(); ++i)
 			{
-				/* Copy over Block size */
-				pNewCurrentBlock->Size = pCurrentBlock->Size;
+				/* get currently allocated memory */
+				AllocationHeader* pOldAllHeader{ *m_UsedList.At(i) };
 
-				/* Set the next to a nullptr by default */
-				pNewCurrentBlock->pNext = nullptr;
+				/* get our new free header */
+				FreeHeader* pFreeHeader{ reinterpret_cast<FreeHeader*>(reinterpret_cast<uint64_t>(pNewStart) + totalAllocatedMem) };
 
-				/* Copy over Header information */
-				const uint64_t oldDataAddress{ reinterpret_cast<uint64_t>(pCurrentBlock) +
-					AlignForward<Header, Block>(pCurrentBlock, alignof(Block)) };
-				const uint64_t newDataAddress{ reinterpret_cast<uint64_t>(pNewCurrentBlock) +
-					AlignForward<Header, Block>(pNewCurrentBlock, alignof(Block)) };
+				/* initialize new allocation header */
+				AllocationHeader* pNewAllHeader{ reinterpret_cast<AllocationHeader*>(reinterpret_cast<uint64_t>(pFreeHeader) + sizeof(FreeHeader)) };
+				pNewAllHeader->Size = pOldAllHeader->Size;
+				pNewAllHeader->Padding = pOldAllHeader->Padding;
 
-				Header* const pOldHeader{ reinterpret_cast<Header*>(oldDataAddress - sizeof(Header)) };
-				Header* const pNewHeader{ reinterpret_cast<Header*>(newDataAddress - sizeof(Header)) };
-
-				pNewHeader->Adjustment = pOldHeader->Adjustment;
-				pNewHeader->Size = pOldHeader->Size;
-
-				/* Move over the old data */
-				memmove
+				/* copy over data */
+				memcpy
 				(
-					reinterpret_cast<void*>(newDataAddress),
-					reinterpret_cast<void*>(oldDataAddress),
-					pCurrentBlock->Size - sizeof(Header) + sizeof(Block)
+					reinterpret_cast<void*>(reinterpret_cast<uint64_t>(pNewAllHeader) + sizeof(AllocationHeader)),
+					reinterpret_cast<void*>(reinterpret_cast<uint64_t>(pOldAllHeader) + sizeof(AllocationHeader)),
+					pOldAllHeader->Size
 				);
 
-				/* decrease how much size we still have to reallocate */
-				sizeToReallocate -= pCurrentBlock->Size;
+				/* make new free header from current free header */
+				const uint64_t totalSize{ pOldAllHeader->Size + pOldAllHeader->Padding };
+				FreeHeader* pNewFreeHeader{ reinterpret_cast<FreeHeader*>(reinterpret_cast<uint64_t>(pFreeHeader) + totalSize) };
+				pNewFreeHeader->Size = totalSize;
 
-				/* If there is a next entry in the list, add it to the new one */
-				if (sizeToReallocate > 0 && !pCurrentBlock->pNext)
-				{
-					Block* const pNewBlock{ reinterpret_cast<Block*>(reinterpret_cast<uint64_t>(pNewCurrentBlock) + pNewCurrentBlock->Size) };
-					pNewCurrentBlock->pNext = pNewBlock;
-					pNewCurrentBlock->Size = sizeToReallocate;
+				/* keep track of how much memory we've currently copied over */
+				totalAllocatedMem += totalSize;
 
-					sizeToReallocate = 0;
-				}
-
-				pCurrentBlock = pCurrentBlock->pNext;
-				pNewCurrentBlock = pNewCurrentBlock->pNext;
+				freeList.Erase(pFreeHeader);
+				freeList.Add(pNewFreeHeader);
+				usedList.Add(pNewAllHeader);
 			}
+
+			/* copium let's assume we have an element remaining, we should tho */
+			(*freeList.Back())->Size += newCap - totalAllocatedMem;
+
+			m_FreeList = freeList;
+			m_UsedList = usedList;
 
 			delete[] m_pStart;
 
 			m_pStart = pNewStart;
-			m_pFreeBlocks = pNewStart;
 			m_Capacity = newCap;
 		}
 
 		void* m_pStart;
-
-		Block* m_pFreeBlocks;
+		PlacementPolicy m_PlacementPolicy;
+		LinkedList<FreeHeader*> m_FreeList;
+		LinkedList<AllocationHeader*> m_UsedList;
 		uint64_t m_Size;
 		uint64_t m_Capacity;
 	};
