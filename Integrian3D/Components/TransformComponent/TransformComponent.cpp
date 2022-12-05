@@ -24,17 +24,17 @@ namespace Integrian3D
 	{}
 
 	TransformComponent::TransformComponent(TransformComponent&& other) noexcept
-		: Transformation{ __MOVE(Math::Mat4D, other.Transformation) }
-		, WorldLocation{ __MOVE(Math::Vec3D, other.WorldLocation) }
-		, WorldScale{ __MOVE(Math::Vec3D, other.WorldScale) }
-		, LocalScale{ __MOVE(Math::Vec3D, other.LocalScale) }
-		, WorldAngle{ __MOVE(Math::Vec3D, other.WorldAngle) }
-		, LocalAngle{ __MOVE(Math::Vec3D, other.LocalAngle) }
-		, bShouldRecalculateTransform{ __MOVE(bool, other.bShouldRecalculateTransform) }
-		, bShouldRecalculateWorldData{ __MOVE(bool, other.bShouldRecalculateWorldData) }
-		, Forward{ __MOVE(Math::Vec3D, other.Forward) }
-		, Right{ __MOVE(Math::Vec3D, other.Right) }
-		, Up{ __MOVE(Math::Vec3D, other.Up) }
+		: Transformation{ __MOVE(other.Transformation) }
+		, WorldLocation{ __MOVE(other.WorldLocation) }
+		, WorldScale{ __MOVE(other.WorldScale) }
+		, LocalScale{ __MOVE(other.LocalScale) }
+		, WorldAngle{ __MOVE(other.WorldAngle) }
+		, LocalAngle{ __MOVE(other.LocalAngle) }
+		, bShouldRecalculateTransform{ __MOVE(other.bShouldRecalculateTransform) }
+		, bShouldRecalculateWorldData{ __MOVE(other.bShouldRecalculateWorldData) }
+		, Forward{ __MOVE(other.Forward) }
+		, Right{ __MOVE(other.Right) }
+		, Up{ __MOVE(other.Up) }
 	{
 		other.bShouldRecalculateTransform = false;
 		other.bShouldRecalculateWorldData = false;
@@ -42,17 +42,17 @@ namespace Integrian3D
 
 	TransformComponent& TransformComponent::operator=(TransformComponent&& other) noexcept
 	{
-		Transformation = __MOVE(Math::Mat4D, other.Transformation);
-		WorldLocation = __MOVE(Math::Vec3D, other.WorldLocation);
-		WorldScale = __MOVE(Math::Vec3D, other.WorldScale);
-		LocalScale = __MOVE(Math::Vec3D, other.LocalScale);
-		WorldAngle = __MOVE(Math::Vec3D, other.WorldAngle);
-		LocalAngle = __MOVE(Math::Vec3D, other.LocalAngle);
-		bShouldRecalculateTransform = __MOVE(bool, other.bShouldRecalculateTransform);
-		bShouldRecalculateWorldData = __MOVE(bool, other.bShouldRecalculateWorldData);
-		Forward = __MOVE(Math::Vec3D, other.Forward);
-		Right = __MOVE(Math::Vec3D, other.Right);
-		Up = __MOVE(Math::Vec3D, other.Up);
+		Transformation = __MOVE(other.Transformation);
+		WorldLocation = __MOVE(other.WorldLocation);
+		WorldScale = __MOVE(other.WorldScale);
+		LocalScale = __MOVE(other.LocalScale);
+		WorldAngle = __MOVE(other.WorldAngle);
+		LocalAngle = __MOVE(other.LocalAngle);
+		bShouldRecalculateTransform = __MOVE(other.bShouldRecalculateTransform);
+		bShouldRecalculateWorldData = __MOVE(other.bShouldRecalculateWorldData);
+		Forward = __MOVE(other.Forward);
+		Right = __MOVE(other.Right);
+		Up = __MOVE(other.Up);
 
 		other.bShouldRecalculateTransform = false;
 		other.bShouldRecalculateWorldData = false;

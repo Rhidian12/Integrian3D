@@ -30,7 +30,7 @@ namespace Integrian3D
 				(*static_cast<ComponentArray<Ts>*>(ComponentPools[GenerateComponentID<Ts>()].get()))...
 			};
 
-			return View<Ts...>{ __MOVE(std::tuple<ComponentArray<Ts>&...>, comps), EntitySignatures };
+			return View<Ts...>{ __MOVE(comps), EntitySignatures };
 		}
 
 		template<typename T>

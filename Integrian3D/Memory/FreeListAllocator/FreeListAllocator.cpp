@@ -41,12 +41,12 @@ namespace Integrian3D::Memory
 	}
 
 	FreeListAllocator::FreeListAllocator(FreeListAllocator&& other) noexcept
-		: m_pStart{ __MOVE(void*, other.m_pStart) }
-		, m_PlacementPolicy{ __MOVE(PlacementPolicy, other.m_PlacementPolicy) }
-		, m_FreeList{ __MOVE(LinkedList<FreeHeader*>, other.m_FreeList) }
-		, m_UsedList{ __MOVE(LinkedList<AllocationHeader*>, other.m_UsedList) }
-		, m_Size{ __MOVE(uint64_t, other.m_Size) }
-		, m_Capacity{ __MOVE(uint64_t, other.m_Capacity) }
+		: m_pStart{ __MOVE(other.m_pStart) }
+		, m_PlacementPolicy{ __MOVE(other.m_PlacementPolicy) }
+		, m_FreeList{ __MOVE(other.m_FreeList) }
+		, m_UsedList{ __MOVE(other.m_UsedList) }
+		, m_Size{ __MOVE(other.m_Size) }
+		, m_Capacity{ __MOVE(other.m_Capacity) }
 	{
 		other.m_pStart = nullptr;
 		other.m_FreeList.Clear();
@@ -80,12 +80,12 @@ namespace Integrian3D::Memory
 			m_pStart = nullptr;
 		}
 
-		m_pStart = __MOVE(void*, other.m_pStart);
-		m_PlacementPolicy = __MOVE(PlacementPolicy, other.m_PlacementPolicy);
-		m_FreeList = __MOVE(LinkedList<FreeHeader*>, other.m_FreeList);
-		m_UsedList = __MOVE(LinkedList<AllocationHeader*>, other.m_UsedList);
-		m_Size = __MOVE(uint64_t, other.m_Size);
-		m_Capacity = __MOVE(uint64_t, other.m_Capacity);
+		m_pStart = __MOVE(other.m_pStart);
+		m_PlacementPolicy = __MOVE(other.m_PlacementPolicy);
+		m_FreeList = __MOVE(other.m_FreeList);
+		m_UsedList = __MOVE(other.m_UsedList);
+		m_Size = __MOVE(other.m_Size);
+		m_Capacity = __MOVE(other.m_Capacity);
 
 		other.m_pStart = nullptr;
 		other.m_FreeList.Clear();

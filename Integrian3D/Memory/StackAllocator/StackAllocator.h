@@ -23,8 +23,8 @@ namespace Integrian3D::Memory
 			, StackPointer{}
 		{}
 		StackAllocator(StackAllocator&& other) noexcept
-			: Buffer{ __MOVE(char*, other.Buffer) }
-			, StackPointer{ __MOVE(uint64_t, other.StackPointer) }
+			: Buffer{ __MOVE(other.Buffer) }
+			, StackPointer{ __MOVE(other.StackPointer) }
 		{}
 
 		StackAllocator& operator=(const StackAllocator& other) noexcept
@@ -35,8 +35,8 @@ namespace Integrian3D::Memory
 		}
 		StackAllocator& operator=(StackAllocator&& other) noexcept
 		{
-			Buffer = __MOVE(char*, other.Buffer);
-			StackPointer = __MOVE(uint64_t, other.StackPointer);
+			Buffer = __MOVE(other.Buffer);
+			StackPointer = __MOVE(other.StackPointer);
 
 			return *this;
 		}

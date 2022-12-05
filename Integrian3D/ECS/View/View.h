@@ -15,7 +15,7 @@ namespace Integrian3D
 
 	public:
 		explicit View(ViewContainerType&& components, std::unordered_map<Entity, EntitySignature>& sigs)
-			: Components{ __MOVE(ViewContainerType, components) }
+			: Components{ __MOVE(components) }
 			, EntitySignatures{ sigs }
 			, Entities{}
 		{

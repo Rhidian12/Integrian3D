@@ -61,15 +61,15 @@ namespace Integrian3D
 
 	/* std::move */
 #ifdef _DEBUG
-#define __MOVE(type, val) static_cast<type&&>(val)
+#define __MOVE(val) static_cast<std::remove_reference_t<decltype((val))>&&>((val))
 #else
-#define __MOVE(type, val) std::move(val)
+#define __MOVE(val) std::move((val))
 #endif
 
 	/* std::forward */
 #ifdef _DEBUG
-#define __FORWARD(type, val) static_cast<type&&>(val)
+#define __FORWARD(val) static_cast<decltype((val))&&>((val))
 #else
-#define __FORWARD(type, val) std::forward<type>(val)
+#define __FORWARD(val) std::forward<decltype((val))>((val))
 #endif
 }

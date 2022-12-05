@@ -99,14 +99,14 @@ namespace Integrian3D
 	}
 
 	Shader::Shader(Shader&& other) noexcept
-		: ProgramID{ __MOVE(uint32_t, other.ProgramID) }
+		: ProgramID{ __MOVE(other.ProgramID) }
 	{
 		other.ProgramID = std::numeric_limits<uint32_t>::max();
 	}
 
 	Shader& Shader::operator=(Shader&& other) noexcept
 	{
-		ProgramID = __MOVE(uint32_t, other.ProgramID);
+		ProgramID = __MOVE(other.ProgramID);
 
 		other.ProgramID = std::numeric_limits<uint32_t>::max();
 

@@ -104,12 +104,12 @@ namespace Integrian3D
 	}
 
 	MeshComponent::MeshComponent(MeshComponent&& other) noexcept
-		: VertexArrayID{ __MOVE(uint32_t, other.VertexArrayID) }
-		, VertexBufferID{ __MOVE(uint32_t, other.VertexBufferID) }
-		, IndexBufferID{ __MOVE(uint32_t, other.IndexBufferID) }
-		, Vertices{ __MOVE(std::vector<Vertex>, other.Vertices) }
-		, Indices{ __MOVE(std::vector<uint32_t>, other.Indices) }
-		, pTexture{ __MOVE(Texture*, other.pTexture) }
+		: VertexArrayID{ __MOVE(other.VertexArrayID) }
+		, VertexBufferID{ __MOVE(other.VertexBufferID) }
+		, IndexBufferID{ __MOVE(other.IndexBufferID) }
+		, Vertices{ __MOVE(other.Vertices) }
+		, Indices{ __MOVE(other.Indices) }
+		, pTexture{ __MOVE(other.pTexture) }
 	{
 		other.Vertices.clear();
 		other.Indices.clear();
@@ -123,12 +123,12 @@ namespace Integrian3D
 
 	MeshComponent& MeshComponent::operator=(MeshComponent&& other) noexcept
 	{
-		VertexArrayID = __MOVE(uint32_t, other.VertexArrayID);
-		VertexBufferID = __MOVE(uint32_t, other.VertexBufferID);
-		IndexBufferID = __MOVE(uint32_t, other.IndexBufferID);
-		Vertices = __MOVE(std::vector<Vertex>, other.Vertices);
-		Indices = __MOVE(std::vector<uint32_t>, other.Indices);
-		pTexture = __MOVE(Texture*, other.pTexture);
+		VertexArrayID = __MOVE(other.VertexArrayID);
+		VertexBufferID = __MOVE(other.VertexBufferID);
+		IndexBufferID = __MOVE(other.IndexBufferID);
+		Vertices = __MOVE(other.Vertices);
+		Indices = __MOVE(other.Indices);
+		pTexture = __MOVE(other.pTexture);
 
 		other.Vertices.clear();
 		other.Indices.clear();

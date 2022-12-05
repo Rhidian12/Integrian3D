@@ -27,10 +27,10 @@ namespace Integrian3D
 
 		ComponentArray(const ComponentArray&) noexcept = delete;
 		ComponentArray(ComponentArray&& other) noexcept
-			: Entities{ __MOVE(std::vector<std::vector<Entity>>, other.Entities) }
-			, Components{ __MOVE(std::vector<std::vector<T>>, other.Components) }
-			, NrOfComponentsPerList{ __MOVE(size_t, other.NrOfComponentsPerList) }
-			, NrOfEntities{ __MOVE(size_t, other.NrOfEntities) }
+			: Entities{ __MOVE(other.Entities) }
+			, Components{ __MOVE(other.Components) }
+			, NrOfComponentsPerList{ __MOVE(other.NrOfComponentsPerList) }
+			, NrOfEntities{ __MOVE(other.NrOfEntities) }
 		{
 			other.Components.clear();
 			other.Entities.clear();
@@ -39,10 +39,10 @@ namespace Integrian3D
 		ComponentArray& operator=(const ComponentArray&) noexcept = delete;
 		ComponentArray& operator=(ComponentArray&& other) noexcept
 		{
-			Entities = __MOVE(std::vector<std::vector<Entity>>, other.Entities);
-			Components = __MOVE(std::vector<std::vector<T>>, other.Components);
-			NrOfComponentsPerList = __MOVE(size_t, other.NrOfComponentsPerList);
-			NrOfEntities = __MOVE(size_t, other.NrOfEntities);
+			Entities = __MOVE(other.Entities);
+			Components = __MOVE(other.Components);
+			NrOfComponentsPerList = __MOVE(other.NrOfComponentsPerList);
+			NrOfEntities = __MOVE(other.NrOfEntities);
 
 			other.Components.clear();
 			other.Entities.clear();

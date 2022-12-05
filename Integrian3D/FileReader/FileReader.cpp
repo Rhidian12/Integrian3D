@@ -64,9 +64,9 @@ namespace Integrian3D
 
 	FileReader::FileReader(FileReader&& other) noexcept
 		: Handle{}
-		, FilePath{ __MOVE(std::string, other.FilePath) }
-		, FileContents{ __MOVE(std::string, other.FileContents) }
-		, DelimitedFileContents{ __MOVE(std::vector<std::string>, other.DelimitedFileContents) }
+		, FilePath{ __MOVE(other.FilePath) }
+		, FileContents{ __MOVE(other.FileContents) }
+		, DelimitedFileContents{ __MOVE(other.DelimitedFileContents) }
 	{
 		if (Handle)
 		{
@@ -76,15 +76,15 @@ namespace Integrian3D
 			}
 		}
 
-		Handle = __MOVE(void*, other.Handle);
+		Handle = __MOVE(other.Handle);
 		other.Handle = nullptr;
 	}
 
 	FileReader& FileReader::operator=(FileReader&& other) noexcept
 	{
-		FilePath = __MOVE(std::string, other.FilePath);
-		FileContents = __MOVE(std::string, other.FileContents);
-		DelimitedFileContents = __MOVE(std::vector<std::string>, other.DelimitedFileContents);
+		FilePath = __MOVE(other.FilePath);
+		FileContents = __MOVE(other.FileContents);
+		DelimitedFileContents = __MOVE(other.DelimitedFileContents);
 
 		if (Handle)
 		{
@@ -94,7 +94,7 @@ namespace Integrian3D
 			}
 		}
 
-		Handle = __MOVE(void*, other.Handle);
+		Handle = __MOVE(other.Handle);
 		other.Handle = nullptr;
 
 		return *this;

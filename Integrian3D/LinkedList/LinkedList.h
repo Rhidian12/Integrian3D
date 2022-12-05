@@ -40,8 +40,8 @@ namespace Integrian3D
 				Add(*other.At(i));
 		}
 		LinkedList(LinkedList&& other) noexcept
-			: m_pHead{ __MOVE(Node*, other.m_pHead) }
-			, m_Size{ __MOVE(uint64_t, other.m_Size) }
+			: m_pHead{ __MOVE(other.m_pHead) }
+			, m_Size{ __MOVE(other.m_Size) }
 		{
 			other.m_pHead = nullptr;
 		}
@@ -60,8 +60,8 @@ namespace Integrian3D
 			if (m_pHead)
 				Clear();
 
-			m_pHead = __MOVE(Node*, m_pHead);
-			m_Size = __MOVE(uint64_t, other.m_Size);
+			m_pHead = __MOVE(m_pHead);
+			m_Size = __MOVE(other.m_Size);
 
 			other.m_pHead = nullptr;
 
@@ -76,7 +76,7 @@ namespace Integrian3D
 		}
 		constexpr void Add(T&& value)
 		{
-			EmplaceBack(__MOVE(T, value));
+			EmplaceBack(__MOVE(value));
 		}
 
 		constexpr void AddFront(const T& value)
@@ -85,7 +85,7 @@ namespace Integrian3D
 		}
 		constexpr void AddFront(T&& value)
 		{
-			EmplaceFront(__MOVE(T, value));
+			EmplaceFront(__MOVE(value));
 		}
 
 		constexpr void Erase(const T& value)
@@ -131,13 +131,13 @@ namespace Integrian3D
 			/* first node to be added */
 			if (!m_pHead)
 			{
-				m_pHead = new Node{ T{ __FORWARD(Ts, args)...} };
+				m_pHead = new Node{ T{ __FORWARD(args)...} };
 				return m_pHead->Data;
 			}
 			else
 			{
 				Node* pLastElement{ GetLastElement() };
-				Node* pNewElement{ new Node{ T{ __FORWARD(Ts, args)...} } };
+				Node* pNewElement{ new Node{ T{ __FORWARD(args)...} } };
 
 				pLastElement->pNext = pNewElement;
 
@@ -153,12 +153,12 @@ namespace Integrian3D
 			/* first node to be added */
 			if (!m_pHead)
 			{
-				m_pHead = new Node{ T{ __FORWARD(Ts, args)...} };
+				m_pHead = new Node{ T{ __FORWARD(args)...} };
 				return m_pHead->Data;
 			}
 			else
 			{
-				Node* pNewElement{ new Node{ T{ __FORWARD(Ts, args)...} } };
+				Node* pNewElement{ new Node{ T{ __FORWARD(args)...} } };
 
 				pNewElement->pNext = m_pHead;
 				m_pHead = pNewElement;

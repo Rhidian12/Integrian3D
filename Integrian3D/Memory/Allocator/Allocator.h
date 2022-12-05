@@ -27,8 +27,8 @@ namespace Integrian3D::Memory
 				, m_MemoryLocation{ other.m_MemoryLocation }
 			{}
 			constexpr Handle(Handle&& other) noexcept
-				: m_Allocator{ __MOVE(T, other.m_Allocator) }
-				, m_MemoryLocation{ __MOVE(uint64_t, other.m_MemoryLocation) }
+				: m_Allocator{ __MOVE(other.m_Allocator) }
+				, m_MemoryLocation{ __MOVE(other.m_MemoryLocation) }
 			{}
 			constexpr Handle& operator=(const Handle& other) noexcept
 			{
@@ -39,8 +39,8 @@ namespace Integrian3D::Memory
 			}
 			constexpr Handle& operator=(Handle&& other) noexcept
 			{
-				m_Allocator = __MOVE(T, other.m_Allocator);
-				m_MemoryLocation = __MOVE(uint64_t, other.m_MemoryLocation);
+				m_Allocator = __MOVE(other.m_Allocator);
+				m_MemoryLocation = __MOVE(other.m_MemoryLocation);
 
 				return *this;
 			}
@@ -86,8 +86,8 @@ namespace Integrian3D::Memory
 			static_assert(Traits::IsCopyConstructable, "T::T(const T&) has not been defined");
 		}
 		constexpr Allocator(Allocator&& other) noexcept
-			: m_Allocator{ __MOVE(T, other.m_Allocator) }
-			, m_TakenMemoryLocations{ __MOVE(std::vector<uint64_t>, other.m_TakenMemoryLocations) }
+			: m_Allocator{ __MOVE(other.m_Allocator) }
+			, m_TakenMemoryLocations{ __MOVE(other.m_TakenMemoryLocations) }
 		{
 			static_assert(Traits::IsMoveConstructable, "T::T(T&&) has not been defined");
 
@@ -105,8 +105,8 @@ namespace Integrian3D::Memory
 		{
 			static_assert(Traits::IsMoveAssignable, "T& T::operator=(T&&) has not been defined");
 
-			m_Allocator = __MOVE(T, other.m_Allocator);
-			m_TakenMemoryLocations = __MOVE(std::vector<uint64_t>, other.m_TakenMemoryLocations);
+			m_Allocator = __MOVE(other.m_Allocator);
+			m_TakenMemoryLocations = __MOVE(other.m_TakenMemoryLocations);
 
 			other.m_TakenMemoryLocations.clear();
 

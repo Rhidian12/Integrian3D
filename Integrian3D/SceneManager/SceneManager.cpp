@@ -21,7 +21,7 @@ namespace Integrian3D
 
 	void SceneManager::AddScene(Scene&& scene)
 	{
-		Scenes.push_back(__MOVE(Scene, scene));
+		Scenes.push_back(__MOVE(scene));
 
 		if (!pActiveScene)
 		{

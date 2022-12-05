@@ -98,10 +98,10 @@ namespace Integrian3D
 			m_pCurrentEnd = m_pHead + size;
 		}
 		constexpr Array(Array&& other) noexcept
-			: m_pHead{ __MOVE(T*, other.m_pHead) }
-			, m_pTail{ __MOVE(T*, other.m_pTail) }
-			, m_pCurrentEnd{ __MOVE(T*, other.m_pCurrentEnd) }
-			, m_Allocator{ __MOVE(Alloc, other.m_Allocator) }
+			: m_pHead{ __MOVE(other.m_pHead) }
+			, m_pTail{ __MOVE(other.m_pTail) }
+			, m_pCurrentEnd{ __MOVE(other.m_pCurrentEnd) }
+			, m_Allocator{ __MOVE(other.m_Allocator) }
 		{
 			other.m_pHead = nullptr;
 			other.m_pTail = nullptr;
@@ -142,10 +142,10 @@ namespace Integrian3D
 				Release(m_pHead);
 			}
 
-			m_pHead = __MOVE(T*, other.m_pHead);
-			m_pTail = __MOVE(T*, other.m_pTail);
-			m_pCurrentEnd = __MOVE(T*, other.m_pCurrentEnd);
-			m_Allocator = __MOVE(Alloc, other.m_Allocator);
+			m_pHead = __MOVE(other.m_pHead);
+			m_pTail = __MOVE(other.m_pTail);
+			m_pCurrentEnd = __MOVE(other.m_pCurrentEnd);
+			m_Allocator = __MOVE(other.m_Allocator);
 
 			other.m_pHead = nullptr;
 			other.m_pTail = nullptr;
@@ -162,7 +162,7 @@ namespace Integrian3D
 		}
 		constexpr void Add(T&& val)
 		{
-			EmplaceBack(__MOVE(T, val));
+			EmplaceBack(__MOVE(val));
 		}
 
 		constexpr void AddFront(const T& val)
@@ -171,7 +171,7 @@ namespace Integrian3D
 		}
 		constexpr void AddFront(T&& val)
 		{
-			EmplaceFront(__MOVE(T, val));
+			EmplaceFront(__MOVE(val));
 		}
 
 		constexpr void AddRange(std::initializer_list<T> elems)
@@ -247,7 +247,7 @@ namespace Integrian3D
 		}
 		constexpr It Erase(UnaryPred&& pred)
 		{
-			It it{ Find(__MOVE(UnaryPred, pred)) };
+			It it{ Find(__MOVE(pred)) };
 
 			if (it != end())
 			{
@@ -284,7 +284,7 @@ namespace Integrian3D
 		}
 		constexpr void Insert(const uint64_t index, T&& val)
 		{
-			Emplace(index, __MOVE(T, val));
+			Emplace(index, __MOVE(val));
 		}
 
 		constexpr void Pop()
@@ -325,7 +325,7 @@ namespace Integrian3D
 				Reallocate();
 			}
 
-			return *(new (m_pCurrentEnd++) T{ __FORWARD(Ts, args)... });
+			return *(new (m_pCurrentEnd++) T{ __FORWARD(args)... });
 		}
 
 		template<typename ... Ts>
@@ -342,12 +342,12 @@ namespace Integrian3D
 
 			if (oldSize == 0 || index == oldSize - 1)
 			{
-				return EmplaceBack(__FORWARD(Ts, args)...);
+				return EmplaceBack(__FORWARD(args)...);
 			}
 			else
 			{
 				MoveRange(m_pHead + index, m_pCurrentEnd++ - 1, m_pHead + index + 1);
-				return *(new (m_pHead + index) T{ __FORWARD(Ts, args)... });
+				return *(new (m_pHead + index) T{ __FORWARD(args)... });
 			}
 		}
 
@@ -362,7 +362,7 @@ namespace Integrian3D
 
 			MoveRange(m_pHead, m_pCurrentEnd++, m_pHead + 1);
 
-			return *(new (m_pHead) T{ __FORWARD(Ts, args)... });
+			return *(new (m_pHead) T{ __FORWARD(args)... });
 		}
 #pragma endregion
 
@@ -445,7 +445,7 @@ namespace Integrian3D
 
 				for (uint64_t i{}; i < diff; ++i)
 				{
-					EmplaceBack(__FORWARD(U, val));
+					EmplaceBack(__FORWARD(val));
 				}
 
 				return;
@@ -677,7 +677,7 @@ namespace Integrian3D
 			{
 				if constexpr (std::is_move_assignable_v<T>)
 				{
-					new (m_pHead + i) T{ __MOVE(T, *(oldHead + i)) };
+					new (m_pHead + i) T{ __MOVE(*(oldHead + i)) };
 				}
 				else
 				{
@@ -704,7 +704,7 @@ namespace Integrian3D
 			{
 				if constexpr (std::is_move_assignable_v<T>)
 				{
-					new (m_pHead + i) T{ __MOVE(T, *(m_pHead + i)) };
+					new (m_pHead + i) T{ __MOVE(*(m_pHead + i)) };
 				}
 				else
 				{
@@ -765,7 +765,7 @@ namespace Integrian3D
 			{
 				if constexpr (std::is_move_assignable_v<T>)
 				{
-					new (newHead + i) T{ __MOVE(T, *(head + i)) };
+					new (newHead + i) T{ __MOVE(*(head + i)) };
 				}
 				else
 				{

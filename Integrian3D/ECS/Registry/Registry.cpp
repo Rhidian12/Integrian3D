@@ -24,11 +24,11 @@ namespace Integrian3D
 	}
 
 	Registry::Registry(Registry&& other) noexcept
-		: EntitySignatures{ __MOVE(EMap, other.EntitySignatures) }
-		, Entities{ __MOVE(std::vector<std::vector<Entity>>, other.Entities) }
-		, CurrentEntityCounter{ __MOVE(Entity, other.CurrentEntityCounter) }
-		, ComponentPools{ __MOVE(CPools, other.ComponentPools) }
-		, NrOfEntitiesPerList{ __MOVE(size_t, other.NrOfEntitiesPerList) }
+		: EntitySignatures{ __MOVE(other.EntitySignatures) }
+		, Entities{ __MOVE(other.Entities) }
+		, CurrentEntityCounter{ __MOVE(other.CurrentEntityCounter) }
+		, ComponentPools{ __MOVE(other.ComponentPools) }
+		, NrOfEntitiesPerList{ __MOVE(other.NrOfEntitiesPerList) }
 	{
 		other.EntitySignatures.clear();
 		other.Entities.clear();
@@ -38,11 +38,11 @@ namespace Integrian3D
 
 	Registry& Registry::operator=(Registry&& other) noexcept
 	{
-		EntitySignatures = __MOVE(EMap, other.EntitySignatures);
-		Entities = __MOVE(std::vector<std::vector<Entity>>, other.Entities);
-		CurrentEntityCounter = __MOVE(Entity, other.CurrentEntityCounter);
-		ComponentPools = __MOVE(CPools, other.ComponentPools);
-		NrOfEntitiesPerList = __MOVE(size_t, other.NrOfEntitiesPerList);
+		EntitySignatures = __MOVE(other.EntitySignatures);
+		Entities = __MOVE(other.Entities);
+		CurrentEntityCounter = __MOVE(other.CurrentEntityCounter);
+		ComponentPools = __MOVE(other.ComponentPools);
+		NrOfEntitiesPerList = __MOVE(other.NrOfEntitiesPerList);
 
 		other.EntitySignatures.clear();
 		other.Entities.clear();

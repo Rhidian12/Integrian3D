@@ -32,9 +32,9 @@ namespace Integrian3D::Memory
 	}
 
 	LinearAllocator::LinearAllocator(LinearAllocator&& other) noexcept
-		: Start{ __MOVE(void*, other.Start) }
-		, End{ __MOVE(void*, other.End) }
-		, Current{ __MOVE(void*, other.Current) }
+		: Start{ __MOVE(other.Start) }
+		, End{ __MOVE(other.End) }
+		, Current{ __MOVE(other.Current) }
 	{
 		other.Start = nullptr;
 		other.End = nullptr;
@@ -61,9 +61,9 @@ namespace Integrian3D::Memory
 			delete[] Start;
 		}
 
-		Start = __MOVE(void*, other.Start);
-		End = __MOVE(void*, other.End);
-		Current = __MOVE(void*, other.Current);
+		Start = __MOVE(other.Start);
+		End = __MOVE(other.End);
+		Current = __MOVE(other.Current);
 
 		other.Start = nullptr;
 		other.End = nullptr;
