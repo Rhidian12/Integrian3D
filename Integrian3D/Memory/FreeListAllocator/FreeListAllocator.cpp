@@ -3,7 +3,7 @@
 namespace Integrian3D::Memory
 {
 	FreeListAllocator::FreeListAllocator(const PlacementPolicy policy)
-		: FreeListAllocator{ 1024, policy }
+		: FreeListAllocator{ 32, policy }
 	{}
 	FreeListAllocator::FreeListAllocator(const uint64_t size, const PlacementPolicy policy)
 		: m_pStart{}

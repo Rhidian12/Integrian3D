@@ -44,6 +44,12 @@ namespace Integrian3D::Memory
 
 		template<typename T>
 		struct _HasGet<T, Void<decltype(std::declval<T>().Get(0))>> : public std::true_type {};
+
+		template<typename T, typename U, typename = void>
+		struct _CanDestroy : public std::false_type {};
+
+		template<typename T, typename U>
+		struct _CanDestroy<T, U, Void<decltype(std::declval<T>().Destroy<U>(nullptr))>> : public std::true_type {};
 	}
 
 	template<typename T>
@@ -53,8 +59,10 @@ namespace Integrian3D::Memory
 
 		template<typename U>
 		constexpr static auto CanAllocate = _CanAllocate<T, U>::value;
-
 		constexpr static auto CanDeallocate = _CanDeallocate<T>::value;
+
+		template<typename U>
+		constexpr static auto CanDestroy = _CanDestroy<T, U>::value;
 
 		constexpr static auto HasData = _HasData<T>::value;
 

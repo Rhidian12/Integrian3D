@@ -160,7 +160,7 @@ TEST_CASE("Testing the Allocator Interface")
 }
 #endif
 
-//#define ARRAY_TESTS
+#define ARRAY_TESTS
 #ifdef ARRAY_TESTS
 #include "DebugUtility/DebugUtility.h"
 #include "Array/Array.h"
@@ -354,7 +354,7 @@ TEST_CASE("Testing Basic Array of integers")
 			arr.Add(i);
 		}
 
-		TArray<int> newArr{ __MOVE(TArray<int>, arr) };
+		TArray<int> newArr{ __MOVE(arr) };
 
 		REQUIRE(arr.Size() == 0);
 		REQUIRE(arr.Capacity() == 0);
@@ -374,7 +374,7 @@ TEST_CASE("Testing Basic Array of integers")
 			arr.Add(i);
 		}
 
-		TArray<int> newArr = __MOVE(TArray<int>, arr);
+		TArray<int> newArr = __MOVE(arr);
 
 		REQUIRE(arr.Size() == 0);
 		REQUIRE(arr.Capacity() == 0);
@@ -454,9 +454,14 @@ TEST_CASE("Testing Basic Array of integers")
 			arr.Add(i);
 		}
 
+		for (int i{}; i < nrOfElements; ++i)
+			std::cout << arr[i] << "\n";
+
 		int counter{};
 		for (int elem : arr)
 		{
+			auto test2 = arr[counter];
+			auto test = arr.At(counter);
 			REQUIRE(elem == counter++);
 		}
 

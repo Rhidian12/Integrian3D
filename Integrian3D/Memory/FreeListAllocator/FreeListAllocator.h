@@ -109,6 +109,15 @@ namespace Integrian3D::Memory
 			/* [TODO]: merge nodes together */
 		}
 
+		template<typename T>
+		constexpr void Destroy(T* p) const
+		{
+			if (!p)
+				return;
+
+			p->~T();
+		}
+
 		__NODISCARD void* Get(const uint64_t n) const
 		{
 			if (n >= m_Size)
