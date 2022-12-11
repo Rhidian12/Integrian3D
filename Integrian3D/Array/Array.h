@@ -385,7 +385,7 @@ namespace Integrian3D
 		template<typename ... Ts>
 		constexpr T& Emplace(const uint64_t index, Ts&&... args)
 		{
-			__ASSERT(index < Size() && "Array::Emplace() > index is out of range");
+			__ASSERT(index <= Size() && "Array::Emplace() > index is out of range");
 
 			const uint64_t oldSize{ Size() };
 
@@ -394,7 +394,11 @@ namespace Integrian3D
 				Reallocate();
 			}
 
-			if (oldSize == 0 || index == oldSize - 1)
+			if (index == 0)
+			{
+				return EmplaceFront(__FORWARD(args)...);
+			}
+			else if (oldSize == 0 || index == oldSize || index == oldSize - 1)
 			{
 				return EmplaceBack(__FORWARD(args)...);
 			}
@@ -752,7 +756,7 @@ namespace Integrian3D
 			DeleteData(pOldHead, pOldTail);
 			Release(m_pHandle);
 
-			m_pHandle = pNewHandle;
+			m_pHandle = __MOVE(pNewHandle);
 		}
 		constexpr void ReallocateExactly(const uint64_t newCap)
 		{
@@ -830,8 +834,6 @@ namespace Integrian3D
 
 		constexpr void MoveRange(T* head, T* end, T* newHead) const
 		{
-			__ASSERT(end > head);
-
 			const uint64_t size{ static_cast<uint64_t>(end - head) };
 			for (uint64_t i{}; i < size; ++i)
 			{
