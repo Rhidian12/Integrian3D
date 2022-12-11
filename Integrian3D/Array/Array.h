@@ -243,7 +243,7 @@ namespace Integrian3D
 			}
 		}
 
-		constexpr It Erase(const uint64_t index)
+		constexpr It EraseByIndex(const uint64_t index)
 		{
 			__ASSERT(index < Size() && "Array::Erase() > index is out of range");
 
@@ -269,6 +269,7 @@ namespace Integrian3D
 				return It{ m_pHead + index };
 			}
 		}
+
 		constexpr It Erase(It pos)
 		{
 			__ASSERT(pos != end() && "Array::Erase() > invalid iterator was passed as a parameter");
@@ -282,7 +283,7 @@ namespace Integrian3D
 			{
 				if (*(m_pHead + i) == val)
 				{
-					return Erase(i);
+					return EraseByIndex(i);
 				}
 			}
 
