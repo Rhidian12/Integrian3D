@@ -100,13 +100,33 @@ namespace Integrian3D::Memory
 			FreeHeader* pFreeHeader{ reinterpret_cast<FreeHeader*>(reinterpret_cast<uint64_t>(pAllHeader) - sizeof(FreeHeader)) };
 			pFreeHeader->Size = pAllHeader->Size + pAllHeader->Padding;
 
-			m_FreeList.Add(pFreeHeader);
-
 			m_UsedList.Erase(pAllHeader);
 
 			--m_Size;
 
-			/* [TODO]: merge nodes together */
+			FreeHeader* pLastBlock{};
+
+			const uint64_t nrOfFreeHeaders{ m_FreeList.Size() };
+			if (nrOfFreeHeaders > 0u)
+				pLastBlock = *m_FreeList.Back();
+
+			if (nrOfFreeHeaders == 0u)
+				m_FreeList.Add(pFreeHeader);
+			else if (reinterpret_cast<uint64_t>(pLastBlock) + pLastBlock->Size == reinterpret_cast<uint64_t>(pFreeHeader))
+				pLastBlock->Size += pFreeHeader->Size;
+			else
+				m_FreeList.Add(pFreeHeader);
+
+			if (pLastBlock)
+			{
+				FreeHeader* pNewLastBlock{ *m_FreeList.Back() };
+
+				if (reinterpret_cast<uint64_t>(pLastBlock) + pLastBlock->Size == reinterpret_cast<uint64_t>(pNewLastBlock))
+				{
+					pLastBlock->Size += pNewLastBlock->Size;
+					m_FreeList.Erase(pNewLastBlock);
+				}
+			}
 		}
 
 		template<typename T>
@@ -294,8 +314,8 @@ namespace Integrian3D::Memory
 				(*freeList.Back())->Size = newCap - totalAllocatedMem;
 			}
 
-			m_FreeList = freeList;
-			m_UsedList = usedList;
+			m_FreeList = __MOVE(freeList);
+			m_UsedList = __MOVE(usedList);
 
 			delete[] m_pStart;
 
