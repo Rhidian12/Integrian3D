@@ -157,6 +157,28 @@ TEST_CASE("Testing the Allocator Interface")
 	REQUIRE(*b == 15);
 	REQUIRE(*d == 25);
 	REQUIRE(*e == 36.0);
+
+	auto& f = allocInterface.Allocate<int>(50);
+	REQUIRE(*a == 5);
+	REQUIRE(*b == 15);
+	REQUIRE(*d == 25);
+	REQUIRE(*e == 36.0);
+
+	int* pStart{ &f };
+
+	REQUIRE(&f == pStart);
+
+	for (int i{}; i < 50; ++i)
+		*(pStart + i) = i;
+
+	for (int i{}; i < 50; ++i)
+		REQUIRE(pStart[i] == i);
+
+#pragma warning ( push )
+#pragma warning ( disable : 4189 ) /* warning C4189: 'g': local variable is initialized but not referenced */
+	auto& g = allocInterface.Allocate<double>(10);
+#pragma warning ( pop )
+	allocInterface.Deallocate(f);
 }
 #endif
 
@@ -454,14 +476,9 @@ TEST_CASE("Testing Basic Array of integers")
 			arr.Add(i);
 		}
 
-		for (int i{}; i < nrOfElements; ++i)
-			std::cout << arr[i] << "\n";
-
 		int counter{};
 		for (int elem : arr)
 		{
-			auto test2 = arr[counter];
-			auto test = arr.At(counter);
 			REQUIRE(elem == counter++);
 		}
 

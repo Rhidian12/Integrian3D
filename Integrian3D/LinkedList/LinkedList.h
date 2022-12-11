@@ -44,6 +44,7 @@ namespace Integrian3D
 			, m_Size{ __MOVE(other.m_Size) }
 		{
 			other.m_pHead = nullptr;
+			other.m_Size = 0;
 		}
 		LinkedList& operator=(const LinkedList& other) noexcept
 		{
@@ -60,10 +61,11 @@ namespace Integrian3D
 			if (m_pHead)
 				Clear();
 
-			m_pHead = __MOVE(m_pHead);
+			m_pHead = __MOVE(other.m_pHead);
 			m_Size = __MOVE(other.m_Size);
 
 			other.m_pHead = nullptr;
+			other.m_Size = 0;
 
 			return *this;
 		}

@@ -218,7 +218,7 @@ namespace Integrian3D::Memory
 
 			pFreeHeader = pBestFit;
 		}
-		
+
 		__NODISCARD constexpr uint64_t CalculateNewCapacity(const uint64_t min) const
 		{
 			const uint64_t oldCap{ Capacity() };
@@ -251,43 +251,48 @@ namespace Integrian3D::Memory
 			freeList.Add(pNewStart);
 			uint64_t totalAllocatedMem{};
 
-			/* loop over every allocated piece of memory and copy it over */
-			for (uint64_t i{}; i < m_UsedList.Size(); ++i)
+			if (m_UsedList.Size() > 0u)
 			{
-				/* get currently allocated memory */
-				AllocationHeader* pOldAllHeader{ *m_UsedList.At(i) };
+				/* loop over every allocated piece of memory and copy it over */
+				for (uint64_t i{}; i < m_UsedList.Size(); ++i)
+				{
+					/* get currently allocated memory */
+					AllocationHeader* pOldAllHeader{ *m_UsedList.At(i) };
 
-				/* get our new free header */
-				FreeHeader* pFreeHeader{ reinterpret_cast<FreeHeader*>(reinterpret_cast<uint64_t>(pNewStart) + totalAllocatedMem) };
+					/* get our new free header */
+					FreeHeader* pFreeHeader{ reinterpret_cast<FreeHeader*>(reinterpret_cast<uint64_t>(pNewStart) + totalAllocatedMem) };
 
-				/* initialize new allocation header */
-				AllocationHeader* pNewAllHeader{ reinterpret_cast<AllocationHeader*>(reinterpret_cast<uint64_t>(pFreeHeader) + sizeof(FreeHeader)) };
-				pNewAllHeader->Size = pOldAllHeader->Size;
-				pNewAllHeader->Padding = pOldAllHeader->Padding;
+					/* initialize new allocation header */
+					AllocationHeader* pNewAllHeader{ reinterpret_cast<AllocationHeader*>(reinterpret_cast<uint64_t>(pFreeHeader) + sizeof(FreeHeader)) };
+					pNewAllHeader->Size = pOldAllHeader->Size;
+					pNewAllHeader->Padding = pOldAllHeader->Padding;
 
-				/* copy over data */
-				memcpy
-				(
-					reinterpret_cast<void*>(reinterpret_cast<uint64_t>(pNewAllHeader) + sizeof(AllocationHeader)),
-					reinterpret_cast<void*>(reinterpret_cast<uint64_t>(pOldAllHeader) + sizeof(AllocationHeader)),
-					pOldAllHeader->Size
-				);
+					/* copy over data */
+					memcpy
+					(
+						reinterpret_cast<void*>(reinterpret_cast<uint64_t>(pNewAllHeader) + sizeof(AllocationHeader)),
+						reinterpret_cast<void*>(reinterpret_cast<uint64_t>(pOldAllHeader) + sizeof(AllocationHeader)),
+						pOldAllHeader->Size
+					);
 
-				/* make new free header from current free header */
-				const uint64_t totalSize{ pOldAllHeader->Size + pOldAllHeader->Padding };
-				FreeHeader* pNewFreeHeader{ reinterpret_cast<FreeHeader*>(reinterpret_cast<uint64_t>(pFreeHeader) + totalSize) };
-				pNewFreeHeader->Size = totalSize;
+					/* make new free header from current free header */
+					const uint64_t totalSize{ pOldAllHeader->Size + pOldAllHeader->Padding };
+					FreeHeader* pNewFreeHeader{ reinterpret_cast<FreeHeader*>(reinterpret_cast<uint64_t>(pFreeHeader) + totalSize) };
+					pNewFreeHeader->Size = totalSize;
 
-				/* keep track of how much memory we've currently copied over */
-				totalAllocatedMem += totalSize;
+					/* keep track of how much memory we've currently copied over */
+					totalAllocatedMem += totalSize;
 
-				freeList.Erase(pFreeHeader);
-				freeList.Add(pNewFreeHeader);
-				usedList.Add(pNewAllHeader);
+					freeList.Erase(pFreeHeader);
+					freeList.Add(pNewFreeHeader);
+					usedList.Add(pNewAllHeader);
+				}
+
+				/* copium let's assume we have an element remaining, we should tho */
+				/* I'm adding too much memory, because this can't be equal to newCap, especially if memory has been allocated */
+
+				(*freeList.Back())->Size = newCap - totalAllocatedMem;
 			}
-
-			/* copium let's assume we have an element remaining, we should tho */
-			(*freeList.Back())->Size += newCap - totalAllocatedMem;
 
 			m_FreeList = freeList;
 			m_UsedList = usedList;
