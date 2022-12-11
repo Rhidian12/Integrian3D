@@ -1,6 +1,6 @@
 // #define ENGINE
-#define TESTS
-// #define BENCHMARKS
+// #define TESTS
+#define BENCHMARKS
 #ifdef ENGINE
 #include "EngineConstants.h"
 #include "Core/Core.h"
@@ -128,8 +128,8 @@ TEST_CASE("Testing the Allocator Interface")
 	Allocator<FreeListAllocator> allocInterface{ std::move(alloc) };
 
 	auto& a = allocInterface.Allocate<int>(1);
-	 *a = 5;
-	 REQUIRE(*a == 5);
+	*a = 5;
+	REQUIRE(*a == 5);
 
 	auto& b = allocInterface.Allocate<int>(1);
 	*b = 15;
@@ -295,6 +295,18 @@ TEST_CASE("Testing Basic Array of integers")
 		{
 			REQUIRE(arr[i] == 15);
 		}
+	}
+
+	SECTION("Adding elements only through insertion")
+	{
+		for (int i{}; i < nrOfElements; ++i)
+		{
+			arr.Insert(i, i);
+		}
+
+		REQUIRE(arr[0] == 0);
+		REQUIRE(arr.Size() == nrOfElements);
+		REQUIRE(arr.Capacity() >= nrOfElements);
 	}
 
 	SECTION("Inserting elements into the array")
@@ -841,7 +853,7 @@ double Benchmark(Fn&& fn)
 
 double GetAverage(const std::deque<double>& arr)
 {
-	return std::accumulate(arr.cbegin(), arr.cend(), 0.0);
+	return std::accumulate(arr.cbegin(), arr.cend(), 0.0) / static_cast<double>(arr.size());
 }
 
 #define ARRAY_BENCHMARKS
@@ -849,33 +861,88 @@ double GetAverage(const std::deque<double>& arr)
 #include "Array/Array.h"
 #include <deque>
 
-int main()
+#define ARR_CREATE
+#ifdef ARR_CREATE
+void BenchmarkCreation(const uint64_t iterations, const uint64_t nrOfOperationsPerIt)
 {
 	using namespace Integrian3D;
 	using namespace Memory;
 
-	constexpr uint64_t iterations{ 100'000u };
-	std::deque<double> arrTimes{};
-	std::deque<double> vectorTimes{};
+	using namespace Integrian3D;
+	using namespace Memory;
 
-	constexpr uint64_t amountOfPushbacks{ 1000u };
+	std::deque<double> standardArrTimes{};
+	std::deque<double> vectorTimes{};
 
 	for (uint64_t i{}; i < iterations; ++i)
 	{
-		arrTimes.push_back(Benchmark([amountOfPushbacks]()->void
+		standardArrTimes.push_back(Benchmark([nrOfOperationsPerIt]()->void
 			{
-				LinearAllocator alloc{ sizeof(uint64_t) * amountOfPushbacks };
-				Array<uint64_t, LinearAllocator> arr{ alloc };
-				for (uint64_t i{}; i < amountOfPushbacks; ++i)
+				for (uint64_t i{}; i < nrOfOperationsPerIt; ++i)
 				{
-					arr.Add(i);
+					TArray<uint64_t> standardArr{};
 				}
 			}));
 
-		vectorTimes.push_back(Benchmark([amountOfPushbacks]()->void
+		vectorTimes.push_back(Benchmark([nrOfOperationsPerIt]()->void
 			{
-				std::vector<uint64_t> vec{};
-				for (uint64_t i{}; i < amountOfPushbacks; ++i)
+				for (uint64_t i{}; i < nrOfOperationsPerIt; ++i)
+				{
+					std::vector<uint64_t> vec{};
+				}
+			}));
+	}
+
+	for (uint64_t i{}; i < iterations / 10u; ++i)
+	{
+		standardArrTimes.pop_back();
+		standardArrTimes.pop_front();
+
+		vectorTimes.pop_back();
+		vectorTimes.pop_front();
+	}
+
+	std::cout << std::fixed << "Average Standard TArray creation time: " << GetAverage(standardArrTimes) << " seconds\n";
+	std::cout << std::fixed << "Average std::vector creation time: " << GetAverage(vectorTimes) << " seconds\n";
+}
+#endif
+#define ARR_PUSH_BACK
+#ifdef ARR_PUSH_BACK
+void BenchmarkPushBack(const uint64_t iterations, const uint64_t nrOfOperationsPerIt)
+{
+	using namespace Integrian3D;
+	using namespace Memory;
+
+	std::deque<double> standardArrTimes{};
+	std::deque<double> customArrTimes{};
+	std::deque<double> vectorTimes{};
+
+	for (uint64_t i{}; i < iterations; ++i)
+	{
+		FreeListAllocator alloc{ 8192u };
+		TArray<uint64_t> customArr{ __MOVE(alloc) };
+		TArray<uint64_t> standardArr{};
+		std::vector<uint64_t> vec{};
+
+		standardArrTimes.push_back(Benchmark([&standardArr, nrOfOperationsPerIt]()->void
+			{
+				for (uint64_t i{}; i < nrOfOperationsPerIt; ++i)
+				{
+					standardArr.Add(i);
+				}
+			}));
+
+		customArrTimes.push_back(Benchmark([&customArr, nrOfOperationsPerIt]()->void
+			{
+				for (uint64_t i{}; i < nrOfOperationsPerIt; ++i)
+				{
+					customArr.Add(i);
+				}
+			}));
+
+		vectorTimes.push_back(Benchmark([&vec, nrOfOperationsPerIt]()->void
+			{
+				for (uint64_t i{}; i < nrOfOperationsPerIt; ++i)
 				{
 					vec.push_back(i);
 				}
@@ -884,12 +951,220 @@ int main()
 
 	for (uint64_t i{}; i < iterations / 10u; ++i)
 	{
-		arrTimes.pop_back();
-		arrTimes.pop_front();
+		standardArrTimes.pop_back();
+		standardArrTimes.pop_front();
+
+		customArrTimes.pop_back();
+		customArrTimes.pop_front();
 
 		vectorTimes.pop_back();
 		vectorTimes.pop_front();
 	}
+
+	std::cout << std::fixed << "Average Standard TArray::Add time: " << GetAverage(standardArrTimes) << " seconds\n";
+	std::cout << std::fixed << "Average Custom Memory TArray::Add time: " << GetAverage(customArrTimes) << " seconds\n";
+	std::cout << std::fixed << "Average std::vector::push_back time: " << GetAverage(vectorTimes) << " seconds\n";
+}
+#endif
+#define ARR_INSERT
+#ifdef ARR_INSERT
+void BenchmarkInsert(const uint64_t iterations, const uint64_t nrOfOperationsPerIt)
+{
+	using namespace Integrian3D;
+	using namespace Memory;
+
+	std::deque<double> standardArrTimes{};
+	std::deque<double> customArrTimes{};
+	std::deque<double> vectorTimes{};
+
+	for (uint64_t i{}; i < iterations; ++i)
+	{
+		FreeListAllocator alloc{ 8192u };
+		TArray<uint64_t> customArr{ __MOVE(alloc) };
+		TArray<uint64_t> standardArr{};
+		std::vector<uint64_t> vec{};
+
+		standardArrTimes.push_back(Benchmark([&standardArr, nrOfOperationsPerIt]()->void
+			{
+				for (uint64_t i{}; i < nrOfOperationsPerIt; ++i)
+				{
+					standardArr.Insert(i, i);
+				}
+			}));
+
+		customArrTimes.push_back(Benchmark([&customArr, nrOfOperationsPerIt]()->void
+			{
+				for (uint64_t i{}; i < nrOfOperationsPerIt; ++i)
+				{
+					customArr.Insert(i, i);
+				}
+			}));
+
+		vectorTimes.push_back(Benchmark([&vec, nrOfOperationsPerIt]()->void
+			{
+				for (uint64_t i{}; i < nrOfOperationsPerIt; ++i)
+				{
+					vec.insert(vec.cbegin() + i, i);
+				}
+			}));
+	}
+
+	for (uint64_t i{}; i < iterations / 10u; ++i)
+	{
+		standardArrTimes.pop_back();
+		standardArrTimes.pop_front();
+
+		customArrTimes.pop_back();
+		customArrTimes.pop_front();
+
+		vectorTimes.pop_back();
+		vectorTimes.pop_front();
+	}
+
+	std::cout << std::fixed << "Average Standard TArray::Insert time: " << GetAverage(standardArrTimes) << " seconds\n";
+	std::cout << std::fixed << "Average Custom Memory TArray::Insert time: " << GetAverage(customArrTimes) << " seconds\n";
+	std::cout << std::fixed << "Average std::vector::insert time: " << GetAverage(vectorTimes) << " seconds\n";
+}
+#endif
+#define ARR_ERASE_VALUE
+#ifdef ARR_ERASE_VALUE
+void BenchmarkEraseValue(const uint64_t iterations, const uint64_t nrOfOperationsPerIt)
+{
+	using namespace Integrian3D;
+	using namespace Memory;
+
+	std::deque<double> standardArrTimes{};
+	std::deque<double> customArrTimes{};
+	std::deque<double> vectorTimes{};
+
+	for (uint64_t i{}; i < iterations; ++i)
+	{
+		FreeListAllocator alloc{ 8192u };
+		TArray<uint64_t> customArr{ __MOVE(alloc) };
+		TArray<uint64_t> standardArr{};
+		std::vector<uint64_t> vec{};
+
+		for (uint64_t j{}; j < nrOfOperationsPerIt; ++j)
+		{
+			customArr.Add(j);
+			standardArr.Add(j);
+			vec.push_back(j);
+		}
+
+		standardArrTimes.push_back(Benchmark([&standardArr, nrOfOperationsPerIt]()->void
+			{
+				for (uint64_t i{}; i < nrOfOperationsPerIt; ++i)
+				{
+					standardArr.Erase(i);
+				}
+			}));
+
+		customArrTimes.push_back(Benchmark([&customArr, nrOfOperationsPerIt]()->void
+			{
+				for (uint64_t i{}; i < nrOfOperationsPerIt; ++i)
+				{
+					customArr.Erase(i);
+				}
+			}));
+
+		vectorTimes.push_back(Benchmark([&vec, nrOfOperationsPerIt]()->void
+			{
+				for (uint64_t i{}; i < nrOfOperationsPerIt; ++i)
+				{
+					vec.erase(std::remove(vec.begin(), vec.end(), i), vec.end());
+				}
+			}));
+	}
+
+	for (uint64_t i{}; i < iterations / 10u; ++i)
+	{
+		standardArrTimes.pop_back();
+		standardArrTimes.pop_front();
+
+		customArrTimes.pop_back();
+		customArrTimes.pop_front();
+
+		vectorTimes.pop_back();
+		vectorTimes.pop_front();
+	}
+
+	std::cout << std::fixed << "Average Standard TArray::Erase by value time: " << GetAverage(standardArrTimes) << " seconds\n";
+	std::cout << std::fixed << "Average Custom Memory TArray::Erase by value time: " << GetAverage(customArrTimes) << " seconds\n";
+	std::cout << std::fixed << "Average std::vector::Erase by value time: " << GetAverage(vectorTimes) << " seconds\n";
+}
+#endif
+#define ARR_ERASE_IT
+#ifdef ARR_ERASE_IT
+void BenchmarkEraseIt(const uint64_t iterations, const uint64_t nrOfOperationsPerIt)
+{
+	using namespace Integrian3D;
+	using namespace Memory;
+
+	std::deque<double> standardArrTimes{};
+	std::deque<double> customArrTimes{};
+	std::deque<double> vectorTimes{};
+
+	for (uint64_t i{}; i < iterations; ++i)
+	{
+		FreeListAllocator alloc{ 8192u };
+		TArray<uint64_t> customArr{ __MOVE(alloc) };
+		TArray<uint64_t> standardArr{};
+		std::vector<uint64_t> vec{};
+
+		for (uint64_t j{}; j < nrOfOperationsPerIt; ++j)
+		{
+			customArr.Add(j);
+			standardArr.Add(j);
+			vec.push_back(j);
+		}
+
+		standardArrTimes.push_back(Benchmark([&standardArr, nrOfOperationsPerIt]()->void
+			{
+				for (uint64_t i{}; i < nrOfOperationsPerIt; ++i)
+				{
+					standardArr.Erase(standardArr.begin());
+				}
+			}));
+
+		customArrTimes.push_back(Benchmark([&customArr, nrOfOperationsPerIt]()->void
+			{
+				for (uint64_t i{}; i < nrOfOperationsPerIt; ++i)
+				{
+					customArr.Erase(customArr.begin());
+				}
+			}));
+
+		vectorTimes.push_back(Benchmark([&vec, nrOfOperationsPerIt]()->void
+			{
+				for (uint64_t i{}; i < nrOfOperationsPerIt; ++i)
+				{
+					vec.erase(vec.begin());
+				}
+			}));
+	}
+
+	for (uint64_t i{}; i < iterations / 10u; ++i)
+	{
+		standardArrTimes.pop_back();
+		standardArrTimes.pop_front();
+
+		customArrTimes.pop_back();
+		customArrTimes.pop_front();
+
+		vectorTimes.pop_back();
+		vectorTimes.pop_front();
+	}
+
+	std::cout << std::fixed << "Average Standard TArray::Erase by iterator time: " << GetAverage(standardArrTimes) << " seconds\n";
+	std::cout << std::fixed << "Average Custom Memory TArray::Erase by iterator time: " << GetAverage(customArrTimes) << " seconds\n";
+	std::cout << std::fixed << "Average std::vector::Erase by iterator time: " << GetAverage(vectorTimes) << " seconds\n";
+}
+#endif
+
+int main()
+{
+	constexpr uint64_t iterations{ 1000u };
+	constexpr uint64_t nrOfOperationsPerIt{ 1000u };
 
 #ifdef _DEBUG
 	std::cout << "Mode: Debug\n";
@@ -897,9 +1172,31 @@ int main()
 	std::cout << "Mode: Release\n";
 #endif
 	std::cout << "Amount of iterations: " << iterations << "\n";
-	std::cout << "Amount of push_backs: " << amountOfPushbacks << "\n";
-	std::cout << "Array time: " << GetAverage(arrTimes) << "\n";
-	std::cout << "Array time: " << GetAverage(vectorTimes) << "\n";
+	std::cout << "Amount of operations per iteration: " << nrOfOperationsPerIt << "\n";
+
+#ifdef ARR_CREATE
+	BenchmarkCreation(iterations, nrOfOperationsPerIt);
+	std::cout << "===============\n";
+#endif
+#ifdef ARR_PUSH_BACK
+	BenchmarkPushBack(iterations, nrOfOperationsPerIt);
+	std::cout << "===============\n";
+#endif
+#ifdef ARR_INSERT
+	BenchmarkInsert(iterations, nrOfOperationsPerIt);
+	std::cout << "===============\n";
+#endif
+#ifdef ARR_ERASE_VALUE
+	BenchmarkEraseValue(iterations, nrOfOperationsPerIt);
+	std::cout << "===============\n";
+#endif
+#ifdef ARR_ERASE_IT
+	BenchmarkEraseIt(iterations, nrOfOperationsPerIt);
+	std::cout << "===============\n";
+#endif
+
+	return 0;
 }
+
 #endif
 #endif
