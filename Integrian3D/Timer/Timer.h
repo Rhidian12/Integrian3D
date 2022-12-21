@@ -1,22 +1,13 @@
 #pragma once
 
 #include "../EngineConstants.h"
+#include "TimeLength.h"
 
 #include <chrono> /* std::chrono::steady_clock */
 #include <memory> /* std::unique_ptr */
 
 namespace Integrian3D
 {
-	enum class TimeLength
-	{
-		NanoSeconds,
-		MicroSeconds,
-		MilliSeconds,
-		Seconds,
-		Minutes,
-		Hours,
-	};
-
 	class Timer final
 	{
 	public:
