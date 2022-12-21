@@ -4,7 +4,6 @@
 #include "TimeLength.h"
 #include "Timepoint/Timepoint.h"
 
-#include <chrono> /* std::chrono::steady_clock */
 #include <memory> /* std::unique_ptr */
 
 namespace Integrian3D::Time
