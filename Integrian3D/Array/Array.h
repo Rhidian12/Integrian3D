@@ -569,28 +569,24 @@ namespace Integrian3D
 			return arr;
 		}
 
-		constexpr void Sort()
+		constexpr void Sort() const
 		{
 			Sort([](const T& a, const T& b)->bool
 				{
 					return a < b;
 				});
 		}
-		constexpr void Sort(const BinaryPred& pred)
+		constexpr void Sort(const BinaryPred& pred) const
 		{
 			if (!m_pHead)
 				return;
 
-			if (Size() < 64u)
-			{
-				/* Insertion Sort */
-				InsertionSort(pred);
-			}
-			else
-			{
-				/* Merge Sort */
+			const uint64_t size{ Size() };
 
-			}
+			if (size < 64u)
+				InsertionSort(pred);
+			else
+				MergeSort(0u, size - 1u, pred);
 		}
 #pragma endregion
 
@@ -876,7 +872,7 @@ namespace Integrian3D
 #pragma endregion
 
 #pragma region Sorters
-		constexpr void InsertionSort(const BinaryPred& pred)
+		constexpr void InsertionSort(const BinaryPred& pred) const
 		{
 			/* Don't use At() to make sure elements get copied instead of referenced around! */
 
@@ -893,6 +889,48 @@ namespace Integrian3D
 				}
 
 				*(m_pHead + j + 1) = key;
+			}
+		}
+		constexpr void MergeSort(const uint64_t begin, const uint64_t end, const BinaryPred& pred) const
+		{
+			/* Check recursion stop */
+			if (begin >= end)
+				return;
+
+			const uint64_t mid{ begin + (end - begin) / 2u };
+
+			MergeSort(begin, mid, pred);
+			MergeSort(mid + 1u, end, pred);
+			Merge(begin, mid, end, pred);
+		}
+		constexpr void Merge(uint64_t left, uint64_t mid, const uint64_t right, const BinaryPred& pred) const
+		{
+			uint64_t halfStart{ mid + 1u };
+
+			if (pred(*(m_pHead + mid), *(m_pHead + halfStart)))
+				return;
+
+			while (left <= mid && halfStart <= right)
+			{
+				if (pred(*(m_pHead + left), *(m_pHead + halfStart)))
+					++left;
+				else
+				{
+					T val{ *(m_pHead + halfStart) };
+					uint64_t i{ halfStart };
+
+					while (i != left)
+					{
+						*(m_pHead + i) = *(m_pHead + i - 1);
+						--i;
+					}
+
+					*(m_pHead + left) = val;
+
+					++left;
+					++mid;
+					++halfStart;
+				}
 			}
 		}
 #pragma endregion
