@@ -48,7 +48,7 @@ namespace Integrian3D
 
 	void Core::Run()
 	{
-		Timer& timer{ Timer::GetInstance() };
+		Time::Timer& timer{ Time::Timer::GetInstance() };
 		InputManager& inputManager{ InputManager::GetInstance() };
 		Renderer& renderer{ Renderer::GetInstance() };
 		SceneManager& sceneManager{ SceneManager::GetInstance() };

@@ -13,10 +13,18 @@ namespace Integrian3D::Time
 	class Timepoint final
 	{
 	public:
-		/// <summary>
-		/// Default initializes the Timepoint to an invalid time 
-		/// </summary>
-		constexpr explicit Timepoint(const double time);
+		constexpr Timepoint()
+			: m_Time{}
+		{}
+		constexpr explicit Timepoint(const double time)
+			: m_Time{ time }
+		{}
+		constexpr ~Timepoint() = default;
+
+		constexpr Timepoint(const Timepoint&) noexcept = default;
+		constexpr Timepoint(Timepoint&&) noexcept = default;
+		constexpr Timepoint& operator=(const Timepoint&) noexcept = default;
+		constexpr Timepoint& operator=(Timepoint&&) noexcept = default;
 
 		/// <summary>
 		/// Counts the difference between Timepoints
