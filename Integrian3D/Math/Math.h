@@ -61,9 +61,9 @@ namespace Integrian3D::Math
 	}
 
 	template<typename T, typename = std::enable_if_t<std::is_fundamental_v<T>>>
-	constexpr bool AreEqual(const T a, const T b)
+	constexpr bool AreEqual(const T a, const T b, const T epsilon = std::numeric_limits<T>::epsilon())
 	{
-		return static_cast<T>(fabs(a - b)) <= std::numeric_limits<T>::epsilon();
+		return static_cast<T>(abs(a - b)) <= epsilon;
 	}
 
 	template<typename T>

@@ -28,7 +28,7 @@ namespace Integrian3D::Time
 		{
 			m_StartTimepoint = Now();
 
-			m_ElapsedSeconds = m_StartTimepoint.Count<TimeLength::Seconds>(m_PreviousTimepoint);
+			m_ElapsedSeconds = (m_StartTimepoint - m_PreviousTimepoint).Count();
 			m_ElapsedSeconds = std::min(m_ElapsedSeconds, m_MaxElapsedSeconds);
 
 			m_TotalElapsedSeconds += m_ElapsedSeconds;
@@ -50,11 +50,11 @@ namespace Integrian3D::Time
 		__NODISCARD constexpr double GetElapsedTime() const
 		{
 			if constexpr (T == TimeLength::NanoSeconds)
-				return m_ElapsedSeconds * NanoToSec;
+				return m_ElapsedSeconds * SecToNano;
 			else if constexpr (T == TimeLength::MicroSeconds)
-				return m_ElapsedSeconds * MicroToSec;
+				return m_ElapsedSeconds * SecToMicro;
 			else if constexpr (T == TimeLength::MilliSeconds)
-				return m_ElapsedSeconds * MilliToSec;
+				return m_ElapsedSeconds * SecToMilli;
 			else if constexpr (T == TimeLength::Seconds)
 				return m_ElapsedSeconds;
 			else if constexpr (T == TimeLength::Minutes)
@@ -66,11 +66,11 @@ namespace Integrian3D::Time
 		__NODISCARD constexpr Ret GetElapsedTime() const
 		{
 			if constexpr (T == TimeLength::NanoSeconds)
-				return static_cast<Ret>(m_ElapsedSeconds * NanoToSec);
+				return static_cast<Ret>(m_ElapsedSeconds * SecToNano);
 			else if constexpr (T == TimeLength::MicroSeconds)
-				return static_cast<Ret>(m_ElapsedSeconds * MicroToSec);
+				return static_cast<Ret>(m_ElapsedSeconds * SecToMicro);
 			else if constexpr (T == TimeLength::MilliSeconds)
-				return static_cast<Ret>(m_ElapsedSeconds * MilliToSec);
+				return static_cast<Ret>(m_ElapsedSeconds * SecToMilli);
 			else if constexpr (T == TimeLength::Seconds)
 				return static_cast<Ret>(m_ElapsedSeconds);
 			else if constexpr (T == TimeLength::Minutes)
@@ -85,11 +85,11 @@ namespace Integrian3D::Time
 		__NODISCARD constexpr double GetFixedElapsedTime() const
 		{
 			if constexpr (T == TimeLength::NanoSeconds)
-				return m_TimePerFrame * NanoToSec;
+				return m_TimePerFrame * SecToNano;
 			else if constexpr (T == TimeLength::MicroSeconds)
-				return m_TimePerFrame * MicroToSec;
+				return m_TimePerFrame * SecToMicro;
 			else if constexpr (T == TimeLength::MilliSeconds)
-				return m_TimePerFrame * MilliToSec;
+				return m_TimePerFrame * SecToMilli;
 			else if constexpr (T == TimeLength::Seconds)
 				return m_TimePerFrame;
 			else if constexpr (T == TimeLength::Minutes)
@@ -101,11 +101,11 @@ namespace Integrian3D::Time
 		__NODISCARD constexpr Ret GetFixedElapsedTime() const
 		{
 			if constexpr (T == TimeLength::NanoSeconds)
-				return static_cast<Ret>(m_TimePerFrame * NanoToSec);
+				return static_cast<Ret>(m_TimePerFrame * SecToNano);
 			else if constexpr (T == TimeLength::MicroSeconds)
-				return static_cast<Ret>(m_TimePerFrame * MicroToSec);
+				return static_cast<Ret>(m_TimePerFrame * SecToMicro);
 			else if constexpr (T == TimeLength::MilliSeconds)
-				return static_cast<Ret>(m_TimePerFrame * MilliToSec);
+				return static_cast<Ret>(m_TimePerFrame * SecToMilli);
 			else if constexpr (T == TimeLength::Seconds)
 				return static_cast<Ret>(m_TimePerFrame);
 			else if constexpr (T == TimeLength::Minutes)
@@ -120,11 +120,11 @@ namespace Integrian3D::Time
 		__NODISCARD constexpr double GetTotalElapsedTime() const
 		{
 			if constexpr (T == TimeLength::NanoSeconds)
-				return m_TotalElapsedSeconds * NanoToSec;
+				return m_TotalElapsedSeconds * SecToNano;
 			else if constexpr (T == TimeLength::MicroSeconds)
-				return m_TotalElapsedSeconds * MicroToSec;
+				return m_TotalElapsedSeconds * SecToMicro;
 			else if constexpr (T == TimeLength::MilliSeconds)
-				return m_TotalElapsedSeconds * MilliToSec;
+				return m_TotalElapsedSeconds * SecToMilli;
 			else if constexpr (T == TimeLength::Seconds)
 				return m_TotalElapsedSeconds;
 			else if constexpr (T == TimeLength::Minutes)
@@ -136,11 +136,11 @@ namespace Integrian3D::Time
 		__NODISCARD constexpr Ret GetTotalElapsedTime() const
 		{
 			if constexpr (T == TimeLength::NanoSeconds)
-				return static_cast<Ret>(m_TotalElapsedSeconds * NanoToSec);
+				return static_cast<Ret>(m_TotalElapsedSeconds * SecToNano);
 			else if constexpr (T == TimeLength::MicroSeconds)
-				return static_cast<Ret>(m_TotalElapsedSeconds * MicroToSec);
+				return static_cast<Ret>(m_TotalElapsedSeconds * SecToMicro);
 			else if constexpr (T == TimeLength::MilliSeconds)
-				return static_cast<Ret>(m_TotalElapsedSeconds * MilliToSec);
+				return static_cast<Ret>(m_TotalElapsedSeconds * SecToMilli);
 			else if constexpr (T == TimeLength::Seconds)
 				return static_cast<Ret>(m_TotalElapsedSeconds);
 			else if constexpr (T == TimeLength::Minutes)
