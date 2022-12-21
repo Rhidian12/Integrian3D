@@ -191,7 +191,6 @@
     <ClCompile Include="Memory\FreeListAllocator\FreeListAllocator.cpp" />
     <ClCompile Include="InputManager\InputManager.cpp" />
     <ClCompile Include="Libraries\glad\src\glad.c" />
-    <ClCompile Include="Memory\LinearAllocator\LinearAllocator.cpp" />
     <ClCompile Include="Logger\Logger.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Math\Math.cpp" />
@@ -202,7 +201,6 @@
     <ClCompile Include="SceneManager\SceneManager.cpp" />
     <ClCompile Include="Scene\Scene.cpp" />
     <ClCompile Include="Shader\Shader.cpp" />
-    <ClCompile Include="Memory\StackAllocator\StackAllocator.cpp" />
     <ClCompile Include="Systems\Systems.cpp" />
     <ClCompile Include="TextureManager\TextureManager.cpp" />
     <ClCompile Include="Texture\Texture.cpp" />
@@ -231,7 +229,6 @@
     <ClInclude Include="InputManager\MouseInput\MouseInput.h" />
     <ClInclude Include="Iterator\Iterator.h" />
     <ClInclude Include="Libraries\stb\stb_image.h" />
-    <ClInclude Include="Memory\LinearAllocator\LinearAllocator.h" />
     <ClInclude Include="Logger\Logger.h" />
     <ClInclude Include="Math\Math.h" />
     <ClInclude Include="Math\RGBColour.h" />
@@ -243,7 +240,6 @@
     <ClInclude Include="Scene\Scene.h" />
     <ClInclude Include="Shader\Shader.h" />
     <ClInclude Include="SparseSet\SparseSet.h" />
-    <ClInclude Include="Memory\StackAllocator\StackAllocator.h" />
     <ClInclude Include="Systems\Systems.h" />
     <ClInclude Include="TextureManager\TextureManager.h" />
     <ClInclude Include="Texture\Texture.h" />
