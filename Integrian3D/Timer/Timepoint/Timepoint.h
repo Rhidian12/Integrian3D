@@ -2,6 +2,7 @@
 
 #include "../../EngineConstants.h"
 #include "../TimeLength.h"
+#include "../../Math/Math.h"
 
 namespace Integrian3D::Time
 {
@@ -60,19 +61,22 @@ namespace Integrian3D::Time
 				return static_cast<Ret>(m_Time * SecToHours);
 		}
 
-#pragma region Arithmetic_Operators
+#pragma region Operators
 		friend constexpr Timepoint operator-(const Timepoint& a, const Timepoint& b);
 		friend constexpr Timepoint operator+(const Timepoint& a, const Timepoint& b);
 
 		friend constexpr Timepoint& operator+=(Timepoint& a, const Timepoint& b);
 		friend constexpr Timepoint& operator-=(Timepoint& a, const Timepoint& b);
+
+		friend constexpr bool operator==(const Timepoint& a, const Timepoint& b);
+		friend constexpr bool operator!=(const Timepoint& a, const Timepoint& b);
 #pragma endregion
 
 	private:
 		double m_Time; /* Stored in seconds */
 	};
 
-#pragma region Arithmetic_Operators
+#pragma region Operators
 	constexpr Timepoint operator-(const Timepoint& a, const Timepoint& b)
 	{
 		return Timepoint{ a.m_Time - b.m_Time };
@@ -92,6 +96,14 @@ namespace Integrian3D::Time
 		a.m_Time -= b.m_Time;
 
 		return a;
+	}
+	constexpr bool operator==(const Timepoint& a, const Timepoint& b)
+	{
+		return Math::AreEqual(a.m_Time, b.m_Time);
+	}
+	constexpr bool operator!=(const Timepoint& a, const Timepoint& b)
+	{
+		return !(a == b);
 	}
 #pragma endregion
 }
