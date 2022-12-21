@@ -770,6 +770,7 @@ TEST_CASE("Testing Basic Timepoints")
 
 	Timepoint t1{}, t2{};
 
+	REQUIRE(t1 == t2);
 	REQUIRE(AreEqual((t1 + t2).Count(), 0.0, epsilon));
 	REQUIRE(AreEqual((t2 + t1).Count(), 0.0, epsilon));
 	REQUIRE(AreEqual((t1 - t2).Count(), 0.0, epsilon));
@@ -777,6 +778,7 @@ TEST_CASE("Testing Basic Timepoints")
 
 	t1 = Timepoint{ 5.0 };
 
+	REQUIRE(t1 != t2);
 	REQUIRE(AreEqual((t1 + t2).Count(), 5.0, epsilon));
 	REQUIRE(AreEqual((t2 + t1).Count(), 5.0, epsilon));
 	REQUIRE(AreEqual((t1 - t2).Count(), 5.0, epsilon));
@@ -789,6 +791,18 @@ TEST_CASE("Testing Basic Timepoints")
 	REQUIRE(AreEqual((t1 + t2).Count<TimeLength::MilliSeconds>(), 5'000.0, epsilon));
 	REQUIRE(AreEqual((t1 + t2).Count<TimeLength::Minutes>(), 0.083333, epsilon));
 	REQUIRE(AreEqual((t1 + t2).Count<TimeLength::Hours>(), 0.001389, epsilon));
+
+	t2 += t1;
+
+	REQUIRE(AreEqual(t1.Count(), 5.0, epsilon));
+	REQUIRE(AreEqual(t2.Count(), 5.0, epsilon));
+	REQUIRE(t1 == t2);
+
+	t1 -= t2;
+
+	REQUIRE(AreEqual(t1.Count(), 0.0, epsilon));
+	REQUIRE(AreEqual(t2.Count(), 5.0, epsilon));
+	REQUIRE(t1 != t2);
 }
 #endif
 
