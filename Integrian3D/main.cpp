@@ -756,154 +756,42 @@ TEST_CASE("Testing Basic Array of integers")
 }
 #endif
 
-//#define STACK_ALLOCATOR_TESTS
-#ifdef STACK_ALLOCATOR_TESTS
-#include "Memory/StackAllocator/StackAllocator.h"
-
-TEST_CASE("Testing the stack allocator")
+#define TIMEPOINT_TESTS
+#ifdef TIMEPOINT_TESTS
+#include "Timer/Timepoint/Timepoint.h"
+#include "Math/Math.h"
+#include <type_traits>
+TEST_CASE("Testing Basic Timepoints")
 {
-	using namespace Integrian3D::Memory;
+	using namespace Integrian3D::Math;
+	using namespace Integrian3D::Time;
 
-	constexpr int size{ 512 };
+	constexpr double epsilon = 0.00001;
 
-	StackAllocator<size> alloc{};
+	Timepoint t1{}, t2{};
 
-	REQUIRE(alloc.Size() == 0);
-	REQUIRE(alloc.Capacity() == size);
-	REQUIRE(alloc.MaxSize() == size);
-	REQUIRE(alloc.Data() != nullptr);
+	REQUIRE(AreEqual((t1 + t2).Count(), 0.0, epsilon));
+	REQUIRE(AreEqual((t2 + t1).Count(), 0.0, epsilon));
+	REQUIRE(AreEqual((t1 - t2).Count(), 0.0, epsilon));
+	REQUIRE(AreEqual((t2 - t1).Count(), 0.0, epsilon));
 
-	int* test{ alloc.Allocate<int>(1) };
+	t1 = Timepoint{ 5.0 };
 
-	REQUIRE(test != nullptr);
-	REQUIRE(alloc.Size() >= sizeof(int));
-	REQUIRE(alloc.Capacity() == size);
-	REQUIRE(alloc.MaxSize() == size);
+	REQUIRE(AreEqual((t1 + t2).Count(), 5.0, epsilon));
+	REQUIRE(AreEqual((t2 + t1).Count(), 5.0, epsilon));
+	REQUIRE(AreEqual((t1 - t2).Count(), 5.0, epsilon));
+	REQUIRE(AreEqual((t2 - t1).Count(), -5.0, epsilon));
 
-	alloc.Deallocate(test, 1);
+	REQUIRE(std::is_same_v<uint64_t, decltype((t1 + t2).Count<TimeLength::Seconds, uint64_t>())>);
 
-	REQUIRE(alloc.Size() == 0);
-
-	test = alloc.Allocate<int>(size / sizeof(int));
-
-	REQUIRE(test != nullptr);
-	REQUIRE(alloc.Size() == alloc.MaxSize());
-
-	alloc.Deallocate(test, size / sizeof(int));
-
-	REQUIRE(alloc.Size() == 0);
-
-	test = alloc.Allocate<int>(1);
-	int* test2 = alloc.Allocate<int>(1);
-
-	REQUIRE(test != test2);
-	REQUIRE(alloc.Size() >= sizeof(int) * 2);
-	}
+	REQUIRE(AreEqual((t1 + t2).Count<TimeLength::NanoSeconds>(), 5'000'000'000.0, epsilon));
+	REQUIRE(AreEqual((t1 + t2).Count<TimeLength::MicroSeconds>(), 5'000'000.0, epsilon));
+	REQUIRE(AreEqual((t1 + t2).Count<TimeLength::MilliSeconds>(), 5'000.0, epsilon));
+	REQUIRE(AreEqual((t1 + t2).Count<TimeLength::Minutes>(), 0.083333, epsilon));
+	REQUIRE(AreEqual((t1 + t2).Count<TimeLength::Hours>(), 0.001389, epsilon));
+}
 #endif
 
-//#define LINEAR_ALLOCATOR_TESTS
-#ifdef LINEAR_ALLOCATOR_TESTS
-#include "Memory/LinearAllocator/LinearAllocator.h"
-
-TEST_CASE("Testing the Linear Allocator")
-{
-	using namespace Integrian3D::Memory;
-
-	constexpr int size{ 512 };
-
-	LinearAllocator alloc{ size };
-
-	REQUIRE(alloc.Size() == 0);
-	REQUIRE(alloc.Capacity() == size);
-	REQUIRE(alloc.MaxSize() == size);
-	REQUIRE(alloc.Data() != nullptr);
-
-	int* test{ alloc.Allocate<int>(1) };
-
-	REQUIRE(test != nullptr);
-	REQUIRE(alloc.Size() >= sizeof(int));
-	REQUIRE(alloc.Capacity() == size);
-	REQUIRE(alloc.MaxSize() == size);
-
-	test = alloc.Allocate<int>(size / sizeof(int) - 1);
-
-	REQUIRE(test != nullptr);
-	REQUIRE(alloc.Size() == alloc.MaxSize());
-	}
-#endif
-
-// #define FREELIST_ALLOCATOR_TESTS
-#ifdef FREELIST_ALLOCATOR_TESTS
-#include "Memory/FreeListAllocator/FreeListAllocator.h"
-
-TEST_CASE("Testing the Free List Allocator")
-{
-	using namespace Integrian3D::Memory;
-
-	SECTION("Basic functionality")
-	{
-		FreeListAllocator alloc{};
-
-		REQUIRE(alloc.Size() == 0);
-		REQUIRE(alloc.Capacity() >= 0);
-		REQUIRE(alloc.Data() != nullptr);
-
-		int* test{ alloc.Allocate<int>(1) };
-
-		REQUIRE(test != nullptr);
-		REQUIRE(alloc.Size() == 1);
-
-		test = alloc.Allocate<int>(100);
-
-		REQUIRE(test != nullptr);
-		REQUIRE(alloc.Size() == 2);
-
-		alloc.Deallocate(test);
-
-		REQUIRE(alloc.Size() == 1);
-	}
-
-	SECTION("Testing reallocation")
-	{
-		FreeListAllocator alloc{ 40 };
-
-		REQUIRE(alloc.Capacity() == 40);
-		REQUIRE(alloc.Size() == 0);
-
-		int* test = alloc.Allocate<int>(1); // should be fine
-
-		REQUIRE(test != nullptr);
-		REQUIRE(alloc.Size() == 1);
-
-		int* test2 = alloc.Allocate<int>(1); // should fire a reallocation
-
-		REQUIRE(test2 != nullptr);
-		REQUIRE(alloc.Size() == 2);
-		REQUIRE(alloc.Capacity() == 77); // hardcoded w/e i didnt ask
-
-		alloc.Deallocate(test2);
-		test2 = nullptr;
-
-		REQUIRE(alloc.Size() == 1);
-
-		test2 = alloc.Allocate<int>(1);
-
-		REQUIRE(test2 != nullptr);
-		REQUIRE(alloc.Size() == 2);
-		REQUIRE(alloc.Capacity() == 77); // hardcoded w/e i didnt ask
-
-		alloc.Deallocate(test);
-		test = nullptr;
-
-		REQUIRE(alloc.Size() == 1);
-
-		test = alloc.Allocate<int>(1);
-		REQUIRE(test != nullptr);
-		REQUIRE(alloc.Size() == 2);
-		REQUIRE(alloc.Capacity() == 77); // hardcoded w/e i didnt ask
-	}
-	}
-#endif
 #elif defined BENCHMARKS
 #include <chrono>
 #include <numeric>

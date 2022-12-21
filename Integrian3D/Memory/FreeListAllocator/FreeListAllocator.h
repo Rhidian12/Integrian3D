@@ -166,6 +166,10 @@ namespace Integrian3D::Memory
 		{
 			return std::numeric_limits<uint64_t>::max();
 		}
+		__NODISCARD constexpr void* Data() const
+		{
+			return m_pStart;
+		}
 
 	private:
 		constexpr void Find(const uint64_t size, const uint64_t alignment, uint64_t& padding, FreeHeader*& pFreeHeader)
