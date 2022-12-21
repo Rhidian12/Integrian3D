@@ -25,10 +25,10 @@ namespace Integrian3D
 					dir.y += InputManager::GetInstance().GetIsKeyPressed(KeyboardInput::S) ? -1.0 : 0.0;
 
 					transform.Translate(transform.GetForward() * dir.y
-						* camera.GetSpeed() * Timer::GetInstance().GetElapsedSeconds(), true);
+						* camera.GetSpeed() * Time::Timer::GetInstance().GetElapsedSeconds(), true);
 
 					transform.Translate(transform.GetRight() * dir.x
-						* camera.GetSpeed() * Timer::GetInstance().GetElapsedSeconds(), true);
+						* camera.GetSpeed() * Time::Timer::GetInstance().GetElapsedSeconds(), true);
 
 					camera.SetView(glm::lookAt(
 						transform.GetLocalLocation(),

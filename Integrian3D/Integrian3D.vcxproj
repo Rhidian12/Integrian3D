@@ -204,6 +204,7 @@
     <ClCompile Include="Systems\Systems.cpp" />
     <ClCompile Include="TextureManager\TextureManager.cpp" />
     <ClCompile Include="Texture\Texture.cpp" />
+    <ClCompile Include="Timer\Timepoint\Timepoint.cpp" />
     <ClCompile Include="Timer\Timer.cpp" />
     <ClCompile Include="Components\TransformComponent\TransformComponent.cpp" />
     <ClCompile Include="Utils\Utils.cpp" />
@@ -243,6 +244,8 @@
     <ClInclude Include="Systems\Systems.h" />
     <ClInclude Include="TextureManager\TextureManager.h" />
     <ClInclude Include="Texture\Texture.h" />
+    <ClInclude Include="Timer\TimeLength.h" />
+    <ClInclude Include="Timer\Timepoint\Timepoint.h" />
     <ClInclude Include="Timer\Timer.h" />
     <ClInclude Include="Components\TransformComponent\TransformComponent.h" />
     <ClInclude Include="Types\Types.h" />
