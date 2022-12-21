@@ -691,15 +691,7 @@ TEST_CASE("Testing Basic Array of integers")
 
 		REQUIRE(arr.Size() == list.size());
 
-		for (int i : arr)
-			std::cout << i << "\n";
-
-		arr.Sort();
-
-		std::cout << "---\n";
-
-		for (int i : arr)
-			std::cout << i << "\n";
+		arr.Sort(std::less<int>{});
 
 		for (int i{}; i < arr.Size(); ++i)
 			REQUIRE(arr[i] == list[i]);

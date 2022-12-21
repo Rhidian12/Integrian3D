@@ -887,24 +887,41 @@ namespace Integrian3D
 #pragma region Sorters
 		constexpr void InsertionSort()
 		{
+			/* Don't use At() to make sure elements get copied instead of referenced around! */
+
 			const uint64_t size{ Size() };
 			for (int i{ 1 }; i < size; ++i)
 			{
-				T& key = At(i);
+				T key = *(m_pHead + i);
 				int j{ i - 1 };
 
-				while (j >= 0 && At(j) > key)
+				while (j >= 0 && key < *(m_pHead + j))
 				{
-					At(j + 1) = At(j);
+					*(m_pHead + j + 1) = *(m_pHead + j);
 					--j;
 				}
 
-				At(j + 1) = key;
+				*(m_pHead + j + 1) = key;
 			}
 		}
 		constexpr void InsertionSort(const BinaryPred& pred)
 		{
+			/* Don't use At() to make sure elements get copied instead of referenced around! */
 
+			const uint64_t size{ Size() };
+			for (int i{ 1 }; i < size; ++i)
+			{
+				T key = *(m_pHead + i);
+				int j{ i - 1 };
+
+				while (j >= 0 && pred(key, *(m_pHead + j)))
+				{
+					*(m_pHead + j + 1) = *(m_pHead + j);
+					--j;
+				}
+
+				*(m_pHead + j + 1) = key;
+			}
 		}
 #pragma endregion
 
