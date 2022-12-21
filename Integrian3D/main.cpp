@@ -1,6 +1,6 @@
 // #define ENGINE
-// #define TESTS
-#define BENCHMARKS
+#define TESTS
+// #define BENCHMARKS
 #ifdef ENGINE
 #include "EngineConstants.h"
 #include "Core/Core.h"
@@ -679,6 +679,30 @@ TEST_CASE("Testing Basic Array of integers")
 		arr.AddFront(396);
 		REQUIRE(arr.Size() == nrOfElements + 2);
 		REQUIRE(arr[0] == 396);
+	}
+
+	SECTION("Sorting an array")
+	{
+		std::initializer_list elems{ 5,0,3,6,7,15,356,-5 };
+		std::vector<int> list{ elems };
+		std::sort(list.begin(), list.end(), std::less<int>{});
+
+		arr.AddRange(elems);
+
+		REQUIRE(arr.Size() == list.size());
+
+		for (int i : arr)
+			std::cout << i << "\n";
+
+		arr.Sort();
+
+		std::cout << "---\n";
+
+		for (int i : arr)
+			std::cout << i << "\n";
+
+		for (int i{}; i < arr.Size(); ++i)
+			REQUIRE(arr[i] == list[i]);
 	}
 }
 #endif

@@ -14,6 +14,7 @@ namespace Integrian3D
 	class Array
 	{
 		using UnaryPred = std::function<bool(const T&)>;
+		using BinaryPred = std::function<bool(const T&, const T&)>;
 		using Handle = Memory::Allocator<Alloc>::template Handle<T>;
 
 	public:
@@ -567,6 +568,39 @@ namespace Integrian3D
 
 			return arr;
 		}
+
+		constexpr void Sort()
+		{
+			if (!m_pHead)
+				return;
+
+			if (Size() < 64u)
+			{
+				/* Insertion Sort */
+				InsertionSort();
+			}
+			else
+			{
+				/* Merge Sort */
+
+			}
+		}
+		constexpr void Sort(const BinaryPred& pred)
+		{
+			if (!m_pHead)
+				return;
+
+			if (Size() < 64u)
+			{
+				/* Insertion Sort */
+				InsertionSort(pred);
+			}
+			else
+			{
+				/* Merge Sort */
+
+			}
+		}
 #pragma endregion
 
 #pragma region Accessing Elements
@@ -847,6 +881,30 @@ namespace Integrian3D
 					new (newHead + i) T{ *(head + i) };
 				}
 			}
+		}
+#pragma endregion
+
+#pragma region Sorters
+		constexpr void InsertionSort()
+		{
+			const uint64_t size{ Size() };
+			for (int i{ 1 }; i < size; ++i)
+			{
+				T& key = At(i);
+				int j{ i - 1 };
+
+				while (j >= 0 && At(j) > key)
+				{
+					At(j + 1) = At(j);
+					--j;
+				}
+
+				At(j + 1) = key;
+			}
+		}
+		constexpr void InsertionSort(const BinaryPred& pred)
+		{
+
 		}
 #pragma endregion
 
