@@ -571,19 +571,10 @@ namespace Integrian3D
 
 		constexpr void Sort()
 		{
-			if (!m_pHead)
-				return;
-
-			if (Size() < 64u)
-			{
-				/* Insertion Sort */
-				InsertionSort();
-			}
-			else
-			{
-				/* Merge Sort */
-
-			}
+			Sort([](const T& a, const T& b)->bool
+				{
+					return a < b;
+				});
 		}
 		constexpr void Sort(const BinaryPred& pred)
 		{
@@ -885,25 +876,6 @@ namespace Integrian3D
 #pragma endregion
 
 #pragma region Sorters
-		constexpr void InsertionSort()
-		{
-			/* Don't use At() to make sure elements get copied instead of referenced around! */
-
-			const uint64_t size{ Size() };
-			for (int i{ 1 }; i < size; ++i)
-			{
-				T key = *(m_pHead + i);
-				int j{ i - 1 };
-
-				while (j >= 0 && key < *(m_pHead + j))
-				{
-					*(m_pHead + j + 1) = *(m_pHead + j);
-					--j;
-				}
-
-				*(m_pHead + j + 1) = key;
-			}
-		}
 		constexpr void InsertionSort(const BinaryPred& pred)
 		{
 			/* Don't use At() to make sure elements get copied instead of referenced around! */

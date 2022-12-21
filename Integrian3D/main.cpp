@@ -681,7 +681,24 @@ TEST_CASE("Testing Basic Array of integers")
 		REQUIRE(arr[0] == 396);
 	}
 
-	SECTION("Sorting an array")
+	SECTION("Sorting an array using Insertion Sort (when array size < 64)")
+	{
+		std::initializer_list elems{ 5,0,3,6,7,15,356,-5 };
+		std::vector<int> list{ elems };
+		std::sort(list.begin(), list.end(), std::less<int>{});
+
+		arr.AddRange(elems);
+
+		REQUIRE(arr.Size() == list.size());
+
+		arr.Sort();
+
+		for (int i{}; i < arr.Size(); ++i)
+			REQUIRE(arr[i] == list[i]);
+	}
+
+
+	SECTION("Sorting an array using Insertion Sort with specified predicate (when array size < 64)")
 	{
 		std::initializer_list elems{ 5,0,3,6,7,15,356,-5 };
 		std::vector<int> list{ elems };
@@ -692,6 +709,46 @@ TEST_CASE("Testing Basic Array of integers")
 		REQUIRE(arr.Size() == list.size());
 
 		arr.Sort(std::less<int>{});
+
+		for (int i{}; i < arr.Size(); ++i)
+			REQUIRE(arr[i] == list[i]);
+	}
+
+	SECTION("Sorting an array using Merge Sort (when array size > 64)")
+	{
+		std::vector<int> list{};
+
+		for (int i{ 100 }; i >= 0; --i)
+		{
+			list.push_back(i);
+			arr.Add(i);
+		}
+
+		REQUIRE(arr.Size() == list.size());
+
+		std::sort(list.begin(), list.end(), std::less<int>{});
+		arr.Sort();
+		std::sort(list.begin(), list.end());
+
+		for (int i{}; i < arr.Size(); ++i)
+			REQUIRE(arr[i] == list[i]);
+	}
+
+	SECTION("Sorting an array using Merge Sort with specified predicate (when array size > 64)")
+	{
+		std::vector<int> list{};
+
+		for (int i{ 100 }; i >= 0; --i)
+		{
+			list.push_back(i);
+			arr.Add(i);
+		}
+
+		REQUIRE(arr.Size() == list.size());
+
+		std::sort(list.begin(), list.end(), std::less<int>{});
+		arr.Sort(std::less<int>{});
+		std::sort(list.begin(), list.end());
 
 		for (int i{}; i < arr.Size(); ++i)
 			REQUIRE(arr[i] == list[i]);
@@ -741,7 +798,7 @@ TEST_CASE("Testing the stack allocator")
 
 	REQUIRE(test != test2);
 	REQUIRE(alloc.Size() >= sizeof(int) * 2);
-}
+	}
 #endif
 
 //#define LINEAR_ALLOCATOR_TESTS
@@ -772,7 +829,7 @@ TEST_CASE("Testing the Linear Allocator")
 
 	REQUIRE(test != nullptr);
 	REQUIRE(alloc.Size() == alloc.MaxSize());
-}
+	}
 #endif
 
 // #define FREELIST_ALLOCATOR_TESTS
@@ -845,7 +902,7 @@ TEST_CASE("Testing the Free List Allocator")
 		REQUIRE(alloc.Size() == 2);
 		REQUIRE(alloc.Capacity() == 77); // hardcoded w/e i didnt ask
 	}
-}
+	}
 #endif
 #elif defined BENCHMARKS
 #include <chrono>
