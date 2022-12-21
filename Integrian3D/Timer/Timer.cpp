@@ -3,43 +3,41 @@
 namespace Integrian3D
 {
 	Timer::Timer()
-		: MaxElapsedSeconds{ 0.1 }
-		, ElapsedSeconds{}
-		, TotalElapsedSeconds{}
-		, FPS{}
-		, FPSCounter{}
-		, FPSTimer{}
-		, TimePerFrame{ 1.0 / 60.0 }
+		: m_MaxElapsedSeconds{ 0.1 }
+		, m_ElapsedSeconds{}
+		, m_TotalElapsedSeconds{}
+		, m_FPS{}
+		, m_FPSCounter{}
+		, m_FPSTimer{}
+		, m_TimePerFrame{ 1.0 / 60.0 }
 	{
 		Start();
 	}
 
 	Timer& Timer::GetInstance()
 	{
-		if (!Instance)
-		{
-			Instance = std::make_unique<Timer>();
-		}
+		if (!m_pInstance)
+			m_pInstance.reset(new Timer{});
 
-		return *Instance.get();
+		return *m_pInstance.get();
 	}
 
 	void Timer::Start()
 	{
-		PreviousTimepoint = std::chrono::steady_clock::now();
+		m_PreviousTimepoint = std::chrono::steady_clock::now();
 	}
 
 	void Timer::Update()
 	{
-		StartTimepoint = std::chrono::steady_clock::now();
+		m_StartTimepoint = std::chrono::steady_clock::now();
 		
-		ElapsedSeconds = std::chrono::duration<double>(StartTimepoint - PreviousTimepoint).count();
-		ElapsedSeconds = std::min(ElapsedSeconds, MaxElapsedSeconds);
+		m_ElapsedSeconds = std::chrono::duration<double>(m_StartTimepoint - m_PreviousTimepoint).count();
+		m_ElapsedSeconds = std::min(m_ElapsedSeconds, m_MaxElapsedSeconds);
 		
-		TotalElapsedSeconds += ElapsedSeconds;
+		m_TotalElapsedSeconds += m_ElapsedSeconds;
 
-		PreviousTimepoint = StartTimepoint;
+		m_PreviousTimepoint = m_StartTimepoint;
 
-		FPS = static_cast<int>(1.0 / ElapsedSeconds);
+		m_FPS = static_cast<int>(1.0 / m_ElapsedSeconds);
 	}
 }
