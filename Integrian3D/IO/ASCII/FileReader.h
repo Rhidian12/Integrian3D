@@ -1,11 +1,11 @@
 #pragma once
 
-#include "../EngineConstants.h"
+#include "../../EngineConstants.h"
 
 #include <string> /* std::string */
 #include <vector> /* std::vector */
 
-namespace Integrian3D
+namespace Integrian3D::IO
 {
 	/* RAII File reader */
 	class FileReader final

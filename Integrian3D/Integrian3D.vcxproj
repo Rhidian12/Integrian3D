@@ -185,7 +185,7 @@
   <ItemGroup>
     <ClCompile Include="Components\CameraComponent\CameraComponent.cpp" />
     <ClCompile Include="Core\Core.cpp" />
-    <ClCompile Include="FileReader\FileReader.cpp" />
+    <ClCompile Include="IO\ASCII\FileReader.cpp" />
     <ClCompile Include="LinkedList\LinkedList.cpp" />
     <ClCompile Include="Memory\MemoryTracker\MemoryTracker.cpp" />
     <ClCompile Include="Memory\FreeListAllocator\FreeListAllocator.cpp" />
@@ -219,7 +219,7 @@
     <ClInclude Include="Core\Core.h" />
     <ClInclude Include="DebugUtility\DebugUtility.h" />
     <ClInclude Include="EngineConstants.h" />
-    <ClInclude Include="FileReader\FileReader.h" />
+    <ClInclude Include="IO\ASCII\FileReader.h" />
     <ClInclude Include="LinkedList\LinkedList.h" />
     <ClInclude Include="Memory\AllocatorTraits\AllocatorTraits.h" />
     <ClInclude Include="Memory\Allocator\Allocator.h" />
