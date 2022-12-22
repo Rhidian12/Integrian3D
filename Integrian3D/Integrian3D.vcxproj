@@ -183,6 +183,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="IO\Binary\BinaryReader.cpp" />
     <ClCompile Include="Components\CameraComponent\CameraComponent.cpp" />
     <ClCompile Include="Core\Core.cpp" />
     <ClCompile Include="IO\ASCII\FileReader.cpp" />
@@ -212,6 +213,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Array\Array.h" />
+    <ClInclude Include="IO\Binary\BinaryReader.h" />
     <ClInclude Include="Components\CameraComponent\CameraComponent.h" />
     <ClInclude Include="Delegate\Delegate.h" />
     <ClInclude Include="ECS\ComponentArray\ComponentArray.h" />
@@ -220,6 +222,7 @@
     <ClInclude Include="DebugUtility\DebugUtility.h" />
     <ClInclude Include="EngineConstants.h" />
     <ClInclude Include="IO\ASCII\FileReader.h" />
+    <ClInclude Include="IO\Binary\SeekMode.h" />
     <ClInclude Include="LinkedList\LinkedList.h" />
     <ClInclude Include="Memory\AllocatorTraits\AllocatorTraits.h" />
     <ClInclude Include="Memory\Allocator\Allocator.h" />
