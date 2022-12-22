@@ -753,6 +753,17 @@ TEST_CASE("Testing Basic Array of integers")
 		for (int i{}; i < arr.Size(); ++i)
 			REQUIRE(arr[i] == list[i]);
 	}
+
+	SECTION("Adding elements to the array using a C-array")
+	{
+		constexpr int size{ 8 };
+		int newArr[size]{ 5,3,4,9,65,-15,-7,6 };
+
+		arr.AddRange(newArr, size);
+
+		for (int i{}; i < size; ++i)
+			REQUIRE(arr[i] == newArr[i]);
+	}
 }
 #endif
 

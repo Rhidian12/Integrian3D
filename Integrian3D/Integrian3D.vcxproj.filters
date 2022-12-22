@@ -96,6 +96,9 @@
     <ClCompile Include="IO\Binary\BinaryReader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="IO\Binary\BinaryWriter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window\Window.h">
@@ -228,6 +231,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="IO\Binary\SeekMode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IO\Binary\BinaryWriter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
