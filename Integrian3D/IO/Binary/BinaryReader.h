@@ -4,14 +4,18 @@
 #include "../../Array/Array.h"
 #include "SeekMode.h"
 
-#include <string> /* std::string */
+#include <string_view> /* std::string_view */
 
 namespace Integrian3D::IO
 {
+	/// <summary>
+	/// An RAII Binary File Reader that reads in the requested file when it is constructed
+	/// Use ReadData to access the buffer and cast the data from it to a specific type
+	/// </summary>
 	class BinaryReader final
 	{
 	public:
-		explicit BinaryReader(const std::string& filepath);
+		explicit BinaryReader(const std::string_view filepath);
 		~BinaryReader();
 
 		template<typename T>
@@ -76,7 +80,6 @@ namespace Integrian3D::IO
 		}
 
 	private:
-		std::string m_Filepath;
 		void* m_pHandle;
 		TArray<char> m_Buffer;
 		uint64_t m_BufferPointer;

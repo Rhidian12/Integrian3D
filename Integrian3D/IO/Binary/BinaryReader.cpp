@@ -12,14 +12,13 @@
 
 namespace Integrian3D::IO
 {
-	BinaryReader::BinaryReader(const std::string& filepath)
-		: m_Filepath{ filepath }
-		, m_pHandle{}
+	BinaryReader::BinaryReader(const std::string_view filepath)
+		: m_pHandle{}
 		, m_Buffer{}
 		, m_BufferPointer{}
 	{
 		/* open the file */
-		m_pHandle = CreateFileA(filepath.c_str(),
+		m_pHandle = CreateFileA(filepath.data(),
 			GENERIC_READ,
 			FILE_SHARE_READ,
 			nullptr,
