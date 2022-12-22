@@ -243,6 +243,13 @@ namespace Integrian3D
 				EmplaceBack(*beg);
 			}
 		}
+		constexpr void AddRange(T* pArr, const uint64_t n)
+		{
+			__ASSERT(pArr != nullptr);
+
+			for (uint64_t i{}; i < n; ++i)
+				EmplaceBack(pArr[i]);
+		}
 
 		constexpr It EraseByIndex(const uint64_t index)
 		{
