@@ -827,7 +827,7 @@ TEST_CASE("Testing Timer")
 	REQUIRE(!AreEqual(timer.Now().Count(), 0.0));
 
 	timer.Start();
-	REQUIRE(!AreEqual(timer.GetElapsedSeconds(), 0.0));
+	REQUIRE(AreEqual(timer.GetElapsedSeconds(), 0.0));
 	REQUIRE(!AreEqual(timer.Now().Count(), 0.0));
 
 	Timepoint t1{ timer.Now() };
@@ -845,11 +845,13 @@ TEST_CASE("Testing Timer")
 #ifdef BINARY_READ_AND_WRITE_TESTS
 #include "IO/Binary/BinaryReader.h"
 #include "IO/Binary/BinaryWriter.h"
+#include "Math/Math.h"
 TEST_CASE("Testing Writing and Reading Binary files")
 {
 	using namespace Integrian3D::IO;
+	using namespace Integrian3D::Math;
 
-	SECTION("Testing POD data")
+	SECTION("Testing Simple POD data")
 	{
 		{
 			BinaryWriter writer{ "Resources/TestBinaryFile.bin" };
@@ -858,6 +860,7 @@ TEST_CASE("Testing Writing and Reading Binary files")
 			writer.WriteData(10.0);
 			writer.WriteData(15.f);
 			writer.WriteData('c');
+			writer.WriteData(36u);
 
 			writer.WriteToFile();
 		}
@@ -869,6 +872,46 @@ TEST_CASE("Testing Writing and Reading Binary files")
 			REQUIRE(reader.ReadData<double>() == 10.0);
 			REQUIRE(reader.ReadData<float>() == 15.f);
 			REQUIRE(reader.ReadData<char>() == 'c');
+			REQUIRE(reader.ReadData<unsigned int>() == 36u);
+		}
+	}
+
+	SECTION("Testing Custom POD data")
+	{
+		struct POD final
+		{
+			int A;
+			float B;
+			char C;
+			double D;
+			unsigned int E;
+		};
+
+		POD data{};
+		data.A = 15;
+		data.B = 36.f;
+		data.C = 'w';
+		data.D = -680.0;
+		data.E = 68661u;
+
+		{
+			BinaryWriter writer{ "Resources/TestBinaryFile.bin" };
+
+			writer.WriteData(data);
+
+			writer.WriteToFile();
+		}
+
+		{
+			BinaryReader reader{ "Resources/TestBinaryFile.bin" };
+
+			const POD newData{ reader.ReadData<POD>() };
+
+			REQUIRE(newData.A == data.A);
+			REQUIRE(AreEqual(newData.B, data.B));
+			REQUIRE(newData.C == data.C);
+			REQUIRE(AreEqual(newData.D, data.D));
+			REQUIRE(newData.E == data.E);
 		}
 	}
 }
