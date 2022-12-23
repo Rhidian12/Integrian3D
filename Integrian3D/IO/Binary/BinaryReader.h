@@ -21,11 +21,11 @@ namespace Integrian3D::IO
 		template<typename T>
 		__NODISCARD T ReadData(bool advanceBuffer = true)
 		{
-			if (m_Buffer.Empty())
-				return;
+			__ASSERT(!m_Buffer.Empty());
 
 			/* [TODO]: Fix this */
-			static_assert(std::is_pod_v<T>, "BinaryReader::ReadData<T>() -> T is not a POD value, no support implemented yet");
+			static_assert(std::is_trivial_v<T> && std::is_standard_layout_v<T>,
+				"BinaryReader::ReadData<T>() -> T is not a POD value, no support implemented yet");
 
 			const T data{ *reinterpret_cast<T*>(&m_Buffer[m_BufferPointer]) };
 
@@ -37,8 +37,7 @@ namespace Integrian3D::IO
 		template<typename T>
 		void ReadData(T& data, bool advanceBuffer = true)
 		{
-			if (m_Buffer.Empty())
-				return;
+			__ASSERT(!m_Buffer.Empty());
 
 			/* [TODO]: Fix this */
 			static_assert(std::is_pod_v<T>, "BinaryReader::ReadData<T>() -> T is not a POD value, no support implemented yet");

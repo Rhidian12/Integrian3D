@@ -15,7 +15,7 @@ namespace Integrian3D::IO
 		~BinaryWriter();
 
 		template<typename T>
-		void WriteData(const T& data, const SeekMode mode = SeekMode::Advance)
+		void WriteData(T&& data, const SeekMode mode = SeekMode::Advance)
 		{
 			__ASSERT(mode != SeekMode::Regress && "Cannot write while regressing");
 

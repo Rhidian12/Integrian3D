@@ -35,7 +35,7 @@ namespace Integrian3D::IO
 
 	void BinaryWriter::WriteToFile() const
 	{
-		if (WriteFile(m_pHandle, m_Buffer.Data(), m_Buffer.Size(), nullptr, nullptr) == 0)
+		if (WriteFile(m_pHandle, m_Buffer.Data(), static_cast<DWORD>(m_Buffer.Size()), nullptr, nullptr) == 0)
 			Debug::LogError("BinaryWriter could not write the data to the provided file", false);
 	}
 }
