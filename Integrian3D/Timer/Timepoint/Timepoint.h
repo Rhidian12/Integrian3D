@@ -70,6 +70,11 @@ namespace Integrian3D::Time
 
 		friend constexpr bool operator==(const Timepoint& a, const Timepoint& b);
 		friend constexpr bool operator!=(const Timepoint& a, const Timepoint& b);
+
+		friend constexpr bool operator<(const Timepoint& a, const Timepoint& b);
+		friend constexpr bool operator<=(const Timepoint& a, const Timepoint& b);
+		friend constexpr bool operator>(const Timepoint& a, const Timepoint& b);
+		friend constexpr bool operator>=(const Timepoint& a, const Timepoint& b);
 #pragma endregion
 
 	private:
@@ -105,5 +110,22 @@ namespace Integrian3D::Time
 	{
 		return !(a == b);
 	}
+	constexpr bool operator<(const Timepoint& a, const Timepoint& b)
+	{
+		return a.m_Time < b.m_Time;
+	}
+	constexpr bool operator<=(const Timepoint& a, const Timepoint& b)
+	{
+		return a.m_Time <= b.m_Time;
+	}
+	constexpr bool operator>(const Timepoint& a, const Timepoint& b)
+	{
+		return a.m_Time > b.m_Time;
+	}
+	constexpr bool operator>=(const Timepoint& a, const Timepoint& b)
+	{
+		return a.m_Time >= b.m_Time;
+	}
+
 #pragma endregion
 }

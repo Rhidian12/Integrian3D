@@ -769,6 +769,7 @@ TEST_CASE("Testing Basic Array of integers")
 
 #define TIMEPOINT_TESTS
 #ifdef TIMEPOINT_TESTS
+#include "Timer/Timer.h"
 #include "Timer/Timepoint/Timepoint.h"
 #include "Math/Math.h"
 #include <type_traits>
@@ -815,6 +816,63 @@ TEST_CASE("Testing Basic Timepoints")
 	REQUIRE(AreEqual(t2.Count(), 5.0, epsilon));
 	REQUIRE(t1 != t2);
 }
+
+TEST_CASE("Testing Timer")
+{
+	using namespace Integrian3D::Time;
+	using namespace Integrian3D::Math;
+
+	Timer& timer{ Timer::GetInstance() };
+	REQUIRE(AreEqual(timer.GetElapsedSeconds(), 0.0));
+	REQUIRE(!AreEqual(timer.Now().Count(), 0.0));
+
+	timer.Start();
+	REQUIRE(!AreEqual(timer.GetElapsedSeconds(), 0.0));
+	REQUIRE(!AreEqual(timer.Now().Count(), 0.0));
+
+	Timepoint t1{ timer.Now() };
+
+	timer.Update();
+	REQUIRE(timer.Now() > t1);
+
+	Timepoint t2{ timer.Now() };
+	REQUIRE(t2 > t1);
+	REQUIRE(t1 < t2);
+}
+#endif
+
+#define BINARY_READ_AND_WRITE_TESTS
+#ifdef BINARY_READ_AND_WRITE_TESTS
+#include "IO/Binary/BinaryReader.h"
+#include "IO/Binary/BinaryWriter.h"
+TEST_CASE("Testing Writing and Reading Binary files")
+{
+	using namespace Integrian3D::IO;
+
+	SECTION("Testing POD data")
+	{
+		{
+			BinaryWriter writer{ "Resources/TestBinaryFile.bin" };
+
+			writer.WriteData(5);
+			writer.WriteData(10.0);
+			writer.WriteData(15.f);
+			writer.WriteData('c');
+
+			writer.WriteToFile();
+		}
+
+		{
+			BinaryReader reader{ "Resources/TestBinaryFile.bin" };
+
+			REQUIRE(reader.ReadData<int>() == 5);
+			REQUIRE(reader.ReadData<double>() == 10.0);
+			REQUIRE(reader.ReadData<float>() == 15.f);
+			REQUIRE(reader.ReadData<char>() == 'c');
+		}
+	}
+}
+
 #endif
 
 #elif defined BENCHMARKS
@@ -1182,7 +1240,7 @@ int main()
 #endif
 
 	return 0;
-}
+	}
 
 #endif
 #endif
