@@ -3,6 +3,7 @@
 #include "../EngineConstants.h"
 #include "TimeLength.h"
 #include "Timepoint/Timepoint.h"
+#include "../Math/Math.h"
 
 #include <memory> /* std::unique_ptr */
 
@@ -22,7 +23,7 @@ namespace Integrian3D::Time
 	class Timer final
 	{
 	public:
-		constexpr ~Timer() = default;
+		~Timer() = default;
 
 		static Timer& GetInstance();
 
@@ -31,37 +32,19 @@ namespace Integrian3D::Time
 		Timer& operator=(const Timer&) noexcept = delete;
 		Timer& operator=(Timer&&) noexcept = delete;
 
-		constexpr void Start()
-		{
-			m_PreviousTimepoint = Now();
-		}
-		constexpr void Update()
-		{
-			m_StartTimepoint = Now();
+		void Start();
+		void Update();
 
-			m_ElapsedSeconds = (m_StartTimepoint - m_PreviousTimepoint).Count();
-			m_ElapsedSeconds = std::min(m_ElapsedSeconds, m_MaxElapsedSeconds);
-
-			m_TotalElapsedSeconds += m_ElapsedSeconds;
-
-			m_PreviousTimepoint = m_StartTimepoint;
-
-			m_FPS = static_cast<int>(1.0 / m_ElapsedSeconds);
-		}
-
-		__NODISCARD constexpr Timepoint Now() const
-		{
-			return Timepoint{ GetTickCount64() * MilliToSec };
-		}
-		__NODISCARD constexpr double GetElapsedSeconds() const { return m_ElapsedSeconds; }
-		__NODISCARD constexpr double GetFixedElapsedSeconds() const { return m_TimePerFrame; }
-		__NODISCARD constexpr double GetTotalElapsedSeconds() const { return m_TotalElapsedSeconds; }
-		__NODISCARD constexpr int GetFPS() const { return m_FPS; }
-		__NODISCARD constexpr double GetTimePerFrame() const { return m_TimePerFrame; }
+		__NODISCARD static Timepoint Now();
+		__NODISCARD double GetElapsedSeconds() const { return m_ElapsedSeconds; }
+		__NODISCARD double GetFixedElapsedSeconds() const { return m_TimePerFrame; }
+		__NODISCARD double GetTotalElapsedSeconds() const { return m_TotalElapsedSeconds; }
+		__NODISCARD int GetFPS() const { return m_FPS; }
+		__NODISCARD double GetTimePerFrame() const { return m_TimePerFrame; }
 
 #pragma region GetElapsedTime
 		template<TimeLength T>
-		__NODISCARD constexpr double GetElapsedTime() const
+		__NODISCARD double GetElapsedTime() const
 		{
 			if constexpr (T == TimeLength::NanoSeconds)
 				return m_ElapsedSeconds * SecToNano;
@@ -77,7 +60,7 @@ namespace Integrian3D::Time
 				return m_ElapsedSeconds * SecToHours;
 		}
 		template<TimeLength T, typename Ret>
-		__NODISCARD constexpr Ret GetElapsedTime() const
+		__NODISCARD Ret GetElapsedTime() const
 		{
 			if constexpr (T == TimeLength::NanoSeconds)
 				return static_cast<Ret>(m_ElapsedSeconds * SecToNano);
@@ -96,7 +79,7 @@ namespace Integrian3D::Time
 
 #pragma region GetFixedElapsedTime
 		template<TimeLength T>
-		__NODISCARD constexpr double GetFixedElapsedTime() const
+		__NODISCARD double GetFixedElapsedTime() const
 		{
 			if constexpr (T == TimeLength::NanoSeconds)
 				return m_TimePerFrame * SecToNano;
@@ -112,7 +95,7 @@ namespace Integrian3D::Time
 				return m_TimePerFrame * SecToHours;
 		}
 		template<TimeLength T, typename Ret>
-		__NODISCARD constexpr Ret GetFixedElapsedTime() const
+		__NODISCARD Ret GetFixedElapsedTime() const
 		{
 			if constexpr (T == TimeLength::NanoSeconds)
 				return static_cast<Ret>(m_TimePerFrame * SecToNano);
@@ -131,7 +114,7 @@ namespace Integrian3D::Time
 
 #pragma region GetTotalElapsedTime
 		template<TimeLength T>
-		__NODISCARD constexpr double GetTotalElapsedTime() const
+		__NODISCARD double GetTotalElapsedTime() const
 		{
 			if constexpr (T == TimeLength::NanoSeconds)
 				return m_TotalElapsedSeconds * SecToNano;
@@ -147,7 +130,7 @@ namespace Integrian3D::Time
 				return m_TotalElapsedSeconds * SecToHours;
 		}
 		template<TimeLength T, typename Ret>
-		__NODISCARD constexpr Ret GetTotalElapsedTime() const
+		__NODISCARD Ret GetTotalElapsedTime() const
 		{
 			if constexpr (T == TimeLength::NanoSeconds)
 				return static_cast<Ret>(m_TotalElapsedSeconds * SecToNano);
@@ -165,19 +148,7 @@ namespace Integrian3D::Time
 #pragma endregion
 
 	private:
-		constexpr Timer()
-			: m_MaxElapsedSeconds{ 0.1 }
-			, m_ElapsedSeconds{}
-			, m_TotalElapsedSeconds{}
-			, m_FPS{}
-			, m_FPSCounter{}
-			, m_FPSTimer{}
-			, m_TimePerFrame{ 1.0 / 60.0 }
-			, m_StartTimepoint{}
-			, m_PreviousTimepoint{}
-		{
-			Start();
-		}
+		Timer();
 
 		inline static std::unique_ptr<Timer> m_pInstance{};
 

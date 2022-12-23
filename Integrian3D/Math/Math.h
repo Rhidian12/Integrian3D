@@ -97,4 +97,14 @@ namespace Integrian3D::Math
 	{
 		return a < b ? b : a;
 	}
+
+	template<int64_t A, int64_t B>
+	__NODISCARD constexpr int64_t GetGCD()
+	{
+		if constexpr (B == 0)
+			return A;
+		else
+			return GetGCD<B, A% B>();
+	}
+
 }
