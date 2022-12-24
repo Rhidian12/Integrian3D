@@ -3,8 +3,10 @@
 #include "../../EngineConstants.h"
 #include "../../Array/Array.h"
 #include "SeekMode.h"
+#include "BinaryUtils.h"
 
 #include <string_view> /* std::string_view */
+#include <string> /* std::string */
 
 namespace Integrian3D::IO
 {
@@ -19,57 +21,102 @@ namespace Integrian3D::IO
 		~BinaryReader();
 
 		template<typename T>
-		__NODISCARD T ReadData(bool advanceBuffer = true)
+		__NODISCARD T Read()
 		{
 			__ASSERT(!m_Buffer.Empty());
 
-			/* [TODO]: Fix this */
-			static_assert(std::is_trivial_v<T> && std::is_standard_layout_v<T>,
-				"BinaryReader::ReadData<T>() -> T is not a POD value, no support implemented yet");
+			using RawT = std::remove_cvref_t<T>;
 
-			const T data{ *reinterpret_cast<T*>(&m_Buffer[m_BufferPointer]) };
+			static_assert(!std::is_pointer_v<RawT>,
+				"BinaryReader::Read<T>() > T cannot be a pointer");
+			static_assert(HasDeserialize<RawT> || IsPod<RawT>,
+				"BinaryReader::Read<T>() > T must be POD or provide a void Serialize(std::string) method");
+			static_assert(std::is_default_constructible_v<RawT>,
+				"BinaryReader::Read<T>() > T must be default constructible, if this is not possible, use BinaryReader::Read<T>(T& data)");
 
-			if (advanceBuffer)
-				m_BufferPointer += sizeof(T);
-			
-			return data;
+			if constexpr (HasDeserialize<RawT>)
+			{
+				/* First read the uint64_t to get the size */
+				const uint64_t size{ Read<uint64_t>() };
+				std::string serializedData{};
+				serializedData.resize(size);
+
+				for (uint32_t i{}; i < size; ++i)
+					serializedData[i] = m_Buffer[m_BufferPointer++];
+
+				T data{};
+				data.Deserialize(serializedData);
+
+				return data;
+			}
+			else /* IsPod<T> */
+			{
+				const RawT data{ *reinterpret_cast<RawT*>(&m_Buffer[m_BufferPointer]) };
+
+				m_BufferPointer += sizeof(RawT);
+
+				return data;
+			}
 		}
 		template<typename T>
-		void ReadData(T& data, bool advanceBuffer = true)
+		void Read(T& data)
 		{
 			__ASSERT(!m_Buffer.Empty());
 
-			/* [TODO]: Fix this */
-			static_assert(std::is_pod_v<T>, "BinaryReader::ReadData<T>() -> T is not a POD value, no support implemented yet");
+			using RawT = std::remove_cvref_t<T>;
 
-			data = *reinterpret_cast<T*>(&m_Buffer[m_BufferPointer]);
+			static_assert(!std::is_pointer_v<RawT>,
+				"BinaryReader::Read<T>() > T cannot be a pointer");
+			static_assert(HasDeserialize<RawT> || IsPod<RawT>,
+				"BinaryReader::Read<T>() > T must be POD or provide a void Serialize(std::string) method");
 
-			if (advanceBuffer)
-				m_BufferPointer += sizeof(T);
+			if constexpr (HasDeserialize<RawT>)
+			{
+				/* First read the uint32_t to get the size */
+				const uint32_t size{ Read<uint32_t>() };
+				std::string serializedData{};
+				serializedData.resize(size);
+
+				for (uint32_t i{}; i < size; ++i)
+					serializedData[i] = m_Buffer[m_BufferPointer++];
+
+				T data{};
+				data.Deserialize(serializedData);
+
+				return data;
+			}
+			else /* IsPod<T> */
+			{
+				const RawT data{ *reinterpret_cast<RawT*>(&m_Buffer[m_BufferPointer]) };
+
+				m_BufferPointer += sizeof(RawT);
+
+				return data;
+			}
 		}
 
 		void Seek(const SeekMode mode, const uint64_t val)
 		{
 			switch (mode)
 			{
-				case SeekMode::Start:
-					m_BufferPointer = val;
-					break;
-				case SeekMode::End:
-					m_BufferPointer = m_Buffer.Size() - 1 - val;
-					break;
-				case SeekMode::Advance:
-					m_BufferPointer += val;
+			case SeekMode::Start:
+				m_BufferPointer = val;
+				break;
+			case SeekMode::End:
+				m_BufferPointer = m_Buffer.Size() - 1 - val;
+				break;
+			case SeekMode::Advance:
+				m_BufferPointer += val;
 
-					if (m_BufferPointer >= m_Buffer.Size())
-						m_BufferPointer = m_Buffer.Size() - 1u;
-					break;
-				case SeekMode::Regress:
-					if (val <= m_BufferPointer)
-						m_BufferPointer -= val;
-					else
-						m_BufferPointer = 0;
-					break;
+				if (m_BufferPointer >= m_Buffer.Size())
+					m_BufferPointer = m_Buffer.Size() - 1u;
+				break;
+			case SeekMode::Regress:
+				if (val <= m_BufferPointer)
+					m_BufferPointer -= val;
+				else
+					m_BufferPointer = 0;
+				break;
 			}
 		}
 

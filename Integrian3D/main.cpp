@@ -856,11 +856,11 @@ TEST_CASE("Testing Writing and Reading Binary files")
 		{
 			BinaryWriter writer{ "Resources/TestBinaryFile.bin" };
 
-			writer.WriteData(5);
-			writer.WriteData(10.0);
-			writer.WriteData(15.f);
-			writer.WriteData('c');
-			writer.WriteData(36u);
+			writer.Write(5);
+			writer.Write(10.0);
+			writer.Write(15.f);
+			writer.Write('c');
+			writer.Write(36u);
 
 			writer.WriteToFile();
 		}
@@ -868,11 +868,11 @@ TEST_CASE("Testing Writing and Reading Binary files")
 		{
 			BinaryReader reader{ "Resources/TestBinaryFile.bin" };
 
-			REQUIRE(reader.ReadData<int>() == 5);
-			REQUIRE(reader.ReadData<double>() == 10.0);
-			REQUIRE(reader.ReadData<float>() == 15.f);
-			REQUIRE(reader.ReadData<char>() == 'c');
-			REQUIRE(reader.ReadData<unsigned int>() == 36u);
+			REQUIRE(reader.Read<int>() == 5);
+			REQUIRE(reader.Read<double>() == 10.0);
+			REQUIRE(reader.Read<float>() == 15.f);
+			REQUIRE(reader.Read<char>() == 'c');
+			REQUIRE(reader.Read<unsigned int>() == 36u);
 		}
 	}
 
@@ -897,7 +897,7 @@ TEST_CASE("Testing Writing and Reading Binary files")
 		{
 			BinaryWriter writer{ "Resources/TestBinaryFile.bin" };
 
-			writer.WriteData(data);
+			writer.Write(data);
 
 			writer.WriteToFile();
 		}
@@ -905,7 +905,7 @@ TEST_CASE("Testing Writing and Reading Binary files")
 		{
 			BinaryReader reader{ "Resources/TestBinaryFile.bin" };
 
-			const POD newData{ reader.ReadData<POD>() };
+			const POD newData{ reader.Read<POD>() };
 
 			REQUIRE(newData.A == data.A);
 			REQUIRE(AreEqual(newData.B, data.B));
@@ -914,8 +914,66 @@ TEST_CASE("Testing Writing and Reading Binary files")
 			REQUIRE(newData.E == data.E);
 		}
 	}
-}
 
+	SECTION("Testing custom non-POD data")
+	{
+		class NonPOD final
+		{
+		public:
+			NonPOD()
+				: m_A{}
+				, m_B{}
+			{}
+			NonPOD(const int a, const double b)
+				: m_A{ a }
+				, m_B{ b }
+			{}
+
+			std::string Serialize() const
+			{
+				std::string data{};
+				data.append(std::to_string(m_A) + ",");
+				data.append(std::to_string(m_B));
+
+				return data;
+			}
+
+			void Deserialize(std::string data)
+			{
+				m_A = std::stoi(data.substr(0, data.find_first_of(',')));
+				data = data.substr(data.find_first_of(',') + 1);
+
+				m_B = std::stod(data);
+			}
+
+			int GetA() const { return m_A; }
+			double GetB() const { return m_B; }
+
+		private:
+			int m_A;
+			double m_B;
+		};
+
+		NonPOD data{ 974654, -651.64 };
+
+		{
+			BinaryWriter writer{ "Resources/TestBinaryFile.bin" };
+
+			writer.Write(data);
+
+			writer.WriteToFile();
+		}
+
+		{
+			BinaryReader reader{ "Resources/TestBinaryFile.bin" };
+
+			const NonPOD newData{ reader.Read<NonPOD>() };
+
+			REQUIRE(newData.GetA() == data.GetA());
+			REQUIRE(AreEqual(newData.GetB(), data.GetB()));
+		}
+	}
+}
 #endif
 
 #elif defined BENCHMARKS

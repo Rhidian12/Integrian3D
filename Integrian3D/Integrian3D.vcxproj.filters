@@ -236,5 +236,8 @@
     <ClInclude Include="IO\Binary\BinaryWriter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="IO\Binary\BinaryUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
