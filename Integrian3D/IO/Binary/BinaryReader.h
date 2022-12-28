@@ -51,7 +51,7 @@ namespace Integrian3D::IO
 			}
 			else /* IsPod<T> */
 			{
-				const RawT data{ *reinterpret_cast<RawT*>(&m_Buffer[m_BufferPointer]) };
+				const RawT data{ SwapEndianness<RawT>(*reinterpret_cast<RawT*>(&m_Buffer[m_BufferPointer])) };
 
 				m_BufferPointer += sizeof(RawT);
 
@@ -69,29 +69,26 @@ namespace Integrian3D::IO
 				"BinaryReader::Read<T>() > T cannot be a pointer");
 			static_assert(HasDeserialize<RawT> || IsPod<RawT>,
 				"BinaryReader::Read<T>() > T must be POD or provide a void Serialize(std::string) method");
+			static_assert(std::is_default_constructible_v<RawT>,
+				"BinaryReader::Read<T>() > T must be default constructible, if this is not possible, use BinaryReader::Read<T>(T& data)");
 
 			if constexpr (HasDeserialize<RawT>)
 			{
-				/* First read the uint32_t to get the size */
-				const uint32_t size{ Read<uint32_t>() };
+				/* First read the uint64_t to get the size */
+				const uint64_t size{ Read<uint64_t>() };
 				std::string serializedData{};
 				serializedData.resize(size);
 
 				for (uint32_t i{}; i < size; ++i)
 					serializedData[i] = m_Buffer[m_BufferPointer++];
 
-				T data{};
 				data.Deserialize(serializedData);
-
-				return data;
 			}
 			else /* IsPod<T> */
 			{
-				const RawT data{ *reinterpret_cast<RawT*>(&m_Buffer[m_BufferPointer]) };
+				data = SwapEndianness<RawT>(*reinterpret_cast<RawT*>(&m_Buffer[m_BufferPointer]));
 
 				m_BufferPointer += sizeof(RawT);
-
-				return data;
 			}
 		}
 
