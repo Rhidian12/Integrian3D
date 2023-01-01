@@ -1061,7 +1061,7 @@ TEST_CASE("Writing and Reading a .iasset file")
 			IAssetReader<TestConverter, PODTestData> reader{ "Resources/TestIAsset" };
 
 			PODTestData newData{};
-			reader.Deserialize(newData);
+			newData = reader.Deserialize();
 
 			REQUIRE(data.A == newData.A);
 			REQUIRE(AreEqual(data.B, newData.B));

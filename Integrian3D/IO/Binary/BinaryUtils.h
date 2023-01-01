@@ -1,38 +1,36 @@
 #pragma once
 
 #include "../../EngineConstants.h"
+#include "../../TemplateUtils/TemplateUtils.h"
 
 #include <string> /* std::string */
 #include <type_traits> /* std::is_trivial_v, ... */
 
 namespace Integrian3D::IO
 {
-	namespace
+	namespace Detail
 	{
-		template<typename ...>
-		using Void = void;
-
 		template<typename T, typename = void>
 		struct _HasSerialize : public std::false_type {};
 
 		template<typename T>
-		struct _HasSerialize<T, Void<std::is_same<decltype(std::declval<T>().Serialize()), std::string>>> : public std::true_type {};
+		struct _HasSerialize<T, TUtils::Void<std::is_same<decltype(std::declval<T>().Serialize()), std::string>>> : public std::true_type {};
 
 		template<typename T, typename = void>
 		struct _HasDeserialize : public std::false_type {};
 
 		template<typename T>
-		struct _HasDeserialize < T, Void<decltype(std::declval<T>().Deserialize(std::string{})) >> : public std::true_type {};
+		struct _HasDeserialize < T, TUtils::Void<decltype(std::declval<T>().Deserialize(std::string{})) >> : public std::true_type {};
 	}
 
 	template<typename T>
 	constexpr auto IsPod{ std::is_trivial_v<T> && std::is_standard_layout_v<T> };
 
 	template<typename T>
-	constexpr auto HasSerialize{ _HasSerialize<T>::value };
+	constexpr auto HasSerialize{ Detail::_HasSerialize<T>::value };
 
 	template<typename T>
-	constexpr auto HasDeserialize{ _HasDeserialize<T>::value };
+	constexpr auto HasDeserialize{ Detail::_HasDeserialize<T>::value };
 
 	__NODISCARD __INLINE bool IsLittleEndian()
 	{

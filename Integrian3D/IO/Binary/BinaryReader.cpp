@@ -12,6 +12,10 @@
 
 namespace Integrian3D::IO
 {
+	BinaryReader::BinaryReader()
+		: m_pHandle{}
+	{}
+
 	BinaryReader::BinaryReader(const std::string_view filepath)
 		: m_pHandle{}
 		, m_Buffer{}
@@ -40,7 +44,27 @@ namespace Integrian3D::IO
 
 	BinaryReader::~BinaryReader()
 	{
-		if (CloseHandle(m_pHandle) == 0)
-			Debug::LogError("BinaryReader could not close the provided file", false);
+		if (m_pHandle)
+			if (CloseHandle(m_pHandle) == 0)
+				Debug::LogError("BinaryReader could not close the provided file", false);
+	}
+
+	BinaryReader::BinaryReader(BinaryReader&& other) noexcept
+		: m_pHandle{ __MOVE(other.m_pHandle) }
+		, m_Buffer{ __MOVE(other.m_Buffer) }
+		, m_BufferPointer{ __MOVE(other.m_BufferPointer) }
+	{
+		other.m_pHandle = nullptr;
+	}
+
+	BinaryReader& BinaryReader::operator=(BinaryReader&& other) noexcept
+	{
+		m_pHandle = __MOVE(other.m_pHandle);
+		m_Buffer = __MOVE(other.m_Buffer);
+		m_BufferPointer = __MOVE(other.m_BufferPointer);
+
+		other.m_pHandle = nullptr;
+
+		return *this;
 	}
 }

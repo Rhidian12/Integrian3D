@@ -12,8 +12,14 @@
 
 namespace Integrian3D::IO
 {
+	BinaryWriter::BinaryWriter()
+		: m_pHandle{}
+		, m_Buffer{}
+	{}
+
 	BinaryWriter::BinaryWriter(const std::string_view filepath)
 		: m_pHandle{}
+		, m_Buffer{}
 	{
 		/* open the file */
 		m_pHandle = CreateFileA(filepath.data(),
@@ -29,8 +35,26 @@ namespace Integrian3D::IO
 
 	BinaryWriter::~BinaryWriter()
 	{
-		if (CloseHandle(m_pHandle) == 0)
-			Debug::LogError("BinaryWriter could not close the provided file", false);
+		if (m_pHandle)	
+			if (CloseHandle(m_pHandle) == 0)
+				Debug::LogError("BinaryWriter could not close the provided file", false);
+	}
+
+	BinaryWriter::BinaryWriter(BinaryWriter&& other) noexcept
+		: m_pHandle{ __MOVE(other.m_pHandle) }
+		, m_Buffer{ __MOVE(other.m_Buffer) }
+	{
+		other.m_pHandle = nullptr;
+	}
+
+	BinaryWriter& BinaryWriter::operator=(BinaryWriter&& other) noexcept
+	{
+		m_pHandle = __MOVE(other.m_pHandle);
+		m_Buffer = __MOVE(other.m_Buffer);
+
+		other.m_pHandle = nullptr;
+
+		return *this;
 	}
 
 	void BinaryWriter::WriteToFile() const

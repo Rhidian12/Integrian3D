@@ -17,8 +17,14 @@ namespace Integrian3D::IO
 	class BinaryReader final
 	{
 	public:
+		BinaryReader();
 		explicit BinaryReader(const std::string_view filepath);
 		~BinaryReader();
+
+		BinaryReader(const BinaryReader&) noexcept = delete;
+		BinaryReader(BinaryReader&& other) noexcept;
+		BinaryReader& operator=(const BinaryReader&) noexcept = delete;
+		BinaryReader& operator=(BinaryReader&& other) noexcept;
 
 		template<typename T>
 		__NODISCARD T Read()
@@ -94,6 +100,8 @@ namespace Integrian3D::IO
 
 		void Seek(const SeekMode mode, const uint64_t val)
 		{
+			__ASSERT(!m_Buffer.Empty());
+
 			switch (mode)
 			{
 			case SeekMode::Start:

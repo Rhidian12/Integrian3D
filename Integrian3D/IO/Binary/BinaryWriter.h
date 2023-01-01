@@ -13,15 +13,22 @@ namespace Integrian3D::IO
 	class BinaryWriter final
 	{
 	public:
+		BinaryWriter();
 		explicit BinaryWriter(const std::string_view filepath);
 		~BinaryWriter();
+
+		BinaryWriter(const BinaryWriter& ) noexcept = delete;
+		BinaryWriter(BinaryWriter&& other) noexcept;
+		BinaryWriter& operator=(const BinaryWriter&) noexcept = delete;
+		BinaryWriter& operator=(BinaryWriter&& other) noexcept;
 
 		template<typename T>
 		void Write(T&& data, const SeekMode mode = SeekMode::Advance)
 		{
 			__ASSERT(mode != SeekMode::Regress && "Cannot write while regressing");
+			__ASSERT(m_pHandle != nullptr);
 
-			using RawT = std::remove_reference_t<T>;
+			using RawT = std::remove_cvref_t<T>;
 
 			static_assert(!std::is_pointer_v<RawT>,
 				"BinaryWriter::Write<T>() > T cannot be a pointer");
@@ -61,7 +68,7 @@ namespace Integrian3D::IO
 				char splitData[sizeof(RawT)]{};
 
 				for (uint64_t i{}; i < sizeof(RawT); ++i)
-					splitData[i] = *(reinterpret_cast<char*>(&convertedData) + i);
+					splitData[i] = *(reinterpret_cast<const char*>(&convertedData) + i);
 
 				switch (mode)
 				{
@@ -78,6 +85,11 @@ namespace Integrian3D::IO
 		}
 
 		void WriteToFile() const;
+
+		__NODISCARD const TArray<char>& GetBuffer() const
+		{
+			return m_Buffer;
+		}
 
 	private:
 		void* m_pHandle;
