@@ -669,16 +669,22 @@ TEST_CASE("Testing Basic Array of integers")
 	{
 		for (int i{}; i < nrOfElements; ++i)
 		{
-			arr.Add(i);
+			arr.AddFront(i);
 		}
 
 		arr.AddFront(15);
 		REQUIRE(arr.Size() == nrOfElements + 1);
 		REQUIRE(arr[0] == 15);
 
+		for (uint64_t i{ 1u }; i < arr.Size(); ++i)
+			REQUIRE(arr[i] == nrOfElements - i);
+
 		arr.AddFront(396);
 		REQUIRE(arr.Size() == nrOfElements + 2);
 		REQUIRE(arr[0] == 396);
+
+		for (uint64_t i{ 2u }; i < arr.Size(); ++i)
+			REQUIRE(arr[i] == nrOfElements - i + 1);
 	}
 
 	SECTION("Sorting an array using Insertion Sort (when array size < 64)")
@@ -763,6 +769,37 @@ TEST_CASE("Testing Basic Array of integers")
 
 		for (int i{}; i < size; ++i)
 			REQUIRE(arr[i] == newArr[i]);
+	}
+}
+
+#include <string>
+TEST_CASE("Testing Basic Array of characters")
+{
+	using namespace Integrian3D;
+
+	TArray<char> arr{};
+
+	SECTION("Adding characters")
+	{
+		const std::string letters{ "abcdefgh" };
+
+		for (const char c : letters)
+			arr.Add(c);
+
+		for (size_t i{}; i < arr.Size(); ++i)
+			REQUIRE(arr[i] == letters[i]);
+	}
+
+	SECTION("Adding Character to the front")
+	{
+		const std::string letters{ "abcdefgh" };
+
+		for (const char c : letters)
+			arr.AddFront(c);
+
+		size_t counter{};
+		for (int i{ static_cast<int>(arr.Size() - 1) }; i >= 0; --i)
+			REQUIRE(letters[i] == arr[counter++]);
 	}
 }
 #endif
@@ -860,7 +897,14 @@ TEST_CASE("Testing Writing and Reading Binary files")
 			writer.Write(10.0);
 			writer.Write(15.f);
 			writer.Write('c');
-			writer.Write(36u);
+			writer.Write(36u, SeekMode::Start);
+
+			//const std::string testString{ "TEST" };
+			//for (int i{ static_cast<int>(testString.size()) - 1 }; i >= 0; --i)
+			//	writer.Write(testString[i], SeekMode::Start);
+
+			const uint64_t constInt{ 951060u };
+			writer.Write(constInt);
 
 			writer.WriteToFile();
 		}
@@ -868,11 +912,19 @@ TEST_CASE("Testing Writing and Reading Binary files")
 		{
 			BinaryReader reader{ "Resources/TestBinaryFile.bin" };
 
+			//std::string testString{};
+			//testString.resize(4);
+
+			//for (size_t i{}; i < testString.size(); ++i)
+			//	testString[i] = reader.Read<char>();
+
+			//REQUIRE(testString == "TEST");
+			REQUIRE(reader.Read<unsigned int>() == 36u);
 			REQUIRE(reader.Read<int>() == 5);
 			REQUIRE(reader.Read<double>() == 10.0);
 			REQUIRE(reader.Read<float>() == 15.f);
 			REQUIRE(reader.Read<char>() == 'c');
-			REQUIRE(reader.Read<unsigned int>() == 36u);
+			REQUIRE(reader.Read<uint64_t>() == 951060u);
 		}
 	}
 
@@ -974,7 +1026,52 @@ TEST_CASE("Testing Writing and Reading Binary files")
 		}
 	}
 }
-#endif
+#endif // BINARY_READ_AND_WRITE_TESTS
+
+#define IASSET_READ_AND_WRITE_TESTS
+#ifdef IASSET_READ_AND_WRITE_TESTS
+#include "IO/Converters/TestConverter.h"
+#include "IO/IAsset/IAssetWriter.h"
+#include "IO/IAsset/IAssetReader.h"
+#include "Math/Math.h"
+
+TEST_CASE("Writing and Reading a .iasset file")
+{
+	using namespace Integrian3D::IO;
+	using namespace Integrian3D::Math;
+
+	SECTION("Testing POD data")
+	{
+		PODTestData data{};
+		data.A = 15;
+		data.B = 30.f;
+		data.C = true;
+		data.D = 60.0;
+		data.E = 'F';
+
+		SECTION("Writing a .iasset file")
+		{
+			IAssetWriter<TestConverter, PODTestData> writer{ "Resources/TestIAsset" };
+
+			writer.Serialize(data);
+		}
+
+		SECTION("Reading a .iasset file")
+		{
+			IAssetReader<TestConverter, PODTestData> reader{ "Resources/TestIAsset" };
+
+			PODTestData newData{};
+			reader.Deserialize(newData);
+
+			REQUIRE(data.A == newData.A);
+			REQUIRE(AreEqual(data.B, newData.B));
+			REQUIRE(data.C == newData.C);
+			REQUIRE(AreEqual(data.D, newData.D));
+			REQUIRE(data.E == newData.E);
+		}
+	}
+}
+#endif // IASSET_READ_AND_WRITE_TESTS
 
 #elif defined BENCHMARKS
 #include <chrono>

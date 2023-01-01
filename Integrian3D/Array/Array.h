@@ -272,7 +272,7 @@ namespace Integrian3D
 			else
 			{
 				m_Allocator.Destroy(m_pHead + index);
-				MoveRange(m_pHead + index + 1, m_pCurrentEnd--, m_pHead + index);
+				MoveRangeBackward(m_pHead + index + 1, m_pCurrentEnd--, m_pHead + index);
 
 				return It{ m_pHead + index };
 			}
@@ -369,7 +369,7 @@ namespace Integrian3D
 
 			m_Allocator.Destroy(m_pHead);
 
-			MoveRange(m_pHead + 1, m_pCurrentEnd--, m_pHead);
+			MoveRangeBackward(m_pHead + 1, m_pCurrentEnd--, m_pHead);
 		}
 
 		constexpr void Clear()
@@ -413,7 +413,7 @@ namespace Integrian3D
 			}
 			else
 			{
-				MoveRange(m_pHead + index, m_pCurrentEnd++ - 1, m_pHead + index + 1);
+				MoveRangeForward(m_pHead + index, m_pCurrentEnd++ - 1, m_pHead + index + 1);
 				return *(new (m_pHead + index) T{ __FORWARD(args)... });
 			}
 		}
@@ -427,7 +427,7 @@ namespace Integrian3D
 				Reallocate();
 			}
 
-			MoveRange(m_pHead, m_pCurrentEnd++, m_pHead + 1);
+			MoveRangeForward(m_pHead, m_pCurrentEnd++, m_pHead + 1);
 
 			return *(new (m_pHead) T{ __FORWARD(args)... });
 		}
@@ -861,10 +861,26 @@ namespace Integrian3D
 			return newCap;
 		}
 
-		constexpr void MoveRange(T* head, T* end, T* newHead) const
+		constexpr void MoveRangeBackward(T* head, T* end, T* newHead) const
 		{
 			const uint64_t size{ static_cast<uint64_t>(end - head) };
 			for (uint64_t i{}; i < size; ++i)
+			{
+				if constexpr (std::is_move_assignable_v<T>)
+				{
+					new (newHead + i) T{ __MOVE(*(head + i)) };
+				}
+				else
+				{
+					new (newHead + i) T{ *(head + i) };
+				}
+			}
+		}
+
+		constexpr void MoveRangeForward(T* head, T* end, T* newHead) const
+		{
+			const int64_t size{ static_cast<int64_t>(end - head) };
+			for (int64_t i{ size - 1 }; i >= 0; --i)
 			{
 				if constexpr (std::is_move_assignable_v<T>)
 				{
