@@ -55,7 +55,7 @@ namespace Integrian3D::IO
 
 				return data;
 			}
-			else /* IsPod<T> */
+			else if constexpr (IsPod<RawT>)/* IsPod<RawT> */
 			{
 				const RawT data{ SwapEndianness<RawT>(*reinterpret_cast<RawT*>(&m_Buffer[m_BufferPointer])) };
 
@@ -90,7 +90,7 @@ namespace Integrian3D::IO
 
 				data.Deserialize(serializedData);
 			}
-			else /* IsPod<T> */
+			else if constexpr (IsPod<RawT>)/* IsPod<RawT> */
 			{
 				data = SwapEndianness<RawT>(*reinterpret_cast<RawT*>(&m_Buffer[m_BufferPointer]));
 

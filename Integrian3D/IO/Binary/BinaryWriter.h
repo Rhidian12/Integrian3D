@@ -61,7 +61,7 @@ namespace Integrian3D::IO
 					break;
 				}
 			}
-			else /* IsPod<RawT> */
+			else if constexpr (IsPod<RawT>)/* IsPod<RawT> */
 			{
 				RawT convertedData{ SwapEndianness<RawT>(data) };
 
