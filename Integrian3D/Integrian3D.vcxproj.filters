@@ -239,7 +239,7 @@
     <ClInclude Include="IO\Binary\BinaryReader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="IO\Binary\SeekMode.h">
+    <ClInclude Include="IO\SeekMode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="IO\Binary\BinaryWriter.h">

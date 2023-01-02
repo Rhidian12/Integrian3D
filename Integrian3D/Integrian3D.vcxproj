@@ -233,7 +233,7 @@
     <ClInclude Include="DebugUtility\DebugUtility.h" />
     <ClInclude Include="EngineConstants.h" />
     <ClInclude Include="IO\ASCII\FileReader.h" />
-    <ClInclude Include="IO\Binary\SeekMode.h" />
+    <ClInclude Include="IO\SeekMode.h" />
     <ClInclude Include="LinkedList\LinkedList.h" />
     <ClInclude Include="Memory\AllocatorTraits\AllocatorTraits.h" />
     <ClInclude Include="Memory\Allocator\Allocator.h" />

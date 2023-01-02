@@ -16,19 +16,21 @@ namespace Integrian3D::IO
 		: m_Filepath{}
 		, m_pHandle{}
 		, m_Buffer{}
+		, m_BufferPointer{}
 	{}
 
 	File::File(const std::string& filepath)
 		: m_Filepath{ filepath }
 		, m_pHandle{}
 		, m_Buffer{}
+		, m_BufferPointer{}
 	{
 		/* open the file */
 		m_pHandle = CreateFileA(filepath.data(),
 			GENERIC_READ | GENERIC_WRITE,
-			FILE_SHARE_READ,
+			FILE_SHARE_READ | FILE_SHARE_WRITE,
 			nullptr,
-			OPEN_EXISTING,
+			OPEN_ALWAYS,
 			FILE_ATTRIBUTE_NORMAL,
 			nullptr);
 
@@ -56,6 +58,7 @@ namespace Integrian3D::IO
 		: m_Filepath{ __MOVE(other.m_Filepath) }
 		, m_pHandle{ __MOVE(other.m_pHandle) }
 		, m_Buffer{ __MOVE(other.m_Buffer) }
+		, m_BufferPointer{ __MOVE(other.m_BufferPointer) }
 	{
 		other.m_pHandle = nullptr;
 	}
@@ -65,6 +68,7 @@ namespace Integrian3D::IO
 		m_Filepath = __MOVE(other.m_Filepath);
 		m_pHandle = __MOVE(other.m_pHandle);
 		m_Buffer = __MOVE(other.m_Buffer);
+		m_BufferPointer = __MOVE(other.m_BufferPointer);
 
 		other.m_pHandle = nullptr;
 
@@ -77,9 +81,31 @@ namespace Integrian3D::IO
 			Debug::LogError("BinaryWriter could not write the data to the provided file", false);
 	}
 
-	TArray<char>& File::GetBuffer()
+	void File::Seek(const SeekMode mode, const uint64_t val)
 	{
-		return m_Buffer;
+		__ASSERT(!m_Buffer.Empty());
+
+		switch (mode)
+		{
+		case SeekMode::Start:
+			m_BufferPointer = val;
+			break;
+		case SeekMode::End:
+			m_BufferPointer = m_Buffer.Size() - 1 - val;
+			break;
+		case SeekMode::Advance:
+			m_BufferPointer += val;
+
+			if (m_BufferPointer >= m_Buffer.Size())
+				m_BufferPointer = m_Buffer.Size() - 1u;
+			break;
+		case SeekMode::Regress:
+			if (val <= m_BufferPointer)
+				m_BufferPointer -= val;
+			else
+				m_BufferPointer = 0;
+			break;
+		}
 	}
 
 	const TArray<char>& File::GetBuffer() const
