@@ -105,6 +105,9 @@
     <ClCompile Include="IO\IAsset\IAssetReader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="IO\File\File.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window\Window.h">
@@ -258,6 +261,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="IO\IAsset\IAssetReader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IO\File\File.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
