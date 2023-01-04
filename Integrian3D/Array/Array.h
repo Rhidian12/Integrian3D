@@ -236,7 +236,14 @@ namespace Integrian3D
 				EmplaceBack(elem);
 			}
 		}
-		constexpr void AddRange(It beg, It end)
+		constexpr void AddRange(It beg, const It end)
+		{
+			for (; beg != end; ++beg)
+			{
+				EmplaceBack(*beg);
+			}
+		}
+		constexpr void AddRange(CIt beg, const CIt end)
 		{
 			for (; beg != end; ++beg)
 			{
@@ -571,6 +578,22 @@ namespace Integrian3D
 				{
 					arr.Add(*elem);
 				}
+			}
+
+			return arr;
+		}
+
+		constexpr Array SubArray(const uint64_t startIndex, const uint64_t count = std::numeric_limits<uint64_t>::max()) const
+		{
+			Array arr{};
+
+			const uint64_t size{ Size() };
+			for (uint64_t i{ startIndex }; i < count; ++i)
+			{
+				if (i >= size)
+					break;
+
+				arr.Add(*(m_pHead + i));
 			}
 
 			return arr;

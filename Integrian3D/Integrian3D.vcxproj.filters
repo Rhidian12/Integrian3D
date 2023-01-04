@@ -93,12 +93,6 @@
     <ClCompile Include="Timer\Timepoint\Timepoint.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="IO\Binary\BinaryReader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="IO\Binary\BinaryWriter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="IO\IAsset\IAssetWriter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -236,16 +230,10 @@
     <ClInclude Include="Timer\TimeLength.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="IO\Binary\BinaryReader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="IO\SeekMode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="IO\Binary\BinaryWriter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="IO\Binary\BinaryUtils.h">
+    <ClInclude Include="IO\IOUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="IO\IAsset\IAssetWriter.h">
@@ -257,13 +245,13 @@
     <ClInclude Include="TemplateUtils\TemplateUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="IO\Converters\TestConverter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="IO\IAsset\IAssetReader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="IO\File\File.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IO\Serializer\Serializer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

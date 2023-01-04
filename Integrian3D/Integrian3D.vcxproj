@@ -186,8 +186,6 @@
     <ClCompile Include="IO\File\File.cpp" />
     <ClCompile Include="IO\IAsset\IAssetReader.cpp" />
     <ClCompile Include="IO\IAsset\IAssetWriter.cpp" />
-    <ClCompile Include="IO\Binary\BinaryWriter.cpp" />
-    <ClCompile Include="IO\Binary\BinaryReader.cpp" />
     <ClCompile Include="Components\CameraComponent\CameraComponent.cpp" />
     <ClCompile Include="Core\Core.cpp" />
     <ClCompile Include="IO\ASCII\FileReader.cpp" />
@@ -219,12 +217,9 @@
     <ClInclude Include="Array\Array.h" />
     <ClInclude Include="IO\File\File.h" />
     <ClInclude Include="IO\IAsset\IAssetReader.h" />
-    <ClInclude Include="IO\Converters\TestConverter.h" />
     <ClInclude Include="IO\IAsset\IAssetUtils.h" />
     <ClInclude Include="IO\IAsset\IAssetWriter.h" />
-    <ClInclude Include="IO\Binary\BinaryUtils.h" />
-    <ClInclude Include="IO\Binary\BinaryWriter.h" />
-    <ClInclude Include="IO\Binary\BinaryReader.h" />
+    <ClInclude Include="IO\IOUtils.h" />
     <ClInclude Include="Components\CameraComponent\CameraComponent.h" />
     <ClInclude Include="Delegate\Delegate.h" />
     <ClInclude Include="ECS\ComponentArray\ComponentArray.h" />
@@ -234,6 +229,7 @@
     <ClInclude Include="EngineConstants.h" />
     <ClInclude Include="IO\ASCII\FileReader.h" />
     <ClInclude Include="IO\SeekMode.h" />
+    <ClInclude Include="IO\Serializer\Serializer.h" />
     <ClInclude Include="LinkedList\LinkedList.h" />
     <ClInclude Include="Memory\AllocatorTraits\AllocatorTraits.h" />
     <ClInclude Include="Memory\Allocator\Allocator.h" />

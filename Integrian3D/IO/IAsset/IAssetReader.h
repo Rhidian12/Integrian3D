@@ -1,8 +1,8 @@
 #pragma once
 
 #include "../../EngineConstants.h"
-#include "../Binary/BinaryReader.h"
-#include "IAssetUtils.h"
+#include "../File/File.h"
+#include "../Serializer/Serializer.h"
 
 #include <string> /* std::string */
 
@@ -11,23 +11,20 @@ namespace Integrian3D::IO
 	/// <summary>
 	/// An RAII .iasset file reader	that can read .iasset files 
 	/// </summary>
-	template<typename Conv, typename T>
+	template<typename T>
 	class IAssetReader final
 	{
 	public:
 		explicit IAssetReader(std::string filepath)
-			: m_Converter{}
 		{
 			filepath = filepath.substr(0, filepath.find_last_of('.'));
 			filepath.append(".iasset");
 
-			m_Reader = BinaryReader{ filepath.c_str() };
+			m_File = File{ filepath };
 		}
 
 		void Deserialize(T& val)
 		{
-			static_assert(IAsset_HasDeserialize<Conv, T>, "Converter::Deserialize(BinaryReader&, T&) > Not correctly implemented");
-
 			/*
 			All values little-endian
 			+00 6B Magic Identification (currently IASSET)
@@ -44,29 +41,25 @@ namespace Integrian3D::IO
 			uint32_t length{};
 			uint16_t offset{};
 
-			for (size_t i{}; i < iasset.size(); ++i)
-				iasset[i] = m_Reader.Read<char>();
+			iasset = Deserialize<std::string>(m_File.Read<std::string>());
 
 			__ASSERT(iasset == "IASSET");
 
-			version = m_Reader.Read<uint8_t>();
+			version = Deserialize<uint8_t>(m_File.Read<uint8_t>());
 
 			/* advance past padding */
-			m_Reader.Seek(SeekMode::Advance, 1u);
+			m_File.Seek(SeekMode::Advance, 1u);
 
-			length = m_Reader.Read<uint32_t>();
-			offset = m_Reader.Read<uint16_t>();
+			length = Deserialize<uint32_t>(m_File.Read<uint32_t>());
+			offset = Deserialize<uint16_t>(m_File.Read<uint16_t>());
 
-			m_Reader.Seek(SeekMode::Start, offset);
+			m_File.Seek(SeekMode::Start, offset);
 
-			m_Converter.Deserialize(m_Reader, val);
+			Deserialize<T>(m_File.Read<T>(), val);
 		}
 
 		T Deserialize()
 		{
-			static_assert(IAsset_HasDeserializeRet<Conv, T>, "Converter::Deserialize(BinaryReader&, T&) > Not correctly implemented");
-			static_assert(std::is_default_constructible_v<T>, "IAssetReader::Deserialize() > T must be default constructible");
-
 			/*
 			All values little-endian
 			+00 6B Magic Identification (currently IASSET)
@@ -83,27 +76,24 @@ namespace Integrian3D::IO
 			uint32_t length{};
 			uint16_t offset{};
 
-			for (size_t i{}; i < iasset.size(); ++i)
-				iasset[i] = m_Reader.Read<char>();
+			iasset = Deserialize<std::string>(m_File.Read<std::string>());
 
 			__ASSERT(iasset == "IASSET");
 
-			version = m_Reader.Read<uint8_t>();
+			version = Deserialize<uint8_t>(m_File.Read<uint8_t>());
 
 			/* advance past padding */
-			m_Reader.Seek(SeekMode::Advance, 1u);
+			m_File.Seek(SeekMode::Advance, 1u);
 
-			length = m_Reader.Read<uint32_t>();
-			offset = m_Reader.Read<uint16_t>();
+			length = Deserialize<uint32_t>(m_File.Read<uint32_t>());
+			offset = Deserialize<uint16_t>(m_File.Read<uint16_t>());
 
-			m_Reader.Seek(SeekMode::Start, offset);
+			m_File.Seek(SeekMode::Start, offset);
 
-			return m_Converter.Deserialize(m_Reader);
+			return Deserialize<T>(m_File.Read<T>());
 		}
 
-
 	private:
-		Conv m_Converter;
-		BinaryReader m_Reader;
+		File m_File;
 	};
 }

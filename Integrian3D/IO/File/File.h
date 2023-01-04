@@ -3,6 +3,7 @@
 #include "../../EngineConstants.h"
 #include "../../Array/Array.h"
 #include "../SeekMode.h"
+#include "../Serializer/Serializer.h"
 
 #include <string> /* std::string */
 
@@ -30,31 +31,19 @@ namespace Integrian3D::IO
 		/// </summary>
 		void Write() const;
 
-		/// <summary>
-		/// Write data to the internal buffer.
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="data">: Data to write to the internal buffer.</param>
-		/// <param name="mode">: Where to add the data in the buffer.</param>
-		template<typename T>
-		void Write(T&& data, const SeekMode mode = SeekMode::Advance)
+		void Write(const TArray<char>& data, const SeekMode mode = SeekMode::Advance)
 		{
 			__ASSERT(mode != SeekMode::Regress && "Cannot write while regressing");
 
 			switch (mode)
 			{
 			case SeekMode::Start:
-				for (int32_t i{ static_cast<int32_t>(amountOfData) - 1 }; i >= 0; --i)
-					m_Buffer.AddFront(*(reinterpret_cast<const char*>(&data) + i));
+				for (int32_t i{ static_cast<int32_t>(data.Size()) - 1 }; i >= 0; --i)
+					m_Buffer.AddFront(data[i]);
 				break;
 			case SeekMode::End:
 			case SeekMode::Advance:
-				/* Add size of string */
-				Write(amountOfData, mode);
-
-				/* Add serialized string */
-				for (uint64_t i{}; i < amountOfData; ++i)
-					m_Buffer.Add(*(reinterpret_cast<const char*>(&data) + i));
+				m_Buffer.AddRange(data.cbegin(), data.cend());
 				break;
 			}
 		}
@@ -65,14 +54,29 @@ namespace Integrian3D::IO
 		/// <typeparam name="T"></typeparam>
 		/// <returns>a std::string which can be deserialized by a user-defined function or an engine provided one</returns>
 		template<typename T>
-		std::string Read()
+		TArray<char> Read()
 		{
 			__ASSERT(!m_Buffer.Empty());
 
-			std::string data{};
-			data.resize(sizeof(T));
+			TArray<char> data{};
+			data.Resize(sizeof(T));
 
-			for (uint64_t i{}; i < data; ++i)
+			for (uint64_t i{}; i < data.Size(); ++i)
+				data[i] = m_Buffer[m_BufferPointer++];
+
+			return data;
+		}
+
+		template<>
+		TArray<char> Read<std::string>()
+		{
+			__ASSERT(!m_Buffer.Empty());
+
+			TArray<char> data{};
+			const uint32_t size{ Deserialize<uint32_t>(m_Buffer) };
+			m_BufferPointer += sizeof(size);
+
+			for (uint64_t i{}; i < size; ++i)
 				data[i] = m_Buffer[m_BufferPointer++];
 
 			return data;

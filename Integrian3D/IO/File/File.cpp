@@ -28,13 +28,13 @@ namespace Integrian3D::IO
 		/* open the file */
 		m_pHandle = CreateFileA(filepath.data(),
 			GENERIC_READ | GENERIC_WRITE,
-			FILE_SHARE_READ | FILE_SHARE_WRITE,
+			FILE_SHARE_READ,
 			nullptr,
 			OPEN_ALWAYS,
 			FILE_ATTRIBUTE_NORMAL,
 			nullptr);
 
-		if (m_pHandle != INVALID_HANDLE_VALUE)
+		if (m_pHandle == INVALID_HANDLE_VALUE)
 			Debug::LogError("File could not open the provided file", false);
 
 		/* Get the file size */
@@ -45,6 +45,12 @@ namespace Integrian3D::IO
 		DWORD readBytes{};
 		if (ReadFile(m_pHandle, m_Buffer.Data(), fileSize, &readBytes, nullptr) == 0)
 			Debug::LogError("File could not read the provided file", false);
+
+		if (SetFilePointer(m_pHandle, 0, nullptr, FILE_BEGIN) == INVALID_SET_FILE_POINTER)
+			Debug::LogError("File could not set the file pointer", false);
+
+		if (SetEndOfFile(m_pHandle) == 0)
+			Debug::LogError("File could not be truncated", false);
 	}
 
 	File::~File()
@@ -78,7 +84,7 @@ namespace Integrian3D::IO
 	void File::Write() const
 	{
 		if (WriteFile(m_pHandle, m_Buffer.Data(), static_cast<DWORD>(m_Buffer.Size()), nullptr, nullptr) == 0)
-			Debug::LogError("BinaryWriter could not write the data to the provided file", false);
+			Debug::LogError("File could not write the data to the provided file", false);
 	}
 
 	void File::Seek(const SeekMode mode, const uint64_t val)

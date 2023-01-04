@@ -1,8 +1,8 @@
 #pragma once
 
 #include "../../EngineConstants.h"
-#include "../Binary/BinaryWriter.h"
-#include "IAssetUtils.h"
+#include "../File/File.h"
+#include "../Serializer/Serializer.h"
 
 #include <string> /* std::string */
 
@@ -11,23 +11,20 @@ namespace Integrian3D::IO
 	/// <summary>
 	/// An RAII .iasset file writer	that can write .iasset files 
 	/// </summary>
-	template<typename Conv, typename T>
+	template<typename T>
 	class IAssetWriter final
 	{
 	public:
 		explicit IAssetWriter(std::string filepath)
-			: m_Converter{}
 		{
 			filepath = filepath.substr(0, filepath.find_last_of('.'));
 			filepath.append(".iasset");
 
-			m_Writer = BinaryWriter{ filepath.c_str() };
+			m_File = File{ filepath };
 		}
 
 		void Serialize(const T& val)
 		{
-			static_assert(IAsset_HasSerialize<Conv, T>, "Converter::Serialize(BinaryWriter&, T) > Not correctly implemented");
-
 			/*
 			All values little-endian 
 			+00 6B Magic Identification (currently IASSET) 
@@ -43,26 +40,24 @@ namespace Integrian3D::IO
 			constexpr uint8_t version{ 1u };
 			constexpr uint8_t padding{ '\0' };
 
-			m_Converter.Serialize(m_Writer, val);
+			const TArray<char> serializedData{ Serialize(val) };
 
-			const uint32_t length{ static_cast<uint32_t>(m_Writer.GetBuffer().Size()) };
+			const uint32_t length{ static_cast<uint32_t>(serializedData.GetBuffer().Size()) };
 			const uint16_t offset{ static_cast<uint16_t>(iasset.size() + sizeof(version) + sizeof(padding) +
 				sizeof(length) + sizeof(offset)) };
 
-			m_Writer.Write(offset, SeekMode::Start);
-			m_Writer.Write(length, SeekMode::Start);
+			m_File.Write(Serialize(offset), SeekMode::Start);
+			m_File.Write(Serialize(length), SeekMode::Start);
 
-			m_Writer.Write(padding, SeekMode::Start);
-			m_Writer.Write(version, SeekMode::Start);
+			m_File.Write(Serialize(padding), SeekMode::Start);
+			m_File.Write(Serialize(version), SeekMode::Start);
 			
-			for (int i{ static_cast<int>(iasset.size() - 1) }; i >= 0; --i)
-				m_Writer.Write(iasset[i], SeekMode::Start);
+			m_File.Write(Serialize(iasset), SeekMode::Start);
 
-			m_Writer.WriteToFile();
+			m_File.Write();
 		}
 
 	private:
-		Conv m_Converter;
-		BinaryWriter m_Writer;
+		File m_File;
 	};
 }

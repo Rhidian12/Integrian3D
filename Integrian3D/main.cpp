@@ -878,11 +878,70 @@ TEST_CASE("Testing Timer")
 }
 #endif
 
-#define BINARY_READ_AND_WRITE_TESTS
-#ifdef BINARY_READ_AND_WRITE_TESTS
-#include "IO/Binary/BinaryReader.h"
-#include "IO/Binary/BinaryWriter.h"
+#define SERIALIZING_BINARY_DATA_TESTS
+#ifdef SERIALIZING_BINARY_DATA_TESTS
+#include "IO/File/File.h"
+#include "IO/Serializer/Serializer.h"
 #include "Math/Math.h"
+
+class NonPOD final
+{
+public:
+	NonPOD()
+		: m_A{}
+		, m_B{}
+	{}
+	NonPOD(const int a, const double b)
+		: m_A{ a }
+		, m_B{ b }
+	{}
+
+	std::string Serialize() const
+	{
+		std::string data{};
+		data.append(std::to_string(m_A) + ",");
+		data.append(std::to_string(m_B));
+
+		return data;
+	}
+
+	void Deserialize(std::string data)
+	{
+		m_A = std::stoi(data.substr(0, data.find_first_of(',')));
+		data = data.substr(data.find_first_of(',') + 1);
+
+		m_B = std::stod(data);
+	}
+
+	int GetA() const { return m_A; }
+	double GetB() const { return m_B; }
+
+private:
+	int m_A;
+	double m_B;
+};
+
+template<>
+__NODISCARD __INLINE Integrian3D::TArray<char> Serialize<NonPOD>(const NonPOD& data)
+{
+	Integrian3D::TArray<char> arr{ Serialize(data.GetA()) };
+
+	Integrian3D::TArray<char> arr2{ Serialize(data.GetB()) };
+
+	arr.AddRange(arr2.cbegin(), arr2.cend());
+
+	return arr;
+}
+
+template<>
+__NODISCARD __INLINE NonPOD Deserialize<NonPOD>(const Integrian3D::TArray<char>& data)
+{
+	const int a{ Deserialize<int>(data) };
+	const double b{ Deserialize<double>(data.SubArray(sizeof(int))) };
+
+	return NonPOD{ a,b };
+}
+
 TEST_CASE("Testing Writing and Reading Binary files")
 {
 	using namespace Integrian3D::IO;
@@ -891,40 +950,29 @@ TEST_CASE("Testing Writing and Reading Binary files")
 	SECTION("Testing Simple POD data")
 	{
 		{
-			BinaryWriter writer{ "Resources/TestBinaryFile.bin" };
+			File file{ "Resources/TestBinaryFile.bin" };
 
-			writer.Write(5);
-			writer.Write(10.0);
-			writer.Write(15.f);
-			writer.Write('c');
-			writer.Write(36u, SeekMode::Start);
-
-			//const std::string testString{ "TEST" };
-			//for (int i{ static_cast<int>(testString.size()) - 1 }; i >= 0; --i)
-			//	writer.Write(testString[i], SeekMode::Start);
+			file.Write(Serialize(5));
+			file.Write(Serialize(10.0));
+			file.Write(Serialize(15.f));
+			file.Write(Serialize('c'));
+			file.Write(Serialize(36u), SeekMode::Start);
 
 			const uint64_t constInt{ 951060u };
-			writer.Write(constInt);
+			file.Write(Serialize(constInt));
 
-			writer.WriteToFile();
+			file.Write();
 		}
 
 		{
-			BinaryReader reader{ "Resources/TestBinaryFile.bin" };
+			File file{ "Resources/TestBinaryFile.bin" };
 
-			//std::string testString{};
-			//testString.resize(4);
-
-			//for (size_t i{}; i < testString.size(); ++i)
-			//	testString[i] = reader.Read<char>();
-
-			//REQUIRE(testString == "TEST");
-			REQUIRE(reader.Read<unsigned int>() == 36u);
-			REQUIRE(reader.Read<int>() == 5);
-			REQUIRE(reader.Read<double>() == 10.0);
-			REQUIRE(reader.Read<float>() == 15.f);
-			REQUIRE(reader.Read<char>() == 'c');
-			REQUIRE(reader.Read<uint64_t>() == 951060u);
+			REQUIRE(Deserialize<unsigned int>(file.Read<unsigned int>()) == 36u);
+			REQUIRE(Deserialize<int>(file.Read<int>()) == 5);
+			REQUIRE(AreEqual(Deserialize<double>(file.Read<double>()), 10.0));
+			REQUIRE(AreEqual(Deserialize<float>(file.Read<float>()), 15.f));
+			REQUIRE(Deserialize<char>(file.Read<char>()) == 'c');
+			REQUIRE(Deserialize<uint64_t>(file.Read<uint64_t>()) == 951060u);
 		}
 	}
 
@@ -947,17 +995,17 @@ TEST_CASE("Testing Writing and Reading Binary files")
 		data.E = 68661u;
 
 		{
-			BinaryWriter writer{ "Resources/TestBinaryFile.bin" };
+			File file{ "Resources/TestBinaryFile.bin" };
 
-			writer.Write(data);
+			file.Write(Serialize(data));
 
-			writer.WriteToFile();
+			file.Write();
 		}
 
 		{
-			BinaryReader reader{ "Resources/TestBinaryFile.bin" };
+			File file{ "Resources/TestBinaryFile.bin" };
 
-			const POD newData{ reader.Read<POD>() };
+			const POD newData{ Deserialize<POD>(file.Read<POD>()) };
 
 			REQUIRE(newData.A == data.A);
 			REQUIRE(AreEqual(newData.B, data.B));
@@ -969,66 +1017,29 @@ TEST_CASE("Testing Writing and Reading Binary files")
 
 	SECTION("Testing custom non-POD data")
 	{
-		class NonPOD final
-		{
-		public:
-			NonPOD()
-				: m_A{}
-				, m_B{}
-			{}
-			NonPOD(const int a, const double b)
-				: m_A{ a }
-				, m_B{ b }
-			{}
-
-			std::string Serialize() const
-			{
-				std::string data{};
-				data.append(std::to_string(m_A) + ",");
-				data.append(std::to_string(m_B));
-
-				return data;
-			}
-
-			void Deserialize(std::string data)
-			{
-				m_A = std::stoi(data.substr(0, data.find_first_of(',')));
-				data = data.substr(data.find_first_of(',') + 1);
-
-				m_B = std::stod(data);
-			}
-
-			int GetA() const { return m_A; }
-			double GetB() const { return m_B; }
-
-		private:
-			int m_A;
-			double m_B;
-		};
-
 		NonPOD data{ 974654, -651.64 };
 
 		{
-			BinaryWriter writer{ "Resources/TestBinaryFile.bin" };
+			File file{ "Resources/TestBinaryFile.bin" };
 
-			writer.Write(data);
+			file.Write(Serialize(data));
 
-			writer.WriteToFile();
+			file.Write();
 		}
 
 		{
-			BinaryReader reader{ "Resources/TestBinaryFile.bin" };
+			File file{ "Resources/TestBinaryFile.bin" };
 
-			const NonPOD newData{ reader.Read<NonPOD>() };
+			const NonPOD newData{ Deserialize<NonPOD>(file.Read<NonPOD>()) };
 
 			REQUIRE(newData.GetA() == data.GetA());
 			REQUIRE(AreEqual(newData.GetB(), data.GetB()));
 		}
 	}
 }
-#endif // BINARY_READ_AND_WRITE_TESTS
+#endif // SERIALIZING_BINARY_DATA_TESTS
 
-#define IASSET_READ_AND_WRITE_TESTS
+// #define IASSET_READ_AND_WRITE_TESTS
 #ifdef IASSET_READ_AND_WRITE_TESTS
 #include "IO/Converters/TestConverter.h"
 #include "IO/IAsset/IAssetWriter.h"
@@ -1438,7 +1449,7 @@ int main()
 #endif
 
 	return 0;
-	}
+}
 
 #endif
 #endif
