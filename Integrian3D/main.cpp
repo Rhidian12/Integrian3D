@@ -951,6 +951,7 @@ TEST_CASE("Testing Writing and Reading Binary files")
 	{
 		{
 			File file{ "Resources/TestBinaryFile.bin" };
+			file.ClearBuffer();
 
 			file.Write(Serialize(5));
 			file.Write(Serialize(10.0));
@@ -967,7 +968,7 @@ TEST_CASE("Testing Writing and Reading Binary files")
 		{
 			File file{ "Resources/TestBinaryFile.bin" };
 
-			REQUIRE(Deserialize<unsigned int>(file.Read<unsigned int>()) == 36u);
+			REQUIRE(Deserialize<uint32_t>(file.Read<uint32_t>()) == 36u);
 			REQUIRE(Deserialize<int>(file.Read<int>()) == 5);
 			REQUIRE(AreEqual(Deserialize<double>(file.Read<double>()), 10.0));
 			REQUIRE(AreEqual(Deserialize<float>(file.Read<float>()), 15.f));
@@ -996,6 +997,7 @@ TEST_CASE("Testing Writing and Reading Binary files")
 
 		{
 			File file{ "Resources/TestBinaryFile.bin" };
+			file.ClearBuffer();
 
 			file.Write(Serialize(data));
 
@@ -1021,6 +1023,7 @@ TEST_CASE("Testing Writing and Reading Binary files")
 
 		{
 			File file{ "Resources/TestBinaryFile.bin" };
+			file.ClearBuffer();
 
 			file.Write(Serialize(data));
 
@@ -1039,12 +1042,20 @@ TEST_CASE("Testing Writing and Reading Binary files")
 }
 #endif // SERIALIZING_BINARY_DATA_TESTS
 
-// #define IASSET_READ_AND_WRITE_TESTS
+#define IASSET_READ_AND_WRITE_TESTS
 #ifdef IASSET_READ_AND_WRITE_TESTS
-#include "IO/Converters/TestConverter.h"
 #include "IO/IAsset/IAssetWriter.h"
 #include "IO/IAsset/IAssetReader.h"
 #include "Math/Math.h"
+
+struct PODTestData final
+{
+	int A;
+	float B;
+	bool C;
+	double D;
+	char E;
+};
 
 TEST_CASE("Writing and Reading a .iasset file")
 {
@@ -1062,17 +1073,16 @@ TEST_CASE("Writing and Reading a .iasset file")
 
 		SECTION("Writing a .iasset file")
 		{
-			IAssetWriter<TestConverter, PODTestData> writer{ "Resources/TestIAsset" };
+			IAssetWriter writer{ "Resources/TestIAsset" };
 
 			writer.Serialize(data);
 		}
 
 		SECTION("Reading a .iasset file")
 		{
-			IAssetReader<TestConverter, PODTestData> reader{ "Resources/TestIAsset" };
+			IAssetReader reader{ "Resources/TestIAsset" };
 
-			PODTestData newData{};
-			newData = reader.Deserialize();
+			PODTestData newData{ reader.Deserialize<PODTestData>() };
 
 			REQUIRE(data.A == newData.A);
 			REQUIRE(AreEqual(data.B, newData.B));

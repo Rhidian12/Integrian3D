@@ -45,12 +45,6 @@ namespace Integrian3D::IO
 		DWORD readBytes{};
 		if (ReadFile(m_pHandle, m_Buffer.Data(), fileSize, &readBytes, nullptr) == 0)
 			Debug::LogError("File could not read the provided file", false);
-
-		if (SetFilePointer(m_pHandle, 0, nullptr, FILE_BEGIN) == INVALID_SET_FILE_POINTER)
-			Debug::LogError("File could not set the file pointer", false);
-
-		if (SetEndOfFile(m_pHandle) == 0)
-			Debug::LogError("File could not be truncated", false);
 	}
 
 	File::~File()
@@ -83,8 +77,19 @@ namespace Integrian3D::IO
 
 	void File::Write() const
 	{
+		if (SetFilePointer(m_pHandle, 0, nullptr, FILE_BEGIN) == INVALID_SET_FILE_POINTER)
+			Debug::LogError("File could not set the file pointer", false);
+
+		if (SetEndOfFile(m_pHandle) == 0)
+			Debug::LogError("File could not be truncated", false);
+
 		if (WriteFile(m_pHandle, m_Buffer.Data(), static_cast<DWORD>(m_Buffer.Size()), nullptr, nullptr) == 0)
 			Debug::LogError("File could not write the data to the provided file", false);
+	}
+
+	void File::ClearBuffer()
+	{
+		m_Buffer.Clear();
 	}
 
 	void File::Seek(const SeekMode mode, const uint64_t val)

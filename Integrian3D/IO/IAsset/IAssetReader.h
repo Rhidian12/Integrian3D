@@ -11,18 +11,17 @@ namespace Integrian3D::IO
 	/// <summary>
 	/// An RAII .iasset file reader	that can read .iasset files 
 	/// </summary>
-	template<typename T>
 	class IAssetReader final
 	{
 	public:
-		explicit IAssetReader(std::string filepath)
-		{
-			filepath = filepath.substr(0, filepath.find_last_of('.'));
-			filepath.append(".iasset");
+		explicit IAssetReader(std::string filepath);
 
-			m_File = File{ filepath };
-		}
+		IAssetReader(const IAssetReader&) noexcept = delete;
+		IAssetReader(IAssetReader&& other) noexcept = default;
+		IAssetReader& operator=(const IAssetReader&) noexcept = delete;
+		IAssetReader& operator=(IAssetReader&& other) noexcept = default;
 
+		template<typename T>
 		void Deserialize(T& val)
 		{
 			/*
@@ -41,23 +40,24 @@ namespace Integrian3D::IO
 			uint32_t length{};
 			uint16_t offset{};
 
-			iasset = Deserialize<std::string>(m_File.Read<std::string>());
+			iasset = ::Deserialize<std::string>(m_File.Read<std::string>());
 
 			__ASSERT(iasset == "IASSET");
 
-			version = Deserialize<uint8_t>(m_File.Read<uint8_t>());
+			version = ::Deserialize<uint8_t>(m_File.Read<uint8_t>());
 
 			/* advance past padding */
 			m_File.Seek(SeekMode::Advance, 1u);
 
-			length = Deserialize<uint32_t>(m_File.Read<uint32_t>());
-			offset = Deserialize<uint16_t>(m_File.Read<uint16_t>());
+			length = ::Deserialize<uint32_t>(m_File.Read<uint32_t>());
+			offset = ::Deserialize<uint16_t>(m_File.Read<uint16_t>());
 
 			m_File.Seek(SeekMode::Start, offset);
 
-			Deserialize<T>(m_File.Read<T>(), val);
+			::Deserialize<T>(m_File.Read<T>(), val);
 		}
 
+		template<typename T>
 		T Deserialize()
 		{
 			/*
@@ -76,21 +76,22 @@ namespace Integrian3D::IO
 			uint32_t length{};
 			uint16_t offset{};
 
-			iasset = Deserialize<std::string>(m_File.Read<std::string>());
+			for (size_t i{}; i < iasset.size(); ++i)
+				iasset[i] = ::Deserialize<char>(m_File.Read<char>());
 
 			__ASSERT(iasset == "IASSET");
 
-			version = Deserialize<uint8_t>(m_File.Read<uint8_t>());
+			version = ::Deserialize<uint8_t>(m_File.Read<uint8_t>());
 
 			/* advance past padding */
 			m_File.Seek(SeekMode::Advance, 1u);
 
-			length = Deserialize<uint32_t>(m_File.Read<uint32_t>());
-			offset = Deserialize<uint16_t>(m_File.Read<uint16_t>());
+			length = ::Deserialize<uint32_t>(m_File.Read<uint32_t>());
+			offset = ::Deserialize<uint16_t>(m_File.Read<uint16_t>());
 
 			m_File.Seek(SeekMode::Start, offset);
 
-			return Deserialize<T>(m_File.Read<T>());
+			return ::Deserialize<T>(m_File.Read<T>());
 		}
 
 	private:

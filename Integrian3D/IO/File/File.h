@@ -48,6 +48,8 @@ namespace Integrian3D::IO
 			}
 		}
 
+		void ClearBuffer();
+
 		/// <summary>
 		/// Reads data from the internal buffer, according to the size of T
 		/// </summary>
