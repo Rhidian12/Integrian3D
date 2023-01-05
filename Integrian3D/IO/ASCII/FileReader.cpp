@@ -1,6 +1,6 @@
 #include "FileReader.h"
 
-#include "../DebugUtility/DebugUtility.h"
+#include "../../DebugUtility/DebugUtility.h"
 
 #pragma warning( push )
 #pragma warning( disable:4005 ) /* Macro redefinition */
@@ -13,7 +13,7 @@
 
 #include <sstream> /* std::stringstream */
 
-namespace Integrian3D
+namespace Integrian3D::IO
 {
 	FileReader::FileReader(const std::string& filePath, const char delimiter)
 		: Handle{}

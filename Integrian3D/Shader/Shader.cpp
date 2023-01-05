@@ -1,6 +1,6 @@
 #include "Shader.h"
 
-#include "../FileReader/FileReader.h"
+#include "../IO/ASCII/FileReader.h"
 #include "../DebugUtility/DebugUtility.h"
 
 #include <glad/glad.h>
@@ -19,7 +19,7 @@ namespace Integrian3D
 
 		/* Get Vertex Shader */
 		{
-			const FileReader reader{ vertexShaderPath };
+			const IO::FileReader reader{ vertexShaderPath };
 
 			/* Generate VertexShader ID */
 			vertexShaderID = glCreateShader(GL_VERTEX_SHADER);
@@ -43,7 +43,7 @@ namespace Integrian3D
 
 		/* Get Fragment Shader */
 		{
-			const FileReader reader{ fragmentShaderPath };
+			const IO::FileReader reader{ fragmentShaderPath };
 
 			/* Generate Frament Shader ID */
 			fragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);

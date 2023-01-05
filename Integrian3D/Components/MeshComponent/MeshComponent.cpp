@@ -1,6 +1,6 @@
 #include "MeshComponent.h"
 
-#include "../../FileReader/FileReader.h"
+#include "../../IO/ASCII/FileReader.h"
 
 #include <glad/glad.h> /* OpenGL Dependency */
 
@@ -18,7 +18,7 @@ namespace Integrian3D
 		{
 			__ASSERT(filePath.substr(filePath.find_last_of('.') + 1) == ".obj");
 
-			FileReader reader{ filePath };
+			IO::FileReader reader{ filePath };
 
 			// const std::string fileContents{ reader.GetFileContents() };
 

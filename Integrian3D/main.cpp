@@ -669,16 +669,22 @@ TEST_CASE("Testing Basic Array of integers")
 	{
 		for (int i{}; i < nrOfElements; ++i)
 		{
-			arr.Add(i);
+			arr.AddFront(i);
 		}
 
 		arr.AddFront(15);
 		REQUIRE(arr.Size() == nrOfElements + 1);
 		REQUIRE(arr[0] == 15);
 
+		for (uint64_t i{ 1u }; i < arr.Size(); ++i)
+			REQUIRE(arr[i] == nrOfElements - i);
+
 		arr.AddFront(396);
 		REQUIRE(arr.Size() == nrOfElements + 2);
 		REQUIRE(arr[0] == 396);
+
+		for (uint64_t i{ 2u }; i < arr.Size(); ++i)
+			REQUIRE(arr[i] == nrOfElements - i + 1);
 	}
 
 	SECTION("Sorting an array using Insertion Sort (when array size < 64)")
@@ -753,11 +759,54 @@ TEST_CASE("Testing Basic Array of integers")
 		for (int i{}; i < arr.Size(); ++i)
 			REQUIRE(arr[i] == list[i]);
 	}
+
+	SECTION("Adding elements to the array using a C-array")
+	{
+		constexpr int size{ 8 };
+		int newArr[size]{ 5,3,4,9,65,-15,-7,6 };
+
+		arr.AddRange(newArr, size);
+
+		for (int i{}; i < size; ++i)
+			REQUIRE(arr[i] == newArr[i]);
+	}
+}
+
+#include <string>
+TEST_CASE("Testing Basic Array of characters")
+{
+	using namespace Integrian3D;
+
+	TArray<char> arr{};
+
+	SECTION("Adding characters")
+	{
+		const std::string letters{ "abcdefgh" };
+
+		for (const char c : letters)
+			arr.Add(c);
+
+		for (size_t i{}; i < arr.Size(); ++i)
+			REQUIRE(arr[i] == letters[i]);
+	}
+
+	SECTION("Adding Character to the front")
+	{
+		const std::string letters{ "abcdefgh" };
+
+		for (const char c : letters)
+			arr.AddFront(c);
+
+		size_t counter{};
+		for (int i{ static_cast<int>(arr.Size() - 1) }; i >= 0; --i)
+			REQUIRE(letters[i] == arr[counter++]);
+	}
 }
 #endif
 
 #define TIMEPOINT_TESTS
 #ifdef TIMEPOINT_TESTS
+#include "Timer/Timer.h"
 #include "Timer/Timepoint/Timepoint.h"
 #include "Math/Math.h"
 #include <type_traits>
@@ -804,7 +853,246 @@ TEST_CASE("Testing Basic Timepoints")
 	REQUIRE(AreEqual(t2.Count(), 5.0, epsilon));
 	REQUIRE(t1 != t2);
 }
+
+TEST_CASE("Testing Timer")
+{
+	using namespace Integrian3D::Time;
+	using namespace Integrian3D::Math;
+
+	Timer& timer{ Timer::GetInstance() };
+	REQUIRE(AreEqual(timer.GetElapsedSeconds(), 0.0));
+	REQUIRE(!AreEqual(timer.Now().Count(), 0.0));
+
+	timer.Start();
+	REQUIRE(AreEqual(timer.GetElapsedSeconds(), 0.0));
+	REQUIRE(!AreEqual(timer.Now().Count(), 0.0));
+
+	Timepoint t1{ timer.Now() };
+
+	timer.Update();
+	REQUIRE(timer.Now() > t1);
+
+	Timepoint t2{ timer.Now() };
+	REQUIRE(t2 > t1);
+	REQUIRE(t1 < t2);
+}
 #endif
+
+#define SERIALIZING_BINARY_DATA_TESTS
+#ifdef SERIALIZING_BINARY_DATA_TESTS
+#include "IO/File/File.h"
+#include "IO/Serializer/Serializer.h"
+#include "Math/Math.h"
+
+class NonPOD final
+{
+public:
+	NonPOD()
+		: m_A{}
+		, m_B{}
+	{}
+	NonPOD(const int a, const double b)
+		: m_A{ a }
+		, m_B{ b }
+	{}
+
+	std::string Serialize() const
+	{
+		std::string data{};
+		data.append(std::to_string(m_A) + ",");
+		data.append(std::to_string(m_B));
+
+		return data;
+	}
+
+	void Deserialize(std::string data)
+	{
+		m_A = std::stoi(data.substr(0, data.find_first_of(',')));
+		data = data.substr(data.find_first_of(',') + 1);
+
+		m_B = std::stod(data);
+	}
+
+	int GetA() const { return m_A; }
+	double GetB() const { return m_B; }
+
+private:
+	int m_A;
+	double m_B;
+};
+
+template<>
+__NODISCARD __INLINE Integrian3D::TArray<char> Serialize<NonPOD>(const NonPOD& data)
+{
+	Integrian3D::TArray<char> arr{ Serialize(data.GetA()) };
+
+	Integrian3D::TArray<char> arr2{ Serialize(data.GetB()) };
+
+	arr.AddRange(arr2.cbegin(), arr2.cend());
+
+	return arr;
+}
+
+template<>
+__NODISCARD __INLINE NonPOD Deserialize<NonPOD>(const Integrian3D::TArray<char>& data)
+{
+	const int a{ Deserialize<int>(data) };
+	const double b{ Deserialize<double>(data.SubArray(sizeof(int))) };
+
+	return NonPOD{ a,b };
+}
+
+TEST_CASE("Testing Writing and Reading Binary files")
+{
+	using namespace Integrian3D::IO;
+	using namespace Integrian3D::Math;
+
+	SECTION("Testing Simple POD data")
+	{
+		{
+			File file{ "Resources/TestBinaryFile.bin" };
+			file.ClearBuffer();
+
+			file.Write(Serialize(5));
+			file.Write(Serialize(10.0));
+			file.Write(Serialize(15.f));
+			file.Write(Serialize('c'));
+			file.Write(Serialize(36u), SeekMode::Start);
+
+			const uint64_t constInt{ 951060u };
+			file.Write(Serialize(constInt));
+
+			file.Write();
+		}
+
+		{
+			File file{ "Resources/TestBinaryFile.bin" };
+
+			REQUIRE(Deserialize<uint32_t>(file.Read<uint32_t>()) == 36u);
+			REQUIRE(Deserialize<int>(file.Read<int>()) == 5);
+			REQUIRE(AreEqual(Deserialize<double>(file.Read<double>()), 10.0));
+			REQUIRE(AreEqual(Deserialize<float>(file.Read<float>()), 15.f));
+			REQUIRE(Deserialize<char>(file.Read<char>()) == 'c');
+			REQUIRE(Deserialize<uint64_t>(file.Read<uint64_t>()) == 951060u);
+		}
+	}
+
+	SECTION("Testing Custom POD data")
+	{
+		struct POD final
+		{
+			int A;
+			float B;
+			char C;
+			double D;
+			unsigned int E;
+		};
+
+		POD data{};
+		data.A = 15;
+		data.B = 36.f;
+		data.C = 'w';
+		data.D = -680.0;
+		data.E = 68661u;
+
+		{
+			File file{ "Resources/TestBinaryFile.bin" };
+			file.ClearBuffer();
+
+			file.Write(Serialize(data));
+
+			file.Write();
+		}
+
+		{
+			File file{ "Resources/TestBinaryFile.bin" };
+
+			const POD newData{ Deserialize<POD>(file.Read<POD>()) };
+
+			REQUIRE(newData.A == data.A);
+			REQUIRE(AreEqual(newData.B, data.B));
+			REQUIRE(newData.C == data.C);
+			REQUIRE(AreEqual(newData.D, data.D));
+			REQUIRE(newData.E == data.E);
+		}
+	}
+
+	SECTION("Testing custom non-POD data")
+	{
+		NonPOD data{ 974654, -651.64 };
+
+		{
+			File file{ "Resources/TestBinaryFile.bin" };
+			file.ClearBuffer();
+
+			file.Write(Serialize(data));
+
+			file.Write();
+		}
+
+		{
+			File file{ "Resources/TestBinaryFile.bin" };
+
+			const NonPOD newData{ Deserialize<NonPOD>(file.Read<NonPOD>()) };
+
+			REQUIRE(newData.GetA() == data.GetA());
+			REQUIRE(AreEqual(newData.GetB(), data.GetB()));
+		}
+	}
+}
+#endif // SERIALIZING_BINARY_DATA_TESTS
+
+#define IASSET_READ_AND_WRITE_TESTS
+#ifdef IASSET_READ_AND_WRITE_TESTS
+#include "IO/IAsset/IAssetWriter.h"
+#include "IO/IAsset/IAssetReader.h"
+#include "Math/Math.h"
+
+struct PODTestData final
+{
+	int A;
+	float B;
+	bool C;
+	double D;
+	char E;
+};
+
+TEST_CASE("Writing and Reading a .iasset file")
+{
+	using namespace Integrian3D::IO;
+	using namespace Integrian3D::Math;
+
+	SECTION("Testing POD data")
+	{
+		PODTestData data{};
+		data.A = 15;
+		data.B = 30.f;
+		data.C = true;
+		data.D = 60.0;
+		data.E = 'F';
+
+		SECTION("Writing a .iasset file")
+		{
+			IAssetWriter writer{ "Resources/TestIAsset" };
+
+			writer.Serialize(data);
+		}
+
+		SECTION("Reading a .iasset file")
+		{
+			IAssetReader reader{ "Resources/TestIAsset" };
+
+			PODTestData newData{ reader.Deserialize<PODTestData>() };
+
+			REQUIRE(data.A == newData.A);
+			REQUIRE(AreEqual(data.B, newData.B));
+			REQUIRE(data.C == newData.C);
+			REQUIRE(AreEqual(data.D, newData.D));
+			REQUIRE(data.E == newData.E);
+		}
+	}
+}
+#endif // IASSET_READ_AND_WRITE_TESTS
 
 #elif defined BENCHMARKS
 #include <chrono>

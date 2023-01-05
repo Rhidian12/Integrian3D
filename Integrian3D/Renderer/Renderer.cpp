@@ -3,7 +3,6 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "../FileReader/FileReader.h"
 #include "../DebugUtility/DebugUtility.h"
 #include "../Components/MeshComponent/MeshComponent.h"
 #include "../Components/TransformComponent/TransformComponent.h"

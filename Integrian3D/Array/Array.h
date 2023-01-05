@@ -236,12 +236,26 @@ namespace Integrian3D
 				EmplaceBack(elem);
 			}
 		}
-		constexpr void AddRange(It beg, It end)
+		constexpr void AddRange(It beg, const It end)
 		{
 			for (; beg != end; ++beg)
 			{
 				EmplaceBack(*beg);
 			}
+		}
+		constexpr void AddRange(CIt beg, const CIt end)
+		{
+			for (; beg != end; ++beg)
+			{
+				EmplaceBack(*beg);
+			}
+		}
+		constexpr void AddRange(T* pArr, const uint64_t n)
+		{
+			__ASSERT(pArr != nullptr);
+
+			for (uint64_t i{}; i < n; ++i)
+				EmplaceBack(pArr[i]);
 		}
 
 		constexpr It EraseByIndex(const uint64_t index)
@@ -265,7 +279,7 @@ namespace Integrian3D
 			else
 			{
 				m_Allocator.Destroy(m_pHead + index);
-				MoveRange(m_pHead + index + 1, m_pCurrentEnd--, m_pHead + index);
+				MoveRangeBackward(m_pHead + index + 1, m_pCurrentEnd--, m_pHead + index);
 
 				return It{ m_pHead + index };
 			}
@@ -362,7 +376,7 @@ namespace Integrian3D
 
 			m_Allocator.Destroy(m_pHead);
 
-			MoveRange(m_pHead + 1, m_pCurrentEnd--, m_pHead);
+			MoveRangeBackward(m_pHead + 1, m_pCurrentEnd--, m_pHead);
 		}
 
 		constexpr void Clear()
@@ -406,7 +420,7 @@ namespace Integrian3D
 			}
 			else
 			{
-				MoveRange(m_pHead + index, m_pCurrentEnd++ - 1, m_pHead + index + 1);
+				MoveRangeForward(m_pHead + index, m_pCurrentEnd++ - 1, m_pHead + index + 1);
 				return *(new (m_pHead + index) T{ __FORWARD(args)... });
 			}
 		}
@@ -420,7 +434,7 @@ namespace Integrian3D
 				Reallocate();
 			}
 
-			MoveRange(m_pHead, m_pCurrentEnd++, m_pHead + 1);
+			MoveRangeForward(m_pHead, m_pCurrentEnd++, m_pHead + 1);
 
 			return *(new (m_pHead) T{ __FORWARD(args)... });
 		}
@@ -564,6 +578,22 @@ namespace Integrian3D
 				{
 					arr.Add(*elem);
 				}
+			}
+
+			return arr;
+		}
+
+		constexpr Array SubArray(const uint64_t startIndex, const uint64_t count = std::numeric_limits<uint64_t>::max()) const
+		{
+			Array arr{};
+
+			const uint64_t size{ Size() };
+			for (uint64_t i{ startIndex }; i < count; ++i)
+			{
+				if (i >= size)
+					break;
+
+				arr.Add(*(m_pHead + i));
 			}
 
 			return arr;
@@ -854,10 +884,26 @@ namespace Integrian3D
 			return newCap;
 		}
 
-		constexpr void MoveRange(T* head, T* end, T* newHead) const
+		constexpr void MoveRangeBackward(T* head, T* end, T* newHead) const
 		{
 			const uint64_t size{ static_cast<uint64_t>(end - head) };
 			for (uint64_t i{}; i < size; ++i)
+			{
+				if constexpr (std::is_move_assignable_v<T>)
+				{
+					new (newHead + i) T{ __MOVE(*(head + i)) };
+				}
+				else
+				{
+					new (newHead + i) T{ *(head + i) };
+				}
+			}
+		}
+
+		constexpr void MoveRangeForward(T* head, T* end, T* newHead) const
+		{
+			const int64_t size{ static_cast<int64_t>(end - head) };
+			for (int64_t i{ size - 1 }; i >= 0; --i)
 			{
 				if constexpr (std::is_move_assignable_v<T>)
 				{

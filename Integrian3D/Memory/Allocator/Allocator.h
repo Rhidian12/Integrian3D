@@ -198,6 +198,7 @@ namespace Integrian3D::Memory
 
 			m_Allocator = __MOVE(other.m_Allocator);
 			m_TakenMemoryLocations = __MOVE(other.m_TakenMemoryLocations);
+			m_Handles = __MOVE(other.m_Handles);
 
 			for (IHandle* const pHandle : m_Handles)
 				pHandle->m_pAllocator = &m_Allocator;

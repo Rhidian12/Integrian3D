@@ -183,9 +183,12 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="IO\File\File.cpp" />
+    <ClCompile Include="IO\IAsset\IAssetReader.cpp" />
+    <ClCompile Include="IO\IAsset\IAssetWriter.cpp" />
     <ClCompile Include="Components\CameraComponent\CameraComponent.cpp" />
     <ClCompile Include="Core\Core.cpp" />
-    <ClCompile Include="FileReader\FileReader.cpp" />
+    <ClCompile Include="IO\ASCII\FileReader.cpp" />
     <ClCompile Include="LinkedList\LinkedList.cpp" />
     <ClCompile Include="Memory\MemoryTracker\MemoryTracker.cpp" />
     <ClCompile Include="Memory\FreeListAllocator\FreeListAllocator.cpp" />
@@ -212,6 +215,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Array\Array.h" />
+    <ClInclude Include="IO\File\File.h" />
+    <ClInclude Include="IO\IAsset\IAssetReader.h" />
+    <ClInclude Include="IO\IAsset\IAssetUtils.h" />
+    <ClInclude Include="IO\IAsset\IAssetWriter.h" />
+    <ClInclude Include="IO\IOUtils.h" />
     <ClInclude Include="Components\CameraComponent\CameraComponent.h" />
     <ClInclude Include="Delegate\Delegate.h" />
     <ClInclude Include="ECS\ComponentArray\ComponentArray.h" />
@@ -219,7 +227,9 @@
     <ClInclude Include="Core\Core.h" />
     <ClInclude Include="DebugUtility\DebugUtility.h" />
     <ClInclude Include="EngineConstants.h" />
-    <ClInclude Include="FileReader\FileReader.h" />
+    <ClInclude Include="IO\ASCII\FileReader.h" />
+    <ClInclude Include="IO\SeekMode.h" />
+    <ClInclude Include="IO\Serializer\Serializer.h" />
     <ClInclude Include="LinkedList\LinkedList.h" />
     <ClInclude Include="Memory\AllocatorTraits\AllocatorTraits.h" />
     <ClInclude Include="Memory\Allocator\Allocator.h" />
@@ -242,6 +252,7 @@
     <ClInclude Include="Shader\Shader.h" />
     <ClInclude Include="SparseSet\SparseSet.h" />
     <ClInclude Include="Systems\Systems.h" />
+    <ClInclude Include="TemplateUtils\TemplateUtils.h" />
     <ClInclude Include="TextureManager\TextureManager.h" />
     <ClInclude Include="Texture\Texture.h" />
     <ClInclude Include="Timer\TimeLength.h" />

@@ -39,7 +39,7 @@
     <ClCompile Include="Renderer\Renderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="FileReader\FileReader.cpp">
+    <ClCompile Include="IO\ASCII\FileReader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Scene\Scene.cpp">
@@ -93,6 +93,15 @@
     <ClCompile Include="Timer\Timepoint\Timepoint.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="IO\IAsset\IAssetWriter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IO\IAsset\IAssetReader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IO\File\File.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window\Window.h">
@@ -119,7 +128,7 @@
     <ClInclude Include="Renderer\Renderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="FileReader\FileReader.h">
+    <ClInclude Include="IO\ASCII\FileReader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Scene\Scene.h">
@@ -219,6 +228,30 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Timer\TimeLength.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IO\SeekMode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IO\IOUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IO\IAsset\IAssetWriter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IO\IAsset\IAssetUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TemplateUtils\TemplateUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IO\IAsset\IAssetReader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IO\File\File.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IO\Serializer\Serializer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
