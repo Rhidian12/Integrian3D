@@ -10,6 +10,7 @@
 #include <GLFW/glfw3.h>
 
 #undef max
+#undef min
 
 namespace Integrian3D
 {

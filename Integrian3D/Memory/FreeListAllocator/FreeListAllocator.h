@@ -6,6 +6,10 @@
 
 #include <iostream>
 
+#ifdef max
+#undef max
+#endif
+
 namespace Integrian3D::Memory
 {
 	class FreeListAllocator final

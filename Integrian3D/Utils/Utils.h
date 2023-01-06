@@ -4,22 +4,12 @@
 #include "../Math/Math.h"
 
 #include <string_view> /* std::string_view */
-#include <type_traits> /* std::true_type, ... */
 
 namespace Integrian3D
 {
 	namespace Utils
 	{
-		/* Reference for TypeName: https://stackoverflow.com/questions/35941045/can-i-obtain-c-type-names-in-a-constexpr-way */
-
-		template<typename T>
-		constexpr std::string_view ConstexprTypeName();
-
-		template<>
-		constexpr std::string_view ConstexprTypeName<void>() { return "void"; }
-
-		/* Should have internal linkage and therefore be unavailable to other files */
-		namespace
+		namespace Detail
 		{
 			template<typename T>
 			constexpr std::string_view WrappedTypeName()
@@ -28,10 +18,11 @@ namespace Integrian3D
 			}
 		}
 
+		/* Reference for TypeName: https://stackoverflow.com/questions/35941045/can-i-obtain-c-type-names-in-a-constexpr-way */
 		template <typename T>
 		constexpr std::string_view ConstexprTypeName()
 		{
-			constexpr std::string_view wrappedName(WrappedTypeName<T>());
+			constexpr std::string_view wrappedName(Detail::WrappedTypeName<T>());
 
 			constexpr size_t endOfType{ wrappedName.find_last_of('>') };
 			constexpr size_t beginOfType{ Math::Max(wrappedName.find_last_of(' '), wrappedName.find_last_of('<')) };

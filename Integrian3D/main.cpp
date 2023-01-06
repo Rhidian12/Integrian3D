@@ -1,5 +1,5 @@
-// #define ENGINE
-#define TESTS
+#define ENGINE
+// #define TESTS
 // #define BENCHMARKS
 #ifdef ENGINE
 #include "EngineConstants.h"
@@ -11,7 +11,6 @@
 #include "Components/TransformComponent/TransformComponent.h"
 #include "Timer/Timer.h"
 #include "Memory/Allocator/Allocator.h"
-#include "Memory/LinearAllocator/LinearAllocator.h"
 
 int main()
 {
@@ -86,7 +85,7 @@ int main()
 		Entity temp = testScene.CreateEntity();
 		testScene.AddComponent<MeshComponent>(temp, vertices, indices, TextureManager::GetInstance().GetTexture("__Wall"));
 		TransformComponent& transf{ testScene.GetComponent<TransformComponent>(temp) };
-		transf.Translate(Math::RandomVec3(-5.f, 5.f));
+		transf.Translate(Math::RandomVec3D(-5.f, 5.f));
 		transform.Rotate(glm::vec3{ Math::ToRadians(-55.f), 0.f, 0.f });
 	}
 
@@ -98,15 +97,15 @@ int main()
 					(
 						glm::vec3
 						{
-							Math::ToRadians(25.f) * Timer::GetInstance().GetElapsedSeconds(),
-							Math::ToRadians(50.f) * Timer::GetInstance().GetElapsedSeconds(),
+							Math::ToRadians(25.f) * Time::Timer::GetInstance().GetElapsedSeconds(),
+							Math::ToRadians(50.f) * Time::Timer::GetInstance().GetElapsedSeconds(),
 							0.f
 						}
 					);
 				});
 		});
 
-	SceneManager::GetInstance().AddScene(__MOVE(Scene, testScene));
+	SceneManager::GetInstance().AddScene(__MOVE(testScene));
 
 	core.Run();
 }
@@ -180,7 +179,7 @@ TEST_CASE("Testing the Allocator Interface")
 #pragma warning ( pop )
 	allocInterface.Deallocate(f);
 }
-#endif
+#endif // ALLOCATOR_TESTS
 
 #define ARRAY_TESTS
 #ifdef ARRAY_TESTS
@@ -802,7 +801,7 @@ TEST_CASE("Testing Basic Array of characters")
 			REQUIRE(letters[i] == arr[counter++]);
 	}
 }
-#endif
+#endif // ARRAY_TESTS
 
 #define TIMEPOINT_TESTS
 #ifdef TIMEPOINT_TESTS
@@ -876,7 +875,7 @@ TEST_CASE("Testing Timer")
 	REQUIRE(t2 > t1);
 	REQUIRE(t1 < t2);
 }
-#endif
+#endif // TIMEPOINT_TESTS
 
 #define SERIALIZING_BINARY_DATA_TESTS
 #ifdef SERIALIZING_BINARY_DATA_TESTS
@@ -1094,8 +1093,127 @@ TEST_CASE("Writing and Reading a .iasset file")
 }
 #endif // IASSET_READ_AND_WRITE_TESTS
 
+#define MATH_TESTS
+#ifdef MATH_TESTS
+TEST_CASE("Testing Math functions")
+{
+	using namespace Integrian3D::Math;
+
+	SECTION("Testing AreEqual")
+	{
+		REQUIRE(AreEqual(0, 0));
+		REQUIRE(AreEqual(-0, -0));
+		REQUIRE(AreEqual(0, -0));
+		REQUIRE(AreEqual(-0, 0));
+		REQUIRE(!AreEqual(0, 620));
+		REQUIRE(!AreEqual(620, 0));
+		REQUIRE(!AreEqual(-5, 0));
+		REQUIRE(!AreEqual(0, -5));
+
+		REQUIRE(AreEqual(5.0, 5.0));
+		REQUIRE(AreEqual(0.0, 0.0));
+		REQUIRE(AreEqual(-0.0, -0.0));
+		REQUIRE(AreEqual(-0.0, 0.0));
+		REQUIRE(AreEqual(0.0, -0.0));
+		REQUIRE(!AreEqual(30.0, -620.0));
+		REQUIRE(!AreEqual(30.0, 29.0));
+		REQUIRE(!AreEqual(30.0, 29.50));
+
+		REQUIRE(!AreEqual(30.f, 29.99f));
+		REQUIRE(AreEqual(30.f, 29.99f, 0.1f));
+		REQUIRE(!AreEqual(30.f, 29.89f, 0.1f));
+	}
+
+	SECTION("Testing Radians <=> Degrees")
+	{
+		REQUIRE(ToRadians(0) == 0);
+		REQUIRE(ToDegrees(0) == 0);
+
+		REQUIRE(AreEqual(ToRadians(180.0), Pi));
+		REQUIRE(AreEqual(ToDegrees(Pi), 180.0));
+
+		REQUIRE(AreEqual(ToDegrees(1.0), 57.29577, 0.00001));
+		REQUIRE(AreEqual(ToDegrees(0.75), 42.97183, 0.00001));
+		REQUIRE(AreEqual(ToDegrees(0.35), 20.05352, 0.00001));
+
+		REQUIRE(AreEqual(ToRadians(90.0), Pi_2, 0.00001));
+		REQUIRE(AreEqual(ToRadians(45.0), Pi_4, 0.00001));
+		REQUIRE(AreEqual(ToRadians(20.0), 0.34906, 0.00001));
+	}
+
+	SECTION("Testing Clamp")
+	{
+		int a{ 5 };
+		Clamp(a, 0, 10);
+		REQUIRE(a == 5);
+
+		Clamp(a, -5, 15);
+		REQUIRE(a == 5);
+
+		Clamp(a, 7, 150);
+		REQUIRE(a == 7);
+
+		Clamp(a, 0, 3);
+		REQUIRE(a == 3);
+	}
+
+	SECTION("Testing Random floats, integers and vectors")
+	{
+		REQUIRE(IsInRange(RandomF(0.f, 150.f), 0.f, 151.f));
+		REQUIRE(IsInRange(RandomF(-50.f, 50.f), -50.f, 50.f));
+
+		REQUIRE(IsInRange(RandomI(0, 1), 0, 2));
+		REQUIRE(IsInRange(RandomI(0, 10), 0, 11));
+
+		const Vec2D randomVec2{ RandomVec2D(-5.0, 10.0) };
+		REQUIRE(IsInRange(randomVec2.x, -5.0, 10.0));
+		REQUIRE(IsInRange(randomVec2.y, -5.0, 10.0));
+
+		const Vec3D randomVec3{ RandomVec3D(-5.0, 10.0) };
+		REQUIRE(IsInRange(randomVec3.x, -5.0, 10.0));
+		REQUIRE(IsInRange(randomVec3.y, -5.0, 10.0));
+		REQUIRE(IsInRange(randomVec3.z, -5.0, 10.0));
+
+		const Vec4D randomVec4{ RandomVec4D(-5.0, 10.0) };
+		REQUIRE(IsInRange(randomVec4.x, -5.0, 10.0));
+		REQUIRE(IsInRange(randomVec4.y, -5.0, 10.0));
+		REQUIRE(IsInRange(randomVec4.z, -5.0, 10.0));
+		REQUIRE(IsInRange(randomVec4.w, -5.0, 10.0));
+	}
+
+	SECTION("Testing Max and Min")
+	{
+		REQUIRE(Max(0, 5) == 5);
+		REQUIRE(Max(-9, 16) == 16);
+		REQUIRE(Max(-9, -32) != -32);
+		REQUIRE(Max(-9, -32) == -9);
+		REQUIRE(Max(-19230, 1503) != -19230);
+		REQUIRE(Max(-19230, 1503) == 1503);
+
+		REQUIRE(Min(0, 5) == 0);
+		REQUIRE(Min(512, 681) == 512);
+		REQUIRE(Min(512, 681) != 681);
+		REQUIRE(Min(-815, 0) == -815);
+		REQUIRE(Min(-815, -816) == -816);
+		REQUIRE(Min(-815, -816) != -815);
+	}
+
+	SECTION("Testing GDC")
+	{
+		REQUIRE(GetGCD<5, 15>() == 5);
+		REQUIRE(GetGCD<12, 66>() == 6);
+		REQUIRE(GetGCD<9, 99>() == 9);
+
+		REQUIRE(GetGCD(5, 15) == 5);
+		REQUIRE(GetGCD(12, 66) == 6);
+		REQUIRE(GetGCD(9, 99) == 9);
+	}
+}
+#endif // MATH_TESTS
+
 #elif defined BENCHMARKS
-#include <chrono>
+#include "Timer/Timer.h"
+
 #include <numeric>
 #include <deque>
 #include <iostream>
@@ -1103,15 +1221,15 @@ TEST_CASE("Writing and Reading a .iasset file")
 template<typename Fn>
 double Benchmark(Fn&& fn)
 {
-	using Clock = std::chrono::high_resolution_clock;
+	using namespace Integrian3D::Time;
 
-	Clock::time_point t1{ Clock::now() };
+	Timepoint t1{ Timer::Now() };
 
 	fn();
 
-	Clock::time_point t2{ Clock::now() };
+	Timepoint t2{ Timer::Now() };
 
-	return std::chrono::duration<double>{t2 - t1}.count();
+	return (t2 - t1).Count();
 }
 
 double GetAverage(const std::deque<double>& arr)
@@ -1122,7 +1240,6 @@ double GetAverage(const std::deque<double>& arr)
 #define ARRAY_BENCHMARKS
 #ifdef ARRAY_BENCHMARKS
 #include "Array/Array.h"
-#include <deque>
 
 #define ARR_CREATE
 #ifdef ARR_CREATE
@@ -1168,7 +1285,8 @@ void BenchmarkCreation(const uint64_t iterations, const uint64_t nrOfOperationsP
 	std::cout << std::fixed << "Average Standard TArray creation time: " << GetAverage(standardArrTimes) << " seconds\n";
 	std::cout << std::fixed << "Average std::vector creation time: " << GetAverage(vectorTimes) << " seconds\n";
 }
-#endif
+#endif // ARR_CREATE
+
 #define ARR_PUSH_BACK
 #ifdef ARR_PUSH_BACK
 void BenchmarkPushBack(const uint64_t iterations, const uint64_t nrOfOperationsPerIt)
@@ -1228,7 +1346,8 @@ void BenchmarkPushBack(const uint64_t iterations, const uint64_t nrOfOperationsP
 	std::cout << std::fixed << "Average Custom Memory TArray::Add time: " << GetAverage(customArrTimes) << " seconds\n";
 	std::cout << std::fixed << "Average std::vector::push_back time: " << GetAverage(vectorTimes) << " seconds\n";
 }
-#endif
+#endif // ARR_PUSH_BACK
+
 #define ARR_INSERT
 #ifdef ARR_INSERT
 void BenchmarkInsert(const uint64_t iterations, const uint64_t nrOfOperationsPerIt)
@@ -1288,7 +1407,8 @@ void BenchmarkInsert(const uint64_t iterations, const uint64_t nrOfOperationsPer
 	std::cout << std::fixed << "Average Custom Memory TArray::Insert time: " << GetAverage(customArrTimes) << " seconds\n";
 	std::cout << std::fixed << "Average std::vector::insert time: " << GetAverage(vectorTimes) << " seconds\n";
 }
-#endif
+#endif // ARR_INSERT
+
 #define ARR_ERASE_VALUE
 #ifdef ARR_ERASE_VALUE
 void BenchmarkEraseValue(const uint64_t iterations, const uint64_t nrOfOperationsPerIt)
@@ -1355,7 +1475,8 @@ void BenchmarkEraseValue(const uint64_t iterations, const uint64_t nrOfOperation
 	std::cout << std::fixed << "Average Custom Memory TArray::Erase by value time: " << GetAverage(customArrTimes) << " seconds\n";
 	std::cout << std::fixed << "Average std::vector::Erase by value time: " << GetAverage(vectorTimes) << " seconds\n";
 }
-#endif
+#endif // ARR_ERASE_VALUE
+
 #define ARR_ERASE_IT
 #ifdef ARR_ERASE_IT
 void BenchmarkEraseIt(const uint64_t iterations, const uint64_t nrOfOperationsPerIt)
@@ -1422,7 +1543,7 @@ void BenchmarkEraseIt(const uint64_t iterations, const uint64_t nrOfOperationsPe
 	std::cout << std::fixed << "Average Custom Memory TArray::Erase by iterator time: " << GetAverage(customArrTimes) << " seconds\n";
 	std::cout << std::fixed << "Average std::vector::Erase by iterator time: " << GetAverage(vectorTimes) << " seconds\n";
 }
-#endif
+#endif // ARR_ERASE_IT
 
 int main()
 {
@@ -1461,5 +1582,6 @@ int main()
 	return 0;
 }
 
-#endif
+#endif // ARRAY_BENCHMARKS
+
 #endif

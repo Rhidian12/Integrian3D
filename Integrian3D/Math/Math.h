@@ -9,6 +9,7 @@
 
 namespace Integrian3D::Math
 {
+#pragma region Using
 	using Vec2D = glm::vec<2, double>;
 	using Vec2F = glm::vec<2, float>;
 	using Vec3D = glm::vec<3, double>;
@@ -17,52 +18,47 @@ namespace Integrian3D::Math
 	using Vec4F = glm::vec<4, float>;
 	using Mat4D = glm::mat<4, 4, double>;
 	using Mat4F = glm::mat<4, 4, double>;
+#pragma endregion
 
+#pragma region Variables
 	inline constexpr double Pi{ 3.14159265358979323846264338327950288 };
 	inline constexpr double Pi_2{ Pi / 2.0 };
 	inline constexpr double Pi_4{ Pi / 4.0 };
-	inline uint32_t Seed{}; /* Set in Core::CreateCore() */
 
 	inline constexpr Vec3D Up{ 0.0, 1.0, 0.0 };
 	inline constexpr Vec3D Right{ 1.0, 0.0, 0.0 };
 	inline constexpr Vec3D Forward{ 0.0, 0.0, 1.0 };
 
-	namespace
+	namespace Detail
 	{
-		std::mt19937 mt{ Seed };
+		inline uint32_t Seed{}; /* Set in Core::CreateCore() once at engine start up, can be set later as well by the user */
+		inline std::mt19937 RNGEngine{ Seed };
+	}
+#pragma endregion
+
+	void SetSeed(const uint32_t seed);
+
+	template<typename T>
+	__NODISCARD constexpr T ToRadians(const T deg)
+	{
+		static_assert(std::is_floating_point_v<T> || std::is_integral_v<T>, "Math::ToRadians<T>() > T must be an integral or floating point type");
+
+		return static_cast<T>(deg * Pi / 180.0);
 	}
 
-	/* magic lol https://www.codeproject.com/Articles/69941/Best-Square-Root-Method-Algorithm-Function-Precisi */
-	/* works only for floats since it depends on IEEE 754 single precision floating point format */
-	/* [TODO]: All __INLINE functions should be profiled to check if it's better to inline them or not */
-	__INLINE constexpr float Sqrtf(const float n)
+	template<typename T>
+	__NODISCARD constexpr T ToDegrees(const T rad)
 	{
-		union
-		{
-			int i;
-			float x;
-		} u;
+		static_assert(std::is_floating_point_v<T> || std::is_integral_v<T>, "Math::ToDegrees<T>() > T must be an integral or floating point type");
 
-		u.x = n;
-		u.i = (1 << 29) + (u.i >> 1) - (1 << 22) - 0x4B0D2;
-		return u.x;
+		return static_cast<T>(rad * 180.0 / Pi);
 	}
 
-	template<typename T, typename = std::enable_if_t<std::is_floating_point_v<T>>>
-	constexpr T ToRadians(const T deg)
+	template<typename T>
+	__NODISCARD constexpr bool AreEqual(const T a, const T b, const T epsilon = std::numeric_limits<T>::epsilon())
 	{
-		return static_cast<T>(deg * Pi / static_cast<T>(180.f));
-	}
+		static_assert(std::is_fundamental_v<T>, "Math::AreEqual<T>() > T must be a fundamental type");
 
-	template<typename T, typename = std::enable_if_t<std::is_floating_point_v<T>>>
-	constexpr T ToDegrees(const T rad)
-	{
-		return static_cast<T>(rad * static_cast<T>(180.f) / Pi);
-	}
-
-	template<typename T, typename = std::enable_if_t<std::is_fundamental_v<T>>>
-	constexpr bool AreEqual(const T a, const T b, const T epsilon = std::numeric_limits<T>::epsilon())
-	{
 		return static_cast<T>(abs(a - b)) <= epsilon;
 	}
 
@@ -80,22 +76,97 @@ namespace Integrian3D::Math
 		}
 	}
 
-	__INLINE float RandomF(const float min, const float max)
+	/// <summary>
+	/// Is a value in the range of [min, max)
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
+	/// <param name="value">: Value to check</param>
+	/// <param name="min">: Min value, inclusive</param>
+	/// <param name="max">: Max value, exclusive</param>
+	template<typename T>
+	__NODISCARD constexpr bool IsInRange(const T& value, const T& min, const T& max)
 	{
-		std::uniform_real_distribution<float> dist(min, max);
+		if (value < min)
+			return false;
 
-		return dist(mt);
+		if (value >= max)
+			return false;
+
+		return true;
 	}
 
-	__INLINE constexpr glm::vec3 RandomVec3(const float min, const float max)
+#pragma region Random
+	/// <summary>
+	/// Returns a random floating point value in the range of [min, max)
+	/// </summary>
+	/// <typeparam name="T">: A floating point type</typeparam>
+	/// <param name="min">: Min random value, inclusive</param>
+	/// <param name="max">: Max random value, exclusive</param>
+	/// <returns></returns>
+	template<typename T>
+	__NODISCARD T RandomF(const T min, const T max)
 	{
-		return glm::vec3{ RandomF(min, max),RandomF(min, max),RandomF(min, max) };
+		static_assert(std::is_floating_point_v<T>, "Math::RandomF<T>() > T must be a floating point");
+
+		std::uniform_real_distribution<T> dist(min, max);
+
+		return dist(Detail::RNGEngine);
 	}
+
+	/// <summary>
+	/// Returns a random integral value in the range of [min, max]
+	/// </summary>
+	/// <typeparam name="T">: An integral value</typeparam>
+	/// <param name="min">: Min random value, inclusive</param>
+	/// <param name="max">: Max random value, inclusive</param>
+	/// <returns></returns>
+	template<typename T>
+	__NODISCARD T RandomI(const T min, const T max)
+	{
+		static_assert(std::is_integral_v<T>, "Math::RandomI<T>() > T must be an integral type");
+
+		std::uniform_int_distribution<T> dist(min, max);
+
+		return dist(Detail::RNGEngine);
+	}
+
+	__NODISCARD constexpr Vec2D RandomVec2D(const double min, const double max)
+	{
+		return Vec2D{ RandomF(min, max),RandomF(min, max) };
+	}
+	__NODISCARD constexpr Vec3D RandomVec3D(const double min, const double max)
+	{
+		return Vec3D{ RandomF(min, max),RandomF(min, max),RandomF(min, max) };
+	}
+	__NODISCARD constexpr Vec4D RandomVec4D(const double min, const double max)
+	{
+		return Vec4D{ RandomF(min, max),RandomF(min, max),RandomF(min, max),RandomF(min, max) };
+	}
+
+	__NODISCARD constexpr Vec2F RandomVec2F(const float min, const float max)
+	{
+		return Vec2F{ RandomF(min, max),RandomF(min, max) };
+	}
+	__NODISCARD constexpr Vec3F RandomVec3F(const float min, const float max)
+	{
+		return Vec3F{ RandomF(min, max),RandomF(min, max),RandomF(min, max) };
+	}
+
+	__NODISCARD constexpr Vec4F RandomVec4F(const float min, const float max)
+	{
+		return Vec4F{ RandomF(min, max),RandomF(min, max),RandomF(min, max),RandomF(min, max) };
+	}
+#pragma endregion
 
 	template<typename T>
-	__INLINE constexpr T Max(const T& a, const T& b)
+	__INLINE __NODISCARD constexpr T Max(const T& a, const T& b)
 	{
 		return a < b ? b : a;
+	}
+	template<typename T>
+	__INLINE __NODISCARD constexpr T Min(const T& a, const T& b)
+	{
+		return a < b ? a : b;
 	}
 
 	template<int64_t A, int64_t B>
@@ -106,5 +177,14 @@ namespace Integrian3D::Math
 		else
 			return GetGCD<B, A% B>();
 	}
+	template<typename T>
+	__NODISCARD constexpr T GetGCD(const T a, const T b)
+	{
+		static_assert(std::is_integral_v<T>, "Math::GetGCD<T>() > T must be an integral type");
 
+		if (b == 0)
+			return a;
+		else
+			return GetGCD(b, a % b);
+	}
 }
