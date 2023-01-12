@@ -7,17 +7,6 @@
 
 #include <memory> /* std::unique_ptr */
 
-#pragma warning ( push )
-#pragma warning ( disable : 4005 ) /* warning C4005: 'APIENTRY': macro redefinition */ 
-#ifdef _WIN32
-#define WIN32_LEAN_AND_MEAN
-#include <Windows.h>
-#endif
-#pragma warning ( pop )
-#ifdef min
-#undef min
-#endif
-
 namespace Integrian3D::Time
 {
 	class Timer final
