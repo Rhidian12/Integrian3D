@@ -13,30 +13,33 @@ namespace Integrian3D
 		: InitializeCallback{}
 		, OnSceneEnterCallback{}
 		, OnSceneLeaveCallback{}
-		, Registry{}
 		, SceneName{ sceneName }
-		, CameraEntity{ InvalidEntityID }
+		, m_GameObjects{}
+	{}
+
+	void Scene::AddGameObject(GameObject* const pGameobject)
 	{
+		m_GameObjects.Add(pGameobject);
 	}
 
 	void Scene::Start()
 	{
-		{
-			CameraEntity = CreateEntity();
-			AddComponent<CameraComponent, float, float, float, float>(
-				CameraEntity,
-				0.1f,
-				100.f,
-				Math::ToRadians(45.f),
-				static_cast<float>(Core::GetInstance().GetWindowWidth()) / Core::GetInstance().GetWindowHeight());
+		//{
+		//	CameraEntity = CreateEntity();
+		//	AddComponent<CameraComponent, float, float, float, float>(
+		//		CameraEntity,
+		//		0.1f,
+		//		100.f,
+		//		Math::ToRadians(45.f),
+		//		static_cast<float>(Core::GetInstance().GetWindowWidth()) / Core::GetInstance().GetWindowHeight());
 
-			CreateView<CameraComponent, TransformComponent>().ForEach([](CameraComponent& camera, TransformComponent& transform)->void
-				{
-					const glm::vec3 trans{ 0.f, 0.f, -10.f };
-					transform.Translate(trans, true);
-					camera.SetView(glm::lookAt(transform.GetLocalLocation(), transform.GetLocalLocation() + transform.GetForward(), transform.GetUp()));
-				});
-		}
+		//	CreateView<CameraComponent, TransformComponent>().ForEach([](CameraComponent& camera, TransformComponent& transform)->void
+		//		{
+		//			const glm::vec3 trans{ 0.f, 0.f, -10.f };
+		//			transform.Translate(trans, true);
+		//			camera.SetView(glm::lookAt(transform.GetLocalLocation(), transform.GetLocalLocation() + transform.GetForward(), transform.GetUp()));
+		//		});
+		//}
 
 		if (InitializeCallback)
 		{
@@ -44,12 +47,9 @@ namespace Integrian3D
 		}
 	}
 
-	Entity Scene::CreateEntity()
+	void Scene::Update()
 	{
-		const Entity entity{ Registry.CreateEntity() };
-
-		AddComponent<TransformComponent>(entity);
-
-		return entity;
+		for (GameObject* pG : m_GameObjects)
+			pG->Update();
 	}
 }

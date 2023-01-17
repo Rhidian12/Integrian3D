@@ -73,4 +73,7 @@ namespace Integrian3D
 #else
 #define __FORWARD(val) std::forward<decltype((val))>((val))
 #endif
+
+#define __DELETE(p) delete p; p = nullptr;
+#define __DELETEARR(p) delete[] (p); (p) = nullptr;
 }

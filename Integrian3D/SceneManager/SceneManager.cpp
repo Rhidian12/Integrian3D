@@ -1,70 +1,75 @@
 #include "SceneManager.h"
+#include "../DebugUtility/DebugUtility.h"
 
 #include <algorithm> /* std::find_if */
 
 namespace Integrian3D
 {
 	SceneManager::SceneManager()
-		: Scenes{}
-		, pActiveScene{}
+		: m_Scenes{}
+		, m_pActiveScene{}
 	{}
 
 	SceneManager& SceneManager::GetInstance()
 	{
-		if (!Instance)
-		{
-			Instance = std::make_unique<SceneManager>();
-		}
+		if (!m_pInstance)
+			m_pInstance = std::make_unique<SceneManager>();
 
-		return *Instance.get();
+		return *m_pInstance.get();
 	}
 
-	void SceneManager::AddScene(Scene&& scene)
+	void SceneManager::AddScene(Scene* pScene)
 	{
-		Scenes.push_back(__MOVE(scene));
+		m_Scenes.push_back(pScene);
 
-		if (!pActiveScene)
-		{
-			pActiveScene = &Scenes.back();
-		}
+		if (!m_pActiveScene)
+			m_pActiveScene = pScene;
 	}
 
 	void SceneManager::ChangeScene(const std::string_view sceneName)
 	{
-		auto it{ std::find_if(Scenes.begin(), Scenes.end(), [sceneName](const Scene& scene)
+		const auto cIt{ std::find_if(m_Scenes.cbegin(), m_Scenes.cend(), [sceneName](const Scene* const pScene)
 			{
-				return scene.GetSceneName() == sceneName;
+				return pScene->GetSceneName() == sceneName;
 			}) };
 
-		__ASSERT(it != Scenes.end() && "SceneManager::ChangeScene() > No scene with the specified name was found");
+		__ASSERT(cIt != m_Scenes.cend() && "SceneManager::ChangeScene() > No scene with the specified name was found");
 
-		pActiveScene->OnSceneLeave();
+		m_pActiveScene->OnSceneLeave();
 
-		pActiveScene = &(*it);
+		m_pActiveScene = *cIt;
 
-		pActiveScene->OnSceneEnter();
+		m_pActiveScene->OnSceneEnter();
 	}
 
-	Scene& SceneManager::GetScene(const std::string_view sceneName)
+	Scene* const SceneManager::GetScene(const std::string_view sceneName)
 	{
-		const auto it{ std::find_if(Scenes.begin(), Scenes.end(), [sceneName](const Scene& scene)
+		const auto it{ std::find_if(m_Scenes.begin(), m_Scenes.end(), [sceneName](const Scene* const pScene)
 			{
-				return scene.GetSceneName() == sceneName;
+				return pScene->GetSceneName() == sceneName;
 			}) };
 
-		__ASSERT(it != Scenes.end() && "SceneManager::GetScene() > No scene with the specified name was found");
+		if (it == m_Scenes.end())
+		{
+			Debug::LogError("SceneManager::GetScene() > No scene with the specified name was found", false);
+			return nullptr;
+		}
 
 		return *it;
 	}
 
-	const Scene& SceneManager::GetScene(const std::string_view sceneName) const
+	const Scene* const SceneManager::GetScene(const std::string_view sceneName) const
 	{
-		const auto cIt{ std::find_if(Scenes.cbegin(), Scenes.cend(), [sceneName](const Scene& scene)
+		const auto cIt{ std::find_if(m_Scenes.cbegin(), m_Scenes.cend(), [sceneName](const Scene* const pScene)
 			{
-				return scene.GetSceneName() == sceneName;
+				return pScene->GetSceneName() == sceneName;
 			}) };
 
-		__ASSERT(cIt != Scenes.end() && "SceneManager::GetScene() > No scene with the specified name was found");
+		if (cIt == m_Scenes.cend())
+		{
+			Debug::LogError("SceneManager::GetScene() > No scene with the specified name was found", false);
+			return nullptr;
+		}
 
 		return *cIt;
 	}

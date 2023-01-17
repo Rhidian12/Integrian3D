@@ -1,4 +1,4 @@
-#define ENGINE
+// #define ENGINE
 // #define TESTS
 // #define BENCHMARKS
 #ifdef ENGINE

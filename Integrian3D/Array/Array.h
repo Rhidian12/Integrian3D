@@ -678,7 +678,7 @@ namespace Integrian3D
 			return m_pHead;
 		}
 
-		constexpr It Find(const T& val) const
+		constexpr It Find(const T& val)
 		{
 			const uint64_t size{ Size() };
 			for (uint64_t i{}; i < size; ++i)
@@ -691,7 +691,21 @@ namespace Integrian3D
 
 			return It{ m_pCurrentEnd };
 		}
-		constexpr It Find(const UnaryPred& pred) const
+		constexpr CIt Find(const T& val) const
+		{
+			const uint64_t size{ Size() };
+			for (uint64_t i{}; i < size; ++i)
+			{
+				if (*(m_pHead + i) == val)
+				{
+					return CIt{ m_pHead + i };
+				}
+			}
+
+			return CIt{ m_pCurrentEnd };
+		}
+
+		constexpr It Find(const UnaryPred& pred)
 		{
 			const uint64_t size{ Size() };
 			for (uint64_t i{}; i < size; ++i)
@@ -704,7 +718,21 @@ namespace Integrian3D
 
 			return It{ m_pCurrentEnd };
 		}
-		constexpr It Find(UnaryPred&& pred) const
+		constexpr CIt Find(const UnaryPred& pred) const
+		{
+			const uint64_t size{ Size() };
+			for (uint64_t i{}; i < size; ++i)
+			{
+				if (pred(*(m_pHead + i)))
+				{
+					return CIt{ m_pHead + i };
+				}
+			}
+
+			return CIt{ m_pCurrentEnd };
+		}
+
+		constexpr It Find(UnaryPred&& pred)
 		{
 			const uint64_t size{ Size() };
 			for (uint64_t i{}; i < size; ++i)
@@ -716,6 +744,19 @@ namespace Integrian3D
 			}
 
 			return It{ m_pCurrentEnd };
+		}
+		constexpr CIt Find(UnaryPred&& pred) const
+		{
+			const uint64_t size{ Size() };
+			for (uint64_t i{}; i < size; ++i)
+			{
+				if (pred(*(m_pHead + i)))
+				{
+					return CIt{ m_pHead + i };
+				}
+			}
+
+			return CIt{ m_pCurrentEnd };
 		}
 
 		constexpr Array FindAll(const T& val) const

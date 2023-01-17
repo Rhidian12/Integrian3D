@@ -102,6 +102,15 @@
     <ClCompile Include="IO\File\File.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Object\Object.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\GameObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\Component.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window\Window.h">
@@ -252,6 +261,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="IO\Serializer\Serializer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\Object.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject\GameObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\Component.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
