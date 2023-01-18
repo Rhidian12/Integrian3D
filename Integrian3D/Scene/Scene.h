@@ -16,18 +16,15 @@ namespace Integrian3D
 	{
 	public:
 		explicit Scene(const std::string& sceneName);
+		virtual ~Scene();
 
 		/* -------------- Begin of Scene Functionality -------------- */
 
-		__NODISCARD std::string_view GetSceneName() const { return SceneName; }
-
-		void AddSceneInitialisation(const std::function<void(Scene&)>& fn) { InitializeCallback = fn; }
-
-		void AddOnSceneEnter(const std::function<void(Scene&)>& fn) { OnSceneEnterCallback = fn; }
-
-		void AddOnSceneLeave(const std::function<void(Scene&)>& fn) { OnSceneLeaveCallback = fn; }
-
 		void AddGameObject(GameObject* const pGameobject);
+
+		__NODISCARD std::string_view GetSceneName() const { return m_SceneName; }
+
+		__NODISCARD class CameraComponent* const GetActiveCamera() const { return m_pActiveCamera; }
 
 		/* -------------- End of Scene Functionality -------------- */
 
@@ -36,19 +33,24 @@ namespace Integrian3D
 
 		void Start();
 
-		void OnSceneEnter() { OnSceneEnterCallback(*this); }
-
-		void OnSceneLeave() { OnSceneLeaveCallback(*this); }
-
 		void Update();
+
+		void Render() const;
 
 		/* -------------- End of Internal Functionality -------------- */
 
+
+		/* -------------- Start of Inheritance Functionality -------------- */
+
+		virtual void OnSceneEnter() {}
+
+		virtual void OnSceneLeave() {}
+
+		/* -------------- End of Inheritance Functionality -------------- */
+
 	private:
-		std::function<void(Scene&)> InitializeCallback;
-		std::function<void(Scene&)> OnSceneEnterCallback;
-		std::function<void(Scene&)> OnSceneLeaveCallback;
-		std::string SceneName;
+		std::string m_SceneName;
 		TArray<GameObject*> m_GameObjects;
+		class CameraComponent* m_pActiveCamera;
 	};
 }

@@ -9,8 +9,9 @@
 
 namespace Integrian3D
 {
-	TransformComponent::TransformComponent()
-		: Transformation{ Math::Mat4D{ 1.f } /* Identity matrix */ }
+	TransformComponent::TransformComponent(GameObject* pOwner)
+		: Component{ pOwner }
+		, Transformation{ Math::Mat4D{ 1.f } /* Identity matrix */ }
 		, WorldLocation{}
 		, WorldScale{ 1.0, 1.0, 1.0 }
 		, LocalScale{ 1.0, 1.0, 1.0 }
@@ -23,41 +24,46 @@ namespace Integrian3D
 		, Up{ 0.0, 1.0, 0.0 }
 	{}
 
-	TransformComponent::TransformComponent(TransformComponent&& other) noexcept
-		: Transformation{ __MOVE(other.Transformation) }
-		, WorldLocation{ __MOVE(other.WorldLocation) }
-		, WorldScale{ __MOVE(other.WorldScale) }
-		, LocalScale{ __MOVE(other.LocalScale) }
-		, WorldAngle{ __MOVE(other.WorldAngle) }
-		, LocalAngle{ __MOVE(other.LocalAngle) }
-		, bShouldRecalculateTransform{ __MOVE(other.bShouldRecalculateTransform) }
-		, bShouldRecalculateWorldData{ __MOVE(other.bShouldRecalculateWorldData) }
-		, Forward{ __MOVE(other.Forward) }
-		, Right{ __MOVE(other.Right) }
-		, Up{ __MOVE(other.Up) }
+	//TransformComponent::TransformComponent(TransformComponent&& other) noexcept
+	//	: Transformation{ __MOVE(other.Transformation) }
+	//	, WorldLocation{ __MOVE(other.WorldLocation) }
+	//	, WorldScale{ __MOVE(other.WorldScale) }
+	//	, LocalScale{ __MOVE(other.LocalScale) }
+	//	, WorldAngle{ __MOVE(other.WorldAngle) }
+	//	, LocalAngle{ __MOVE(other.LocalAngle) }
+	//	, bShouldRecalculateTransform{ __MOVE(other.bShouldRecalculateTransform) }
+	//	, bShouldRecalculateWorldData{ __MOVE(other.bShouldRecalculateWorldData) }
+	//	, Forward{ __MOVE(other.Forward) }
+	//	, Right{ __MOVE(other.Right) }
+	//	, Up{ __MOVE(other.Up) }
+	//{
+	//	other.bShouldRecalculateTransform = false;
+	//	other.bShouldRecalculateWorldData = false;
+	//}
+
+	//TransformComponent& TransformComponent::operator=(TransformComponent&& other) noexcept
+	//{
+	//	Transformation = __MOVE(other.Transformation);
+	//	WorldLocation = __MOVE(other.WorldLocation);
+	//	WorldScale = __MOVE(other.WorldScale);
+	//	LocalScale = __MOVE(other.LocalScale);
+	//	WorldAngle = __MOVE(other.WorldAngle);
+	//	LocalAngle = __MOVE(other.LocalAngle);
+	//	bShouldRecalculateTransform = __MOVE(other.bShouldRecalculateTransform);
+	//	bShouldRecalculateWorldData = __MOVE(other.bShouldRecalculateWorldData);
+	//	Forward = __MOVE(other.Forward);
+	//	Right = __MOVE(other.Right);
+	//	Up = __MOVE(other.Up);
+
+	//	other.bShouldRecalculateTransform = false;
+	//	other.bShouldRecalculateWorldData = false;
+
+	//	return *this;
+	//}
+
+	void TransformComponent::Update()
 	{
-		other.bShouldRecalculateTransform = false;
-		other.bShouldRecalculateWorldData = false;
-	}
-
-	TransformComponent& TransformComponent::operator=(TransformComponent&& other) noexcept
-	{
-		Transformation = __MOVE(other.Transformation);
-		WorldLocation = __MOVE(other.WorldLocation);
-		WorldScale = __MOVE(other.WorldScale);
-		LocalScale = __MOVE(other.LocalScale);
-		WorldAngle = __MOVE(other.WorldAngle);
-		LocalAngle = __MOVE(other.LocalAngle);
-		bShouldRecalculateTransform = __MOVE(other.bShouldRecalculateTransform);
-		bShouldRecalculateWorldData = __MOVE(other.bShouldRecalculateWorldData);
-		Forward = __MOVE(other.Forward);
-		Right = __MOVE(other.Right);
-		Up = __MOVE(other.Up);
-
-		other.bShouldRecalculateTransform = false;
-		other.bShouldRecalculateWorldData = false;
-
-		return *this;
+		RecalculateTransform();
 	}
 
 	void TransformComponent::RecalculateTransform()

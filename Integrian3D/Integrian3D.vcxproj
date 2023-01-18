@@ -207,7 +207,7 @@
     <ClCompile Include="SceneManager\SceneManager.cpp" />
     <ClCompile Include="Scene\Scene.cpp" />
     <ClCompile Include="Shader\Shader.cpp" />
-    <ClCompile Include="Systems\Systems.cpp" />
+    <ClCompile Include="Components\TestRotateComponent\TestRotateComponent.cpp" />
     <ClCompile Include="TextureManager\TextureManager.cpp" />
     <ClCompile Include="Texture\Texture.cpp" />
     <ClCompile Include="Timer\Timepoint\Timepoint.cpp" />
@@ -220,6 +220,7 @@
     <ClInclude Include="Array\Array.h" />
     <ClInclude Include="Component\Component.h" />
     <ClInclude Include="GameObject\GameObject.h" />
+    <ClInclude Include="GameObject\GameObjectUtils.h" />
     <ClInclude Include="IO\File\File.h" />
     <ClInclude Include="IO\IAsset\IAssetReader.h" />
     <ClInclude Include="IO\IAsset\IAssetUtils.h" />
@@ -257,8 +258,8 @@
     <ClInclude Include="Scene\Scene.h" />
     <ClInclude Include="Shader\Shader.h" />
     <ClInclude Include="SparseSet\SparseSet.h" />
-    <ClInclude Include="Systems\Systems.h" />
     <ClInclude Include="TemplateUtils\TemplateUtils.h" />
+    <ClInclude Include="Components\TestRotateComponent\TestRotateComponent.h" />
     <ClInclude Include="TextureManager\TextureManager.h" />
     <ClInclude Include="Texture\Texture.h" />
     <ClInclude Include="Timer\TimeLength.h" />

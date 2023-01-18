@@ -13,9 +13,6 @@ namespace Integrian3D
 		RandomAccessIt		= 2
 	};
 
-	template<typename T, IteratorTag Tag, typename Diff >
-	class ConstIterator;
-
 	template<typename T, IteratorTag Tag, typename Diff = uint64_t>
 	class Iterator final
 	{
@@ -34,6 +31,11 @@ namespace Integrian3D
 		}
 
 		Pointer operator->() const
+		{
+			return pPointer;
+		}
+
+		Pointer Data() const
 		{
 			return pPointer;
 		}
@@ -149,9 +151,6 @@ namespace Integrian3D
 
 	private:
 		Pointer pPointer;
-
-		friend bool operator==(const Iterator&, const class ConstIterator<T, Tag, Diff>&);
-		friend bool operator!=(const Iterator&, const class ConstIterator<T, Tag, Diff>&);
 	};
 
 	template<typename T, IteratorTag Tag, typename Diff = uint64_t>
@@ -172,6 +171,11 @@ namespace Integrian3D
 		}
 
 		Pointer operator->() const
+		{
+			return pPointer;
+		}
+
+		Pointer Data() const
 		{
 			return pPointer;
 		}
@@ -287,20 +291,17 @@ namespace Integrian3D
 
 	private:
 		Pointer pPointer;
-
-		friend bool operator==(const Iterator<T, Tag, Diff>&, const ConstIterator&);
-		friend bool operator!=(const Iterator<T, Tag, Diff>&, const ConstIterator&);
 	};
 
 	template<typename T, IteratorTag Tag, typename Diff = uint64_t>
 	bool operator==(const Iterator<T, Tag, Diff>& it, const ConstIterator<T, Tag, Diff>& cIt)
 	{
-		return it.pPointer == cIt.pPointer;
+		return it.Data() == cIt.Data();
 	}
 
 	template<typename T, IteratorTag Tag, typename Diff = uint64_t>
 	bool operator!=(const Iterator<T, Tag, Diff>& it, const ConstIterator<T, Tag, Diff>& cIt)
 	{
-		return it.pPointer != cIt.pPointer;
+		return it.Data() != cIt.Data();
 	}
 }

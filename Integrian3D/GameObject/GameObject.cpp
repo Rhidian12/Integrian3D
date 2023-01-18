@@ -2,43 +2,50 @@
 #include "../SceneManager/SceneManager.h"
 #include "../DebugUtility/DebugUtility.h"
 #include "../Scene/Scene.h"
+#include "../Component/Component.h"
+#include "../Components/TransformComponent/TransformComponent.h"
 
 namespace Integrian3D
 {
 	GameObject::GameObject()
-		: Object{}
+		: GameObject{ "" }
 	{}
 
 	GameObject::GameObject(const std::string& name)
 		: Object{ name }
-	{}
+		, pTransform{}
+		, m_Components{}
+	{
+		pTransform = AddComponent(new TransformComponent{ this });
+	}
 
 	GameObject::~GameObject()
 	{
-		for (Component* pC : m_Components)
+		for (ComponentInfo& info : m_Components)
 		{
-			__DELETE(pC);
+			info.ID = 0;
+			__DELETE(info.pComponent);
 		}
 
 		m_Components.Clear();
 	}
 
-	void GameObject::AddComponent(Component* const pComp)
+	void GameObject::Start()
 	{
-		if (m_Components.Find(pComp) == m_Components.cend())
-			m_Components.Add(pComp);
+		for (const ComponentInfo& info : m_Components)
+			info.pComponent->Start();
 	}
 
 	void GameObject::Update()
 	{
-		for (Component* pC : m_Components)
-			pC->Update();
+		for (const ComponentInfo& info : m_Components)
+			info.pComponent->Update();
 	}
 
 	void GameObject::Render() const
 	{
-		for (Component* pC : m_Components)
-			pC->Render();
+		for (const ComponentInfo& info : m_Components)
+			info.pComponent->Render();
 	}
 
 #pragma region Helper_Functions

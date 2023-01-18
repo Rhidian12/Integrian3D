@@ -10,40 +10,52 @@
 namespace Integrian3D
 {
 	Scene::Scene(const std::string& sceneName)
-		: InitializeCallback{}
-		, OnSceneEnterCallback{}
-		, OnSceneLeaveCallback{}
-		, SceneName{ sceneName }
+		: m_SceneName{ sceneName }
 		, m_GameObjects{}
+		, m_pActiveCamera{}
 	{}
+
+	Scene::~Scene()
+	{
+		for (const GameObject* pG : m_GameObjects)
+		{
+			__DELETE(pG);
+		}
+	}
 
 	void Scene::AddGameObject(GameObject* const pGameobject)
 	{
-		m_GameObjects.Add(pGameobject);
+		if (m_GameObjects.Find(pGameobject) == m_GameObjects.cend())
+			m_GameObjects.Add(pGameobject);
 	}
 
 	void Scene::Start()
 	{
-		//{
-		//	CameraEntity = CreateEntity();
-		//	AddComponent<CameraComponent, float, float, float, float>(
-		//		CameraEntity,
-		//		0.1f,
-		//		100.f,
-		//		Math::ToRadians(45.f),
-		//		static_cast<float>(Core::GetInstance().GetWindowWidth()) / Core::GetInstance().GetWindowHeight());
-
-		//	CreateView<CameraComponent, TransformComponent>().ForEach([](CameraComponent& camera, TransformComponent& transform)->void
-		//		{
-		//			const glm::vec3 trans{ 0.f, 0.f, -10.f };
-		//			transform.Translate(trans, true);
-		//			camera.SetView(glm::lookAt(transform.GetLocalLocation(), transform.GetLocalLocation() + transform.GetForward(), transform.GetUp()));
-		//		});
-		//}
-
-		if (InitializeCallback)
+		for (GameObject* pG : m_GameObjects)
 		{
-			InitializeCallback(*this);
+			pG->Start();
+
+			if (CameraComponent* pC{ pG->GetComponentByType<CameraComponent>() }; pC != nullptr)
+				m_pActiveCamera = pC;
+		}
+
+		if (!m_pActiveCamera)
+		{
+			GameObject* pCamera{ Instantiate("MainCamera", this) };
+			m_pActiveCamera = pCamera->AddComponent(new CameraComponent
+				{
+					pCamera,
+					0.1f,
+					100.f,
+					Math::ToRadians(45.f),
+					static_cast<float>(Core::GetInstance().GetWindowWidth()) / Core::GetInstance().GetWindowHeight()
+				});
+
+			pCamera->pTransform->Translate(Math::Vec3D{ 0.f, 0.f, -10.f }, true);
+
+			pCamera->Start();
+
+			AddGameObject(pCamera);
 		}
 	}
 
@@ -51,5 +63,11 @@ namespace Integrian3D
 	{
 		for (GameObject* pG : m_GameObjects)
 			pG->Update();
+	}
+
+	void Scene::Render() const
+	{
+		for (const GameObject* pG : m_GameObjects)
+			pG->Render();
 	}
 }

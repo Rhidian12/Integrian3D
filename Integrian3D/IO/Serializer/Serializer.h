@@ -3,12 +3,13 @@
 #include "../../EngineConstants.h"
 #include "../../Array/Array.h"
 #include "../IOUtils.h"
+#include "../../TemplateUtils/TemplateUtils.h"
 
 #pragma region Serializers
 template<typename T, std::enable_if_t<!Integrian3D::IO::IsPod<T>, bool> = true>
 __NODISCARD __INLINE Integrian3D::TArray<char> Serialize(const T&)
 {
-	static_assert(AlwaysFalse<T>, "Serialize<T>() > Must be implemented!");
+	static_assert(Integrian3D::TUtils::template AlwaysFalse<T>, "Serialize<T>() > Must be implemented!");
 }
 
 template<typename T, std::enable_if_t<Integrian3D::IO::IsPod<T>, bool> = true>
@@ -39,7 +40,7 @@ __NODISCARD __INLINE Integrian3D::TArray<char> Serialize<std::string>(const std:
 template<typename T, std::enable_if_t<!Integrian3D::IO::IsPod<T>, bool> = true>
 __NODISCARD __INLINE void Deserialize(const Integrian3D::TArray<char>&, T&)
 {
-	static_assert(AlwaysFalse<T>, "Deserialize<T>() > Must be implemented!");
+	static_assert(Integrian3D::TUtils::AlwaysFalse<T>, "Deserialize<T>() > Must be implemented!");
 }
 
 template<typename T, std::enable_if_t<Integrian3D::IO::IsPod<T>, bool> = true>
@@ -64,7 +65,7 @@ __NODISCARD __INLINE void Deserialize<std::string>(const Integrian3D::TArray<cha
 template<typename T, std::enable_if_t<!Integrian3D::IO::IsPod<T>, bool> = true>
 __NODISCARD __INLINE T Deserialize(const Integrian3D::TArray<char>&)
 {
-	static_assert(AlwaysFalse<T>, "Deserialize<T>() > Must be implemented!");
+	static_assert(Integrian3D::TUtils::AlwaysFalse<T>, "Deserialize<T>() > Must be implemented!");
 }
 
 template<typename T, std::enable_if_t<Integrian3D::IO::IsPod<T>, bool> = true>

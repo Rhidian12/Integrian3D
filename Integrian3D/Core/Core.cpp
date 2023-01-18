@@ -7,7 +7,6 @@
 #include "../SceneManager/SceneManager.h"
 #include "../Components/MeshComponent/MeshComponent.h"
 #include "../Components/TransformComponent/TransformComponent.h"
-#include "../Systems/Systems.h"
 
 #include <gtc/matrix_transform.hpp>
 
@@ -50,13 +49,11 @@ namespace Integrian3D
 	{
 		Time::Timer& timer{ Time::Timer::GetInstance() };
 		InputManager& inputManager{ InputManager::GetInstance() };
-		Renderer& renderer{ Renderer::GetInstance() };
 		SceneManager& sceneManager{ SceneManager::GetInstance() };
+		Renderer& renderer{ Renderer::GetInstance() };
 
-		for (Scene& scene : sceneManager.GetAllScenes())
-		{
-			scene.Start();
-		}
+		for (Scene* const pScene : sceneManager.GetAllScenes())
+			pScene->Start();
 
 		while (g_IsRunning)
 		{
@@ -64,48 +61,12 @@ namespace Integrian3D
 
 			inputManager.ProcessInput();
 
-			Scene& activeScene{ sceneManager.GetActiveScene() };
+			Scene* const pActiveScene{ sceneManager.GetActiveScene() };
 
-			/* Camera Movement Update */
-			{
-				if (inputManager.GetIsMouseButtonPressed(MouseInput::RMB))
-				{
-					Systems::TranslateCamera();
-					Systems::RotateCamera();
-				}
-			}
+			pActiveScene->Update();
 
-			/* Entity update */
-			{
-				/* User-defined update */
-				{
-					for (const std::function<void(Scene&)>& fn : activeScene.GetUpdateCallbacks())
-					{
-						fn(activeScene);
-					}
-				}
-
-				/* Transform update */
-				{
-					View<TransformComponent> transformView{ activeScene.CreateView<TransformComponent>() };
-					transformView.ForEach(
-						[](TransformComponent& transform)->void
-						{
-							transform.RecalculateTransform();
-						}
-					);
-				}
-			}
-
-			/* Rendering */
-			{
-				renderer.StartRenderLoop(activeScene.GetCamera());
-				View<MeshComponent, TransformComponent> renderView{ activeScene.CreateView<MeshComponent, TransformComponent>() };
-				renderView.ForEach([&renderer](const MeshComponent& meshComponent, const TransformComponent& transformComponent)->void
-					{
-						renderer.Render(meshComponent, transformComponent);
-					});
-			}
+			renderer.StartRenderLoop(pActiveScene->GetActiveCamera());
+			pActiveScene->Render();
 
 			/* Swap buffers */
 			Window.Update();
