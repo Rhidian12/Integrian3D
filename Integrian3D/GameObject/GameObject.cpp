@@ -15,6 +15,7 @@ namespace Integrian3D
 		: Object{ name }
 		, pTransform{}
 		, m_Components{}
+		, m_Tags{}
 	{
 		pTransform = AddComponent(new TransformComponent{ this });
 	}
@@ -28,6 +29,55 @@ namespace Integrian3D
 		}
 
 		m_Components.Clear();
+	}
+
+	const std::string& GameObject::AddTag(const std::string& tag)
+	{
+		m_Tags.Add(tag);
+
+		return tag;
+	}
+
+	const std::string& GameObject::SetTag(const std::string& tag, const uint64_t index)
+	{
+		if (index < m_Tags.Size())
+			m_Tags[index] = tag;
+		else
+			Debug::LogWarning("GameObject::SetTag() > Index is out of bounds", false);
+
+		return tag;
+	}
+
+	void GameObject::RemoveTag(const std::string& tag)
+	{
+		m_Tags.Erase(tag);
+	}
+
+	void GameObject::RemoveTag(const uint64_t index)
+	{
+		if (index >= m_Tags.Size())
+		{
+			Debug::LogWarning("GameObject::RemoveTag() > Index is out of bounds", false);
+			return;
+		}
+
+		m_Tags.EraseByIndex(index);
+	}
+
+	const std::string& GameObject::GetTag(const uint64_t index) const
+	{
+		if (index >= m_Tags.Size())
+		{
+			Debug::LogWarning("GameObject::GetTag() > Index is out of bounds", false);
+			return;
+		}
+
+		return m_Tags[index];
+	}
+
+	const TArray<std::string>& GameObject::GetTags() const
+	{
+		return m_Tags;
 	}
 
 	void GameObject::Start()

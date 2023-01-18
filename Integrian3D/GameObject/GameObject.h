@@ -14,18 +14,46 @@ namespace Integrian3D
 	public:
 		virtual ~GameObject();
 
+		/* Does not follow naming conventions, only an exception for usability sake */
+		class TransformComponent* pTransform;
+
+		/* [TODO]: Add Clone() function */
+
+#pragma region Component_Functionality
+
 		template<typename T>
 		T* const AddComponent(T* const pComponent);
 
 		template<typename T>
 		__NODISCARD T* const GetComponentByType() const;
 
+#pragma endregion
+
+#pragma region Tag_Functionality
+
+		const std::string& AddTag(const std::string& tag);
+
+		const std::string& SetTag(const std::string& tag, const uint64_t index);
+
+		void RemoveTag(const std::string& tag);
+
+		void RemoveTag(const uint64_t index);
+
+		__NODISCARD const std::string& GetTag(const uint64_t index) const;
+
+		__NODISCARD const TArray<std::string>& GetTags() const;
+
+#pragma endregion
+
+#pragma region Internal_Functionality
+
 		void Start();
+	
 		void Update();
+		
 		void Render() const;
 
-		/* Does not follow naming conventions, only an exception for usability sake */
-		class TransformComponent* pTransform;
+#pragma endregion
 
 	protected:
 		GameObject();
@@ -41,6 +69,7 @@ namespace Integrian3D
 		};
 
 		TArray<ComponentInfo> m_Components;
+		TArray<std::string> m_Tags;
 	};
 
 #pragma region Templated_Functions
