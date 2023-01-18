@@ -200,7 +200,6 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Math\Math.cpp" />
     <ClCompile Include="Components\MeshComponent\MeshComponent.cpp" />
-    <ClCompile Include="ECS\Registry\Registry.cpp" />
     <ClCompile Include="Memory\New\New.cpp" />
     <ClCompile Include="Object\Object.cpp" />
     <ClCompile Include="Renderer\Renderer.cpp" />
