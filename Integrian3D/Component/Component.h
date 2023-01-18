@@ -5,7 +5,7 @@
 
 namespace Integrian3D
 {
-	class Component
+	class Component : public Object
 	{
 	public:
 		explicit Component(class GameObject* pOwner);

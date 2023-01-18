@@ -7,8 +7,8 @@
 
 namespace Integrian3D
 {
-	/* inline allows multiple definitions (in other translation units */
-	inline volatile bool g_IsRunning{ true };
+	/* inline allows multiple definitions (in other translation units) */
+	inline volatile bool g_IsRunning{};
 
 	class Core final
 	{

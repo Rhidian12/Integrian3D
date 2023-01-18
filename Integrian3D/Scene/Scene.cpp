@@ -26,7 +26,12 @@ namespace Integrian3D
 	void Scene::AddGameObject(GameObject* const pGameobject)
 	{
 		if (m_GameObjects.Find(pGameobject) == m_GameObjects.cend())
+		{
 			m_GameObjects.Add(pGameobject);
+
+			if (g_IsRunning)
+				pGameobject->Start();
+		}
 	}
 
 	void Scene::Start()

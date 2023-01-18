@@ -4,7 +4,8 @@
 namespace Integrian3D
 {
 	Component::Component(GameObject* pOwner)
-		: m_pOwner{ pOwner }
+		: Object{ "Component" }
+		, m_pOwner{ pOwner }
 	{}
 
 	void Component::SetOwner(GameObject* const pOwner)

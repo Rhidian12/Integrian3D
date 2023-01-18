@@ -31,6 +31,8 @@ namespace Integrian3D
 	/* inline */
 #ifdef _WIN32
 #define __INLINE __forceinline
+#elif
+#define __INLINE inline
 #endif
 
 	/* RNG seed */

@@ -69,7 +69,8 @@ namespace Integrian3D
 		if (index >= m_Tags.Size())
 		{
 			Debug::LogWarning("GameObject::GetTag() > Index is out of bounds", false);
-			return;
+			static std::string errorString{ "__INVALID__" };
+			return errorString;
 		}
 
 		return m_Tags[index];
@@ -93,14 +94,22 @@ namespace Integrian3D
 
 	void GameObject::Update()
 	{
+		if (!m_IsActive)
+			return;
+
 		for (const ComponentInfo& info : m_Components)
-			info.pComponent->Update();
+			if (info.pComponent->IsActive())
+				info.pComponent->Update();
 	}
 
 	void GameObject::Render() const
 	{
+		if (!m_IsActive)
+			return;
+
 		for (const ComponentInfo& info : m_Components)
-			info.pComponent->Render();
+			if (info.pComponent->IsActive())
+				info.pComponent->Render();
 	}
 
 #pragma region Helper_Functions

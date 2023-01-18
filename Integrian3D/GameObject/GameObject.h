@@ -29,6 +29,12 @@ namespace Integrian3D
 
 #pragma endregion
 
+#pragma region General_Functionality
+
+
+
+#pragma endregion
+
 #pragma region Tag_Functionality
 
 		const std::string& AddTag(const std::string& tag);
