@@ -183,6 +183,8 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Component\Component.cpp" />
+    <ClCompile Include="GameObject\GameObject.cpp" />
     <ClCompile Include="IO\File\File.cpp" />
     <ClCompile Include="IO\IAsset\IAssetReader.cpp" />
     <ClCompile Include="IO\IAsset\IAssetWriter.cpp" />
@@ -200,11 +202,12 @@
     <ClCompile Include="Components\MeshComponent\MeshComponent.cpp" />
     <ClCompile Include="ECS\Registry\Registry.cpp" />
     <ClCompile Include="Memory\New\New.cpp" />
+    <ClCompile Include="Object\Object.cpp" />
     <ClCompile Include="Renderer\Renderer.cpp" />
     <ClCompile Include="SceneManager\SceneManager.cpp" />
     <ClCompile Include="Scene\Scene.cpp" />
     <ClCompile Include="Shader\Shader.cpp" />
-    <ClCompile Include="Systems\Systems.cpp" />
+    <ClCompile Include="Components\TestRotateComponent\TestRotateComponent.cpp" />
     <ClCompile Include="TextureManager\TextureManager.cpp" />
     <ClCompile Include="Texture\Texture.cpp" />
     <ClCompile Include="Timer\Timepoint\Timepoint.cpp" />
@@ -215,6 +218,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Array\Array.h" />
+    <ClInclude Include="Component\Component.h" />
+    <ClInclude Include="GameObject\GameObject.h" />
+    <ClInclude Include="GameObject\GameObjectUtils.h" />
     <ClInclude Include="IO\File\File.h" />
     <ClInclude Include="IO\IAsset\IAssetReader.h" />
     <ClInclude Include="IO\IAsset\IAssetUtils.h" />
@@ -246,13 +252,14 @@
     <ClInclude Include="Components\MeshComponent\MeshComponent.h" />
     <ClInclude Include="ECS\Registry\Registry.h" />
     <ClInclude Include="Memory\MemoryUtils.h" />
+    <ClInclude Include="Object\Object.h" />
     <ClInclude Include="Renderer\Renderer.h" />
     <ClInclude Include="SceneManager\SceneManager.h" />
     <ClInclude Include="Scene\Scene.h" />
     <ClInclude Include="Shader\Shader.h" />
     <ClInclude Include="SparseSet\SparseSet.h" />
-    <ClInclude Include="Systems\Systems.h" />
     <ClInclude Include="TemplateUtils\TemplateUtils.h" />
+    <ClInclude Include="Components\TestRotateComponent\TestRotateComponent.h" />
     <ClInclude Include="TextureManager\TextureManager.h" />
     <ClInclude Include="Texture\Texture.h" />
     <ClInclude Include="Timer\TimeLength.h" />

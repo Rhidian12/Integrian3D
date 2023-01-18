@@ -2,7 +2,6 @@
 
 #include "../EngineConstants.h"
 #include "../Shader/Shader.h"
-#include "../Components/CameraComponent/CameraComponent.h"
 
 #include <memory> /* std::unique_ptr */
 
@@ -18,9 +17,9 @@ namespace Integrian3D
 		Renderer& operator=(const Renderer&) noexcept = delete;
 		Renderer& operator=(Renderer&&) noexcept = delete;
 
-		void StartRenderLoop(const CameraComponent& camera) const;
+		void StartRenderLoop(const class CameraComponent* pCamera) const;
 
-		void Render(const class MeshComponent& meshComponent, const class TransformComponent& transformComponent) const;
+		void Render(const class MeshComponent* pMeshComponent, const class TransformComponent* pTransformComponent) const;
 
 		void ShouldRenderWireframe(const bool bShouldRenderWireFrame) { bShouldRenderWireframe = bShouldRenderWireFrame; }
 

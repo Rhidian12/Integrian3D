@@ -29,8 +29,14 @@ namespace Integrian3D
 		return *Instance.get();
 	}
 
-	void Renderer::StartRenderLoop(const CameraComponent& camera) const
+	void Renderer::StartRenderLoop(const CameraComponent* pCamera) const
 	{
+		if (!pCamera)
+		{
+			Debug::LogError("Renderer::StartRenderLoop() > No active camera is present in the scene, rendering failed", false);
+			return;
+		}
+
 		/* Sets the Clear Colour */
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -47,32 +53,44 @@ namespace Integrian3D
 		/* Use our shader program! */
 		Shader.Activate();
 
-		Shader.SetMatrix("_View", camera.GetView());
+		Shader.SetMatrix("_View", pCamera->GetView());
 
-		Shader.SetMatrix("_Projection", camera.GetProjection());
+		Shader.SetMatrix("_Projection", pCamera->GetProjection());
 	}
 
-	void Renderer::Render(const MeshComponent& meshComponent, const TransformComponent& transformComponent) const
+	void Renderer::Render(const MeshComponent* pMeshComponent, const TransformComponent* pTransformComponent) const
 	{
+		if (!pMeshComponent)
+		{
+			Debug::LogError("Renderer::Render() > MeshComponent is invalid", false);
+			return;
+		}
+
+		if (!pTransformComponent)
+		{
+			Debug::LogError("Renderer::Render() > TransformComponent is invalid", false);
+			return;
+		}
+
 		/* Set our Matrix */
-		Shader.SetMatrix("_Transform", transformComponent.Transformation);
+		Shader.SetMatrix("_Transform", pTransformComponent->Transformation);
 
 		/* Activate the texture */
 		glActiveTexture(GL_TEXTURE0);
 
 		/* Bind the Texture ID */
-		glBindTexture(GL_TEXTURE_2D, meshComponent.GetTexture()->GetTextureID());
+		glBindTexture(GL_TEXTURE_2D, pMeshComponent->GetTexture()->GetTextureID());
 
 		/* Bind the Vertex Array ID */
-		glBindVertexArray(meshComponent.GetVertexArrayID());
+		glBindVertexArray(pMeshComponent->GetVertexArrayID());
 
 		/* Bind the ID to a vertex buffer */
-		glBindBuffer(GL_ARRAY_BUFFER, meshComponent.GetVertexBufferID());
+		glBindBuffer(GL_ARRAY_BUFFER, pMeshComponent->GetVertexBufferID());
 
 		/* Bind the ID to an index buffer */
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshComponent.GetIndexBufferID());
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, pMeshComponent->GetIndexBufferID());
 
 		/* Render our rectangle */
-		glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(meshComponent.GetIndices().size()), GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(pMeshComponent->GetIndices().size()), GL_UNSIGNED_INT, 0);
 	}
 }

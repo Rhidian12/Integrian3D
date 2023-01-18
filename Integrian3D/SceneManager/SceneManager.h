@@ -14,26 +14,26 @@ namespace Integrian3D
 	public:
 		static SceneManager& GetInstance();
 
-		void AddScene(Scene&& scene);
+		void AddScene(Scene* scene);
 
 		void ChangeScene(const std::string_view sceneName);
 
-		__NODISCARD Scene& GetActiveScene() { assert(pActiveScene); return *pActiveScene; }
-		__NODISCARD const Scene& GetActiveScene() const { assert(pActiveScene); return *pActiveScene; }
+		__NODISCARD Scene* const GetActiveScene() { return m_pActiveScene; }
+		__NODISCARD const Scene* const GetActiveScene() const { return m_pActiveScene; }
 
-		__NODISCARD Scene& GetScene(const std::string_view sceneName);
-		__NODISCARD const Scene& GetScene(const std::string_view sceneName) const;
+		__NODISCARD Scene* const GetScene(const std::string_view sceneName);
+		__NODISCARD const Scene* const GetScene(const std::string_view sceneName) const;
 
-		__NODISCARD std::vector<Scene>& GetAllScenes() { return Scenes; }
-		__NODISCARD const std::vector<Scene>& GetAllScenes() const { return Scenes; }
+		/* [TODO]: Write wrappers instead of allowing access to all scenes */
+		__NODISCARD const std::vector<Scene*>& GetAllScenes() const { return m_Scenes; }
 
 	private:
 		SceneManager();
 
 		friend std::unique_ptr<SceneManager> std::make_unique();
-		inline static std::unique_ptr<SceneManager> Instance{};
+		inline static std::unique_ptr<SceneManager> m_pInstance{};
 
-		std::vector<Scene> Scenes;
-		Scene* pActiveScene;
+		std::vector<Scene*> m_Scenes;
+		Scene* m_pActiveScene;
 	};
 }

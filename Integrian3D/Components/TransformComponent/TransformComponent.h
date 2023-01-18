@@ -2,22 +2,24 @@
 
 #include "../../EngineConstants.h"
 #include "../../Math/Math.h"
+#include "../../Component/Component.h"
 
 #include <glm.hpp> /* GLM */
 
 namespace Integrian3D
 {
-	class TransformComponent final
+	class TransformComponent final : public Component
 	{
 	public:
-		TransformComponent();
+		explicit TransformComponent(GameObject* pOwner);
 
-		TransformComponent(const TransformComponent&) noexcept = delete;
-		TransformComponent(TransformComponent&& other) noexcept;
-		TransformComponent& operator=(const TransformComponent&) noexcept = delete;
-		TransformComponent& operator=(TransformComponent&& other) noexcept;
+		// TransformComponent(const TransformComponent&) noexcept = delete;
+		// TransformComponent(TransformComponent&& other) noexcept;
+		// TransformComponent& operator=(const TransformComponent&) noexcept = delete;
+		// TransformComponent& operator=(TransformComponent&& other) noexcept;
 
-		void RecalculateTransform();
+		/* [TODO]: Do in FixedUpdate */
+		virtual void Update() override;
 
 		void Translate(const Math::Vec3D& v, const bool bForce = false);
 		void Rotate(const Math::Vec3D& rotationRad, const bool bForce = false);
@@ -48,6 +50,7 @@ namespace Integrian3D
 		bool bShouldRecalculateWorldData;
 
 	private:
+		void RecalculateTransform();
 		void RecalculateDirectionVectors();
 
 		Math::Vec3D WorldLocation;

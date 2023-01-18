@@ -10,46 +10,64 @@
 namespace Integrian3D
 {
 	Scene::Scene(const std::string& sceneName)
-		: InitializeCallback{}
-		, OnSceneEnterCallback{}
-		, OnSceneLeaveCallback{}
-		, Registry{}
-		, SceneName{ sceneName }
-		, CameraEntity{ InvalidEntityID }
+		: m_SceneName{ sceneName }
+		, m_GameObjects{}
+		, m_pActiveCamera{}
+	{}
+
+	Scene::~Scene()
 	{
+		for (const GameObject* pG : m_GameObjects)
+		{
+			__DELETE(pG);
+		}
+	}
+
+	void Scene::AddGameObject(GameObject* const pGameobject)
+	{
+		if (m_GameObjects.Find(pGameobject) == m_GameObjects.cend())
+			m_GameObjects.Add(pGameobject);
 	}
 
 	void Scene::Start()
 	{
+		for (GameObject* pG : m_GameObjects)
 		{
-			CameraEntity = CreateEntity();
-			AddComponent<CameraComponent, float, float, float, float>(
-				CameraEntity,
-				0.1f,
-				100.f,
-				Math::ToRadians(45.f),
-				static_cast<float>(Core::GetInstance().GetWindowWidth()) / Core::GetInstance().GetWindowHeight());
+			pG->Start();
 
-			CreateView<CameraComponent, TransformComponent>().ForEach([](CameraComponent& camera, TransformComponent& transform)->void
-				{
-					const glm::vec3 trans{ 0.f, 0.f, -10.f };
-					transform.Translate(trans, true);
-					camera.SetView(glm::lookAt(transform.GetLocalLocation(), transform.GetLocalLocation() + transform.GetForward(), transform.GetUp()));
-				});
+			if (CameraComponent* pC{ pG->GetComponentByType<CameraComponent>() }; pC != nullptr)
+				m_pActiveCamera = pC;
 		}
 
-		if (InitializeCallback)
+		if (!m_pActiveCamera)
 		{
-			InitializeCallback(*this);
+			GameObject* pCamera{ Instantiate("MainCamera", this) };
+			m_pActiveCamera = pCamera->AddComponent(new CameraComponent
+				{
+					pCamera,
+					0.1f,
+					100.f,
+					Math::ToRadians(45.f),
+					static_cast<float>(Core::GetInstance().GetWindowWidth()) / Core::GetInstance().GetWindowHeight()
+				});
+
+			pCamera->pTransform->Translate(Math::Vec3D{ 0.f, 0.f, -10.f }, true);
+
+			pCamera->Start();
+
+			AddGameObject(pCamera);
 		}
 	}
 
-	Entity Scene::CreateEntity()
+	void Scene::Update()
 	{
-		const Entity entity{ Registry.CreateEntity() };
+		for (GameObject* pG : m_GameObjects)
+			pG->Update();
+	}
 
-		AddComponent<TransformComponent>(entity);
-
-		return entity;
+	void Scene::Render() const
+	{
+		for (const GameObject* pG : m_GameObjects)
+			pG->Render();
 	}
 }

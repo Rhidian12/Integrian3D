@@ -34,6 +34,11 @@ namespace Integrian3D
 		{
 			return pPointer;
 		}
+
+		Pointer Data() const
+		{
+			return pPointer;
+		}
 #pragma endregion
 
 #pragma region Arithmetic
@@ -169,6 +174,11 @@ namespace Integrian3D
 		{
 			return pPointer;
 		}
+
+		Pointer Data() const
+		{
+			return pPointer;
+		}
 #pragma endregion
 
 #pragma region Arithmetic
@@ -282,4 +292,16 @@ namespace Integrian3D
 	private:
 		Pointer pPointer;
 	};
+
+	template<typename T, IteratorTag Tag, typename Diff = uint64_t>
+	bool operator==(const Iterator<T, Tag, Diff>& it, const ConstIterator<T, Tag, Diff>& cIt)
+	{
+		return it.Data() == cIt.Data();
+	}
+
+	template<typename T, IteratorTag Tag, typename Diff = uint64_t>
+	bool operator!=(const Iterator<T, Tag, Diff>& it, const ConstIterator<T, Tag, Diff>& cIt)
+	{
+		return it.Data() != cIt.Data();
+	}
 }

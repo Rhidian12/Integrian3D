@@ -1,8 +1,8 @@
 #pragma once
 
 #include "../EngineConstants.h"
-#include "../ECS/Registry/Registry.h"
-#include "../Components/CameraComponent/CameraComponent.h"
+#include "../Array/Array.h"
+#include "../GameObject/GameObject.h"
 
 #include <functional> /* std::function */
 #include <utility> /* std::forward */
@@ -12,74 +12,45 @@
 
 namespace Integrian3D
 {
-	class Scene final
+	class Scene
 	{
 	public:
 		explicit Scene(const std::string& sceneName);
-
-		/* -------------- Begin of ECS Functionality -------------- */
-		__NODISCARD Entity CreateEntity();
-
-		bool ReleaseEntity(const Entity entity) { return Registry.ReleaseEntity(entity); }
-
-		template<typename T>
-		T& AddComponent(const Entity entity) { return Registry.AddComponent<T>(entity); }
-
-		template<typename T, typename ... Ts>
-		T& AddComponent(const Entity entity, Ts&& ... args) { return Registry.AddComponent<T, Ts...>(entity, std::forward<Ts>(args)...); }
-
-		template<typename T>
-		void RemoveComponent(const Entity entity) { Registry.RemoveComponent<T>(entity); }
-
-		template<typename T>
-		__NODISCARD T& GetComponent(const Entity entity) { return Registry.GetComponent<T>(entity); }
-
-		template<typename T>
-		__NODISCARD const T& GetComponent(const Entity entity) const { return Registry.GetComponent<T>(entity); }
-
-		__NODISCARD size_t GetAmountOfEntities() const { return static_cast<size_t>(Registry.GetAmountOfEntities()); }
-
-		__NODISCARD const EntitySignature& GetEntitySignature(const Entity entity) const { return Registry.GetEntitySignature(entity); }
-
-		template<typename ... Ts>
-		__NODISCARD View<Ts...> CreateView() { return Registry.CreateView<Ts...>(); }
-		/* -------------- End of ECS Functionality -------------- */
-
+		virtual ~Scene();
 
 		/* -------------- Begin of Scene Functionality -------------- */
-		__NODISCARD std::string_view GetSceneName() const { return SceneName; }
 
-		void AddSceneInitialisation(const std::function<void(Scene&)>& fn) { InitializeCallback = fn; }
+		void AddGameObject(GameObject* const pGameobject);
 
-		void AddOnSceneEnter(const std::function<void(Scene&)>& fn) { OnSceneEnterCallback = fn; }
+		__NODISCARD std::string_view GetSceneName() const { return m_SceneName; }
 
-		void AddOnSceneLeave(const std::function<void(Scene&)>& fn) { OnSceneLeaveCallback = fn; }
+		__NODISCARD class CameraComponent* const GetActiveCamera() const { return m_pActiveCamera; }
 
-		void AddUpdateCallback(const std::function<void(Scene&)>& fn) { UpdateCallbacks.push_back(fn); }
-
-		__NODISCARD CameraComponent& GetCamera() { return GetComponent<CameraComponent>(CameraEntity); }
-
-		__NODISCARD Entity GetCameraEntity() const { return CameraEntity; }
-
-		__NODISCARD const std::vector<std::function<void(Scene&)>>& GetUpdateCallbacks() const { return UpdateCallbacks; }
 		/* -------------- End of Scene Functionality -------------- */
 
 
 		/* -------------- Start of Internal Functionality -------------- */
+
 		void Start();
 
-		void OnSceneEnter() { OnSceneEnterCallback(*this); }
+		void Update();
 
-		void OnSceneLeave() { OnSceneLeaveCallback(*this); }
+		void Render() const;
+
 		/* -------------- End of Internal Functionality -------------- */
 
+
+		/* -------------- Start of Inheritance Functionality -------------- */
+
+		virtual void OnSceneEnter() {}
+
+		virtual void OnSceneLeave() {}
+
+		/* -------------- End of Inheritance Functionality -------------- */
+
 	private:
-		std::function<void(Scene&)> InitializeCallback;
-		std::function<void(Scene&)> OnSceneEnterCallback;
-		std::function<void(Scene&)> OnSceneLeaveCallback;
-		std::vector<std::function<void(Scene&)>> UpdateCallbacks;
-		Registry Registry;
-		std::string SceneName;
-		Entity CameraEntity;
+		std::string m_SceneName;
+		TArray<GameObject*> m_GameObjects;
+		class CameraComponent* m_pActiveCamera;
 	};
 }

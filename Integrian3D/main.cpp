@@ -11,6 +11,7 @@
 #include "Components/TransformComponent/TransformComponent.h"
 #include "Timer/Timer.h"
 #include "Memory/Allocator/Allocator.h"
+#include "Components/TestRotateComponent/TestRotateComponent.h"
 
 int main()
 {
@@ -18,8 +19,6 @@ int main()
 	using namespace Integrian3D::Memory;
 
 	Core& core{ Core::CreateCore(1080,720) };
-
-	Scene testScene{ "TestScene" };
 
 	std::vector<Vertex> vertices =
 	{
@@ -75,37 +74,22 @@ int main()
 
 	TextureManager::GetInstance().AddTexture("__Wall", "Resources/wall.jpg");
 
-	Entity entity = testScene.CreateEntity();
-	testScene.AddComponent<MeshComponent>(entity, vertices, indices, TextureManager::GetInstance().GetTexture("__Wall"));
-	TransformComponent& transform{ testScene.GetComponent<TransformComponent>(entity) };
-	transform.Rotate(glm::vec3{ Math::ToRadians(-55.f), 0.f, 0.f });
+	Scene* pTestScene{ new Scene{ "TestScene" } };
+	SceneManager::GetInstance().AddScene(pTestScene);
+
+	GameObject* pEntity{ Instantiate() };
+	pEntity->AddComponent(new TestRotateComponent{ pEntity });
+	pEntity->AddComponent(new MeshComponent{ pEntity, vertices, indices, TextureManager::GetInstance().GetTexture("__Wall") });
+	pEntity->pTransform->Rotate(Math::Vec3D{ Math::ToRadians(-55.f), 0.f, 0.f });
 
 	for (size_t i{}; i < 9; ++i)
 	{
-		Entity temp = testScene.CreateEntity();
-		testScene.AddComponent<MeshComponent>(temp, vertices, indices, TextureManager::GetInstance().GetTexture("__Wall"));
-		TransformComponent& transf{ testScene.GetComponent<TransformComponent>(temp) };
-		transf.Translate(Math::RandomVec3D(-5.f, 5.f));
-		transform.Rotate(glm::vec3{ Math::ToRadians(-55.f), 0.f, 0.f });
+		GameObject* pTemp{ Instantiate() };
+		pTemp->AddComponent(new TestRotateComponent{ pTemp });
+		pTemp->AddComponent(new MeshComponent{ pTemp, vertices, indices, TextureManager::GetInstance().GetTexture("__Wall") });
+		pTemp->pTransform->Translate(Math::RandomVec3D(-5.f, 5.f));
+		pTemp->pTransform->Rotate(Math::Vec3D{ Math::ToRadians(-55.f), 0.f, 0.f });
 	}
-
-	testScene.AddUpdateCallback([](Scene& scene)->void
-		{
-			scene.CreateView<TransformComponent, MeshComponent>().ForEach([](TransformComponent& transform, const MeshComponent&)->void
-				{
-					transform.Rotate
-					(
-						glm::vec3
-						{
-							Math::ToRadians(25.f) * Time::Timer::GetInstance().GetElapsedSeconds(),
-							Math::ToRadians(50.f) * Time::Timer::GetInstance().GetElapsedSeconds(),
-							0.f
-						}
-					);
-				});
-		});
-
-	SceneManager::GetInstance().AddScene(__MOVE(testScene));
 
 	core.Run();
 }
