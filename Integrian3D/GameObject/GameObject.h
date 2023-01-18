@@ -116,5 +116,8 @@ namespace Integrian3D
 	__NODISCARD GameObject* Instantiate(const std::string& name = "");
 	__NODISCARD GameObject* Instantiate(const std::string& name, class Scene* pScene);
 
+	__NODISCARD GameObject* FindGameObjectWithTag(const std::string& tag);
+	__NODISCARD TArray<GameObject*> FindGameObjectsWithTag(const std::string& tag);
+
 #pragma endregion
 }

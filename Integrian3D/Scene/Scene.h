@@ -18,7 +18,7 @@ namespace Integrian3D
 		explicit Scene(const std::string& sceneName);
 		virtual ~Scene();
 
-		/* -------------- Begin of Scene Functionality -------------- */
+#pragma region Scene_Functionality
 
 		void AddGameObject(GameObject* const pGameobject);
 
@@ -26,10 +26,11 @@ namespace Integrian3D
 
 		__NODISCARD class CameraComponent* const GetActiveCamera() const { return m_pActiveCamera; }
 
-		/* -------------- End of Scene Functionality -------------- */
+		__NODISCARD const TArray<GameObject*>& GetGameObjects() const { return m_GameObjects; }
 
+#pragma endregion
 
-		/* -------------- Start of Internal Functionality -------------- */
+#pragma region Internal_Functionality
 
 		void Start();
 
@@ -37,16 +38,15 @@ namespace Integrian3D
 
 		void Render() const;
 
-		/* -------------- End of Internal Functionality -------------- */
+#pragma endregion
 
-
-		/* -------------- Start of Inheritance Functionality -------------- */
+#pragma region Inheritable_Functionality
 
 		virtual void OnSceneEnter() {}
 
 		virtual void OnSceneLeave() {}
 
-		/* -------------- End of Inheritance Functionality -------------- */
+#pragma endregion
 
 	private:
 		std::string m_SceneName;

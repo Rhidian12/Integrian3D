@@ -137,5 +137,44 @@ namespace Integrian3D
 		return pG;
 	}
 
+	GameObject* FindGameObjectWithTag(const std::string& tag)
+	{
+		Scene* const pActiveScene{ SceneManager::GetInstance().GetActiveScene() };
+
+		if (!pActiveScene)
+		{
+			Debug::LogError("FindGameObjectWithTag(std::string) > No scene has been added, add a scene first", false);
+			return nullptr;
+		}
+
+		const auto& gameObjects{ pActiveScene->GetGameObjects() };
+
+		for (GameObject* const pG : gameObjects)
+			if (pG->HasTag(tag))
+				return pG;
+
+		return nullptr;
+	}
+
+	TArray<GameObject*> FindGameObjectsWithTag(const std::string& tag)
+	{
+		Scene* const pActiveScene{ SceneManager::GetInstance().GetActiveScene() };
+
+		if (!pActiveScene)
+		{
+			Debug::LogError("FindGameObjectsWithTag(std::string) > No scene has been added, add a scene first", false);
+			return TArray<GameObject*>{};
+		}
+
+		const auto& gameObjects{ pActiveScene->GetGameObjects() };
+		TArray<GameObject*> foundGameObjects{};
+
+		for (GameObject* const pG : gameObjects)
+			if (pG->HasTag(tag))
+				foundGameObjects.Add(pG);
+
+		return foundGameObjects;
+	}
+
 #pragma endregion
 }
