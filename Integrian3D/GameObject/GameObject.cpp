@@ -80,6 +80,11 @@ namespace Integrian3D
 		return m_Tags;
 	}
 
+	bool GameObject::HasTag(const std::string& tag) const
+	{
+		return m_Tags.Find(tag) != m_Tags.cend();
+	}
+
 	void GameObject::Start()
 	{
 		for (const ComponentInfo& info : m_Components)

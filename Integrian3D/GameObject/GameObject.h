@@ -43,6 +43,8 @@ namespace Integrian3D
 
 		__NODISCARD const TArray<std::string>& GetTags() const;
 
+		__NODISCARD bool HasTag(const std::string& tag) const;
+
 #pragma endregion
 
 #pragma region Internal_Functionality
