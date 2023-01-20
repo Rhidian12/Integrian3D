@@ -753,6 +753,31 @@ TEST_CASE("Testing Basic Array of integers")
 		for (int i{}; i < size; ++i)
 			REQUIRE(arr[i] == newArr[i]);
 	}
+
+	SECTION("Testing EraseAll")
+	{
+		for (int i{}; i < 5; ++i)
+		{
+			arr.Add(i);
+			arr.Add(7);
+		}
+
+		REQUIRE(arr.Size() == 10);
+		REQUIRE(arr.Capacity() >= 10);
+
+		arr.EraseAll(7);
+
+		REQUIRE(arr.Size() == 5);
+		REQUIRE(arr.Capacity() >= 10);
+
+		arr.EraseAll([](const int i)->bool
+			{
+				return i > 1;
+			});
+
+		REQUIRE(arr.Size() == 2);
+		REQUIRE(arr.Capacity() >= 10);
+	}
 }
 
 #include <string>

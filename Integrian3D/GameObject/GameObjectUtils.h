@@ -11,7 +11,7 @@ namespace Integrian3D::GOUtils
 		template<typename T>
 		constexpr std::string_view WrappedTypeName()
 		{
-			return __FUNCSIG__;
+			return __FUNCTION_NAME__;
 		}
 	}
 

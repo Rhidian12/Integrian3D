@@ -289,7 +289,7 @@ namespace Integrian3D
 		{
 			__ASSERT(pos != end() && "Array::Erase() > invalid iterator was passed as a parameter");
 
-			return Erase(*pos);
+			return EraseByIndex(pos.Data() - begin().Data());
 		}
 		constexpr It Erase(const T& val)
 		{
@@ -329,15 +329,23 @@ namespace Integrian3D
 
 		constexpr void EraseAll(const UnaryPred& pred)
 		{
-			for (uint64_t i{}; i < Size(); ++i)
-				if (pred(*(m_pHead + i)))
-					EraseByIndex(i);
+			for (It beg{ begin() }; beg != end();)
+			{
+				if (pred(*beg))
+					beg = Erase(beg);
+				else
+					++beg;
+			}
 		}
 		constexpr void EraseAll(const T& val)
 		{
-			for (uint64_t i{}; i < Size(); ++i)
-				if (*(m_pHead + i) == val)
-					EraseByIndex(i);
+			for (It beg{ begin() }; beg != end();)
+			{
+				if (*beg == val)
+					beg = Erase(beg);
+				else
+					++beg;
+			}
 		}
 
 		constexpr void EraseRange(const uint64_t start, const uint64_t count)
