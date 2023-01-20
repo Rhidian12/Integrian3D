@@ -67,7 +67,7 @@ int main()
 
 	std::vector<uint32_t> indices{};
 
-	for (Entity i{}; i < vertices.size(); ++i)
+	for (uint32_t i{}; i < vertices.size(); ++i)
 	{
 		indices.push_back(i);
 	}

@@ -18,9 +18,7 @@ namespace Integrian3D
 	Scene::~Scene()
 	{
 		for (const GameObject* pG : m_GameObjects)
-		{
 			__DELETE(pG);
-		}
 	}
 
 	void Scene::AddGameObject(GameObject* const pGameobject)

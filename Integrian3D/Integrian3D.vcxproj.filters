@@ -272,5 +272,8 @@
     <ClInclude Include="Components\TestRotateComponent\TestRotateComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Macros\Macros.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

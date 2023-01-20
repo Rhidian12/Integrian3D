@@ -236,6 +236,7 @@
     <ClInclude Include="IO\SeekMode.h" />
     <ClInclude Include="IO\Serializer\Serializer.h" />
     <ClInclude Include="LinkedList\LinkedList.h" />
+    <ClInclude Include="Macros\Macros.h" />
     <ClInclude Include="Memory\AllocatorTraits\AllocatorTraits.h" />
     <ClInclude Include="Memory\Allocator\Allocator.h" />
     <ClInclude Include="Memory\MemoryTracker\MemoryTracker.h" />
