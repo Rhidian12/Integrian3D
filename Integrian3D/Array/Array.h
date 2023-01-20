@@ -327,6 +327,19 @@ namespace Integrian3D
 			return end();
 		}
 
+		constexpr void EraseAll(const UnaryPred& pred)
+		{
+			for (uint64_t i{}; i < Size(); ++i)
+				if (pred(*(m_pHead + i)))
+					EraseByIndex(i);
+		}
+		constexpr void EraseAll(const T& val)
+		{
+			for (uint64_t i{}; i < Size(); ++i)
+				if (*(m_pHead + i) == val)
+					EraseByIndex(i);
+		}
+
 		constexpr void EraseRange(const uint64_t start, const uint64_t count)
 		{
 			__ASSERT(start < Size() && "Array::EraseRange() > Start is out of range");

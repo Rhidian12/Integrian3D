@@ -31,7 +31,9 @@ namespace Integrian3D
 
 #pragma region General_Functionality
 
+		void Destroy();
 
+		__NODISCARD bool IsMarkedForDestruction() const;
 
 #pragma endregion
 
@@ -78,6 +80,7 @@ namespace Integrian3D
 
 		TArray<ComponentInfo> m_Components;
 		TArray<std::string> m_Tags;
+		bool m_IsMarkedForDestruction;
 	};
 
 #pragma region Templated_Functions

@@ -16,6 +16,7 @@ namespace Integrian3D
 		, pTransform{}
 		, m_Components{}
 		, m_Tags{}
+		, m_IsMarkedForDestruction{}
 	{
 		pTransform = AddComponent(new TransformComponent{ this });
 	}
@@ -29,6 +30,17 @@ namespace Integrian3D
 		}
 
 		m_Components.Clear();
+	}
+
+	void GameObject::Destroy()
+	{
+		m_IsMarkedForDestruction = true;
+		m_IsActive = false;
+	}
+
+	bool GameObject::IsMarkedForDestruction() const
+	{
+		return m_IsMarkedForDestruction;
 	}
 
 	const std::string& GameObject::AddTag(const std::string& tag)

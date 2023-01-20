@@ -19,6 +19,8 @@ namespace Integrian3D
 	{
 		for (const GameObject* pG : m_GameObjects)
 			__DELETE(pG);
+
+		m_GameObjects.Clear();
 	}
 
 	void Scene::AddGameObject(GameObject* const pGameobject)
@@ -30,6 +32,14 @@ namespace Integrian3D
 			if (g_IsRunning)
 				pGameobject->Start();
 		}
+	}
+
+	void Scene::RemoveGameObject(GameObject* const pGameObject)
+	{
+		const auto it{ m_GameObjects.Find(pGameObject) };
+
+		if (it != m_GameObjects.cend())
+			m_GameObjects.Erase(it);
 	}
 
 	void Scene::Start()
@@ -66,6 +76,17 @@ namespace Integrian3D
 	{
 		for (GameObject* pG : m_GameObjects)
 			pG->Update();
+
+		m_GameObjects.EraseAll([](const GameObject* pG)->bool
+			{
+				if (pG->IsMarkedForDestruction())
+				{
+					__DELETE(pG);
+					return true;
+				}
+
+				return false;
+			});
 	}
 
 	void Scene::Render() const

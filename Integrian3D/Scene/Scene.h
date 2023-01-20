@@ -22,6 +22,8 @@ namespace Integrian3D
 
 		void AddGameObject(GameObject* const pGameobject);
 
+		void RemoveGameObject(GameObject* const pGameObject);
+
 		__NODISCARD std::string_view GetSceneName() const { return m_SceneName; }
 
 		__NODISCARD class CameraComponent* const GetActiveCamera() const { return m_pActiveCamera; }
