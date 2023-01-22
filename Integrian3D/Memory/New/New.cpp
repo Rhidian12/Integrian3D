@@ -2,6 +2,14 @@
 
 #include "../../EngineConstants.h"
 #include "../MemoryTracker/MemoryTracker.h"
+#include "../FreeListAllocator/FreeListAllocator.h"
+
+__INLINE Integrian3D::Memory::FreeListAllocator& GetAllocator()
+{
+	static Integrian3D::Memory::FreeListAllocator allocator{ 4096 };
+
+	return allocator;
+}
 
 void* operator new(size_t n)
 {
@@ -12,7 +20,7 @@ void* operator new(size_t n)
 
 	Memory::MemoryTracker::Track(n);
 
-	void* pData{ malloc(n) };
+	void* pData{ GetAllocator().Allocate(n, sizeof(uint64_t)) };
 
 	__ASSERT(pData != nullptr && "Program ran out of memory");
 
@@ -28,7 +36,7 @@ void* operator new[](size_t n)
 
 	Memory::MemoryTracker::Track(n);
 
-	void* pData{ malloc(n) };
+	void* pData{ GetAllocator().Allocate(n, sizeof(uint64_t)) };
 
 	__ASSERT(pData != nullptr && "Program ran out of memory");
 
@@ -41,7 +49,9 @@ void operator delete(void* p, size_t n)
 
 	Memory::MemoryTracker::StopTracking(n);
 
-	free(p);
+	GetAllocator().Deallocate(p);
+
+	// free(p);
 }
 
 void operator delete[](void* p, size_t n)
@@ -50,5 +60,7 @@ void operator delete[](void* p, size_t n)
 
 	Memory::MemoryTracker::StopTracking(n);
 
-	free(p);
+	GetAllocator().Deallocate(p);
+
+	// free(p);
 }

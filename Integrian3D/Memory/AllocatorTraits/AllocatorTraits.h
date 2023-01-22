@@ -9,11 +9,17 @@ namespace Integrian3D::Memory
 		template<typename ...>
 		using Void = void;
 
-		template<typename T, typename U, typename = void>
+		//template<typename T, typename U, typename = void>
+		//struct _CanAllocate : public std::false_type {};
+
+		//template<typename T, typename U>
+		//struct _CanAllocate<T, U, Void<decltype(std::declval<T>().Allocate<U>(0, 0))>> : public std::true_type {};
+
+		template<typename T, typename = void>
 		struct _CanAllocate : public std::false_type {};
 
-		template<typename T, typename U>
-		struct _CanAllocate<T, U, Void<decltype(std::declval<T>().Allocate<U>(0, 0))>> : public std::true_type {};
+		template<typename T>
+		struct _CanAllocate<T, Void<std::is_same<decltype(std::declval<T>().Allocate(0, 0)), void*>>> : public std::true_type {};
 
 		template<typename T, typename = void>
 		struct _CanDeallocate : public std::false_type {};
@@ -50,6 +56,12 @@ namespace Integrian3D::Memory
 
 		template<typename T, typename U>
 		struct _CanDestroy<T, U, Void<decltype(std::declval<T>().Destroy<U>(nullptr))>> : public std::true_type {};
+
+		template<typename T, typename = void>
+		struct _HasInitialize : public std::false_type {};
+
+		template<typename T>
+		struct _HasInitialize<T, Void<decltype(std::declval<T>().Initialize())>> : public std::true_type {};
 	}
 
 	template<typename T>
@@ -57,8 +69,7 @@ namespace Integrian3D::Memory
 	{
 		using Type = T;
 
-		template<typename U>
-		constexpr static auto CanAllocate = _CanAllocate<T, U>::value;
+		constexpr static auto CanAllocate = _CanAllocate<T>::value;
 		constexpr static auto CanDeallocate = _CanDeallocate<T>::value;
 
 		template<typename U>
@@ -70,6 +81,8 @@ namespace Integrian3D::Memory
 
 		constexpr static auto HasCapacity = _HasCapacity<T>::value;
 		constexpr static auto HasSize = _HasSize<T>::value;
+
+		constexpr static auto HasInitialize = _HasInitialize<T>::value;
 
 		constexpr static auto IsCopyConstructable = std::is_copy_constructible_v<T>;
 		constexpr static auto IsMoveConstructable = std::is_move_constructible_v<T>;

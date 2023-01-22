@@ -2,9 +2,7 @@
 
 #include "../../EngineConstants.h"
 #include "../MemoryUtils.h"
-#include "../../LinkedList/LinkedList.h"
-
-#include <iostream>
+// #include "../../LinkedList/LinkedList.h"
 
 #ifdef max
 #undef max
@@ -14,6 +12,18 @@ namespace Integrian3D::Memory
 {
 	class FreeListAllocator final
 	{
+		template<typename T>
+		struct Node final
+		{
+			Node(const T& data)
+				: Data{ data }
+				, pNext{}
+			{}
+
+			T Data;
+			Node* pNext;
+		};
+
 	public:
 		enum class PlacementPolicy
 		{
@@ -48,90 +58,9 @@ namespace Integrian3D::Memory
 		FreeListAllocator& operator=(const FreeListAllocator& other) noexcept;
 		FreeListAllocator& operator=(FreeListAllocator&& other) noexcept;
 
-		template<typename T>
-		__NODISCARD T* Allocate(const uint64_t n, const uint64_t alignment)
-		{
-			__ASSERT(n > 0 && "Allocation size must be bigger");
+		__NODISCARD void* Allocate(const uint64_t n, const uint64_t alignment);
 
-			const uint64_t allocationSize{ n * sizeof(T) };
-
-			// Search through the free list for a free block that has enough space to allocate our data
-			// padding takes alignment into account
-			uint64_t padding{};
-			FreeHeader* pFreeHeader{};
-			Find(allocationSize, alignment, padding, pFreeHeader);
-
-			const uint64_t totalAllocationSize{ allocationSize + padding };
-
-			if (!pFreeHeader)
-			{
-				Reallocate(totalAllocationSize + sizeof(FreeHeader*));
-
-				return Allocate<T>(n, alignment);
-			}
-
-			const uint64_t rest{ pFreeHeader->Size - totalAllocationSize };
-
-			if (rest > 0)
-			{
-				// We have to split the block into the data block and a free block of size 'rest'
-				FreeHeader* pNewNode{ reinterpret_cast<FreeHeader*>(reinterpret_cast<uint64_t>(pFreeHeader) + totalAllocationSize) };
-				pNewNode->Size = rest;
-
-				m_FreeList.Add(pNewNode);
-			}
-
-			m_FreeList.Erase(pFreeHeader);
-
-			/* Set up data */
-			AllocationHeader* pAllHeader{ reinterpret_cast<AllocationHeader*>(reinterpret_cast<uint64_t>(pFreeHeader) + sizeof(FreeHeader)) };
-			pAllHeader->Size = allocationSize;
-			pAllHeader->Padding = padding;
-
-			m_UsedList.Add(pAllHeader);
-
-			++m_Size;
-
-			return reinterpret_cast<T*>(reinterpret_cast<uint64_t>(pAllHeader) + sizeof(AllocationHeader));
-		}
-
-		void Deallocate(void* p)
-		{
-			if (!p)
-				return;
-
-			AllocationHeader* pAllHeader{ reinterpret_cast<AllocationHeader*>(reinterpret_cast<uint64_t>(p) - sizeof(AllocationHeader)) };
-			FreeHeader* pFreeHeader{ reinterpret_cast<FreeHeader*>(reinterpret_cast<uint64_t>(pAllHeader) - sizeof(FreeHeader)) };
-			pFreeHeader->Size = pAllHeader->Size + pAllHeader->Padding;
-
-			m_UsedList.Erase(pAllHeader);
-
-			--m_Size;
-
-			FreeHeader* pLastBlock{};
-
-			const uint64_t nrOfFreeHeaders{ m_FreeList.Size() };
-			if (nrOfFreeHeaders > 0u)
-				pLastBlock = *m_FreeList.Back();
-
-			if (nrOfFreeHeaders == 0u)
-				m_FreeList.Add(pFreeHeader);
-			else if (reinterpret_cast<uint64_t>(pLastBlock) + pLastBlock->Size == reinterpret_cast<uint64_t>(pFreeHeader))
-				pLastBlock->Size += pFreeHeader->Size;
-			else
-				m_FreeList.Add(pFreeHeader);
-
-			if (pLastBlock)
-			{
-				FreeHeader* pNewLastBlock{ *m_FreeList.Back() };
-
-				if (reinterpret_cast<uint64_t>(pLastBlock) + pLastBlock->Size == reinterpret_cast<uint64_t>(pNewLastBlock))
-				{
-					pLastBlock->Size += pNewLastBlock->Size;
-					m_FreeList.Erase(pNewLastBlock);
-				}
-			}
-		}
+		void Deallocate(void* p);
 
 		template<typename T>
 		constexpr void Destroy(T* p) const
@@ -142,21 +71,9 @@ namespace Integrian3D::Memory
 			p->~T();
 		}
 
-		__NODISCARD void* Get(const uint64_t n) const
-		{
-			if (n >= m_Size)
-				return nullptr;
+		__NODISCARD void* Get(const uint64_t n) const;
 
-			return reinterpret_cast<void*>(reinterpret_cast<uint64_t>(*m_UsedList.At(n)) + sizeof(AllocationHeader));
-		}
-
-		__NODISCARD uint64_t GetAllocationSize(const uint64_t n) const
-		{
-			if (n >= m_Size)
-				return 0u;
-
-			return (*m_UsedList.At(n))->Size;
-		}
+		__NODISCARD uint64_t GetAllocationSize(const uint64_t n) const;
 
 		__NODISCARD constexpr uint64_t Capacity() const
 		{
@@ -180,72 +97,18 @@ namespace Integrian3D::Memory
 		{
 			switch (m_PlacementPolicy)
 			{
-			case PlacementPolicy::FIND_FIRST_FIT:
-				FindFirst(size, alignment, padding, pFreeHeader);
-				break;
-			case PlacementPolicy::FIND_BEST_FIT:
-				FindBest(size, alignment, padding, pFreeHeader);
-				break;
-			}
-		}
-
-		void FindFirst(const uint64_t size, const uint64_t alignment, uint64_t& padding, FreeHeader*& pFreeHeader)
-		{
-			/* [TODO]: Use iterators */
-			for (uint64_t i{}; i < m_FreeList.Size(); ++i)
-			{
-				FreeHeader* pHeader{ *m_FreeList.At(i) };
-
-				if (!pHeader)
-					return;
-
-				padding = AlignForward<FreeHeader, AllocationHeader>(&pHeader, alignment);
-
-				const uint64_t requiredSpace{ size + padding };
-
-				if (pHeader->Size >= requiredSpace + sizeof(FreeHeader*))
-				{
-					pFreeHeader = pHeader;
+				case PlacementPolicy::FIND_FIRST_FIT:
+					FindFirst(size, alignment, padding, pFreeHeader);
 					break;
-				}
+				case PlacementPolicy::FIND_BEST_FIT:
+					FindBest(size, alignment, padding, pFreeHeader);
+					break;
 			}
 		}
 
-		void FindBest(const uint64_t size, const uint64_t alignment, uint64_t& padding, FreeHeader*& pFreeHeader)
-		{
-			/* [TODO]: Use iterators */
-			FreeHeader* pBestFit{};
-			for (uint64_t i{}; i < m_FreeList.Size(); ++i)
-			{
-				FreeHeader* pHeader{ *m_FreeList.At(i) };
+		void FindFirst(const uint64_t size, const uint64_t alignment, uint64_t& padding, FreeHeader*& pFreeHeader);
 
-				if (!pHeader)
-					return;
-
-				padding = AlignForward<FreeHeader, AllocationHeader>(&pHeader, alignment);
-
-				const uint64_t requiredSpace{ size + padding };
-
-				if (pHeader->Size >= requiredSpace + sizeof(FreeHeader*))
-				{
-					if (pHeader->Size == requiredSpace + sizeof(FreeHeader*))
-					{
-						pFreeHeader = pHeader;
-						break;
-					}
-
-					if (pBestFit)
-					{
-						if (pHeader->Size < pBestFit->Size)
-							pBestFit = pHeader;
-					}
-					else
-						pBestFit = pHeader;
-				}
-			}
-
-			pFreeHeader = pBestFit;
-		}
+		void FindBest(const uint64_t size, const uint64_t alignment, uint64_t& padding, FreeHeader*& pFreeHeader);
 
 		__NODISCARD constexpr uint64_t CalculateNewCapacity(const uint64_t min) const
 		{
@@ -268,73 +131,123 @@ namespace Integrian3D::Memory
 			return newCap;
 		}
 
-		void Reallocate(const uint64_t requiredSize)
+		void Reallocate(const uint64_t requiredSize);
+
+	#pragma region Linked_List
+	
+		template<typename T>
+		void Add(Node<T>*& pList, const T& data)
 		{
-			const uint64_t newCap{ CalculateNewCapacity(m_Capacity + requiredSize + m_NodePadding + 1u) };
-			FreeHeader* const pNewStart{ reinterpret_cast<FreeHeader*>(new char[newCap] {}) };
-			pNewStart->Size = newCap;
+			const uint64_t oldSize{ Count(pList) };
+			Node<T>* pNewList{ static_cast<Node<T>*>(malloc(sizeof(Node<T>) * (oldSize + 1))) };
+			pNewList->pNext = nullptr;
+			pNewList->Data = nullptr;
 
-			LinkedList<FreeHeader*> freeList{};
-			LinkedList<AllocationHeader*> usedList{};
-			freeList.Add(pNewStart);
-			uint64_t totalAllocatedMem{};
-
-			if (m_UsedList.Size() > 0u)
+			if (pList != nullptr)
 			{
-				/* loop over every allocated piece of memory and copy it over */
-				for (uint64_t i{}; i < m_UsedList.Size(); ++i)
+				pNewList->Data = __MOVE(pList->Data);
+
+				Node<T>* pPreviousNode{ pNewList };
+
+				for (uint64_t i{ 1 }; i < oldSize; ++i)
 				{
-					/* get currently allocated memory */
-					AllocationHeader* pOldAllHeader{ *m_UsedList.At(i) };
+					Node<T>* pNewNode{ reinterpret_cast<Node<T>*>(reinterpret_cast<uint64_t>(pNewList) + sizeof(Node<T>) * i) };
+					pNewNode->pNext = nullptr;
+					pNewNode->Data = __MOVE(Get(pList, i)->Data);
 
-					/* get our new free header */
-					FreeHeader* pFreeHeader{ reinterpret_cast<FreeHeader*>(reinterpret_cast<uint64_t>(pNewStart) + totalAllocatedMem) };
-
-					/* initialize new allocation header */
-					AllocationHeader* pNewAllHeader{ reinterpret_cast<AllocationHeader*>(reinterpret_cast<uint64_t>(pFreeHeader) + sizeof(FreeHeader)) };
-					pNewAllHeader->Size = pOldAllHeader->Size;
-					pNewAllHeader->Padding = pOldAllHeader->Padding;
-
-					/* copy over data */
-					memcpy
-					(
-						reinterpret_cast<void*>(reinterpret_cast<uint64_t>(pNewAllHeader) + sizeof(AllocationHeader)),
-						reinterpret_cast<void*>(reinterpret_cast<uint64_t>(pOldAllHeader) + sizeof(AllocationHeader)),
-						pOldAllHeader->Size
-					);
-
-					/* make new free header from current free header */
-					const uint64_t totalSize{ pOldAllHeader->Size + pOldAllHeader->Padding };
-					FreeHeader* pNewFreeHeader{ reinterpret_cast<FreeHeader*>(reinterpret_cast<uint64_t>(pFreeHeader) + totalSize) };
-					pNewFreeHeader->Size = totalSize;
-
-					/* keep track of how much memory we've currently copied over */
-					totalAllocatedMem += totalSize;
-
-					freeList.Erase(pFreeHeader);
-					freeList.Add(pNewFreeHeader);
-					usedList.Add(pNewAllHeader);
+					pPreviousNode->pNext = pNewNode;
+					pPreviousNode = pNewNode;
 				}
 
-				/* copium let's assume we have an element remaining, we should tho */
-				/* I'm adding too much memory, because this can't be equal to newCap, especially if memory has been allocated */
+				Node<T>* pNewNode{ reinterpret_cast<Node<T>*>(reinterpret_cast<uint64_t>(pNewList) + sizeof(Node<T>) * oldSize) };
+				pNewNode->pNext = nullptr;
+				pNewNode->Data = data;
 
-				(*freeList.Back())->Size = newCap - totalAllocatedMem;
+				Get(pNewList, Count(pNewList) - 1)->pNext = pNewNode;
+
+				free(pList);
+			}
+			else
+			{
+				pNewList->Data = data;
 			}
 
-			m_FreeList = __MOVE(freeList);
-			m_UsedList = __MOVE(usedList);
-
-			delete[] m_pStart;
-
-			m_pStart = pNewStart;
-			m_Capacity = newCap;
+			pList = pNewList;
 		}
+
+		template<typename T>
+		void Remove(Node<T>*& pList, const T& data)
+		{
+			__ASSERT(pList != nullptr);
+
+			const uint64_t oldSize{ Count(pList) };
+
+			Node<T>* pNewList{ static_cast<Node<T>*>(malloc(sizeof(Node<T>) * (oldSize - 1))) };
+			pNewList->pNext = nullptr;
+			pNewList->Data = nullptr;
+
+			Node<T>* pPreviousNode{};
+
+			for (uint64_t i{}, newListCounter{}; i < oldSize; ++i)
+			{
+				if ((pList + i)->Data == data)
+					continue;
+
+				Node<T>* pNewNode{ reinterpret_cast<Node<T>*>(reinterpret_cast<uint64_t>(pNewList) + sizeof(Node<T>) * newListCounter) };
+				pNewNode->pNext = nullptr;
+				pNewNode->Data = __MOVE(Get(pList, i)->Data);
+
+				if (pPreviousNode)
+					pPreviousNode->pNext = pNewNode;
+
+				pPreviousNode = pNewNode;
+
+				++newListCounter;
+			}
+
+			free(pList);
+			pList = pNewList;
+
+			if (!pPreviousNode)
+				pList = nullptr;
+		}
+
+		template<typename T>
+		__NODISCARD Node<T>* Get(Node<T>* pList, const uint64_t index) const
+		{
+			__ASSERT(pList != nullptr);
+			__ASSERT(index < Count(pList));
+
+			Node<T>* pNode{ pList };
+
+			for (uint64_t i{}; i < index; ++i)
+				pNode = pNode->pNext;
+
+			return pNode;
+		}
+
+		template<typename T>
+		__NODISCARD uint64_t Count(const Node<T>* pList) const
+		{
+			uint64_t count{};
+
+			while (pList)
+			{
+				++count;
+
+				pList = pList->pNext;
+			}
+
+			return count;
+		}
+	#pragma endregion
 
 		void* m_pStart;
 		PlacementPolicy m_PlacementPolicy;
-		LinkedList<FreeHeader*> m_FreeList;
-		LinkedList<AllocationHeader*> m_UsedList;
+		// LinkedList<FreeHeader*> m_FreeList;
+		// LinkedList<AllocationHeader*> m_UsedList;
+		Node<FreeHeader*>* m_FreeList;
+		Node<AllocationHeader*>* m_UsedList;
 		uint64_t m_Size;
 		uint64_t m_Capacity;
 	};

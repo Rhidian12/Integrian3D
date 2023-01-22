@@ -154,7 +154,10 @@ namespace Integrian3D::Memory
 		constexpr explicit Allocator(const T& alloc = T{})
 			: m_Allocator{ alloc }
 			, m_TakenMemoryLocations{}
-		{}
+		{
+			if constexpr (Traits::HasInitialize)
+				m_Allocator.Initialize();
+		}
 		constexpr ~Allocator()
 		{
 			for (IHandle* const pHandle : m_Handles)
@@ -213,12 +216,12 @@ namespace Integrian3D::Memory
 		template<typename U>
 		__NODISCARD constexpr Handle<U>& Allocate(const uint64_t nrOfElements, const uint64_t align = alignof(U))
 		{
-			static_assert(Traits::template CanAllocate<U>, "T::Allocate() has not been defined");
+			static_assert(Traits::CanAllocate, "T::Allocate() has not been defined");
 			static_assert(Traits::HasGet, "T::Get() has not been defined");
 
 #pragma warning ( push )
 #pragma warning ( disable : 4834 ) // warning C4834: discarding return value of function with 'nodiscard' attribute
-			m_Allocator.Allocate<U>(nrOfElements, align);
+			m_Allocator.Allocate(nrOfElements, align);
 #pragma warning ( pop )
 
 			uint64_t memLoc{};
