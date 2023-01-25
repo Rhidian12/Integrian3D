@@ -108,6 +108,9 @@
     <ClCompile Include="Components\TestRotateComponent\TestRotateComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Memory\LowLevelLL\LowLevelLL.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window\Window.h">
@@ -273,6 +276,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Macros\Macros.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory\LowLevelLL\LowLevelLL.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

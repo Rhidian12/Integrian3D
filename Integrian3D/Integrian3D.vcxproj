@@ -192,6 +192,7 @@
     <ClCompile Include="Core\Core.cpp" />
     <ClCompile Include="IO\ASCII\FileReader.cpp" />
     <ClCompile Include="LinkedList\LinkedList.cpp" />
+    <ClCompile Include="Memory\LowLevelLL\LowLevelLL.cpp" />
     <ClCompile Include="Memory\MemoryTracker\MemoryTracker.cpp" />
     <ClCompile Include="Memory\FreeListAllocator\FreeListAllocator.cpp" />
     <ClCompile Include="InputManager\InputManager.cpp" />
@@ -236,6 +237,7 @@
     <ClInclude Include="IO\SeekMode.h" />
     <ClInclude Include="IO\Serializer\Serializer.h" />
     <ClInclude Include="LinkedList\LinkedList.h" />
+    <ClInclude Include="Memory\LowLevelLL\LowLevelLL.h" />
     <ClInclude Include="Macros\Macros.h" />
     <ClInclude Include="Memory\AllocatorTraits\AllocatorTraits.h" />
     <ClInclude Include="Memory\Allocator\Allocator.h" />
