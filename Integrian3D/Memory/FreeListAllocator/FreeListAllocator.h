@@ -182,6 +182,13 @@ namespace Integrian3D::Memory
 
 			const uint64_t oldSize{ Count(pList) };
 
+			if (oldSize == 1)
+			{
+				free(pList);
+				pList = nullptr;
+				return;
+			}
+
 			Node<T>* pNewList{ static_cast<Node<T>*>(malloc(sizeof(Node<T>) * (oldSize - 1))) };
 			pNewList->pNext = nullptr;
 			pNewList->Data = nullptr;
@@ -207,9 +214,6 @@ namespace Integrian3D::Memory
 
 			free(pList);
 			pList = pNewList;
-
-			if (!pPreviousNode)
-				pList = nullptr;
 		}
 
 		template<typename T>

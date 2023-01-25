@@ -221,7 +221,7 @@ namespace Integrian3D::Memory
 
 #pragma warning ( push )
 #pragma warning ( disable : 4834 ) // warning C4834: discarding return value of function with 'nodiscard' attribute
-			m_Allocator.Allocate(nrOfElements, align);
+			m_Allocator.Allocate(nrOfElements * sizeof(U), align);
 #pragma warning ( pop )
 
 			uint64_t memLoc{};

@@ -113,39 +113,49 @@ TEST_CASE("Testing the Allocator Interface")
 	auto& a = allocInterface.Allocate<int>(1);
 	*a = 5;
 	REQUIRE(*a == 5);
+	REQUIRE(allocInterface.GetAllocator().Size() == 1);
+	REQUIRE(allocInterface.GetAllocator().Capacity() == 36);
 
 	auto& b = allocInterface.Allocate<int>(1);
 	*b = 15;
 	REQUIRE(*a == 5);
 	REQUIRE(*b == 15);
+	REQUIRE(allocInterface.GetAllocator().Size() == 2);
+	REQUIRE(allocInterface.GetAllocator().Capacity() == 105);
 
 	auto& c = allocInterface.Allocate<int>(50);
 	REQUIRE(*a == 5);
 	REQUIRE(*b == 15);
+	REQUIRE(allocInterface.GetAllocator().Size() == 3);
+
+	allocInterface.Deallocate(a);
+	REQUIRE(*b == 15);
+	REQUIRE(c.IsValid());
+	REQUIRE(allocInterface.GetAllocator().Size() == 2);
 
 	auto& d = allocInterface.Allocate<int>(1);
 	*d = 25;
-	REQUIRE(*a == 5);
 	REQUIRE(*b == 15);
 	REQUIRE(*d == 25);
+	REQUIRE(allocInterface.GetAllocator().Size() == 3);
 
 	allocInterface.Deallocate(c);
-	REQUIRE(*a == 5);
 	REQUIRE(*b == 15);
 	REQUIRE(*d == 25);
+	REQUIRE(allocInterface.GetAllocator().Size() == 2);
 
 	auto& e = allocInterface.Allocate<double>(1);
 	*e = 36.0;
-	REQUIRE(*a == 5);
 	REQUIRE(*b == 15);
 	REQUIRE(*d == 25);
 	REQUIRE(*e == 36.0);
+	REQUIRE(allocInterface.GetAllocator().Size() == 3);
 
 	auto& f = allocInterface.Allocate<int>(50);
-	REQUIRE(*a == 5);
 	REQUIRE(*b == 15);
 	REQUIRE(*d == 25);
 	REQUIRE(*e == 36.0);
+	REQUIRE(allocInterface.GetAllocator().Size() == 4);
 
 	int* pStart{ &f };
 
@@ -157,11 +167,8 @@ TEST_CASE("Testing the Allocator Interface")
 	for (int i{}; i < 50; ++i)
 		REQUIRE(pStart[i] == i);
 
-#pragma warning ( push )
-#pragma warning ( disable : 4189 ) /* warning C4189: 'g': local variable is initialized but not referenced */
-	auto& g = allocInterface.Allocate<double>(10);
-#pragma warning ( pop )
 	allocInterface.Deallocate(f);
+	REQUIRE(allocInterface.GetAllocator().Size() == 3);
 }
 #endif // ALLOCATOR_TESTS
 
@@ -577,7 +584,7 @@ TEST_CASE("Testing Basic Array of integers")
 		REQUIRE(newArr.Size() == 5);
 
 		newArr = arr.FindAll(-1);
-
+		
 		REQUIRE(newArr.Size() == 0);
 	}
 

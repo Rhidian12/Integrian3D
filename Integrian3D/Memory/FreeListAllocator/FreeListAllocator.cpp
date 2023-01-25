@@ -85,6 +85,12 @@ namespace Integrian3D::Memory
 			// delete[] m_pStart;
 			free(m_pStart);
 			m_pStart = nullptr;
+
+			free(m_FreeList);
+			m_FreeList = nullptr;
+
+			free(m_UsedList);
+			m_UsedList = nullptr;
 		}
 
 		m_PlacementPolicy = other.m_PlacementPolicy;
@@ -111,6 +117,12 @@ namespace Integrian3D::Memory
 			// delete[] m_pStart;
 			free(m_pStart);
 			m_pStart = nullptr;
+
+			free(m_FreeList);
+			m_FreeList = nullptr;
+
+			free(m_UsedList);
+			m_UsedList = nullptr;
 		}
 
 		m_pStart = __MOVE(other.m_pStart);
@@ -353,7 +365,8 @@ namespace Integrian3D::Memory
 				/* make new free header from current free header */
 				const uint64_t totalSize{ pOldAllHeader->Size + pOldAllHeader->Padding };
 				FreeHeader* pNewFreeHeader{ reinterpret_cast<FreeHeader*>(reinterpret_cast<uint64_t>(pFreeHeader) + totalSize) };
-				pNewFreeHeader->Size = totalSize;
+				pNewFreeHeader->Size = newCap - totalAllocatedMem - totalSize;
+				// pNewFreeHeader->Size = totalSize;
 
 				/* keep track of how much memory we've currently copied over */
 				totalAllocatedMem += totalSize;
@@ -369,11 +382,14 @@ namespace Integrian3D::Memory
 			/* copium let's assume we have an element remaining, we should tho */
 			/* I'm adding too much memory, because this can't be equal to newCap, especially if memory has been allocated */
 
-			Get(freeList, Count(freeList) - 1)->Data->Size = newCap - totalAllocatedMem;
+			// Get(freeList, Count(freeList) - 1)->Data->Size = newCap - totalAllocatedMem;
 			// (*freeList.Back())->Size = newCap - totalAllocatedMem;
 		}
 
 		__ASSERT(Count(usedList) == Count(m_UsedList));
+
+		free(m_FreeList);
+		free(m_UsedList);
 
 		m_FreeList = __MOVE(freeList);
 		m_UsedList = __MOVE(usedList);
