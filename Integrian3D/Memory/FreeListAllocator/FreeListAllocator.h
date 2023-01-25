@@ -62,6 +62,15 @@ namespace Integrian3D::Memory
 
 		void Deallocate(void* p);
 
+		template<typename T, typename ... Ts>
+		constexpr T* Construct(T* p, Ts&&... args)
+		{
+			if (!p)
+				return nullptr;
+
+			return new (p) T{ __FORWARD(args)... };
+		}
+
 		template<typename T>
 		constexpr void Destroy(T* p) const
 		{
