@@ -15,7 +15,6 @@ namespace Integrian3D
 	{
 		using UnaryPred = std::function<bool(const T&)>;
 		using BinaryPred = std::function<bool(const T&, const T&)>;
-		using Handle = Memory::Allocator<Alloc>::template Handle<T>;
 
 	public:
 		using It = Iterator<T, IteratorTag::RandomAccessIt>;
@@ -27,38 +26,30 @@ namespace Integrian3D
 			, m_pTail{}
 			, m_pCurrentEnd{}
 			, m_Allocator{ Memory::Allocator<Alloc>{ alloc } }
-			, m_pHandle{}
 		{}
 		constexpr Array(const Size_P size, const Alloc& alloc = Alloc{})
 			: m_pHead{}
 			, m_pTail{}
 			, m_pCurrentEnd{}
 			, m_Allocator{ Memory::Allocator<Alloc>{ alloc } }
-			, m_pHandle{}
 		{
 			for (uint64_t i{}; i < size._Size; ++i)
-			{
 				EmplaceBack(T{});
-			}
 		}
 		constexpr Array(const Size_P size, const T& val, const Alloc& alloc = Alloc{})
 			: m_pHead{}
 			, m_pTail{}
 			, m_pCurrentEnd{}
 			, m_Allocator{ Memory::Allocator<Alloc>{ alloc } }
-			, m_pHandle{}
 		{
 			for (uint64_t i{}; i < size._Size; ++i)
-			{
 				EmplaceBack(val);
-			}
 		}
 		constexpr Array(const Capacity_P cap, const Alloc& alloc = Alloc{})
 			: m_pHead{}
 			, m_pTail{}
 			, m_pCurrentEnd{}
 			, m_Allocator{ Memory::Allocator<Alloc>{ alloc } }
-			, m_pHandle{}
 		{
 			Reserve(cap._Capacity);
 		}
@@ -67,31 +58,24 @@ namespace Integrian3D
 			, m_pTail{}
 			, m_pCurrentEnd{}
 			, m_Allocator{ Memory::Allocator<Alloc>{ alloc } }
-			, m_pHandle{}
 		{
 			for (const T& elem : init)
-			{
 				EmplaceBack(elem);
-			}
 		}
 		constexpr Array(It beg, It end, const Alloc& alloc = Alloc{})
 			: m_pHead{}
 			, m_pTail{}
 			, m_pCurrentEnd{}
 			, m_Allocator{ Memory::Allocator<Alloc>{ alloc } }
-			, m_pHandle{}
 		{
 			for (; beg != end; ++beg)
-			{
 				EmplaceBack(*beg);
-			}
 		}
 
 		constexpr ~Array()
 		{
 			DeleteData(m_pHead, m_pCurrentEnd);
-			Release(m_pHandle);
-			m_pHandle = nullptr;
+			Release(m_pHead);
 		}
 #pragma endregion
 
@@ -101,47 +85,31 @@ namespace Integrian3D
 			, m_pTail{}
 			, m_pCurrentEnd{}
 			, m_Allocator{ other.m_Allocator }
-			, m_pHandle{}
 		{
 			const uint64_t cap{ other.Capacity() };
 
 			if (cap > 0u)
 			{
-				m_pHandle = std::addressof(m_Allocator.Allocate<T>(cap));
-
-				m_pHead = &(*m_pHandle);
+				m_pHead = m_Allocator.Allocate<T>(cap);
 				m_pTail = m_pHead + cap;
 
+				/* [TODO]: Use memcpy */
 				const uint64_t size{ other.Size() };
 				for (uint64_t i{}; i < size; ++i)
-				{
 					new (m_pHead + i) T{ *(other.m_pHead + i) }; // dont allow moving 
-				}
 
 				m_pCurrentEnd = m_pHead + size;
 			}
 		}
 		constexpr Array(Array&& other) noexcept
-			: m_pHead{}
-			, m_pTail{}
-			, m_pCurrentEnd{}
+			: m_pHead{ __MOVE(other.m_pHead) }
+			, m_pTail{ __MOVE(other.m_pTail) }
+			, m_pCurrentEnd{ __MOVE(other.m_pCurrentEnd) }
 			, m_Allocator{ __MOVE(other.m_Allocator) }
-			, m_pHandle{}
 		{
-			if (other.m_pHandle)
-				m_pHandle = static_cast<Handle*>(m_Allocator.GetHandle(other.m_pHandle->GetMemoryLocation()));
-
-			if (m_pHandle)
-			{
-				m_pHead = &(*m_pHandle);
-				m_pTail = m_pHead + other.Capacity();
-				m_pCurrentEnd = m_pHead + other.Size();
-			}
-
 			other.m_pHead = nullptr;
 			other.m_pTail = nullptr;
 			other.m_pCurrentEnd = nullptr;
-			other.m_pHandle = nullptr;
 		}
 
 		constexpr Array& operator=(const Array& other) noexcept
@@ -149,28 +117,24 @@ namespace Integrian3D
 			if (m_pHead)
 			{
 				DeleteData(m_pHead, m_pCurrentEnd);
-				Release(m_pHandle);
+				Release(m_pHead);
 			}
 
 			m_Allocator = other.m_Allocator;
 			m_pHead = nullptr;
 			m_pTail = nullptr;
 			m_pCurrentEnd = nullptr;
-			m_pHandle = nullptr;
 
 			const uint64_t cap{ other.Capacity() };
 			if (cap > 0u)
 			{
-				m_pHandle = std::addressof(m_Allocator.Allocate<T>(cap));
-
-				m_pHead = &(*m_pHandle);
+				m_pHead = m_Allocator.Allocate<T>(cap);
 				m_pTail = m_pHead + cap;
 
+				/* [TODO]: Use memcpy */
 				const uint64_t size{ other.Size() };
 				for (uint64_t i{}; i < size; ++i)
-				{
 					new (m_pHead + i) T{ *(other.m_pHead + i) }; // dont allow moving 
-				}
 
 				m_pCurrentEnd = m_pHead + size;
 			}
@@ -182,29 +146,17 @@ namespace Integrian3D
 			if (m_pHead)
 			{
 				DeleteData(m_pHead, m_pCurrentEnd);
-				Release(m_pHandle);
+				Release(m_pHead);
 			}
 
 			m_Allocator = __MOVE(other.m_Allocator);
-			m_pHead = nullptr;
-			m_pTail = nullptr;
-			m_pCurrentEnd = nullptr;
-			m_pHandle = nullptr;
-
-			if (other.m_pHandle)
-				m_pHandle = static_cast<Handle*>(m_Allocator.GetHandle(other.m_pHandle->GetMemoryLocation()));
-
-			if (m_pHandle)
-			{
-				m_pHead = &(*m_pHandle);
-				m_pTail = m_pHead + other.Capacity();
-				m_pCurrentEnd = m_pHead + other.Size();
-			}
+			m_pHead = __MOVE(other.m_pHead);
+			m_pTail = __MOVE(other.m_pTail);
+			m_pCurrentEnd = __MOVE(other.m_pCurrentEnd);
 
 			other.m_pHead = nullptr;
 			other.m_pTail = nullptr;
 			other.m_pCurrentEnd = nullptr;
-			other.m_pHandle = nullptr;
 
 			return *this;
 		}
@@ -232,23 +184,17 @@ namespace Integrian3D
 		constexpr void AddRange(std::initializer_list<T> elems)
 		{
 			for (const T& elem : elems)
-			{
 				EmplaceBack(elem);
-			}
 		}
 		constexpr void AddRange(It beg, const It end)
 		{
 			for (; beg != end; ++beg)
-			{
 				EmplaceBack(*beg);
-			}
 		}
 		constexpr void AddRange(CIt beg, const CIt end)
 		{
 			for (; beg != end; ++beg)
-			{
 				EmplaceBack(*beg);
-			}
 		}
 		constexpr void AddRange(T* pArr, const uint64_t n)
 		{
@@ -295,12 +241,8 @@ namespace Integrian3D
 		{
 			const uint64_t size{ Size() };
 			for (uint64_t i{}; i < size; ++i)
-			{
 				if (*(m_pHead + i) == val)
-				{
 					return EraseByIndex(i);
-				}
-			}
 
 			return end();
 		}
@@ -309,9 +251,7 @@ namespace Integrian3D
 			It it{ Find(pred) };
 
 			if (it != end())
-			{
 				return Erase(*it);
-			}
 
 			return end();
 		}
@@ -320,9 +260,7 @@ namespace Integrian3D
 			It it{ Find(__MOVE(pred)) };
 
 			if (it != end())
-			{
 				return Erase(*it);
-			}
 
 			return end();
 		}
@@ -359,14 +297,10 @@ namespace Integrian3D
 			__ASSERT(beg != end() && "Array::EraseRange() > Cannot iterator past the end");
 
 			if (endIt >= end())
-			{
 				endIt = It{ m_pCurrentEnd - 1 };
-			}
 
 			for (; beg <= endIt; --endIt)
-			{
 				beg = Erase(beg);
-			}
 		}
 
 		constexpr void Insert(const uint64_t index, const T& val)
@@ -381,9 +315,7 @@ namespace Integrian3D
 		constexpr void Pop()
 		{
 			if (Size() == 0)
-			{
 				return;
-			}
 
 			m_Allocator.Destroy(--m_pCurrentEnd);
 		}
@@ -391,9 +323,7 @@ namespace Integrian3D
 		constexpr void PopFront()
 		{
 			if (Size() == 0)
-			{
 				return;
-			}
 
 			m_Allocator.Destroy(m_pHead);
 
@@ -412,9 +342,7 @@ namespace Integrian3D
 		{
 			/* if we point past our allocated memory we have an issue */
 			if (!m_pCurrentEnd || m_pCurrentEnd >= m_pTail)
-			{
 				Reallocate();
-			}
 
 			return *(new (m_pCurrentEnd++) T{ __FORWARD(args)... });
 		}
@@ -427,9 +355,7 @@ namespace Integrian3D
 			const uint64_t oldSize{ Size() };
 
 			if (oldSize + 1 > Capacity())
-			{
 				Reallocate();
-			}
 
 			if (index == 0)
 			{
@@ -451,9 +377,7 @@ namespace Integrian3D
 		{
 			/* if we point past our allocated memory we have an issue */
 			if (!m_pCurrentEnd || m_pCurrentEnd >= m_pTail)
-			{
 				Reallocate();
-			}
 
 			MoveRangeForward(m_pHead, m_pCurrentEnd++, m_pHead + 1);
 
@@ -487,17 +411,11 @@ namespace Integrian3D
 			const uint64_t size{ Size() };
 
 			if (size != other.Size())
-			{
 				return false;
-			}
 
 			for (uint64_t i{}; i < size; ++i)
-			{
 				if (*(m_pHead + i) != *(other.m_pHead + i))
-				{
 					return false;
-				}
-			}
 
 			return true;
 		}
@@ -512,12 +430,8 @@ namespace Integrian3D
 		constexpr void Reserve(const uint64_t newCap)
 		{
 			if (newCap > Capacity())
-			{
 				if (newCap < MaxSize())
-				{
 					ReallocateExactly(newCap);
-				}
-			}
 		}
 
 		constexpr void Resize(const uint64_t newSize)
@@ -539,9 +453,7 @@ namespace Integrian3D
 				const uint64_t diff{ newSize - oldSize };
 
 				for (uint64_t i{}; i < diff; ++i)
-				{
 					EmplaceBack(__FORWARD(val));
-				}
 
 				return;
 			}
@@ -551,9 +463,7 @@ namespace Integrian3D
 				const uint64_t diff{ oldSize - newSize };
 
 				for (uint64_t i{}; i < diff; ++i)
-				{
 					Pop();
-				}
 
 				return;
 			}
@@ -578,9 +488,7 @@ namespace Integrian3D
 				const T* const elem{ m_pHead + i };
 
 				if (pred(*elem))
-				{
 					arr.Add(*elem);
-				}
 			}
 
 			return arr;
@@ -596,9 +504,7 @@ namespace Integrian3D
 				const T* const elem{ m_pHead + i };
 
 				if (pred(*elem))
-				{
 					arr.Add(*elem);
-				}
 			}
 
 			return arr;
@@ -703,12 +609,8 @@ namespace Integrian3D
 		{
 			const uint64_t size{ Size() };
 			for (uint64_t i{}; i < size; ++i)
-			{
 				if (*(m_pHead + i) == val)
-				{
 					return It{ m_pHead + i };
-				}
-			}
 
 			return It{ m_pCurrentEnd };
 		}
@@ -716,12 +618,8 @@ namespace Integrian3D
 		{
 			const uint64_t size{ Size() };
 			for (uint64_t i{}; i < size; ++i)
-			{
 				if (*(m_pHead + i) == val)
-				{
 					return CIt{ m_pHead + i };
-				}
-			}
 
 			return CIt{ m_pCurrentEnd };
 		}
@@ -730,12 +628,8 @@ namespace Integrian3D
 		{
 			const uint64_t size{ Size() };
 			for (uint64_t i{}; i < size; ++i)
-			{
 				if (pred(*(m_pHead + i)))
-				{
 					return It{ m_pHead + i };
-				}
-			}
 
 			return It{ m_pCurrentEnd };
 		}
@@ -743,39 +637,8 @@ namespace Integrian3D
 		{
 			const uint64_t size{ Size() };
 			for (uint64_t i{}; i < size; ++i)
-			{
 				if (pred(*(m_pHead + i)))
-				{
 					return CIt{ m_pHead + i };
-				}
-			}
-
-			return CIt{ m_pCurrentEnd };
-		}
-
-		constexpr It Find(UnaryPred&& pred)
-		{
-			const uint64_t size{ Size() };
-			for (uint64_t i{}; i < size; ++i)
-			{
-				if (pred(*(m_pHead + i)))
-				{
-					return It{ m_pHead + i };
-				}
-			}
-
-			return It{ m_pCurrentEnd };
-		}
-		constexpr CIt Find(UnaryPred&& pred) const
-		{
-			const uint64_t size{ Size() };
-			for (uint64_t i{}; i < size; ++i)
-			{
-				if (pred(*(m_pHead + i)))
-				{
-					return CIt{ m_pHead + i };
-				}
-			}
 
 			return CIt{ m_pCurrentEnd };
 		}
@@ -786,12 +649,8 @@ namespace Integrian3D
 
 			const uint64_t size{ Size() };
 			for (uint64_t i{}; i < size; ++i)
-			{
 				if (*(m_pHead + i) == val)
-				{
 					arr.EmplaceBack(*(m_pHead + i));
-				}
-			}
 
 			return arr;
 		}
@@ -801,12 +660,8 @@ namespace Integrian3D
 
 			const uint64_t size{ Size() };
 			for (uint64_t i{}; i < size; ++i)
-			{
 				if (pred(*(m_pHead + i)))
-				{
 					arr.EmplaceBack(*(m_pHead + i));
-				}
-			}
 
 			return arr;
 		}
@@ -816,12 +671,8 @@ namespace Integrian3D
 
 			const uint64_t size{ Size() };
 			for (uint64_t i{}; i < size; ++i)
-			{
 				if (pred(*(m_pHead + i)))
-				{
 					arr.EmplaceBack(*(m_pHead + i));
-				}
-			}
 
 			return arr;
 		}
@@ -845,13 +696,13 @@ namespace Integrian3D
 			const uint64_t oldSize{ Size() };
 			const uint64_t newCap{ CalculateNewCapacity(oldSize + 1) };
 
-			Handle* pNewHandle{ std::addressof(m_Allocator.Allocate<T>(newCap)) };
+			T* pNewHead{ m_Allocator.Allocate<T>(newCap) };
 
-			T* pOldHead{ m_pHandle ? &(*m_pHandle) : nullptr };
-			T* pOldTail{ pOldHead + oldSize };
+			T* pOldHead{ m_pHead };
+			T* pOldTail{ m_pTail };
 
-			m_pHead = &(*pNewHandle);
-			m_pTail = m_pHead + newCap;
+			m_pHead = pNewHead;
+			m_pTail = pNewHead + newCap;
 
 			for (uint64_t i{}; i < oldSize; ++i)
 			{
@@ -868,21 +719,19 @@ namespace Integrian3D
 			m_pCurrentEnd = m_pHead + oldSize;
 
 			DeleteData(pOldHead, pOldTail);
-			Release(m_pHandle);
-
-			m_pHandle = __MOVE(pNewHandle);
+			Release(pOldHead);
 		}
 		constexpr void ReallocateExactly(const uint64_t newCap)
 		{
 			const uint64_t oldSize{ Size() };
 
-			Handle* pNewHandle{ std::addressof(m_Allocator.Allocate<T>(newCap)) };
+			T* pNewHead{ m_Allocator.Allocate<T>(newCap) };
 
 			T* pOldHead{ m_pHead };
 			T* pOldTail{ m_pTail };
 
-			m_pHead = &(*pNewHandle);
-			m_pTail = m_pHead + newCap;
+			m_pHead = pNewHead;
+			m_pTail = pNewHead + newCap;
 
 			for (uint64_t i{}; i < oldSize; ++i)
 			{
@@ -899,17 +748,15 @@ namespace Integrian3D
 			m_pCurrentEnd = m_pHead + oldSize;
 
 			DeleteData(pOldHead, pOldTail);
-			Release(m_pHandle);
-
-			m_pHandle = pNewHandle;
+			Release(pOldHead);
 		}
 
-		constexpr void Release(Handle*& pHandle)
+		constexpr void Release(T*& pData)
 		{
-			if (pHandle)
+			if (pData)
 			{
-				m_Allocator.Deallocate(*pHandle);
-				pHandle = nullptr;
+				m_Allocator.Deallocate(pData);
+				pData = nullptr;
 			}
 		}
 
@@ -1047,7 +894,6 @@ namespace Integrian3D
 		T* m_pTail;
 		T* m_pCurrentEnd /* points PAST the last element */;
 		Memory::Allocator<Alloc> m_Allocator;
-		Handle* m_pHandle;
 	};
 
 	template<typename T>

@@ -13,6 +13,10 @@ namespace Integrian3D::Memory
 				: Data{ data }
 				, pNext{}
 			{}
+			Node(T&& data)
+				: Data{ __MOVE(data) }
+				, pNext{}
+			{}
 
 			T Data;
 			Node* pNext;
@@ -107,7 +111,24 @@ namespace Integrian3D::Memory
 			Node* const pNewNode{ reinterpret_cast<Node*>(malloc(sizeof(Node))) };
 			new (pNewNode) Node{ data };
 
-			pLast->pNext = pNewNode;
+			if (pLast)
+				pLast->pNext = pNewNode;
+			else
+				m_pHead = pNewNode;
+
+			return pNewNode->Data;
+		}
+		T& Add(T&& data)
+		{
+			Node* const pLast{ GetLastElement() };
+
+			Node* const pNewNode{ reinterpret_cast<Node*>(malloc(sizeof(Node))) };
+			new (pNewNode) Node{ __MOVE(data) };
+
+			if (pLast)
+				pLast->pNext = pNewNode;
+			else
+				m_pHead = pNewNode;
 
 			return pNewNode->Data;
 		}
@@ -165,6 +186,26 @@ namespace Integrian3D::Memory
 			return count;
 		}
 
+		__NODISCARD bool Contains(const T& data) const
+		{
+			Node* pPrevious{};
+			Node* pCurrent{ m_pHead };
+			const uint64_t size{ Count() };
+			for (uint64_t i{}; i < size; ++i)
+			{
+				if (!pCurrent)
+					return false;
+
+				if (pCurrent->Data == data)
+					return true;
+
+				pPrevious = pCurrent;
+				pCurrent = pCurrent->pNext;
+			}
+
+			return false;
+		}
+
 #pragma endregion
 
 #pragma region LL_Manipulation
@@ -182,6 +223,7 @@ namespace Integrian3D::Memory
 
 				pNext = pCurrent->pNext;
 
+				pCurrent->Data.~T();
 				free(pCurrent);
 				pCurrent = nullptr;
 
@@ -238,8 +280,10 @@ namespace Integrian3D::Memory
 		{
 			Node* pCurrent{ m_pHead };
 
-			const uint64_t size{ Count() };
-			for (uint64_t i{}; i < size; ++i)
+			if (!pCurrent)
+				return nullptr;
+
+			while (pCurrent->pNext)
 				pCurrent = pCurrent->pNext;
 
 			return pCurrent;

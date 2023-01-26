@@ -138,6 +138,9 @@ TEST_CASE("Testing the FreeListAllocator")
 	alloc.Destroy(pFoo);
 	alloc.Deallocate(pFoo);
 
+	REQUIRE(alloc.Capacity() > 16);
+	REQUIRE(alloc.Size() == 0);
+
 	// std::vector<Foo*> foos{};
 	Foo* foos[6]{};
 
@@ -165,30 +168,27 @@ TEST_CASE("Testing the Allocator Interface")
 	FreeListAllocator alloc{ 36 };
 	Allocator<FreeListAllocator> allocInterface{ std::move(alloc) };
 
-	auto& a = allocInterface.Allocate<int>(1);
+	auto a = allocInterface.Allocate<int>(1);
 	*a = 5;
 	REQUIRE(*a == 5);
 	REQUIRE(allocInterface.GetAllocator().Size() == 1);
-	REQUIRE(allocInterface.GetAllocator().Capacity() == 36);
 
-	auto& b = allocInterface.Allocate<int>(1);
+	auto b = allocInterface.Allocate<int>(1);
 	*b = 15;
 	REQUIRE(*a == 5);
 	REQUIRE(*b == 15);
 	REQUIRE(allocInterface.GetAllocator().Size() == 2);
-	REQUIRE(allocInterface.GetAllocator().Capacity() == 105);
 
-	auto& c = allocInterface.Allocate<int>(50);
+	auto c = allocInterface.Allocate<int>(50);
 	REQUIRE(*a == 5);
 	REQUIRE(*b == 15);
 	REQUIRE(allocInterface.GetAllocator().Size() == 3);
 
 	allocInterface.Deallocate(a);
 	REQUIRE(*b == 15);
-	REQUIRE(c.IsValid());
 	REQUIRE(allocInterface.GetAllocator().Size() == 2);
 
-	auto& d = allocInterface.Allocate<int>(1);
+	auto d = allocInterface.Allocate<int>(1);
 	*d = 25;
 	REQUIRE(*b == 15);
 	REQUIRE(*d == 25);
@@ -199,28 +199,24 @@ TEST_CASE("Testing the Allocator Interface")
 	REQUIRE(*d == 25);
 	REQUIRE(allocInterface.GetAllocator().Size() == 2);
 
-	auto& e = allocInterface.Allocate<double>(1);
+	auto e = allocInterface.Allocate<double>(1);
 	*e = 36.0;
 	REQUIRE(*b == 15);
 	REQUIRE(*d == 25);
 	REQUIRE(*e == 36.0);
 	REQUIRE(allocInterface.GetAllocator().Size() == 3);
 
-	auto& f = allocInterface.Allocate<int>(50);
+	auto f = allocInterface.Allocate<int>(50);
 	REQUIRE(*b == 15);
 	REQUIRE(*d == 25);
 	REQUIRE(*e == 36.0);
 	REQUIRE(allocInterface.GetAllocator().Size() == 4);
 
-	int* pStart{ &f };
-
-	REQUIRE(&f == pStart);
+	for (int i{}; i < 50; ++i)
+		*(f + i) = i;
 
 	for (int i{}; i < 50; ++i)
-		*(pStart + i) = i;
-
-	for (int i{}; i < 50; ++i)
-		REQUIRE(pStart[i] == i);
+		REQUIRE(f[i] == i);
 
 	allocInterface.Deallocate(f);
 	REQUIRE(allocInterface.GetAllocator().Size() == 3);
