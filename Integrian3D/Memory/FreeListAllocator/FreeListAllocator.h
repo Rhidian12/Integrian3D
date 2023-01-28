@@ -54,6 +54,8 @@ namespace Integrian3D::Memory
 			void RemoveUsedHeader(AllocationHeader* pAllHeader);
 			__NODISCARD bool HasAllocationHeader(AllocationHeader* pAllHeader) const;
 
+			void MergeFreeHeaders();
+
 			__NODISCARD FreeHeader* FindFirstFreeHeader(const uint64_t size, const uint64_t alignment, uint64_t& padding) const;
 			__NODISCARD FreeHeader* FindBestFreeHeader(const uint64_t size, const uint64_t alignment, uint64_t& padding) const;
 

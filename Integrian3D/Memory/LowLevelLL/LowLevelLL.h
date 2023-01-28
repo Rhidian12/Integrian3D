@@ -154,6 +154,7 @@ namespace Integrian3D::Memory
 					Node* pNext{ pCurrent->pNext };
 
 					/* delete old node */
+					pCurrent->Data.~T();
 					free(pCurrent);
 					pCurrent = nullptr;
 

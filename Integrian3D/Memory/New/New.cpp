@@ -43,22 +43,22 @@ void* operator new[](size_t n)
 	return pData;
 }
 
-void operator delete(void* p, size_t n)
+void operator delete(void* p)
 {
 	using namespace Integrian3D;
 
-	Memory::MemoryTracker::StopTracking(n);
+	// Memory::MemoryTracker::StopTracking(n);
 
 	GetAllocator().Deallocate(p);
 
 	// free(p);
 }
 
-void operator delete[](void* p, size_t n)
+void operator delete[](void* p)
 {
 	using namespace Integrian3D;
 
-	Memory::MemoryTracker::StopTracking(n);
+	// Memory::MemoryTracker::StopTracking(n);
 
 	GetAllocator().Deallocate(p);
 

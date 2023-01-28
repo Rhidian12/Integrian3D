@@ -23,6 +23,7 @@ namespace Integrian3D::Memory
 		m_FreeHeaders.Clear();
 		m_UsedHeaders.Clear();
 		free(m_pStart);
+		m_pStart = nullptr;
 	}
 
 	FreeListAllocator::Page::Page(const Page& other) noexcept
@@ -124,6 +125,35 @@ namespace Integrian3D::Memory
 	bool FreeListAllocator::Page::HasAllocationHeader(AllocationHeader* pAllHeader) const
 	{
 		return m_UsedHeaders.Contains(pAllHeader);
+	}
+
+	void FreeListAllocator::Page::MergeFreeHeaders()
+	{
+		static int count{};
+
+		for (uint64_t i{}; i < m_FreeHeaders.Count(); ++i)
+		{
+			/* Check if this free header and any other can be easily merged */
+			/* i.e. are they adjacent? */
+			FreeHeader* const pFreeHeader{ m_FreeHeaders.Get(i) };
+
+			for (uint64_t j{}; j < m_FreeHeaders.Count(); ++j)
+			{
+				if (i == j)
+					continue;
+
+				FreeHeader* const pNextHeader{ m_FreeHeaders.Get(j) };
+
+				if (reinterpret_cast<uint64_t>(pFreeHeader) + pFreeHeader->Size == reinterpret_cast<uint64_t>(pNextHeader))
+				{
+					pFreeHeader->Size += pNextHeader->Size;
+
+					++count;
+
+					m_FreeHeaders.Remove(pNextHeader);
+				}
+			}
+		}
 	}
 
 	FreeListAllocator::FreeHeader* FreeListAllocator::Page::FindFirstFreeHeader(const uint64_t size, const uint64_t alignment, uint64_t& padding) const
@@ -337,6 +367,8 @@ namespace Integrian3D::Memory
 				pPage->RemoveFreeHeader(pNewLastBlock);
 			}
 		}
+
+		pPage->MergeFreeHeaders();
 	}
 
 	void* FreeListAllocator::Get(const uint64_t) const
