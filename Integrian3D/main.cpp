@@ -1,5 +1,5 @@
-// #define ENGINE
-#define TESTS
+#define ENGINE
+// #define TESTS
 // #define BENCHMARKS
 #ifdef ENGINE
 #include "EngineConstants.h"
