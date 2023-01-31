@@ -11,8 +11,11 @@ namespace Integrian3D
 		explicit Component(class GameObject* pOwner);
 		virtual ~Component() = default;
 
+		virtual void Awake() {}
 		virtual void Start() {}
+		virtual void FixedUpdate() {}
 		virtual void Update() {}
+		virtual void LateUpdate() {}
 		virtual void Render() const {}
 
 		void SetOwner(class GameObject* const pOwner);

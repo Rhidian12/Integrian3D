@@ -98,10 +98,24 @@ namespace Integrian3D
 		return m_Tags.Find(tag) != m_Tags.cend();
 	}
 
+	void GameObject::Awake()
+	{
+		for (const ComponentInfo& info : m_Components)
+			info.pComponent->Awake();
+	}
+
 	void GameObject::Start()
 	{
 		for (const ComponentInfo& info : m_Components)
-			info.pComponent->Start();
+			if (info.pComponent->IsActive())
+				info.pComponent->Start();
+	}
+
+	void GameObject::FixedUpdate()
+	{
+		for (const ComponentInfo& info : m_Components)
+			if (info.pComponent->IsActive())
+				info.pComponent->FixedUpdate();
 	}
 
 	void GameObject::Update()
@@ -109,6 +123,13 @@ namespace Integrian3D
 		if (!m_IsActive)
 			return;
 
+		for (const ComponentInfo& info : m_Components)
+			if (info.pComponent->IsActive())
+				info.pComponent->Update();
+	}
+
+	void GameObject::LateUpdate()
+	{
 		for (const ComponentInfo& info : m_Components)
 			if (info.pComponent->IsActive())
 				info.pComponent->Update();

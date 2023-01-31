@@ -45,11 +45,15 @@ namespace Integrian3D
 	void Scene::Start()
 	{
 		for (GameObject* pG : m_GameObjects)
+			pG->Awake();
+
+		for (GameObject* pG : m_GameObjects)
 		{
 			pG->Start();
 
-			if (CameraComponent* pC{ pG->GetComponentByType<CameraComponent>() }; pC != nullptr)
-				m_pActiveCamera = pC;
+			if (pG->HasTag("MainCamera"))
+				if (CameraComponent* pC{ pG->GetComponentByType<CameraComponent>() }; pC != nullptr)
+					m_pActiveCamera = pC;
 		}
 
 		if (!m_pActiveCamera)
@@ -75,7 +79,13 @@ namespace Integrian3D
 	void Scene::Update()
 	{
 		for (GameObject* pG : m_GameObjects)
+			pG->FixedUpdate();
+
+		for (GameObject* pG : m_GameObjects)
 			pG->Update();
+
+		for (GameObject* pG : m_GameObjects)
+			pG->LateUpdate();
 
 		m_GameObjects.EraseAll([](const GameObject* pG)->bool
 			{

@@ -47,9 +47,11 @@ namespace Integrian3D
 
 	void Core::Run()
 	{
+		using namespace Time;
+
 		g_IsRunning = true;
 
-		Time::Timer& timer{ Time::Timer::GetInstance() };
+		Timer& timer{ Timer::GetInstance() };
 		InputManager& inputManager{ InputManager::GetInstance() };
 		SceneManager& sceneManager{ SceneManager::GetInstance() };
 		Renderer& renderer{ Renderer::GetInstance() };
@@ -57,8 +59,13 @@ namespace Integrian3D
 		for (Scene* const pScene : sceneManager.GetAllScenes())
 			pScene->Start();
 
+		double lag{};
+		const double timePerFrame{ timer.GetFixedElapsedTime<TimeLength::MilliSeconds>() };
+
 		while (g_IsRunning)
 		{
+			lag += timer.GetElapsedTime<TimeLength::MilliSeconds>();
+
 			timer.Update();
 
 			inputManager.ProcessInput();
@@ -67,13 +74,18 @@ namespace Integrian3D
 
 			pActiveScene->Update();
 
+			while (lag >= timePerFrame)
+			{
+				lag -= timePerFrame;
+			}
+
 			renderer.StartRenderLoop(pActiveScene->GetActiveCamera());
 			pActiveScene->Render();
 
 			/* Swap buffers */
 			Window.Update();
 
-			// Debug::LogMessage("FPS: " + std::to_string(Timer::GetInstance().GetFPS()), false);
+			Debug::LogMessage("FPS: " + std::to_string(Timer::GetInstance().GetFPS()), false);
 		}
 	}
 }

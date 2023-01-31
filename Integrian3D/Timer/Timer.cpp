@@ -20,7 +20,7 @@ namespace Integrian3D::Time
 		, m_FPS{}
 		, m_FPSCounter{}
 		, m_FPSTimer{}
-		, m_TimePerFrame{ 1.0 / 60.0 }
+		, m_TimePerFrame{ 1.0 / 144.0 }
 		, m_StartTimepoint{}
 		, m_PreviousTimepoint{}
 	{

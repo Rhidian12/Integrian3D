@@ -57,9 +57,15 @@ namespace Integrian3D
 
 #pragma region Internal_Functionality
 
+		void Awake();
+
 		void Start();
+
+		void FixedUpdate();
 	
 		void Update();
+
+		void LateUpdate();
 		
 		void Render() const;
 
