@@ -221,6 +221,7 @@
     <ClInclude Include="Component\Component.h" />
     <ClInclude Include="GameObject\GameObject.h" />
     <ClInclude Include="GameObject\GameObjectUtils.h" />
+    <ClInclude Include="IO\FileMode.h" />
     <ClInclude Include="IO\File\File.h" />
     <ClInclude Include="IO\IAsset\IAssetReader.h" />
     <ClInclude Include="IO\IAsset\IAssetUtils.h" />

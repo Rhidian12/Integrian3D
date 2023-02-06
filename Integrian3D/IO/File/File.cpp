@@ -78,18 +78,52 @@ namespace Integrian3D::IO
 	void File::Write() const
 	{
 		if (SetFilePointer(m_pHandle, 0, nullptr, FILE_BEGIN) == INVALID_SET_FILE_POINTER)
-			Debug::LogError("File could not set the file pointer", false);
+			Debug::LogError("File::Write() > File could not set the file pointer", false);
 
 		if (SetEndOfFile(m_pHandle) == 0)
-			Debug::LogError("File could not be truncated", false);
+			Debug::LogError("File::Write() > File could not be truncated", false);
 
 		if (WriteFile(m_pHandle, m_Buffer.Data(), static_cast<DWORD>(m_Buffer.Size()), nullptr, nullptr) == 0)
-			Debug::LogError("File could not write the data to the provided file", false);
+			Debug::LogError("File::Write() > File could not write the data to the provided file", false);
+	}
+
+	void File::Write(const TArray<char>& data, const SeekMode mode)
+	{
+		__ASSERT(mode != SeekMode::Regress && "File::Write(const TArray&) > Cannot write while regressing");
+
+		switch (mode)
+		{
+			case SeekMode::Start:
+				for (int32_t i{ static_cast<int32_t>(data.Size()) - 1 }; i >= 0; --i)
+					m_Buffer.AddFront(data[i]);
+				break;
+			case SeekMode::End:
+			case SeekMode::Advance:
+				m_Buffer.AddRange(data.cbegin(), data.cend());
+				break;
+		}
 	}
 
 	void File::ClearBuffer()
 	{
 		m_Buffer.Clear();
+	}
+
+	std::string File::GetLine(const char delim)
+	{
+		std::string line{};
+		while (m_BufferPointer < m_Buffer.Size())
+		{
+			line.push_back(m_Buffer[m_BufferPointer++]);
+
+			if (m_Buffer[m_BufferPointer] == delim)
+			{
+				line.push_back(m_Buffer[m_BufferPointer++]);
+				break;
+			}
+		}
+
+		return line;
 	}
 
 	void File::Seek(const SeekMode mode, const uint64_t val)
@@ -98,24 +132,24 @@ namespace Integrian3D::IO
 
 		switch (mode)
 		{
-		case SeekMode::Start:
-			m_BufferPointer = val;
-			break;
-		case SeekMode::End:
-			m_BufferPointer = m_Buffer.Size() - 1 - val;
-			break;
-		case SeekMode::Advance:
-			m_BufferPointer += val;
+			case SeekMode::Start:
+				m_BufferPointer = val;
+				break;
+			case SeekMode::End:
+				m_BufferPointer = m_Buffer.Size() - 1 - val;
+				break;
+			case SeekMode::Advance:
+				m_BufferPointer += val;
 
-			if (m_BufferPointer >= m_Buffer.Size())
-				m_BufferPointer = m_Buffer.Size() - 1u;
-			break;
-		case SeekMode::Regress:
-			if (val <= m_BufferPointer)
-				m_BufferPointer -= val;
-			else
-				m_BufferPointer = 0;
-			break;
+				if (m_BufferPointer >= m_Buffer.Size())
+					m_BufferPointer = m_Buffer.Size() - 1u;
+				break;
+			case SeekMode::Regress:
+				if (val <= m_BufferPointer)
+					m_BufferPointer -= val;
+				else
+					m_BufferPointer = 0;
+				break;
 		}
 	}
 

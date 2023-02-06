@@ -15,4 +15,7 @@ namespace Integrian3D::TUtils
 
 	template<typename T>
 	constexpr bool AlwaysFalse{ false };
+
+	template<typename From, typename To>
+	constexpr bool IsExplicitlyConvertible{ std::is_constructible_v<To, From> && std::is_convertible_v<From, To> };
 }

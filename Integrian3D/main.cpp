@@ -1,5 +1,5 @@
-#define ENGINE
-// #define TESTS
+// #define ENGINE
+#define TESTS
 // #define BENCHMARKS
 #ifdef ENGINE
 #include "EngineConstants.h"
@@ -1535,6 +1535,51 @@ TEST_CASE("Testing Math functions")
 }
 #endif // MATH_TESTS
 
+#define FILE_TESTS
+#ifdef FILE_TESTS
+#include "IO/File/File.h"
+#include "IO/Serializer/Serializer.h"
+#include "Math/Math.h"
+
+#include <string>
+
+TEST_CASE("Testing the File")
+{
+	using namespace Integrian3D::IO;
+	using namespace Integrian3D;
+
+	SECTION("Writing to a file some text")
+	{
+		File file{ "Resources/TestASCIIFile.txt" };
+
+		file.ClearBuffer();
+		REQUIRE(file.GetBuffer().Size() == 0);
+
+		file << 5 << '\n';
+		file << 16.f << '\n';
+		file << "This is a test string\n";
+		file << "This is a second test string on a new line";
+
+		REQUIRE(file.GetBuffer().Size() > 0);
+
+		file.Write();
+	}
+
+	SECTION("Reading a file with some text")
+	{
+		File file{ "Resources/TestASCIIFile.txt" };
+
+		REQUIRE(file.GetBuffer().Size() > 0);
+
+		REQUIRE(std::stoi(file.GetLine()) == 5);
+		REQUIRE(Math::AreEqual(std::stof(file.GetLine()), 16.f));
+		REQUIRE(file.GetLine() == "This is a test string\n");
+		REQUIRE(file.GetLine() == "This is a second test string on a new line");
+	}
+}
+
+#endif FILE_TESTS
+
 #elif defined BENCHMARKS
 #include "Timer/Timer.h"
 
@@ -1904,7 +1949,7 @@ int main()
 #endif
 
 	return 0;
-}
+	}
 
 #endif // ARRAY_BENCHMARKS
 
