@@ -74,28 +74,28 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)Build\$(PlatformTarget)\</OutDir>
     <IntDir>$(SolutionDir)Build-Int\$(PlatformTarget)\</IntDir>
-    <IncludePath>$(SolutionDir)Libraries\glad\include;$(SolutionDir)\Libraries\glfw-3.3.8\include;$(SolutionDir)\Libraries\glm;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Libraries\glad\include;$(SolutionDir)\Libraries\glfw-3.3.8\include;$(SolutionDir)\Libraries\glm;$(SolutionDir)\Libraries\Catch2;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)Libraries\glad\src;$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)Build\$(PlatformTarget)\</OutDir>
     <IntDir>$(SolutionDir)Build-Int\$(PlatformTarget)\</IntDir>
-    <IncludePath>$(SolutionDir)Libraries\glad\include;$(SolutionDir)\Libraries\glfw-3.3.8\include;$(SolutionDir)\Libraries\glm;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Libraries\glad\include;$(SolutionDir)\Libraries\glfw-3.3.8\include;$(SolutionDir)\Libraries\glm;$(SolutionDir)\Libraries\Catch2;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)Libraries\glad\src;$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)Build\$(PlatformTarget)\</OutDir>
     <IntDir>$(SolutionDir)Build-Int\$(PlatformTarget)\</IntDir>
-    <IncludePath>$(SolutionDir)Libraries\glad\include;$(SolutionDir)\Libraries\glfw-3.3.8\include;$(SolutionDir)\Libraries\glm;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Libraries\glad\include;$(SolutionDir)\Libraries\glfw-3.3.8\include;$(SolutionDir)\Libraries\glm;$(SolutionDir)\Libraries\Catch2;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)Libraries\glad\src;$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)Build\$(PlatformTarget)\</OutDir>
     <IntDir>$(SolutionDir)Build-Int\$(PlatformTarget)\</IntDir>
-    <IncludePath>$(SolutionDir)Libraries\glad\include;$(SolutionDir)\Libraries\glfw-3.3.8\include;$(SolutionDir)\Libraries\glm;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Libraries\glad\include;$(SolutionDir)\Libraries\glfw-3.3.8\include;$(SolutionDir)\Libraries\glm;$(SolutionDir)\Libraries\Catch2;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)Libraries\glad\src;$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -104,7 +104,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Libraries\glad\include;$(SolutionDir)Libraries\glfw-3.3.8\include;$(SolutionDir)\Libraries\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Libraries\glad\include;$(SolutionDir)Libraries\glfw-3.3.8\include;$(SolutionDir)\Libraries\glm;$(SolutionDir)\Libraries\Catch2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -125,7 +125,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Libraries\glad\include;$(SolutionDir)Libraries\glfw-3.3.8\include;$(SolutionDir)\Libraries\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Libraries\glad\include;$(SolutionDir)Libraries\glfw-3.3.8\include;$(SolutionDir)\Libraries\glm;$(SolutionDir)\Libraries\Catch2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -146,7 +146,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Libraries\glad\include;$(SolutionDir)Libraries\glfw-3.3.8\include;$(SolutionDir)\Libraries\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Libraries\glad\include;$(SolutionDir)Libraries\glfw-3.3.8\include;$(SolutionDir)\Libraries\glm;$(SolutionDir)\Libraries\Catch2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -167,7 +167,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Libraries\glad\include;$(SolutionDir)Libraries\glfw-3.3.8\include;$(SolutionDir)\Libraries\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Libraries\glad\include;$(SolutionDir)Libraries\glfw-3.3.8\include;$(SolutionDir)\Libraries\glm;$(SolutionDir)\Libraries\Catch2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -213,6 +213,17 @@
     <ClCompile Include="Timer\Timepoint\Timepoint.cpp" />
     <ClCompile Include="Timer\Timer.cpp" />
     <ClCompile Include="Components\TransformComponent\TransformComponent.cpp" />
+    <ClCompile Include="UnitTests\AllocatorInterfaceTests.cpp" />
+    <ClCompile Include="UnitTests\ArrayTests.cpp" />
+    <ClCompile Include="UnitTests\FileTests.cpp" />
+    <ClCompile Include="UnitTests\FreeListAllocatorTests.cpp" />
+    <ClCompile Include="UnitTests\IAssetTests.cpp" />
+    <ClCompile Include="UnitTests\LowLevelLinkedListTests.cpp" />
+    <ClCompile Include="UnitTests\MathTests.cpp" />
+    <ClCompile Include="UnitTests\NewTests.cpp" />
+    <ClCompile Include="UnitTests\SerialisationTests.cpp" />
+    <ClCompile Include="UnitTests\TimerTests.cpp" />
+    <ClCompile Include="UnitTests\UnitTests.cpp" />
     <ClCompile Include="Utils\Utils.cpp" />
     <ClCompile Include="Window\Window.cpp" />
   </ItemGroup>

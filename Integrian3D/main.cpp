@@ -1,6 +1,35 @@
 // #define ENGINE
-#define TESTS
+#define UNIT_TESTS
 // #define BENCHMARKS
+
+#if __has_include(<vld.h>)
+#	include <vld.h>
+#endif
+
+#ifdef ENGINE
+
+#elif defined UNIT_TESTS
+
+int RunUnitTests(int argc, char* argv[]);
+
+#elif defined BENCHMARKS
+
+#endif
+
+int main(int argc, char* argv[])
+{
+#ifdef ENGINE
+
+#elif defined UNIT_TESTS
+
+	return RunUnitTests(argc, argv);
+
+#elif defined BENCHMARKS
+
+#endif
+
+}
+
 #ifdef ENGINE
 #include "EngineConstants.h"
 #include "Core/Core.h"
