@@ -184,6 +184,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Component\Component.cpp" />
+    <ClCompile Include="CoreEngine.cpp" />
     <ClCompile Include="GameObject\GameObject.cpp" />
     <ClCompile Include="IO\File\File.cpp" />
     <ClCompile Include="IO\IAsset\IAssetReader.cpp" />
