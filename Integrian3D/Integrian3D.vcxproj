@@ -204,6 +204,7 @@
     <ClCompile Include="Components\MeshComponent\MeshComponent.cpp" />
     <ClCompile Include="Memory\New\New.cpp" />
     <ClCompile Include="Object\Object.cpp" />
+    <ClCompile Include="ECS\Registry\Registry.cpp" />
     <ClCompile Include="Renderer\Renderer.cpp" />
     <ClCompile Include="SceneManager\SceneManager.cpp" />
     <ClCompile Include="Scene\Scene.cpp" />
@@ -231,6 +232,8 @@
   <ItemGroup>
     <ClInclude Include="Array\Array.h" />
     <ClInclude Include="Component\Component.h" />
+    <ClInclude Include="Config.h" />
+    <ClInclude Include="ECS\ComponentIDGenerator.h" />
     <ClInclude Include="GameObject\GameObject.h" />
     <ClInclude Include="GameObject\GameObjectUtils.h" />
     <ClInclude Include="IO\FileMode.h" />
@@ -265,9 +268,9 @@
     <ClInclude Include="Math\Math.h" />
     <ClInclude Include="Math\RGBColour.h" />
     <ClInclude Include="Components\MeshComponent\MeshComponent.h" />
-    <ClInclude Include="ECS\Registry\Registry.h" />
     <ClInclude Include="Memory\MemoryUtils.h" />
     <ClInclude Include="Object\Object.h" />
+    <ClInclude Include="ECS\Registry\Registry.h" />
     <ClInclude Include="Renderer\Renderer.h" />
     <ClInclude Include="SceneManager\SceneManager.h" />
     <ClInclude Include="Scene\Scene.h" />
@@ -281,10 +284,12 @@
     <ClInclude Include="Timer\Timepoint\Timepoint.h" />
     <ClInclude Include="Timer\Timer.h" />
     <ClInclude Include="Components\TransformComponent\TransformComponent.h" />
+    <ClInclude Include="TPair\TPair.full.h" />
+    <ClInclude Include="TPair\TPair.h" />
     <ClInclude Include="Types\Types.h" />
     <ClInclude Include="Utils\Utils.h" />
-    <ClInclude Include="ECS\View\View.h" />
     <ClInclude Include="Vertex\Vertex.h" />
+    <ClInclude Include="ECS\View\View.h" />
     <ClInclude Include="Window\Window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

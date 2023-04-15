@@ -1,6 +1,6 @@
 #include "Core/Core.h"
 
-int RunEngine(int argc, char* argv[])
+int RunEngine(int, char*[])
 {
 	using namespace Integrian3D;
 

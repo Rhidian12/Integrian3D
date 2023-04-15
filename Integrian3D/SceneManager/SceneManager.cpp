@@ -35,11 +35,11 @@ namespace Integrian3D
 
 		__ASSERT(cIt != m_Scenes.cend() && "SceneManager::ChangeScene() > No scene with the specified name was found");
 
-		m_pActiveScene->OnSceneLeave();
+		// m_pActiveScene->OnSceneLeave();
 
 		m_pActiveScene = *cIt;
 
-		m_pActiveScene->OnSceneEnter();
+		// m_pActiveScene->OnSceneEnter();
 	}
 
 	Scene* const SceneManager::GetScene(const std::string_view sceneName)

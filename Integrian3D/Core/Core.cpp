@@ -79,7 +79,7 @@ namespace Integrian3D
 				lag -= timePerFrame;
 			}
 
-			renderer.StartRenderLoop(pActiveScene->GetActiveCamera());
+			renderer.StartRenderLoop(nullptr);
 			pActiveScene->Render();
 
 			/* Swap buffers */

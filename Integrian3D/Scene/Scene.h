@@ -1,38 +1,54 @@
 #pragma once
 
 #include "../EngineConstants.h"
-#include "../Array/Array.h"
-#include "../GameObject/GameObject.h"
 
-#include <functional> /* std::function */
-#include <utility> /* std::forward */
-#include <string> /* std::string */
-#include <string_view> /* std::string_view */
-#include <vector> /* std::vector */
+#include "../Array/Array.h"
+#include "../TPair/TPair.h"
+#include "../ECS/Registry/Registry.h"
+
+#include <string>
+#include <string_view>
 
 namespace Integrian3D
 {
-	class Scene
+	class Scene final
 	{
 	public:
 		explicit Scene(const std::string& sceneName);
-		virtual ~Scene();
+		~Scene();
 
-#pragma region Scene_Functionality
+		// Does not accept member functions, only free functions
+		void AddInitialisationCallback(const size_t prio, void(*fn)(Scene&));
 
-		void AddGameObject(GameObject* const pGameobject);
+		std::string_view GetSceneName() const { return m_SceneName; }
 
-		void RemoveGameObject(GameObject* const pGameObject);
+#pragma region ECS_Functionality
 
-		__NODISCARD std::string_view GetSceneName() const { return m_SceneName; }
+		__NODISCARD Entity CreateEntity() { return m_Registry.CreateEntity(); }
 
-		__NODISCARD class CameraComponent* const GetActiveCamera() const { return m_pActiveCamera; }
+		template<typename T>
+		T& AddComponent(const Entity entity) { return m_Registry.AddComponent<T>(entity); }
+		template<typename T, typename ... Ts>
+		T& AddComponent(const Entity entity, Ts&& ... args) { return m_Registry.AddComponent<T, Ts...>(entity, std::forward<Ts>(args)...); }
 
-		__NODISCARD const TArray<GameObject*>& GetGameObjects() const { return m_GameObjects; }
+		template<typename T>
+		void RemoveComponent(const Entity entity) { m_Registry.RemoveComponent<T>(entity); }
+
+		template<typename T>
+		__NODISCARD T& GetComponent(const Entity entity) { return m_Registry.GetComponent<T>(entity); }
+		template<typename T>
+		__NODISCARD const T& GetComponent(const Entity entity) const { return m_Registry.GetComponent<T>(entity); }
+
+		__NODISCARD bool HasEntity(const Entity entity) const { return m_Registry.HasEntity(entity); }
+
+		bool ReleaseEntity(const Entity entity) { return m_Registry.ReleaseEntity(entity); }
+		
+		void ClearEntities() { return m_Registry.Clear(); }
+
+		template<typename T>
+		__NODISCARD bool HasComponent(const Entity entity) const { return m_Registry.HasComponent<T>(entity); }
 
 #pragma endregion
-
-#pragma region Internal_Functionality
 
 		void Start();
 
@@ -40,19 +56,12 @@ namespace Integrian3D
 
 		void Render() const;
 
-#pragma endregion
-
-#pragma region Inheritable_Functionality
-
-		virtual void OnSceneEnter() {}
-
-		virtual void OnSceneLeave() {}
-
-#pragma endregion
-
 	private:
+		// Scene Info
 		std::string m_SceneName;
-		TArray<GameObject*> m_GameObjects;
-		class CameraComponent* m_pActiveCamera;
+		TArray<TPair<size_t, void(*)(Scene&)>> m_InitCallbacks; // Does not accept member functions
+
+		// ECS Info
+		Registry m_Registry;
 	};
 }

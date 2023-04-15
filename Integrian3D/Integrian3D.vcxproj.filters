@@ -147,6 +147,9 @@
     <ClCompile Include="CoreEngine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ECS\Registry\Registry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window\Window.h">
@@ -318,6 +321,27 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="IO\FileMode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\Registry\Registry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\ComponentArray\ComponentArray.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\View\View.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Config.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\ComponentIDGenerator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TPair\TPair.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TPair\TPair.full.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
