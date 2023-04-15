@@ -54,4 +54,42 @@ namespace Integrian3D
 	{
 		return TPair<std::remove_cvref_t<K>, std::remove_cvref_t<V>>(key, val);
 	}
+
+	template<typename K, typename V>
+	template<size_t I>
+	auto& TPair<K, V>::get() &
+	{
+		static_assert(I < 2, "TPair::get<I>() > I must be smaller than 2");
+
+		if constexpr (I == 0) return m_Key;
+		else return m_Value;
+	}
+
+	template<typename K, typename V>
+	template<size_t I>
+	const auto& TPair<K, V>::get() const&
+	{
+		static_assert(I < 2, "TPair::get<I>() > I must be smaller than 2");
+
+		if constexpr (I == 0) return m_Key;
+		else return m_Value;
+	}
+
+	template<typename K, typename V>
+	template<size_t I>
+	auto TPair<K, V>::get() &&
+	{
+		static_assert(I < 2, "TPair::get<I>() > I must be smaller than 2");
+
+		if constexpr (I == 0) return std::move(m_Key);
+		else return std::move(m_Value);
+	}
+}
+
+namespace std
+{
+	template<typename K, typename V> struct tuple_size<Integrian3D::TPair<K, V>> : public std::integral_constant<size_t, 2> {};
+
+	template<typename K, typename V> struct tuple_element<0, Integrian3D::TPair<K, V>> { using type = K; };
+	template<typename K, typename V> struct tuple_element<1, Integrian3D::TPair<K, V>> { using type = V; };
 }

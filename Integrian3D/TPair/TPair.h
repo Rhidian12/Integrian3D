@@ -20,9 +20,21 @@ namespace Integrian3D
 		const V& Value() const&;
 		V Value() &&;
 
+		template<size_t I>
+		auto& get()&;
+
+		template<size_t I>
+		const auto& get() const&;
+
+		template<size_t I>
+		auto get() &&;
+
 		// dont allow r-values to bind to const l-value overload
 		K Key() const&& = delete;
 		V Value() const&& = delete;
+
+		template<size_t I>
+		auto get() const&& = delete;
 
 	private:
 		K m_Key;

@@ -29,6 +29,14 @@ namespace Integrian3D
 
 	void Scene::Start()
 	{
+		m_InitCallbacks.Sort([](const auto& a, const auto& b)->bool
+			{
+				return a.Key() < b.Key();
+			});
+
+		for (const auto& [prio, callback] : m_InitCallbacks)
+			callback(*this);
+
 		//for (GameObject* pG : m_GameObjects)
 		//	pG->Awake();
 
