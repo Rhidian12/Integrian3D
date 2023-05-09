@@ -9,9 +9,8 @@
 
 namespace Integrian3D
 {
-	TransformComponent::TransformComponent(GameObject* pOwner)
-		: Component{ pOwner }
-		, Transformation{ Math::Mat4D{ 1.f } /* Identity matrix */ }
+	TransformComponent::TransformComponent()
+		: Transformation{ Math::Mat4D{ 1.f } /* Identity matrix */ }
 		, WorldLocation{}
 		, WorldScale{ 1.0, 1.0, 1.0 }
 		, LocalScale{ 1.0, 1.0, 1.0 }
@@ -60,11 +59,6 @@ namespace Integrian3D
 
 	//	return *this;
 	//}
-
-	void TransformComponent::Update()
-	{
-		RecalculateTransform();
-	}
 
 	void TransformComponent::RecalculateTransform()
 	{

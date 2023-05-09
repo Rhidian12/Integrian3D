@@ -2,10 +2,11 @@
 
 #include "../../EngineConstants.h"
 
-#include "../ComponentArray/ComponentArray.h"
 #include "../ComponentIDGenerator.h"
 #include "../View/View.h"
 #include "../../SparseSet/SparseSet.h"
+
+#include <vector>
 
 namespace Integrian3D
 {
@@ -21,7 +22,7 @@ namespace Integrian3D
 		Registry& operator=(Registry&& other) noexcept;
 
 		template<typename ... Ts>
-		__NODISCARD View<Ts...> CreateView()
+		__NODISCARD View<Ts...> CreateView() const
 		{
 			/* Get all components asked for by the user */
 			std::tuple<ComponentArray<Ts>&...> comps
@@ -29,14 +30,12 @@ namespace Integrian3D
 				(*static_cast<ComponentArray<Ts>*>(GetComponentArray(ECS::GenerateComponentID<Ts>()).get()))...
 			};
 
-			return View<Ts...>{ std::move(comps), EntitySignatures };
+			return View<Ts...>(std::move(comps), Entities);
 		}
 
 		template<typename T>
 		T& AddComponent(const Entity entity)
 		{
-			SetEntitySignature(entity, ECS::GenerateComponentID<T>());
-
 			std::unique_ptr<IComponentArray>& pool{ GetComponentArray(ECS::GenerateComponentID<T>())};
 
 			if (!pool)
@@ -49,9 +48,7 @@ namespace Integrian3D
 		template<typename T, typename ... Ts>
 		T& AddComponent(const Entity entity, Ts&& ... args)
 		{
-			SetEntitySignature(entity, ECS::GenerateComponentID<T>());
-
-			std::unique_ptr<IComponentArray>& pool{ GetComponentArray(GenerateComponentID<T>()) };
+			std::unique_ptr<IComponentArray>& pool{ GetComponentArray(ECS::GenerateComponentID<T>()) };
 
 			if (!pool)
 			{
@@ -67,13 +64,12 @@ namespace Integrian3D
 			__ASSERT(HasEntity(entity));
 
 			GetComponentArray(ECS::GenerateComponentID<T>())->Remove(entity);
-			SetEntitySignature(entity, ECS::GenerateComponentID<T>(), false);
 		}
 
 		template<typename T>
 		__NODISCARD bool HasComponent(const Entity entity) const 
 		{
-			return GetEntitySignature(entity).test(ECS::GenerateComponentID<T>());
+			return static_cast<ComponentArray<T>*>(GetComponentArray(ECS::GenerateComponentID<T>()).get())->HasEntity(entity);
 		}
 
 		template<typename T>
@@ -89,23 +85,39 @@ namespace Integrian3D
 			return static_cast<ComponentArray<T>*>(GetComponentArray(ECS::GenerateComponentID<T>()).get())->GetComponent(entity);
 		}
 
+		template<typename T>
+		__NODISCARD Entity FindEntity(const T& comp)
+		{
+			__ASSERT(GetComponentArray(ECS::GenerateComponentID<T>()));
+			return static_cast<ComponentArray<T>*>(GetComponentArray(ECS::GenerateComponentID<T>()).get())->FindEntity(comp);
+		}
+
 		__NODISCARD Entity CreateEntity();
 		__NODISCARD size_t GetAmountOfEntities() const { return Entities.Size(); }
 		__NODISCARD bool HasEntity(const Entity entity) const;
 		bool ReleaseEntity(const Entity entity);
 
+		template<typename ... Ts>
+		__NODISCARD bool CanViewBeCreated() const
+		{
+			return [this]<size_t ... Is>(std::index_sequence<Is...>)->bool
+			{
+				return ((std::find_if(ComponentPools.cbegin(), ComponentPools.cend(), [](const auto& cPool)->bool
+					{
+						return ECS::GenerateComponentID<Ts>() == cPool.first;
+					}) != ComponentPools.cend()) && ...);
+
+			}(std::make_index_sequence<sizeof ... (Ts)>{});
+		}
+
 		void Clear();
 
-		__NODISCARD const EntitySignature& GetEntitySignature(const Entity entity) const;
-
 	private:
-		void SetEntitySignature(const Entity entity, const size_t id, const bool val = true);
-
-		void RemoveAllComponents(const Entity entity, const EntitySignature& sig);
+		void RemoveAllComponents(const Entity entity);
 		__NODISCARD std::unique_ptr<IComponentArray>& GetComponentArray(const size_t cType);
+		__NODISCARD const std::unique_ptr<IComponentArray>& GetComponentArray(const size_t cType) const;
 
 		// Entities
-		std::vector<std::pair<Entity, EntitySignature>> EntitySignatures; // [TODO]: Make a map that uses arrays 
 		SparseSet<Entity> Entities;
 		std::vector<Entity> RecycledEntities;
 		Entity CurrentEntityCounter;

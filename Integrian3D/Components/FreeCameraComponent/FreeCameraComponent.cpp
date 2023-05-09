@@ -1,4 +1,4 @@
-#include "CameraComponent.h"
+#include "FreeCameraComponent.h"
 
 #include "../TransformComponent/TransformComponent.h"
 #include "../../SceneManager/SceneManager.h"
@@ -10,9 +10,8 @@
 
 namespace Integrian3D
 {
-	CameraComponent::CameraComponent(GameObject* pOwner, const float nearPlane, const float farPlane, const float fov, const float aspectRatio, const double speed)
-		: Component{ pOwner }
-		, m_NearPlane{ nearPlane }
+	FreeCameraComponent::FreeCameraComponent(const float nearPlane, const float farPlane, const float fov, const float aspectRatio, const double speed)
+		: m_NearPlane{ nearPlane }
 		, m_FarPlane{ farPlane }
 		, m_FOV{ fov }
 		, m_AspectRatio{ aspectRatio }
@@ -25,34 +24,17 @@ namespace Integrian3D
 		m_Projection = glm::perspective(m_FOV, m_AspectRatio, m_NearPlane, m_FarPlane);
 	}
 
-	void CameraComponent::Start()
+	void FreeCameraComponent::UpdateView(const TransformComponent& transform)
 	{
-		m_View = glm::lookAt(
-			m_pOwner->pTransform->GetLocalLocation(),
-			m_pOwner->pTransform->GetLocalLocation() + m_pOwner->pTransform->GetForward(),
-			m_pOwner->pTransform->GetUp());
+		m_View = glm::lookAt
+			(
+				transform.GetLocalLocation(),
+				transform.GetLocalLocation() + transform.GetForward(),
+				transform.GetUp()
+			);
 	}
 
-	void CameraComponent::Update()
-	{
-		if (!InputManager::GetInstance().GetIsMouseButtonPressed(MouseInput::RMB))
-			return;
-
-		HandleTranslation();
-		HandleRotation();
-	}
-
-	void CameraComponent::SetView(const glm::mat4& view)
-	{
-		m_View = view;
-	}
-
-	void CameraComponent::SetSpeed(const float speed)
-	{
-		m_Speed = speed;
-	}
-
-	void CameraComponent::HandleTranslation()
+	void FreeCameraComponent::UpdateTranslation(TransformComponent& transform)
 	{
 		using namespace Time;
 
@@ -66,19 +48,16 @@ namespace Integrian3D
 		dir.y += inputManager.GetIsKeyPressed(KeyboardInput::W) ? 1.0 : 0.0;
 		dir.y += inputManager.GetIsKeyPressed(KeyboardInput::S) ? -1.0 : 0.0;
 
-		m_pOwner->pTransform->Translate(m_pOwner->pTransform->GetForward() * dir.y
+		transform.Translate(transform.GetForward() * dir.y
 			* m_Speed * Timer::GetInstance().GetElapsedSeconds(), true);
 
-		m_pOwner->pTransform->Translate(m_pOwner->pTransform->GetRight() * dir.x
+		transform.Translate(transform.GetRight() * dir.x
 			* m_Speed * Timer::GetInstance().GetElapsedSeconds(), true);
 
-		m_View = glm::lookAt(
-			m_pOwner->pTransform->GetLocalLocation(),
-			m_pOwner->pTransform->GetLocalLocation() + m_pOwner->pTransform->GetForward(),
-			m_pOwner->pTransform->GetUp());
+		UpdateView(transform);
 	}
 
-	void CameraComponent::HandleRotation()
+	void FreeCameraComponent::UpdateRotation(TransformComponent& transform)
 	{
 		const InputManager& inputManager{ InputManager::GetInstance() };
 
@@ -93,10 +72,17 @@ namespace Integrian3D
 		xOffset *= sensitivity;
 		yOffset *= sensitivity;
 
-		m_pOwner->pTransform->Rotate(Math::Vec3D{ yOffset, xOffset, 0.0 }, true);
+		transform.Rotate(Math::Vec3D{ yOffset, xOffset, 0.0 }, true);
 
-		m_View = glm::lookAt(m_pOwner->pTransform->GetLocalLocation(),
-			m_pOwner->pTransform->GetLocalLocation() + m_pOwner->pTransform->GetForward(),
-			m_pOwner->pTransform->GetUp());
+		UpdateView(transform);
+	}
+
+	bool FreeCameraComponent::operator==(const FreeCameraComponent& other) const
+	{
+		using namespace Math;
+
+		return AreEqual(m_Speed, other.m_Speed) && AreEqual(m_AspectRatio, other.m_AspectRatio) &&
+			AreEqual(m_FarPlane, other.m_FarPlane) && AreEqual(m_FOV, other.m_FOV) && AreEqual(m_NearPlane, other.m_NearPlane) &&
+			(m_IsActive == other.m_IsActive) && (m_Projection == other.m_Projection) && (m_View == other.m_View);
 	}
 }

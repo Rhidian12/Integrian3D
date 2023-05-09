@@ -1,12 +1,9 @@
 #include "Registry.h"
 
-#include <algorithm>
-
 namespace Integrian3D
 {
 	Registry::Registry()
-		: EntitySignatures{}
-		, Entities{}
+		: Entities{}
 		, CurrentEntityCounter{}
 	{}
 
@@ -16,13 +13,11 @@ namespace Integrian3D
 	}
 
 	Registry::Registry(Registry&& other) noexcept
-		: EntitySignatures{ std::move(other.EntitySignatures) }
-		, ComponentPools{ std::move(other.ComponentPools) }
+		: ComponentPools{std::move(other.ComponentPools)}
 		, Entities{ std::move(other.Entities) }
 		, CurrentEntityCounter{ std::move(other.CurrentEntityCounter) }
 		, RecycledEntities{ std::move(other.RecycledEntities) }
 	{
-		other.EntitySignatures.clear();
 		other.Entities.Clear();
 		other.CurrentEntityCounter = 0;
 		other.ComponentPools.clear();
@@ -31,13 +26,11 @@ namespace Integrian3D
 
 	Registry& Registry::operator=(Registry&& other) noexcept
 	{
-		EntitySignatures = std::move(other.EntitySignatures);
 		Entities = std::move(other.Entities);
 		CurrentEntityCounter = std::move(other.CurrentEntityCounter);
 		ComponentPools = std::move(other.ComponentPools);
 		RecycledEntities = std::move(other.RecycledEntities);
 
-		other.EntitySignatures.clear();
 		other.Entities.Clear();
 		other.CurrentEntityCounter = 0;
 		other.ComponentPools.clear();
@@ -64,8 +57,6 @@ namespace Integrian3D
 
 		Entities.Add(entity);
 
-		EntitySignatures.push_back(std::make_pair(entity, EntitySignature{}));
-
 		return entity;
 	}
 
@@ -73,10 +64,7 @@ namespace Integrian3D
 	{
 		if (HasEntity(entity))
 		{
-			RemoveAllComponents(entity, GetEntitySignature(entity)); // [TODO]: Come up with a better way to handle this
-
-			EntitySignatures[entity].first = InvalidEntityID;
-			EntitySignatures[entity].second.reset();
+			RemoveAllComponents(entity); // [TODO]: Come up with a better way to handle this
 
 			Entities.Remove(entity);
 
@@ -88,16 +76,11 @@ namespace Integrian3D
 		return false;
 	}
 
-	void Registry::RemoveAllComponents(const Entity entity, const EntitySignature& sig)
+	void Registry::RemoveAllComponents(const Entity entity)
 	{
-		for (size_t i{}; i < MAX_COMPONENTS; ++i)
+		for (const auto& compArray : ComponentPools)
 		{
-			if (sig.test(i))
-			{
-				assert(GetComponentArray(i));
-
-				GetComponentArray(i)->Remove(entity);
-			}
+			compArray.second->Remove(entity);
 		}
 	}
 
@@ -109,7 +92,6 @@ namespace Integrian3D
 	void Registry::Clear()
 	{
 		Entities.Clear();
-		EntitySignatures.clear();
 		CurrentEntityCounter = 0;
 
 		for (const auto& [component, compArray] : ComponentPools)
@@ -121,28 +103,28 @@ namespace Integrian3D
 		RecycledEntities.clear();
 	}
 
-	void Registry::SetEntitySignature(const Entity entity, const size_t id, const bool val)
+	const std::unique_ptr<IComponentArray>& Registry::GetComponentArray(const size_t cType) const
 	{
-		assert(HasEntity(entity));
-		EntitySignatures[entity].second.set(id, val);
-	}
-
-	const EntitySignature& Registry::GetEntitySignature(const Entity entity) const
-	{
-		assert(HasEntity(entity));
-		return EntitySignatures[entity].second;
-	}
-
-	std::unique_ptr<IComponentArray>& Registry::GetComponentArray(const size_t cType)
-	{
-		const auto cIt{ std::find_if(ComponentPools.begin(), ComponentPools.end(), [cType](const auto& kvPair) -> bool
+		const auto cIt{ std::find_if(ComponentPools.cbegin(), ComponentPools.cend(), [cType](const auto& kvPair)->bool
 			{
 				return kvPair.first == cType;
 			}) };
 
-		if (cIt != ComponentPools.end())
+		assert(cIt != ComponentPools.end());
+
+		return cIt->second;
+	}
+
+	std::unique_ptr<IComponentArray>& Registry::GetComponentArray(const size_t cType)
+	{
+		const auto it{ std::find_if(ComponentPools.begin(), ComponentPools.end(), [cType](const auto& kvPair)->bool
+			{
+				return kvPair.first == cType;
+			}) };
+
+		if (it != ComponentPools.end())
 		{
-			return cIt->second;
+			return it->second;
 		}
 		else
 		{

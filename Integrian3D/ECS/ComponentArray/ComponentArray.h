@@ -1,9 +1,10 @@
 #pragma once
 
 #include "../../EngineConstants.h"
-#include "../../SparseSet/SparseSet.h"
 
-#include <vector> /* std::vector */
+#include "../DenseSet/DenseSet.h"
+
+#include <vector>
 
 namespace Integrian3D
 {
@@ -29,22 +30,19 @@ namespace Integrian3D
 
 		T& AddComponent(const Entity entity)
 		{
-			m_Entities.Add(entity);
+			m_Entities.Add(entity, static_cast<Entity>(m_Components.size()));
 			return m_Components.emplace_back(T{});
 		}
 		template<typename ... Ts>
 		T& AddComponent(const Entity entity, Ts&& ... args)
 		{
-			m_Entities.Add(entity);
+			m_Entities.Add(entity, static_cast<Entity>(m_Components.size()));
 			return m_Components.emplace_back(T{ std::forward<Ts>(args)... });
 		}
 
 		virtual void Remove(const Entity entity) override
 		{
-			if (m_Entities.Contains(entity))
-			{
-				m_Entities[entity] = InvalidEntityID;
-			}
+			m_Entities.Remove(entity);
 		}
 
 		virtual void RemoveAll() override
@@ -53,17 +51,29 @@ namespace Integrian3D
 			m_Components.clear();
 		}
 
-		[[nodiscard]] T& GetComponent(const Entity entity)
+		__NODISCARD Entity FindEntity(const T& comp) const
 		{
-			return m_Components[m_Entities[entity]];
+			__ASSERT(std::find(m_Components.cbegin(), m_Components.cend(), comp) != m_Components.cend());
+
+			return m_Entities.GetFirst(std::distance(m_Components.cbegin(), std::find(m_Components.cbegin(), m_Components.cend(), comp)));
 		}
-		[[nodiscard]] const T& GetComponent(const Entity entity) const
+
+		__NODISCARD bool HasEntity(const Entity entity) const
 		{
-			return m_Components[m_Entities[entity]];
+			return m_Entities.Contains(entity);
+		}
+
+		__NODISCARD T& GetComponent(const Entity entity)
+		{
+			return m_Components[m_Entities.GetSecond(entity)];
+		}
+		__NODISCARD const T& GetComponent(const Entity entity) const
+		{
+			return m_Components[m_Entities.GetSecond(entity)];
 		}
 
 	private:
-		SparseSet<Entity> m_Entities;
+		DenseSet<Entity> m_Entities;
 		std::vector<T> m_Components;
 	};
 }

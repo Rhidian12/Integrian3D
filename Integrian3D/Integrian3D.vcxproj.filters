@@ -69,7 +69,7 @@
     <ClCompile Include="Components\TransformComponent\TransformComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Components\CameraComponent\CameraComponent.cpp">
+    <ClCompile Include="Components\FreeCameraComponent\FreeCameraComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Memory\FreeListAllocator\FreeListAllocator.cpp">
@@ -94,12 +94,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="IO\File\File.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Object\Object.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GameObject\GameObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Component\Component.cpp">
@@ -148,6 +142,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ECS\Registry\Registry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\TagComponent\TagComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -233,7 +230,7 @@
     <ClInclude Include="Components\TransformComponent\TransformComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Components\CameraComponent\CameraComponent.h">
+    <ClInclude Include="Components\FreeCameraComponent\FreeCameraComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Iterator\Iterator.h">
@@ -299,16 +296,7 @@
     <ClInclude Include="IO\Serializer\Serializer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Object\Object.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GameObject\GameObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Component\Component.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GameObject\GameObjectUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Components\TestRotateComponent\TestRotateComponent.h">
@@ -342,6 +330,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TPair\TPair.full.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\TagComponent\TagComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\DenseSet\DenseSet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

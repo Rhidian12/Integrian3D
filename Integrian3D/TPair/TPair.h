@@ -21,7 +21,7 @@ namespace Integrian3D
 		V Value() &&;
 
 		template<size_t I>
-		auto& get()&;
+		auto& get() &;
 
 		template<size_t I>
 		const auto& get() const&;

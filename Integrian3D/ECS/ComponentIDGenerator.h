@@ -20,10 +20,10 @@ namespace Integrian3D::ECS
 		template <typename T>
 		__NODISCARD static consteval std::string_view ConstexprTypeName()
 		{
-			consteval std::string_view wrappedName(WrappedTypeName<T>());
+			constexpr std::string_view wrappedName(WrappedTypeName<T>());
 
-			consteval size_t endOfType{ wrappedName.find_last_of('>') };
-			consteval size_t beginOfType{ Math::Max(wrappedName.find_last_of(' '), wrappedName.find_last_of('<')) };
+			constexpr size_t endOfType{ wrappedName.find_last_of('>') };
+			constexpr size_t beginOfType{ Math::Max(wrappedName.find_last_of(' '), wrappedName.find_last_of('<')) };
 
 			return wrappedName.substr(beginOfType + 1, endOfType - beginOfType - 1);
 		}
@@ -50,9 +50,9 @@ namespace Integrian3D::ECS
 	template<typename T>
 	__NODISCARD static consteval size_t GenerateComponentID()
 	{
-		consteval std::string_view typeName(Detail::ConstexprTypeName<T>());
+		constexpr std::string_view typeName(Detail::ConstexprTypeName<T>());
 
-		consteval size_t hash
+		constexpr size_t hash
 		{
 			static_cast<size_t>(Detail::ConstexprStringHash(typeName.data(), typeName.size()))
 		};

@@ -10,7 +10,7 @@
 
 namespace Integrian3D
 {
-	template<typename T, typename Alloc>
+	template<typename T>
 	class Array
 	{
 		using UnaryPred = std::function<bool(const T&)>;
@@ -21,52 +21,46 @@ namespace Integrian3D
 		using CIt = ConstIterator<T, IteratorTag::RandomAccessIt>;
 
 #pragma region Ctors and Dtor
-		constexpr Array(const Alloc& alloc = Alloc{})
+		constexpr Array()
 			: m_pHead{}
 			, m_pTail{}
 			, m_pCurrentEnd{}
-			, m_Allocator{ Memory::Allocator<Alloc>{ alloc } }
 		{}
-		constexpr Array(const Size_P size, const Alloc& alloc = Alloc{})
+		constexpr Array(const Size_P size)
 			: m_pHead{}
 			, m_pTail{}
 			, m_pCurrentEnd{}
-			, m_Allocator{ Memory::Allocator<Alloc>{ alloc } }
 		{
 			for (uint64_t i{}; i < size._Size; ++i)
 				EmplaceBack(T{});
 		}
-		constexpr Array(const Size_P size, const T& val, const Alloc& alloc = Alloc{})
+		constexpr Array(const Size_P size, const T& val)
 			: m_pHead{}
 			, m_pTail{}
 			, m_pCurrentEnd{}
-			, m_Allocator{ Memory::Allocator<Alloc>{ alloc } }
 		{
 			for (uint64_t i{}; i < size._Size; ++i)
 				EmplaceBack(val);
 		}
-		constexpr Array(const Capacity_P cap, const Alloc& alloc = Alloc{})
+		constexpr Array(const Capacity_P cap)
 			: m_pHead{}
 			, m_pTail{}
 			, m_pCurrentEnd{}
-			, m_Allocator{ Memory::Allocator<Alloc>{ alloc } }
 		{
 			Reserve(cap._Capacity);
 		}
-		constexpr Array(std::initializer_list<T> init, const Alloc& alloc = Alloc{})
+		constexpr Array(std::initializer_list<T> init)
 			: m_pHead{}
 			, m_pTail{}
 			, m_pCurrentEnd{}
-			, m_Allocator{ Memory::Allocator<Alloc>{ alloc } }
 		{
 			for (const T& elem : init)
 				EmplaceBack(elem);
 		}
-		constexpr Array(It beg, It end, const Alloc& alloc = Alloc{})
+		constexpr Array(It beg, It end)
 			: m_pHead{}
 			, m_pTail{}
 			, m_pCurrentEnd{}
-			, m_Allocator{ Memory::Allocator<Alloc>{ alloc } }
 		{
 			for (; beg != end; ++beg)
 				EmplaceBack(*beg);
@@ -84,28 +78,25 @@ namespace Integrian3D
 			: m_pHead{}
 			, m_pTail{}
 			, m_pCurrentEnd{}
-			, m_Allocator{ other.m_Allocator }
 		{
 			const uint64_t cap{ other.Capacity() };
-
 			if (cap > 0u)
 			{
-				m_pHead = m_Allocator.Allocate<T>(cap);
+				m_pHead = static_cast<T*>(malloc(cap * sizeof(T)));
 				m_pTail = m_pHead + cap;
+				m_pCurrentEnd = m_pHead + other.Size();
 
-				/* [TODO]: Use memcpy */
-				const uint64_t size{ other.Size() };
-				for (uint64_t i{}; i < size; ++i)
-					new (m_pHead + i) T{ *(other.m_pHead + i) }; // dont allow moving 
-
-				m_pCurrentEnd = m_pHead + size;
+				for (size_t i{}; i < other.Size(); ++i)
+				{
+					if constexpr (std::is_move_constructible_v<T>) new (m_pHead + i) T{ std::move(*(other.m_pHead + i)) };
+					else new (m_pHead + i) T{ *(other.m_pHead + i) };
+				}
 			}
 		}
 		constexpr Array(Array&& other) noexcept
 			: m_pHead{ __MOVE(other.m_pHead) }
 			, m_pTail{ __MOVE(other.m_pTail) }
 			, m_pCurrentEnd{ __MOVE(other.m_pCurrentEnd) }
-			, m_Allocator{ __MOVE(other.m_Allocator) }
 		{
 			other.m_pHead = nullptr;
 			other.m_pTail = nullptr;
@@ -120,7 +111,6 @@ namespace Integrian3D
 				Release(m_pHead);
 			}
 
-			m_Allocator = other.m_Allocator;
 			m_pHead = nullptr;
 			m_pTail = nullptr;
 			m_pCurrentEnd = nullptr;
@@ -128,15 +118,15 @@ namespace Integrian3D
 			const uint64_t cap{ other.Capacity() };
 			if (cap > 0u)
 			{
-				m_pHead = m_Allocator.Allocate<T>(cap);
+				m_pHead = static_cast<T*>(malloc(cap * sizeof(T)));
 				m_pTail = m_pHead + cap;
+				m_pCurrentEnd = m_pHead + other.Size();
 
-				/* [TODO]: Use memcpy */
-				const uint64_t size{ other.Size() };
-				for (uint64_t i{}; i < size; ++i)
-					new (m_pHead + i) T{ *(other.m_pHead + i) }; // dont allow moving 
-
-				m_pCurrentEnd = m_pHead + size;
+				for (size_t i{}; i < other.Size(); ++i)
+				{
+					if constexpr (std::is_move_constructible_v<T>) new (m_pHead + i) T{ std::move(*(other.m_pHead + i)) };
+					else new (m_pHead + i) T{ *(other.m_pHead + i) };
+				}
 			}
 
 			return *this;
@@ -149,7 +139,6 @@ namespace Integrian3D
 				Release(m_pHead);
 			}
 
-			m_Allocator = __MOVE(other.m_Allocator);
 			m_pHead = __MOVE(other.m_pHead);
 			m_pTail = __MOVE(other.m_pTail);
 			m_pCurrentEnd = __MOVE(other.m_pCurrentEnd);
@@ -224,7 +213,7 @@ namespace Integrian3D
 			}
 			else
 			{
-				m_Allocator.Destroy(m_pHead + index);
+				(m_pHead + index)->~T();
 				MoveRangeBackward(m_pHead + index + 1, m_pCurrentEnd--, m_pHead + index);
 
 				return It{ m_pHead + index };
@@ -317,7 +306,7 @@ namespace Integrian3D
 			if (Size() == 0)
 				return;
 
-			m_Allocator.Destroy(--m_pCurrentEnd);
+			(--m_pCurrentEnd)->~T();
 		}
 
 		constexpr void PopFront()
@@ -325,7 +314,7 @@ namespace Integrian3D
 			if (Size() == 0)
 				return;
 
-			m_Allocator.Destroy(m_pHead);
+			m_pHead->~T();
 
 			MoveRangeBackward(m_pHead + 1, m_pCurrentEnd--, m_pHead);
 		}
@@ -481,7 +470,7 @@ namespace Integrian3D
 		{
 			const uint64_t size{ Size() };
 
-			Array arr{ Capacity_P{ size }, m_Allocator.GetAllocator() };
+			Array arr{ Capacity_P{ size } };
 
 			for (uint64_t i{}; i < size; ++i)
 			{
@@ -497,7 +486,7 @@ namespace Integrian3D
 		{
 			const uint64_t size{ Size() };
 
-			Array arr{ Capacity_P{ size }, m_Allocator.GetAllocator() };
+			Array arr{ Capacity_P{ size } };
 
 			for (uint64_t i{}; i < size; ++i)
 			{
@@ -535,8 +524,7 @@ namespace Integrian3D
 		}
 		constexpr void Sort(const BinaryPred& pred) const
 		{
-			if (!m_pHead)
-				return;
+			if (!m_pHead) return;
 
 			const uint64_t size{ Size() };
 
@@ -603,6 +591,16 @@ namespace Integrian3D
 		constexpr const T* const Data() const
 		{
 			return m_pHead;
+		}
+
+		constexpr bool Contains(const T& val) const
+		{
+			return Find(val) != cend();
+		}
+
+		constexpr bool Contains(const UnaryPred& pred) const
+		{
+			return Find(pred) != cend();
 		}
 
 		constexpr It Find(const T& val)
@@ -693,30 +691,23 @@ namespace Integrian3D
 #pragma region Internal Helpers
 		constexpr void Reallocate()
 		{
-			const uint64_t oldSize{ Size() };
-			const uint64_t newCap{ CalculateNewCapacity(oldSize + 1) };
+			const size_t oldSize{ Size() };
+			const size_t newCap{ CalculateNewCapacity((oldSize + 1) * sizeof(T)) };
 
-			T* pNewHead{ m_Allocator.Allocate<T>(newCap) };
+			T* pNewHead{ static_cast<T*>(malloc(newCap)) };
 
 			T* pOldHead{ m_pHead };
 			T* pOldTail{ m_pTail };
 
 			m_pHead = pNewHead;
 			m_pTail = pNewHead + newCap;
-
-			for (uint64_t i{}; i < oldSize; ++i)
-			{
-				if constexpr (std::is_move_assignable_v<T>)
-				{
-					new (m_pHead + i) T{ __MOVE(*(pOldHead + i)) };
-				}
-				else
-				{
-					new (m_pHead + i) T{ *(pOldHead + i) };
-				}
-			}
-
 			m_pCurrentEnd = m_pHead + oldSize;
+
+			for (size_t i{}; i < oldSize; ++i)
+			{
+				if constexpr (std::is_move_constructible_v<T>) new (m_pHead + i) T{ std::move(*(pOldHead + i)) };
+				else new (m_pHead + i) T{ *(pOldHead + i) };
+			}
 
 			DeleteData(pOldHead, pOldTail);
 			Release(pOldHead);
@@ -725,27 +716,20 @@ namespace Integrian3D
 		{
 			const uint64_t oldSize{ Size() };
 
-			T* pNewHead{ m_Allocator.Allocate<T>(newCap) };
+			T* pNewHead{ static_cast<T*>(malloc(newCap * sizeof(T))) };
 
 			T* pOldHead{ m_pHead };
 			T* pOldTail{ m_pTail };
 
 			m_pHead = pNewHead;
 			m_pTail = pNewHead + newCap;
-
-			for (uint64_t i{}; i < oldSize; ++i)
-			{
-				if constexpr (std::is_move_assignable_v<T>)
-				{
-					new (m_pHead + i) T{ __MOVE(*(pOldHead + i)) };
-				}
-				else
-				{
-					new (m_pHead + i) T{ *(pOldHead + i) };
-				}
-			}
-
 			m_pCurrentEnd = m_pHead + oldSize;
+
+			for (size_t i{}; i < oldSize; ++i)
+			{
+				if constexpr (std::is_move_constructible_v<T>) new (m_pHead + i) T{ std::move(*(pOldHead + i)) };
+				else new (m_pHead + i) T{ *(pOldHead + i) };
+			}
 
 			DeleteData(pOldHead, pOldTail);
 			Release(pOldHead);
@@ -755,7 +739,7 @@ namespace Integrian3D
 		{
 			if (pData)
 			{
-				m_Allocator.Deallocate(pData);
+				free(pData);
 				pData = nullptr;
 			}
 		}
@@ -766,7 +750,7 @@ namespace Integrian3D
 			{
 				while (head < tail)
 				{
-					m_Allocator.Destroy(head);
+					head->~T();
 					++head;
 				}
 			}
@@ -795,34 +779,12 @@ namespace Integrian3D
 
 		constexpr void MoveRangeBackward(T* head, T* end, T* newHead) const
 		{
-			const uint64_t size{ static_cast<uint64_t>(end - head) };
-			for (uint64_t i{}; i < size; ++i)
-			{
-				if constexpr (std::is_move_assignable_v<T>)
-				{
-					new (newHead + i) T{ __MOVE(*(head + i)) };
-				}
-				else
-				{
-					new (newHead + i) T{ *(head + i) };
-				}
-			}
+			memcpy(newHead, head, static_cast<uint64_t>(end - head));
 		}
 
 		constexpr void MoveRangeForward(T* head, T* end, T* newHead) const
 		{
-			const int64_t size{ static_cast<int64_t>(end - head) };
-			for (int64_t i{ size - 1 }; i >= 0; --i)
-			{
-				if constexpr (std::is_move_assignable_v<T>)
-				{
-					new (newHead + i) T{ __MOVE(*(head + i)) };
-				}
-				else
-				{
-					new (newHead + i) T{ *(head + i) };
-				}
-			}
+			memcpy(newHead, head, static_cast<int64_t>(end - head));
 		}
 #pragma endregion
 
@@ -893,9 +855,8 @@ namespace Integrian3D
 		T* m_pHead;
 		T* m_pTail;
 		T* m_pCurrentEnd /* points PAST the last element */;
-		Memory::Allocator<Alloc> m_Allocator;
 	};
 
 	template<typename T>
-	using TArray = Array<T, Memory::FreeListAllocator>;
+	using TArray = Array<T>;
 }

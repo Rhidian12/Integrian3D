@@ -7,9 +7,8 @@
 
 namespace Integrian3D
 {
-	MeshComponent::MeshComponent(GameObject* pOwner, const std::string& filePath, Texture* const pTex)
-		: Component{ pOwner }
-		, VertexArrayID{}
+	MeshComponent::MeshComponent(const std::string& filePath, Texture* const pTex)
+		: VertexArrayID{}
 		, VertexBufferID{}
 		, IndexBufferID{}
 		, Vertices{}
@@ -28,9 +27,8 @@ namespace Integrian3D
 		}
 	}
 
-	MeshComponent::MeshComponent(GameObject* pOwner, const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices, Texture* const pTex)
-		: Component{ pOwner }
-		, VertexArrayID{}
+	MeshComponent::MeshComponent(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices, Texture* const pTex)
+		: VertexArrayID{}
 		, VertexBufferID{}
 		, IndexBufferID{}
 		, Vertices{ vertices }
@@ -104,11 +102,6 @@ namespace Integrian3D
 		{
 			glDeleteBuffers(1, &IndexBufferID);
 		}
-	}
-
-	void MeshComponent::Render() const
-	{
-		Renderer::GetInstance().Render(this, m_pOwner->pTransform);
 	}
 
 	//MeshComponent::MeshComponent(MeshComponent&& other) noexcept

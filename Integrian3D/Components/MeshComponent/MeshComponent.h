@@ -1,9 +1,10 @@
 #pragma once
 
 #include "../../EngineConstants.h"
-#include "../../Vertex/Vertex.h"
-#include "../../Texture/Texture.h"
+
 #include "../../Component/Component.h"
+#include "../../Texture/Texture.h"
+#include "../../Vertex/Vertex.h"
 
 #include <stdint.h> /* uint32_t, ... */
 #include <string_view> /* std::string_view */
@@ -14,16 +15,14 @@ namespace Integrian3D
 	class MeshComponent final : public Component
 	{
 	public:
-		MeshComponent(GameObject* pOwner, const std::string& filePath, Texture* const pTex);
-		MeshComponent(GameObject* pOwner, const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices, Texture* const pTex);
+		MeshComponent(const std::string& filePath, Texture* const pTex);
+		MeshComponent(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices, Texture* const pTex);
 		~MeshComponent();
 
 		// MeshComponent(const MeshComponent&) noexcept = delete;
 		// MeshComponent(MeshComponent&& other) noexcept;
 		// MeshComponent& operator=(const MeshComponent&) noexcept = delete;
 		// MeshComponent& operator=(MeshComponent&& other) noexcept;
-
-		virtual void Render() const override;
 
 		__NODISCARD uint32_t GetVertexArrayID() const { return VertexArrayID; }
 		__NODISCARD uint32_t GetIndexBufferID() const { return IndexBufferID; }

@@ -1,15 +1,16 @@
 #pragma once
 
 #include "../../EngineConstants.h"
+
 #include "../../Component/Component.h"
 
 namespace Integrian3D
 {
+	class TransformComponent;
+
 	class TestRotateComponent final : public Component
 	{
 	public:
-		explicit TestRotateComponent(GameObject* pOwner);
-
-		virtual void Update() override;
+		void Rotate(TransformComponent& transform);
 	};
 }

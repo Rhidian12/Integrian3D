@@ -3,7 +3,6 @@
 #include "../DebugUtility/DebugUtility.h"
 #include "../Timer/Timer.h"
 #include "../InputManager/InputManager.h"
-#include "../Renderer/Renderer.h"
 #include "../SceneManager/SceneManager.h"
 #include "../Components/MeshComponent/MeshComponent.h"
 #include "../Components/TransformComponent/TransformComponent.h"
@@ -54,7 +53,6 @@ namespace Integrian3D
 		Timer& timer{ Timer::GetInstance() };
 		InputManager& inputManager{ InputManager::GetInstance() };
 		SceneManager& sceneManager{ SceneManager::GetInstance() };
-		Renderer& renderer{ Renderer::GetInstance() };
 
 		for (Scene* const pScene : sceneManager.GetAllScenes())
 			pScene->Start();
@@ -79,7 +77,6 @@ namespace Integrian3D
 				lag -= timePerFrame;
 			}
 
-			renderer.StartRenderLoop(nullptr);
 			pActiveScene->Render();
 
 			/* Swap buffers */

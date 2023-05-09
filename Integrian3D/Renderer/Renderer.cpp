@@ -6,7 +6,7 @@
 #include "../DebugUtility/DebugUtility.h"
 #include "../Components/MeshComponent/MeshComponent.h"
 #include "../Components/TransformComponent/TransformComponent.h"
-#include "../Components/CameraComponent/CameraComponent.h"
+#include "../Components/FreeCameraComponent/FreeCameraComponent.h"
 #include "../Shader/Shader.h"
 
 namespace Integrian3D
@@ -29,14 +29,8 @@ namespace Integrian3D
 		return *Instance.get();
 	}
 
-	void Renderer::StartRenderLoop(const CameraComponent* pCamera) const
+	void Renderer::StartRenderLoop(const FreeCameraComponent& camera) const
 	{
-		if (!pCamera)
-		{
-			Debug::LogError("Renderer::StartRenderLoop() > No active camera is present in the scene, rendering failed", false);
-			return;
-		}
-
 		/* Sets the Clear Colour */
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -53,44 +47,32 @@ namespace Integrian3D
 		/* Use our shader program! */
 		Shader.Activate();
 
-		Shader.SetMatrix("_View", pCamera->GetView());
+		Shader.SetMatrix("_View", camera.GetView());
 
-		Shader.SetMatrix("_Projection", pCamera->GetProjection());
+		Shader.SetMatrix("_Projection", camera.GetProjection());
 	}
 
-	void Renderer::Render(const MeshComponent* pMeshComponent, const TransformComponent* pTransformComponent) const
+	void Renderer::Render(const MeshComponent& mesh, const TransformComponent& transform) const
 	{
-		if (!pMeshComponent)
-		{
-			Debug::LogError("Renderer::Render() > MeshComponent is invalid", false);
-			return;
-		}
-
-		if (!pTransformComponent)
-		{
-			Debug::LogError("Renderer::Render() > TransformComponent is invalid", false);
-			return;
-		}
-
 		/* Set our Matrix */
-		Shader.SetMatrix("_Transform", pTransformComponent->Transformation);
+		Shader.SetMatrix("_Transform", transform.Transformation);
 
 		/* Activate the texture */
 		glActiveTexture(GL_TEXTURE0);
 
 		/* Bind the Texture ID */
-		glBindTexture(GL_TEXTURE_2D, pMeshComponent->GetTexture()->GetTextureID());
+		glBindTexture(GL_TEXTURE_2D, mesh.GetTexture()->GetTextureID());
 
 		/* Bind the Vertex Array ID */
-		glBindVertexArray(pMeshComponent->GetVertexArrayID());
+		glBindVertexArray(mesh.GetVertexArrayID());
 
 		/* Bind the ID to a vertex buffer */
-		glBindBuffer(GL_ARRAY_BUFFER, pMeshComponent->GetVertexBufferID());
+		glBindBuffer(GL_ARRAY_BUFFER, mesh.GetVertexBufferID());
 
 		/* Bind the ID to an index buffer */
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, pMeshComponent->GetIndexBufferID());
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.GetIndexBufferID());
 
 		/* Render our rectangle */
-		glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(pMeshComponent->GetIndices().size()), GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(mesh.GetIndices().size()), GL_UNSIGNED_INT, 0);
 	}
 }

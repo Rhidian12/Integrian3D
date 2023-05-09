@@ -11,15 +11,14 @@ namespace Integrian3D
 	class TransformComponent final : public Component
 	{
 	public:
-		explicit TransformComponent(GameObject* pOwner);
+		TransformComponent();
 
 		// TransformComponent(const TransformComponent&) noexcept = delete;
 		// TransformComponent(TransformComponent&& other) noexcept;
 		// TransformComponent& operator=(const TransformComponent&) noexcept = delete;
 		// TransformComponent& operator=(TransformComponent&& other) noexcept;
 
-		/* [TODO]: Do in FixedUpdate */
-		virtual void Update() override;
+		void RecalculateTransform();
 
 		void Translate(const Math::Vec3D& v, const bool bForce = false);
 		void Rotate(const Math::Vec3D& rotationRad, const bool bForce = false);
@@ -50,7 +49,6 @@ namespace Integrian3D
 		bool bShouldRecalculateWorldData;
 
 	private:
-		void RecalculateTransform();
 		void RecalculateDirectionVectors();
 
 		Math::Vec3D WorldLocation;
