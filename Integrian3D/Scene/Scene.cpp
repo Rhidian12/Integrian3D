@@ -25,42 +25,51 @@ namespace Integrian3D
 		// Render meshes
 		AddRenderCallback(0u, [](Scene& scene)->void
 			{
-				const View view{ scene.CreateView<TransformComponent, MeshComponent>() };
 				const auto& renderer{ Renderer::GetInstance() };
-
 				renderer.StartRenderLoop(scene.GetComponent<FreeCameraComponent>(scene.GetActiveCameraEntity()));
 
-				view.ForEach([&renderer](const auto& transform, const auto& mesh)->void
-					{
-						renderer.Render(mesh, transform);
-					});
+				if (scene.GetNrOfEntities() > 0u && scene.CanViewBeCreated<TransformComponent, MeshComponent>())
+				{
+					const View view{ scene.CreateView<TransformComponent, MeshComponent>() };
+
+					view.ForEach([&renderer](const auto& transform, const auto& mesh)->void
+						{
+							renderer.Render(mesh, transform);
+						});
+				}
 			});
 
 		// Transform update
 		AddUpdateCallback(0u, [](Scene& scene)->void
 			{
-				const View view{ scene.CreateView<TransformComponent>() };
+				if (scene.GetNrOfEntities() > 0u && scene.CanViewBeCreated<TransformComponent>())
+				{
+					const View view{ scene.CreateView<TransformComponent>() };
 
-				view.ForEach([](TransformComponent& transform)->void
-					{
-						transform.RecalculateTransform();
-					});
+					view.ForEach([](TransformComponent& transform)->void
+						{
+							transform.RecalculateTransform();
+						});
+				}
 			});
 
 		// Camera update
 		AddUpdateCallback(0u, [](Scene& scene)->void
 			{
-				const View view{ scene.CreateView<FreeCameraComponent, TransformComponent>() };
+				if (scene.GetNrOfEntities() > 0u && scene.CanViewBeCreated<FreeCameraComponent, TransformComponent>())
+				{
+					const View view{ scene.CreateView<FreeCameraComponent, TransformComponent>() };
 
-				view.ForEach([](FreeCameraComponent& camera, TransformComponent& transform)->void
-					{
-						camera.UpdateView(transform);
+					view.ForEach([](FreeCameraComponent& camera, TransformComponent& transform)->void
+						{
+							camera.UpdateView(transform);
 
-						if (!InputManager::GetInstance().GetIsMouseButtonPressed(MouseInput::RMB)) return;
+							if (!InputManager::GetInstance().GetIsMouseButtonPressed(MouseInput::RMB)) return;
 
-						camera.UpdateTranslation(transform);
-						camera.UpdateRotation(transform);
-					});
+							camera.UpdateTranslation(transform);
+							camera.UpdateRotation(transform);
+						});
+				}
 			});
 	}
 

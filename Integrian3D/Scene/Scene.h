@@ -65,6 +65,11 @@ namespace Integrian3D
 		template<typename T>
 		__NODISCARD Entity FindEntity(const T& comp) { return m_Registry.FindEntity(comp); }
 
+		__NODISCARD __INLINE size_t GetNrOfEntities() const { return m_Registry.GetAmountOfEntities(); }
+
+		template<typename ... Ts>
+		__NODISCARD bool CanViewBeCreated() const { return m_Registry.CanViewBeCreated<Ts...>(); }
+
 #pragma endregion
 
 		void Start();

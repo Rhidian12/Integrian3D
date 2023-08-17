@@ -100,14 +100,10 @@ namespace Integrian3D
 		template<typename ... Ts>
 		__NODISCARD bool CanViewBeCreated() const
 		{
-			return [this]<size_t ... Is>(std::index_sequence<Is...>)->bool
-			{
-				return ((std::find_if(ComponentPools.cbegin(), ComponentPools.cend(), [](const auto& cPool)->bool
+			return ((std::find_if(ComponentPools.cbegin(), ComponentPools.cend(), [](const auto& cPool)->bool
 					{
 						return ECS::GenerateComponentID<Ts>() == cPool.first;
 					}) != ComponentPools.cend()) && ...);
-
-			}(std::make_index_sequence<sizeof ... (Ts)>{});
 		}
 
 		void Clear();
