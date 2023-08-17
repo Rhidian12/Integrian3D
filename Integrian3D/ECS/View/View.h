@@ -4,7 +4,6 @@
 
 #include "../ComponentArray/ComponentArray.h"
 #include "../../SparseSet/SparseSet.h"
-#include "../../Array/Array.h"
 
 #include <functional>
 #include <utility>

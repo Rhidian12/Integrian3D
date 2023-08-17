@@ -19,10 +19,10 @@ namespace Integrian3D
 		MeshComponent(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices, Texture* const pTex);
 		~MeshComponent();
 
-		// MeshComponent(const MeshComponent&) noexcept = delete;
-		// MeshComponent(MeshComponent&& other) noexcept;
-		// MeshComponent& operator=(const MeshComponent&) noexcept = delete;
-		// MeshComponent& operator=(MeshComponent&& other) noexcept;
+		MeshComponent(const MeshComponent&) noexcept = delete;
+		MeshComponent(MeshComponent&& other) noexcept;
+		MeshComponent& operator=(const MeshComponent&) noexcept = delete;
+		MeshComponent& operator=(MeshComponent&& other) noexcept;
 
 		__NODISCARD uint32_t GetVertexArrayID() const { return VertexArrayID; }
 		__NODISCARD uint32_t GetIndexBufferID() const { return IndexBufferID; }

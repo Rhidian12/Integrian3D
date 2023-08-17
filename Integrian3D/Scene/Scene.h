@@ -2,7 +2,6 @@
 
 #include "../EngineConstants.h"
 
-#include "../Array/Array.h"
 #include "../TPair/TPair.h"
 #include "../ECS/Registry/Registry.h"
 #include "../ECS/View/View.h"

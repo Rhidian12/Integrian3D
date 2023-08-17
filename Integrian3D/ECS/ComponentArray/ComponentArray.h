@@ -31,13 +31,13 @@ namespace Integrian3D
 		T& AddComponent(const Entity entity)
 		{
 			m_Entities.Add(entity, static_cast<Entity>(m_Components.size()));
-			return m_Components.emplace_back(T{});
+			return m_Components.emplace_back();
 		}
 		template<typename ... Ts>
 		T& AddComponent(const Entity entity, Ts&& ... args)
 		{
 			m_Entities.Add(entity, static_cast<Entity>(m_Components.size()));
-			return m_Components.emplace_back(T{ std::forward<Ts>(args)... });
+			return m_Components.emplace_back(std::forward<Ts>(args)...);
 		}
 
 		virtual void Remove(const Entity entity) override

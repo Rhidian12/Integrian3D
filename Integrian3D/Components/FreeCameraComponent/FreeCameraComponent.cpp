@@ -7,6 +7,7 @@
 #include "../../Timer/Timer.h"
 
 #include <gtc/matrix_transform.hpp>
+#include <iostream>
 
 namespace Integrian3D
 {
@@ -40,19 +41,24 @@ namespace Integrian3D
 
 		const InputManager& inputManager{ InputManager::GetInstance() };
 
-		Math::Vec2D dir{};
+		Math::Vec3D dir{};
 
 		dir.x += inputManager.GetIsKeyPressed(KeyboardInput::A) ? -1.0 : 0.0;
 		dir.x += inputManager.GetIsKeyPressed(KeyboardInput::D) ? 1.0 : 0.0;
 
-		dir.y += inputManager.GetIsKeyPressed(KeyboardInput::W) ? 1.0 : 0.0;
-		dir.y += inputManager.GetIsKeyPressed(KeyboardInput::S) ? -1.0 : 0.0;
+		dir.z += inputManager.GetIsKeyPressed(KeyboardInput::W) ? 1.0 : 0.0;
+		dir.z += inputManager.GetIsKeyPressed(KeyboardInput::S) ? -1.0 : 0.0;
 
-		transform.Translate(transform.GetForward() * dir.y
+		dir.y += inputManager.GetIsKeyPressed(KeyboardInput::E) ? 1.0 : 0.0;
+		dir.y += inputManager.GetIsKeyPressed(KeyboardInput::Q) ? -1.0 : 0.0;
+
+		transform.Translate(transform.GetForward() * dir.z
 			* m_Speed * Timer::GetInstance().GetElapsedSeconds(), true);
 
 		transform.Translate(transform.GetRight() * dir.x
 			* m_Speed * Timer::GetInstance().GetElapsedSeconds(), true);
+
+		transform.Translate(transform.GetUp() * dir.y * m_Speed * Timer::GetInstance().GetElapsedSeconds(), true);
 
 		UpdateView(transform);
 	}
@@ -67,8 +73,11 @@ namespace Integrian3D
 		double xOffset{ mousePos.x - lastMousePos.x };
 		double yOffset{ lastMousePos.y - mousePos.y };
 
-		const double sensitivity{ 0.001 };
+		// xOffset = Math::ToRadians(xOffset);
+		// yOffset = Math::ToRadians(yOffset);
+		// constexpr double sensitivity{ 0.2 };
 
+		constexpr double sensitivity{ 0.002 };
 		xOffset *= sensitivity;
 		yOffset *= sensitivity;
 

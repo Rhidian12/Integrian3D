@@ -129,7 +129,7 @@ namespace Integrian3D
 					m_ActiveCameraEntity,
 					0.1f,
 					100.f,
-					Math::ToRadians(45.f),
+					Math::ToRadians(90.f),
 					static_cast<float>(Core::GetInstance().GetWindowWidth() / Core::GetInstance().GetWindowHeight())
 					);
 

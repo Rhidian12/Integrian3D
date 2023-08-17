@@ -82,7 +82,7 @@ namespace Integrian3D
 			/* Swap buffers */
 			Window.Update();
 
-			Debug::LogMessage("FPS: " + std::to_string(Timer::GetInstance().GetFPS()), false);
+			// Debug::LogMessage("FPS: " + std::to_string(Timer::GetInstance().GetFPS()), false);
 		}
 	}
 }

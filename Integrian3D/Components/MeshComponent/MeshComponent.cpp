@@ -28,9 +28,9 @@ namespace Integrian3D
 	}
 
 	MeshComponent::MeshComponent(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices, Texture* const pTex)
-		: VertexArrayID{}
-		, VertexBufferID{}
-		, IndexBufferID{}
+		: VertexArrayID{ std::numeric_limits<uint32_t>::max() }
+		, VertexBufferID{ std::numeric_limits<uint32_t>::max() }
+		, IndexBufferID{ std::numeric_limits<uint32_t>::max() }
 		, Vertices{ vertices }
 		, Indices{ indices }
 		, pTexture{ pTex }
@@ -91,55 +91,58 @@ namespace Integrian3D
 		if (VertexArrayID != std::numeric_limits<uint32_t>::max())
 		{
 			glDeleteVertexArrays(1, &VertexArrayID);
+			VertexArrayID = std::numeric_limits<uint32_t>::max();
 		}
 
 		if (VertexBufferID != std::numeric_limits<uint32_t>::max())
 		{
 			glDeleteBuffers(1, &VertexBufferID);
+			VertexBufferID = std::numeric_limits<uint32_t>::max();
 		}
 
 		if (IndexBufferID != std::numeric_limits<uint32_t>::max())
 		{
 			glDeleteBuffers(1, &IndexBufferID);
+			IndexBufferID = std::numeric_limits<uint32_t>::max();
 		}
 	}
 
-	//MeshComponent::MeshComponent(MeshComponent&& other) noexcept
-	//	: VertexArrayID{ __MOVE(other.VertexArrayID) }
-	//	, VertexBufferID{ __MOVE(other.VertexBufferID) }
-	//	, IndexBufferID{ __MOVE(other.IndexBufferID) }
-	//	, Vertices{ __MOVE(other.Vertices) }
-	//	, Indices{ __MOVE(other.Indices) }
-	//	, pTexture{ __MOVE(other.pTexture) }
-	//{
-	//	other.Vertices.clear();
-	//	other.Indices.clear();
+	MeshComponent::MeshComponent(MeshComponent&& other) noexcept
+		: VertexArrayID{ __MOVE(other.VertexArrayID) }
+		, VertexBufferID{ __MOVE(other.VertexBufferID) }
+		, IndexBufferID{ __MOVE(other.IndexBufferID) }
+		, Vertices{ __MOVE(other.Vertices) }
+		, Indices{ __MOVE(other.Indices) }
+		, pTexture{ __MOVE(other.pTexture) }
+	{
+		other.Vertices.clear();
+		other.Indices.clear();
 
-	//	other.VertexArrayID = std::numeric_limits<uint32_t>::max();
-	//	other.VertexBufferID = std::numeric_limits<uint32_t>::max();
-	//	other.IndexBufferID = std::numeric_limits<uint32_t>::max();
+		other.VertexArrayID = std::numeric_limits<uint32_t>::max();
+		other.VertexBufferID = std::numeric_limits<uint32_t>::max();
+		other.IndexBufferID = std::numeric_limits<uint32_t>::max();
 
-	//	other.pTexture = nullptr;
-	//}
+		other.pTexture = nullptr;
+	}
 
-	//MeshComponent& MeshComponent::operator=(MeshComponent&& other) noexcept
-	//{
-	//	VertexArrayID = __MOVE(other.VertexArrayID);
-	//	VertexBufferID = __MOVE(other.VertexBufferID);
-	//	IndexBufferID = __MOVE(other.IndexBufferID);
-	//	Vertices = __MOVE(other.Vertices);
-	//	Indices = __MOVE(other.Indices);
-	//	pTexture = __MOVE(other.pTexture);
+	MeshComponent& MeshComponent::operator=(MeshComponent&& other) noexcept
+	{
+		VertexArrayID = __MOVE(other.VertexArrayID);
+		VertexBufferID = __MOVE(other.VertexBufferID);
+		IndexBufferID = __MOVE(other.IndexBufferID);
+		Vertices = __MOVE(other.Vertices);
+		Indices = __MOVE(other.Indices);
+		pTexture = __MOVE(other.pTexture);
 
-	//	other.Vertices.clear();
-	//	other.Indices.clear();
+		other.Vertices.clear();
+		other.Indices.clear();
 
-	//	other.VertexArrayID = std::numeric_limits<uint32_t>::max();
-	//	other.VertexBufferID = std::numeric_limits<uint32_t>::max();
-	//	other.IndexBufferID = std::numeric_limits<uint32_t>::max();
+		other.VertexArrayID = std::numeric_limits<uint32_t>::max();
+		other.VertexBufferID = std::numeric_limits<uint32_t>::max();
+		other.IndexBufferID = std::numeric_limits<uint32_t>::max();
 
-	//	other.pTexture = nullptr;
+		other.pTexture = nullptr;
 
-	//	return *this;
-	//}
+		return *this;
+	}
 }
