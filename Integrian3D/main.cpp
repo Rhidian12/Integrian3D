@@ -56,7 +56,7 @@ int RunTestEngine(int, char*[])
 
 	Core& core{ Core::CreateCore(1080,720) };
 
-	std::vector<Vertex> vertices =
+	TArray<Vertex> vertices =
 	{
 		Vertex{ glm::vec3{ -0.5f, -0.5f, -0.5f },  glm::vec2{ 0.0f, 0.0f } },
 		Vertex{ glm::vec3{  0.5f, -0.5f, -0.5f },  glm::vec2{ 1.0f, 0.0f } },
@@ -101,11 +101,11 @@ int RunTestEngine(int, char*[])
 		Vertex{ glm::vec3{ -0.5f,  0.5f, -0.5f },  glm::vec2{ 0.0f, 1.0f } }
 	};
 
-	std::vector<uint32_t> indices{};
+	TArray<uint32_t> indices{};
 
-	for (uint32_t i{}; i < vertices.size(); ++i)
+	for (uint32_t i{}; i < vertices.Size(); ++i)
 	{
-		indices.push_back(i);
+		indices.Add(i);
 	}
 
 	TextureManager::GetInstance().AddTexture("__Wall", "Resources/wall.jpg");

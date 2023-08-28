@@ -8,6 +8,7 @@
 #include "../Components/TransformComponent/TransformComponent.h"
 #include "../Components/FreeCameraComponent/FreeCameraComponent.h"
 #include "../Shader/Shader.h"
+#include "../Texture/Texture.h"
 
 namespace Integrian3D
 {
@@ -73,6 +74,6 @@ namespace Integrian3D
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.GetIndexBufferID());
 
 		/* Render our rectangle */
-		glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(mesh.GetIndices().size()), GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(mesh.GetIndices().Size()), GL_UNSIGNED_INT, 0);
 	}
 }

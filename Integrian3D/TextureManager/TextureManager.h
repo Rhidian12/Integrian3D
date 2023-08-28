@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../EngineConstants.h"
+#include "../Texture/Texture.h"
 
 #include <memory> /* std::unique_ptr */
 #include <unordered_map> /* std::unordered_map */
@@ -22,6 +23,6 @@ namespace Integrian3D
 		friend std::unique_ptr<TextureManager> std::make_unique();
 		inline static std::unique_ptr<TextureManager> Instance{};
 
-		std::unordered_map<std::string, std::unique_ptr<class Texture>> Textures;
+		std::unordered_map<std::string, std::unique_ptr<Texture>> Textures;
 	};
 }

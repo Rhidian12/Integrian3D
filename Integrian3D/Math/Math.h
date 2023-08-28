@@ -2,10 +2,10 @@
 
 #include "../EngineConstants.h"
 
-#include <type_traits> /* std::enable_if */
+#include <glm.hpp> /* GLM */
 #include <limits> /* std::numeric_limits */
 #include <random> /* std::random_device */
-#include <glm.hpp> /* GLM */
+#include <type_traits> /* std::enable_if */
 
 namespace Integrian3D::Math
 {

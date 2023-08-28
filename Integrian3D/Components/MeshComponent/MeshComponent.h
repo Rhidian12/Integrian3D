@@ -2,21 +2,21 @@
 
 #include "../../EngineConstants.h"
 
+#include "../../Array/Array.h"
 #include "../../Component/Component.h"
-#include "../../Texture/Texture.h"
 #include "../../Vertex/Vertex.h"
 
-#include <stdint.h> /* uint32_t, ... */
-#include <string_view> /* std::string_view */
-#include <vector> /* std::vector */
+#include <string>
 
 namespace Integrian3D
 {
+	class Texture;
+
 	class MeshComponent final : public Component
 	{
 	public:
 		MeshComponent(const std::string& filePath, Texture* const pTex);
-		MeshComponent(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices, Texture* const pTex);
+		MeshComponent(const TArray<Vertex>& vertices, const TArray<uint32_t>& indices, Texture* const pTex);
 		~MeshComponent();
 
 		MeshComponent(const MeshComponent&) noexcept = delete;
@@ -28,8 +28,8 @@ namespace Integrian3D
 		__NODISCARD uint32_t GetIndexBufferID() const { return IndexBufferID; }
 		__NODISCARD uint32_t GetVertexBufferID() const { return VertexBufferID; }
 
-		__NODISCARD const std::vector<Vertex>& GetVertices() const { return Vertices; }
-		__NODISCARD const std::vector<uint32_t>& GetIndices() const { return Indices; }
+		__NODISCARD const TArray<Vertex>& GetVertices() const { return Vertices; }
+		__NODISCARD const TArray<uint32_t>& GetIndices() const { return Indices; }
 
 		__NODISCARD const Texture* const GetTexture() const { return pTexture; }
 
@@ -38,8 +38,8 @@ namespace Integrian3D
 		uint32_t VertexBufferID;
 		uint32_t IndexBufferID;
 
-		std::vector<Vertex> Vertices;
-		std::vector<uint32_t> Indices;
+		TArray<Vertex> Vertices;
+		TArray<uint32_t> Indices;
 
 		Texture* pTexture;
 	};

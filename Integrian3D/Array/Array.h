@@ -16,11 +16,13 @@ namespace Integrian3D
 		using UnaryPred = std::function<bool(const T&)>;
 		using BinaryPred = std::function<bool(const T&, const T&)>;
 
+		static_assert(std::is_move_constructible_v<T>, "TArray > Type must be move constructible");
+
 	public:
 		using It = Iterator<T, IteratorTag::RandomAccessIt>;
 		using CIt = ConstIterator<T, IteratorTag::RandomAccessIt>;
 
-#pragma region Ctors and Dtor
+	#pragma region Ctors and Dtor
 		constexpr Array()
 			: m_pHead{}
 			, m_pTail{}
@@ -71,9 +73,9 @@ namespace Integrian3D
 			DeleteData(m_pHead, m_pCurrentEnd);
 			Release(m_pHead);
 		}
-#pragma endregion
+	#pragma endregion
 
-#pragma region Rule of 5
+	#pragma region Rule of 5
 		constexpr Array(const Array& other) noexcept
 			: m_pHead{}
 			, m_pTail{}
@@ -86,10 +88,16 @@ namespace Integrian3D
 				m_pTail = m_pHead + cap;
 				m_pCurrentEnd = m_pHead + other.Size();
 
-				for (size_t i{}; i < other.Size(); ++i)
+				if constexpr (std::is_trivially_copyable_v<T>)
 				{
-					if constexpr (std::is_move_constructible_v<T>) new (m_pHead + i) T{ std::move(*(other.m_pHead + i)) };
-					else new (m_pHead + i) T{ *(other.m_pHead + i) };
+					memcpy(m_pHead, other.m_pHead, other.Size());
+				}
+				else
+				{
+					for (size_t i{}; i < other.Size(); ++i)
+					{
+						new (m_pHead + i) T{ __MOVE(*(other.m_pHead + i)) };
+					}
 				}
 			}
 		}
@@ -149,9 +157,9 @@ namespace Integrian3D
 
 			return *this;
 		}
-#pragma endregion
+	#pragma endregion
 
-#pragma region Adding and Removing Elements
+	#pragma region Adding and Removing Elements
 		constexpr void Add(const T& val)
 		{
 			EmplaceBack(val);
@@ -372,9 +380,9 @@ namespace Integrian3D
 
 			return *(new (m_pHead) T{ __FORWARD(args)... });
 		}
-#pragma endregion
+	#pragma endregion
 
-#pragma region Array Information
+	#pragma region Array Information
 		__NODISCARD constexpr bool Empty() const
 		{
 			return Size() == 0;
@@ -413,9 +421,9 @@ namespace Integrian3D
 		{
 			return !(*this == other);
 		}
-#pragma endregion
+	#pragma endregion
 
-#pragma region Manipulating Array
+	#pragma region Manipulating Array
 		constexpr void Reserve(const uint64_t newCap)
 		{
 			if (newCap > Capacity())
@@ -533,9 +541,9 @@ namespace Integrian3D
 			else
 				MergeSort(0u, size - 1u, pred);
 		}
-#pragma endregion
+	#pragma endregion
 
-#pragma region Accessing Elements
+	#pragma region Accessing Elements
 		constexpr T& Front()
 		{
 			__ASSERT(Size() > 0 && "Array::Front() > Array is empty");
@@ -674,9 +682,9 @@ namespace Integrian3D
 
 			return arr;
 		}
-#pragma endregion
+	#pragma endregion
 
-#pragma region Iterators
+	#pragma region Iterators
 		constexpr It begin() { return m_pHead; }
 		constexpr CIt begin() const { return m_pHead; }
 
@@ -685,10 +693,10 @@ namespace Integrian3D
 
 		constexpr CIt cbegin() const { return m_pHead; }
 		constexpr CIt cend() const { return m_pCurrentEnd; }
-#pragma endregion
+	#pragma endregion
 
 	private:
-#pragma region Internal Helpers
+	#pragma region Internal Helpers
 		constexpr void Reallocate()
 		{
 			const size_t oldSize{ Size() };
@@ -786,9 +794,9 @@ namespace Integrian3D
 		{
 			memcpy(newHead, head, static_cast<int64_t>(end - head));
 		}
-#pragma endregion
+	#pragma endregion
 
-#pragma region Sorters
+	#pragma region Sorters
 		constexpr void InsertionSort(const BinaryPred& pred) const
 		{
 			/* Don't use At() to make sure elements get copied instead of referenced around! */
@@ -850,7 +858,7 @@ namespace Integrian3D
 				}
 			}
 		}
-#pragma endregion
+	#pragma endregion
 
 		T* m_pHead;
 		T* m_pTail;

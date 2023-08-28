@@ -285,10 +285,14 @@
     <ClInclude Include="TPair\TPair.full.h" />
     <ClInclude Include="TPair\TPair.h" />
     <ClInclude Include="Types\Types.h" />
+    <ClInclude Include="UpdateOrder\UpdateOrder.h" />
     <ClInclude Include="Utils\Utils.h" />
     <ClInclude Include="Vertex\Vertex.h" />
     <ClInclude Include="ECS\View\View.h" />
     <ClInclude Include="Window\Window.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
