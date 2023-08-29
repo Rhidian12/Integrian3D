@@ -13,19 +13,16 @@ TEST_CASE("Testing the File")
 
 	SECTION("Writing to a file some text")
 	{
-		File file{ "Resources/TestASCIIFile.txt" };
+		File file{ "Resources/TestASCIIFile.txt", OpenMode::CreateAlways };
 
-		file.ClearBuffer();
-		REQUIRE(file.GetBuffer().Size() == 0);
+		REQUIRE(file.GetFilesize() == 0);
 
-		file << 5 << '\n';
-		file << 16.f << '\n';
-		file << "This is a test string\n";
-		file << "This is a second test string on a new line";
+		Write(file, 5);
+		Write(file, 16.f);
+		Write(file, "This is some string", false);
+		Write(file, "\tThis is another string");
 
-		REQUIRE(file.GetBuffer().Size() > 0);
-
-		file.Write();
+		REQUIRE(file.GetFilesize() > 0);
 	}
 
 	SECTION("Reading a file with some text")

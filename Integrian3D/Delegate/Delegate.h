@@ -1,9 +1,9 @@
 #pragma once
 
 #include "../EngineConstants.h"
+#include "../Array/Array.h"
 
 #include <functional> /* std::function */
-#include <vector> /* std::vector */
 
 namespace Integrian3D
 {
@@ -13,14 +13,41 @@ namespace Integrian3D
 	public:
 		using Callback = std::function<void(Ts&&...)>;
 
+		Delegate(const Delegate& Other)
+			: Callbacks{ Other.Callbacks }
+		{}
+
+		Delegate(Delegate&& Other)
+			: Callbacks{ __MOVE(Other.Callbacks) }
+		{}
+
+		Delegate& operator=(const Delegate& Other)
+		{
+			Callbacks = Other.Callbacks;
+
+			return *this;
+		}
+
+		Delegate& operator=(Delegate&& Other)
+		{
+			Callbacks = __MOVE(Other.Callbacks);
+
+			return *this;
+		}
+
 		void Bind(const Callback& fn)
 		{
-			Callbacks.push_back(fn);
+			Callbacks.Add(fn);
 		}
 
 		void Bind(Callback&& fn)
 		{
-			Callbacks.push_back(std::move(fn));
+			Callbacks.Add(std::move(fn));
+		}
+
+		void Unbind(const Callback& fn)
+		{
+			Callbacks.Erase(fn);
 		}
 
 		template<typename ... Us>
@@ -33,6 +60,6 @@ namespace Integrian3D
 		}
 
 	private:
-		std::vector<Callback> Callbacks;
+		TArray<Callback> Callbacks;
 	};
 }

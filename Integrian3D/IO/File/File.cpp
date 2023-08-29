@@ -12,149 +12,99 @@
 
 namespace Integrian3D::IO
 {
-	File::File()
-		: m_Filepath{}
-		, m_pHandle{}
-		, m_Buffer{}
-		, m_BufferPointer{}
-	{}
-
-	File::File(const std::string& filepath)
-		: m_Filepath{ filepath }
-		, m_pHandle{}
-		, m_Buffer{}
-		, m_BufferPointer{}
+	File::File(const std::string_view Filepath, const OpenMode OpenMode)
+		: Filepath{ Filepath }
+		, Handle{}
+		, Filesize{}
+		, OnFileChanged{}
 	{
 		/* open the file */
-		m_pHandle = CreateFileA(filepath.data(),
+		Handle = CreateFileA(Filepath.data(),
 			GENERIC_READ | GENERIC_WRITE,
 			FILE_SHARE_READ,
 			nullptr,
-			OPEN_ALWAYS,
+			static_cast<DWORD>(OpenMode),
 			FILE_ATTRIBUTE_NORMAL,
 			nullptr);
 
-		if (m_pHandle == INVALID_HANDLE_VALUE)
+		if (Handle == INVALID_HANDLE_VALUE)
+		{
 			Debug::LogError("File could not open the provided file", false);
+		}
 
 		/* Get the file size */
-		const DWORD fileSize{ GetFileSize(m_pHandle, nullptr) };
-		m_Buffer.Resize(fileSize);
+		Filesize = static_cast<int64_t>(GetFileSize(Handle, nullptr));
+		//Buffer.Resize(fileSize);
 
-		/* Read the file contents */
-		DWORD readBytes{};
-		if (ReadFile(m_pHandle, m_Buffer.Data(), fileSize, &readBytes, nullptr) == 0)
-			Debug::LogError("File could not read the provided file", false);
+		///* Read the file contents */
+		//DWORD readBytes{};
+		//if (ReadFile(Handle, Buffer.Data(), fileSize, &readBytes, nullptr) == 0)
+		//{
+		//	Debug::LogError("File could not read the provided file", false);
+		//}
 	}
 
 	File::~File()
 	{
-		if (m_pHandle)
-			if (CloseHandle(m_pHandle) == 0)
-				Debug::LogError("File could not close the provided file", false);
+		CloseHandle();
 	}
 
 	File::File(File&& other) noexcept
-		: m_Filepath{ __MOVE(other.m_Filepath) }
-		, m_pHandle{ __MOVE(other.m_pHandle) }
-		, m_Buffer{ __MOVE(other.m_Buffer) }
-		, m_BufferPointer{ __MOVE(other.m_BufferPointer) }
+		: Filepath{ __MOVE(other.Filepath) }
+		, Handle{ __MOVE(other.Handle) }
+		, Filesize{ __MOVE(other.Filesize) }
+		, OnFileChanged{ __MOVE(other.OnFileChanged) }
 	{
-		other.m_pHandle = nullptr;
+		other.Handle = nullptr;
 	}
 
 	File& File::operator=(File&& other) noexcept
 	{
-		m_Filepath = __MOVE(other.m_Filepath);
-		m_pHandle = __MOVE(other.m_pHandle);
-		m_Buffer = __MOVE(other.m_Buffer);
-		m_BufferPointer = __MOVE(other.m_BufferPointer);
+		if (Handle)
+		{
+			CloseHandle();
+		}
 
-		other.m_pHandle = nullptr;
+		Filepath = __MOVE(other.Filepath);
+		Handle = __MOVE(other.Handle);
+		Filesize = __MOVE(other.Filesize);
+		OnFileChanged = __MOVE(other.OnFileChanged);
+
+		other.Handle = nullptr;
 
 		return *this;
 	}
 
-	void File::Write() const
+	const std::string_view File::GetFilepath() const
 	{
-		if (SetFilePointer(m_pHandle, 0, nullptr, FILE_BEGIN) == INVALID_SET_FILE_POINTER)
-			Debug::LogError("File::Write() > File could not set the file pointer", false);
-
-		if (SetEndOfFile(m_pHandle) == 0)
-			Debug::LogError("File::Write() > File could not be truncated", false);
-
-		if (WriteFile(m_pHandle, m_Buffer.Data(), static_cast<DWORD>(m_Buffer.Size()), nullptr, nullptr) == 0)
-			Debug::LogError("File::Write() > File could not write the data to the provided file", false);
+		return Filepath;
 	}
 
-	void File::Write(const TArray<char>& data, const SeekMode mode)
+	const int64_t File::GetFilesize() const
 	{
-		__ASSERT(mode != SeekMode::Regress && "File::Write(const TArray&) > Cannot write while regressing");
+		return Filesize;
+	}
 
-		switch (mode)
+	void File::OnFileChanged()
+	{
+		OnFileChanged.Invoke();
+	}
+
+	Delegate<File*>& File::GetOnFileChangedDelegate()
+	{
+		return OnFileChanged;
+	}
+
+	void File::CloseHandle()
+	{
+		if (Handle)
 		{
-			case SeekMode::Start:
-				for (int32_t i{ static_cast<int32_t>(data.Size()) - 1 }; i >= 0; --i)
-					m_Buffer.AddFront(data[i]);
-				break;
-			case SeekMode::End:
-			case SeekMode::Advance:
-				m_Buffer.AddRange(data.cbegin(), data.cend());
-				break;
-		}
-	}
-
-	void File::ClearBuffer()
-	{
-		m_Buffer.Clear();
-	}
-
-	std::string File::GetLine(const char delim)
-	{
-		std::string line{};
-		while (m_BufferPointer < m_Buffer.Size())
-		{
-			line.push_back(m_Buffer[m_BufferPointer++]);
-
-			if (m_Buffer[m_BufferPointer] == delim)
+			if (::CloseHandle(Handle) == 0)
 			{
-				line.push_back(m_Buffer[m_BufferPointer++]);
-				break;
+				Debug::LogError("File could not close the provided file", false);
 			}
+
+			Handle = nullptr;
 		}
-
-		return line;
-	}
-
-	void File::Seek(const SeekMode mode, const uint64_t val)
-	{
-		__ASSERT(!m_Buffer.Empty());
-
-		switch (mode)
-		{
-			case SeekMode::Start:
-				m_BufferPointer = val;
-				break;
-			case SeekMode::End:
-				m_BufferPointer = m_Buffer.Size() - 1 - val;
-				break;
-			case SeekMode::Advance:
-				m_BufferPointer += val;
-
-				if (m_BufferPointer >= m_Buffer.Size())
-					m_BufferPointer = m_Buffer.Size() - 1u;
-				break;
-			case SeekMode::Regress:
-				if (val <= m_BufferPointer)
-					m_BufferPointer -= val;
-				else
-					m_BufferPointer = 0;
-				break;
-		}
-	}
-
-	const TArray<char>& File::GetBuffer() const
-	{
-		return m_Buffer;
 	}
 }
