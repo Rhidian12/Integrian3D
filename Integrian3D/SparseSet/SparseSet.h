@@ -1,15 +1,18 @@
 #pragma once
 
 #include "../EngineConstants.h"
-#include "../Iterator/Iterator.h"
 
-#include <vector> /* std::vector */
+#include <vector> 
 
 namespace Integrian3D
 {
 	template<typename T>
 	class SparseSet final
 	{
+	private:
+		using VectorIt = std::vector<T>::iterator;
+		using VectorCIt = std::vector<T>::const_iterator;
+
 	public:
 		SparseSet()
 			: Sparse{}
@@ -27,13 +30,30 @@ namespace Integrian3D
 		}
 		bool Add(T&& value)
 		{
-			return AddImpl(__MOVE(T, value));
+			return AddImpl(std::move(value));
 		}
 
-		__NODISCARD bool Contains(const T value) const { return (value < Sparse.size()) && (Sparse[value] != InvalidEntityID); }
-		__NODISCARD T GetIndex(const T value) const { __ASSERT(Contains(value) && "SparseSet::GetIndex() > The given value is not present in the Set"); return Sparse[value]; }
+		bool Contains(const T value) const
+		{
+			return (value < Sparse.size()) && (Sparse[value] != InvalidEntityID);
+		}
 
-		__NODISCARD size_t Size() const { return _Size; }
+		T GetSparse(const T value) const
+		{
+			for (const T sparse : Sparse)
+			{
+				if (sparse != InvalidEntityID && sparse == value)
+				{
+					return sparse;
+				}
+			}
+
+			__ASSERT(false);
+
+			return static_cast<T>(0);
+		}
+
+		size_t Size() const { return _Size; }
 		void Clear() { Sparse.clear(); Packed.clear(); _Size = 0; }
 
 		bool Remove(const T value)
@@ -52,17 +72,25 @@ namespace Integrian3D
 
 		void Reserve(const size_t capacity) { Sparse.reserve(capacity); Packed.reserve(capacity); }
 
-		__NODISCARD T& operator[](const size_t index) { __ASSERT(index < _Size); return Packed[index]; }
-		__NODISCARD const T operator[](const size_t index) const { __ASSERT(index < _Size); return Packed[index]; }
+		__NODISCARD __INLINE T& operator[](const T val)
+		{
+			__ASSERT(Contains(val));
+			return Packed[Sparse[val]];
+		}
+		__NODISCARD __INLINE const T operator[](const T val) const
+		{
+			__ASSERT(Contains(val));
+			return Packed[Sparse[val]];
+		}
 
-		Iterator<T, IteratorTag::RandomAccessIt> begin() { return Packed.data(); }
-		ConstIterator<T, IteratorTag::RandomAccessIt> begin() const { return Packed.data(); }
+		VectorIt begin() { return Packed.begin(); }
+		VectorCIt begin() const { return Packed.begin(); }
 
-		Iterator<T, IteratorTag::RandomAccessIt> end() { return Packed.data() + Packed.size(); }
-		ConstIterator<T, IteratorTag::RandomAccessIt> end() const { return Packed.data() + Packed.size(); }
+		VectorIt end() { return Packed.end(); }
+		VectorCIt end() const { return Packed.end(); }
 
-		ConstIterator<T, IteratorTag::RandomAccessIt> cbegin() const { return Packed.data(); }
-		ConstIterator<T, IteratorTag::RandomAccessIt> cend() const { return Packed.data() + Packed.size(); }
+		VectorCIt cbegin() const { return Packed.cbegin(); }
+		VectorCIt cend() const { return Packed.cend(); }
 
 	private:
 		template<typename U>

@@ -1,12 +1,17 @@
 #pragma once 
 
 #include "../EngineConstants.h"
+
 #include "../Shader/Shader.h"
 
 #include <memory> /* std::unique_ptr */
 
 namespace Integrian3D
 {
+	class FreeCameraComponent;
+	class MeshComponent;
+	class TransformComponent;
+
 	class Renderer final
 	{
 	public:
@@ -17,9 +22,9 @@ namespace Integrian3D
 		Renderer& operator=(const Renderer&) noexcept = delete;
 		Renderer& operator=(Renderer&&) noexcept = delete;
 
-		void StartRenderLoop(const class CameraComponent* pCamera) const;
+		void StartRenderLoop(const FreeCameraComponent& camera) const;
 
-		void Render(const class MeshComponent* pMeshComponent, const class TransformComponent* pTransformComponent) const;
+		void Render(const MeshComponent& mesh, const TransformComponent& transform) const;
 
 		void ShouldRenderWireframe(const bool bShouldRenderWireFrame) { bShouldRenderWireframe = bShouldRenderWireFrame; }
 

@@ -74,28 +74,28 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)Build\$(PlatformTarget)\</OutDir>
     <IntDir>$(SolutionDir)Build-Int\$(PlatformTarget)\</IntDir>
-    <IncludePath>$(SolutionDir)Libraries\glad\include;$(SolutionDir)\Libraries\glfw-3.3.8\include;$(SolutionDir)\Libraries\glm;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Libraries\glad\include;$(SolutionDir)\Libraries\glfw-3.3.8\include;$(SolutionDir)\Libraries\glm;$(SolutionDir)\Libraries\Catch2;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)Libraries\glad\src;$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)Build\$(PlatformTarget)\</OutDir>
     <IntDir>$(SolutionDir)Build-Int\$(PlatformTarget)\</IntDir>
-    <IncludePath>$(SolutionDir)Libraries\glad\include;$(SolutionDir)\Libraries\glfw-3.3.8\include;$(SolutionDir)\Libraries\glm;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Libraries\glad\include;$(SolutionDir)\Libraries\glfw-3.3.8\include;$(SolutionDir)\Libraries\glm;$(SolutionDir)\Libraries\Catch2;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)Libraries\glad\src;$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)Build\$(PlatformTarget)\</OutDir>
     <IntDir>$(SolutionDir)Build-Int\$(PlatformTarget)\</IntDir>
-    <IncludePath>$(SolutionDir)Libraries\glad\include;$(SolutionDir)\Libraries\glfw-3.3.8\include;$(SolutionDir)\Libraries\glm;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Libraries\glad\include;$(SolutionDir)\Libraries\glfw-3.3.8\include;$(SolutionDir)\Libraries\glm;$(SolutionDir)\Libraries\Catch2;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)Libraries\glad\src;$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)Build\$(PlatformTarget)\</OutDir>
     <IntDir>$(SolutionDir)Build-Int\$(PlatformTarget)\</IntDir>
-    <IncludePath>$(SolutionDir)Libraries\glad\include;$(SolutionDir)\Libraries\glfw-3.3.8\include;$(SolutionDir)\Libraries\glm;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Libraries\glad\include;$(SolutionDir)\Libraries\glfw-3.3.8\include;$(SolutionDir)\Libraries\glm;$(SolutionDir)\Libraries\Catch2;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)Libraries\glad\src;$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -104,7 +104,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Libraries\glad\include;$(SolutionDir)Libraries\glfw-3.3.8\include;$(SolutionDir)\Libraries\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Libraries\glad\include;$(SolutionDir)Libraries\glfw-3.3.8\include;$(SolutionDir)\Libraries\glm;$(SolutionDir)\Libraries\Catch2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -125,7 +125,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Libraries\glad\include;$(SolutionDir)Libraries\glfw-3.3.8\include;$(SolutionDir)\Libraries\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Libraries\glad\include;$(SolutionDir)Libraries\glfw-3.3.8\include;$(SolutionDir)\Libraries\glm;$(SolutionDir)\Libraries\Catch2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -146,7 +146,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Libraries\glad\include;$(SolutionDir)Libraries\glfw-3.3.8\include;$(SolutionDir)\Libraries\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Libraries\glad\include;$(SolutionDir)Libraries\glfw-3.3.8\include;$(SolutionDir)\Libraries\glm;$(SolutionDir)\Libraries\Catch2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -167,7 +167,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Libraries\glad\include;$(SolutionDir)Libraries\glfw-3.3.8\include;$(SolutionDir)\Libraries\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Libraries\glad\include;$(SolutionDir)Libraries\glfw-3.3.8\include;$(SolutionDir)\Libraries\glm;$(SolutionDir)\Libraries\Catch2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -184,11 +184,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Component\Component.cpp" />
-    <ClCompile Include="GameObject\GameObject.cpp" />
+    <ClCompile Include="CoreEngine.cpp" />
     <ClCompile Include="IO\File\File.cpp" />
     <ClCompile Include="IO\IAsset\IAssetReader.cpp" />
     <ClCompile Include="IO\IAsset\IAssetWriter.cpp" />
-    <ClCompile Include="Components\CameraComponent\CameraComponent.cpp" />
+    <ClCompile Include="Components\FreeCameraComponent\FreeCameraComponent.cpp" />
     <ClCompile Include="Core\Core.cpp" />
     <ClCompile Include="IO\ASCII\FileReader.cpp" />
     <ClCompile Include="LinkedList\LinkedList.cpp" />
@@ -202,32 +202,45 @@
     <ClCompile Include="Math\Math.cpp" />
     <ClCompile Include="Components\MeshComponent\MeshComponent.cpp" />
     <ClCompile Include="Memory\New\New.cpp" />
-    <ClCompile Include="Object\Object.cpp" />
+    <ClCompile Include="ECS\Registry\Registry.cpp" />
     <ClCompile Include="Renderer\Renderer.cpp" />
     <ClCompile Include="SceneManager\SceneManager.cpp" />
     <ClCompile Include="Scene\Scene.cpp" />
     <ClCompile Include="Shader\Shader.cpp" />
     <ClCompile Include="Components\TestRotateComponent\TestRotateComponent.cpp" />
+    <ClCompile Include="Components\TagComponent\TagComponent.cpp" />
     <ClCompile Include="TextureManager\TextureManager.cpp" />
     <ClCompile Include="Texture\Texture.cpp" />
     <ClCompile Include="Timer\Timepoint\Timepoint.cpp" />
     <ClCompile Include="Timer\Timer.cpp" />
     <ClCompile Include="Components\TransformComponent\TransformComponent.cpp" />
+    <ClCompile Include="UnitTests\AllocatorInterfaceTests.cpp" />
+    <ClCompile Include="UnitTests\ArrayTests.cpp" />
+    <ClCompile Include="UnitTests\FileTests.cpp" />
+    <ClCompile Include="UnitTests\FreeListAllocatorTests.cpp" />
+    <ClCompile Include="UnitTests\IAssetTests.cpp" />
+    <ClCompile Include="UnitTests\LowLevelLinkedListTests.cpp" />
+    <ClCompile Include="UnitTests\MathTests.cpp" />
+    <ClCompile Include="UnitTests\NewTests.cpp" />
+    <ClCompile Include="UnitTests\SerialisationTests.cpp" />
+    <ClCompile Include="UnitTests\TimerTests.cpp" />
+    <ClCompile Include="UnitTests\UnitTests.cpp" />
     <ClCompile Include="Utils\Utils.cpp" />
     <ClCompile Include="Window\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Array\Array.h" />
     <ClInclude Include="Component\Component.h" />
-    <ClInclude Include="GameObject\GameObject.h" />
-    <ClInclude Include="GameObject\GameObjectUtils.h" />
+    <ClInclude Include="Config.h" />
+    <ClInclude Include="ECS\ComponentIDGenerator.h" />
+    <ClInclude Include="ECS\DenseSet\DenseSet.h" />
     <ClInclude Include="IO\FileMode.h" />
     <ClInclude Include="IO\File\File.h" />
     <ClInclude Include="IO\IAsset\IAssetReader.h" />
     <ClInclude Include="IO\IAsset\IAssetUtils.h" />
     <ClInclude Include="IO\IAsset\IAssetWriter.h" />
     <ClInclude Include="IO\IOUtils.h" />
-    <ClInclude Include="Components\CameraComponent\CameraComponent.h" />
+    <ClInclude Include="Components\FreeCameraComponent\FreeCameraComponent.h" />
     <ClInclude Include="Delegate\Delegate.h" />
     <ClInclude Include="ECS\ComponentArray\ComponentArray.h" />
     <ClInclude Include="ECS\ComponentIDGenerator\ComponentIDGenerator.h" />
@@ -253,14 +266,14 @@
     <ClInclude Include="Math\Math.h" />
     <ClInclude Include="Math\RGBColour.h" />
     <ClInclude Include="Components\MeshComponent\MeshComponent.h" />
-    <ClInclude Include="ECS\Registry\Registry.h" />
     <ClInclude Include="Memory\MemoryUtils.h" />
-    <ClInclude Include="Object\Object.h" />
+    <ClInclude Include="ECS\Registry\Registry.h" />
     <ClInclude Include="Renderer\Renderer.h" />
     <ClInclude Include="SceneManager\SceneManager.h" />
     <ClInclude Include="Scene\Scene.h" />
     <ClInclude Include="Shader\Shader.h" />
     <ClInclude Include="SparseSet\SparseSet.h" />
+    <ClInclude Include="Components\TagComponent\TagComponent.h" />
     <ClInclude Include="TemplateUtils\TemplateUtils.h" />
     <ClInclude Include="Components\TestRotateComponent\TestRotateComponent.h" />
     <ClInclude Include="TextureManager\TextureManager.h" />
@@ -269,11 +282,17 @@
     <ClInclude Include="Timer\Timepoint\Timepoint.h" />
     <ClInclude Include="Timer\Timer.h" />
     <ClInclude Include="Components\TransformComponent\TransformComponent.h" />
+    <ClInclude Include="TPair\TPair.full.h" />
+    <ClInclude Include="TPair\TPair.h" />
     <ClInclude Include="Types\Types.h" />
+    <ClInclude Include="UpdateOrder\UpdateOrder.h" />
     <ClInclude Include="Utils\Utils.h" />
-    <ClInclude Include="ECS\View\View.h" />
     <ClInclude Include="Vertex\Vertex.h" />
+    <ClInclude Include="ECS\View\View.h" />
     <ClInclude Include="Window\Window.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

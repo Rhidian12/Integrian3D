@@ -1,9 +1,15 @@
 #include "Scene.h"
 
-#include "../Components/TransformComponent/TransformComponent.h"
-#include "../Components/CameraComponent/CameraComponent.h"
-#include "../Math/Math.h"
 #include "../Core/Core.h"
+#include "../InputManager/InputManager.h"
+#include "../Math/Math.h"
+#include "../Renderer/Renderer.h"
+#include "../TPair/TPair.full.h"
+
+#include "../Components/FreeCameraComponent/FreeCameraComponent.h"
+#include "../Components/MeshComponent/MeshComponent.h"
+#include "../Components/TagComponent/TagComponent.h"
+#include "../Components/TransformComponent/TransformComponent.h"
 
 #include <gtc/matrix_transform.hpp>
 
@@ -11,97 +17,153 @@ namespace Integrian3D
 {
 	Scene::Scene(const std::string& sceneName)
 		: m_SceneName{ sceneName }
-		, m_GameObjects{}
-		, m_pActiveCamera{}
-	{}
+		, m_InitCallbacks{}
+		, m_UpdateCallbacks{}
+		, m_RenderCallbacks{}
+		, m_Registry{}
+	{
+		// Render meshes
+		AddRenderCallback(0u, [](Scene& scene)->void
+			{
+				const auto& renderer{ Renderer::GetInstance() };
+				renderer.StartRenderLoop(scene.GetComponent<FreeCameraComponent>(scene.GetActiveCameraEntity()));
+
+				if (scene.GetNrOfEntities() > 0u && scene.CanViewBeCreated<TransformComponent, MeshComponent>())
+				{
+					const View view{ scene.CreateView<TransformComponent, MeshComponent>() };
+
+					view.ForEach([&renderer](const auto& transform, const auto& mesh)->void
+						{
+							renderer.Render(mesh, transform);
+						});
+				}
+			});
+
+		// Transform update
+		AddUpdateCallback(0u, [](Scene& scene)->void
+			{
+				if (scene.GetNrOfEntities() > 0u && scene.CanViewBeCreated<TransformComponent>())
+				{
+					const View view{ scene.CreateView<TransformComponent>() };
+
+					view.ForEach([](TransformComponent& transform)->void
+						{
+							transform.RecalculateTransform();
+						});
+				}
+			});
+
+		// Camera update
+		AddUpdateCallback(0u, [](Scene& scene)->void
+			{
+				if (scene.GetNrOfEntities() > 0u && scene.CanViewBeCreated<FreeCameraComponent, TransformComponent>())
+				{
+					const View view{ scene.CreateView<FreeCameraComponent, TransformComponent>() };
+
+					view.ForEach([](FreeCameraComponent& camera, TransformComponent& transform)->void
+						{
+							camera.UpdateView(transform);
+
+							if (!InputManager::GetInstance().GetIsMouseButtonPressed(MouseInput::RMB)) return;
+
+							camera.UpdateTranslation(transform);
+							camera.UpdateRotation(transform);
+						});
+				}
+			});
+	}
 
 	Scene::~Scene()
 	{
-		for (const GameObject* pG : m_GameObjects)
-			__DELETE(pG);
-
-		m_GameObjects.Clear();
+		m_Registry.Clear();
 	}
 
-	void Scene::AddGameObject(GameObject* const pGameobject)
+	void Scene::AddInitialisationCallback(const size_t prio, void(*fn)(Scene&))
 	{
-		if (m_GameObjects.Find(pGameobject) == m_GameObjects.cend())
-		{
-			m_GameObjects.Add(pGameobject);
-
-			if (g_IsRunning)
-				pGameobject->Start();
-		}
+		m_InitCallbacks.emplace_back(MakePair(prio, fn));
 	}
 
-	void Scene::RemoveGameObject(GameObject* const pGameObject)
+	void Scene::AddUpdateCallback(const size_t prio, void(*fn)(Scene&))
 	{
-		const auto it{ m_GameObjects.Find(pGameObject) };
+		m_UpdateCallbacks.emplace_back(MakePair(prio, fn));
+	}
 
-		if (it != m_GameObjects.cend())
-			m_GameObjects.Erase(it);
+	void Scene::AddRenderCallback(const size_t prio, void(*fn)(Scene&))
+	{
+		m_RenderCallbacks.emplace_back(MakePair(prio, fn));
+	}
+
+	Entity Scene::CreateEntity()
+	{
+		const Entity entity{ m_Registry.CreateEntity() };
+
+		m_Registry.AddComponent<TransformComponent>(entity);
+
+		return entity;
 	}
 
 	void Scene::Start()
 	{
-		for (GameObject* pG : m_GameObjects)
-			pG->Awake();
+		m_ActiveCameraEntity = InvalidEntityID;
 
-		for (GameObject* pG : m_GameObjects)
+		std::sort(m_InitCallbacks.begin(), m_InitCallbacks.end(), [](const auto& a, const auto& b)->bool
+			{
+				return a.Key() < b.Key();
+			});
+
+		for (const auto& [prio, callback] : m_InitCallbacks)
 		{
-			pG->Start();
-
-			if (pG->HasTag("MainCamera"))
-				if (CameraComponent* pC{ pG->GetComponentByType<CameraComponent>() }; pC != nullptr)
-					m_pActiveCamera = pC;
+			callback(*this);
 		}
 
-		if (!m_pActiveCamera)
+		if (m_Registry.CanViewBeCreated<FreeCameraComponent, TagComponent>())
 		{
-			GameObject* pCamera{ Instantiate("MainCamera", this) };
-			m_pActiveCamera = pCamera->AddComponent(new CameraComponent
+			const View view{ m_Registry.CreateView<FreeCameraComponent, TagComponent>() };
+
+			view.ForEach([this](const auto& camera, const auto& tag)->void
 				{
-					pCamera,
+					if (tag.HasTag("MainCamera"))
+					{
+						this->m_ActiveCameraEntity = FindEntity(camera);
+					}
+				});
+		}
+
+		if (m_ActiveCameraEntity == InvalidEntityID)
+		{
+			m_ActiveCameraEntity = CreateEntity();
+
+			m_Registry.AddComponent<FreeCameraComponent>
+				(
+					m_ActiveCameraEntity,
 					0.1f,
 					100.f,
-					Math::ToRadians(45.f),
-					static_cast<float>(Core::GetInstance().GetWindowWidth()) / Core::GetInstance().GetWindowHeight()
-				});
+					Math::ToRadians(90.f),
+					static_cast<float>(Core::GetInstance().GetWindowWidth() / Core::GetInstance().GetWindowHeight())
+					);
 
-			pCamera->pTransform->Translate(Math::Vec3D{ 0.f, 0.f, -10.f }, true);
-
-			pCamera->Start();
-
-			AddGameObject(pCamera);
+			m_Registry.GetComponent<TransformComponent>(m_ActiveCameraEntity).Translate(Math::Vec3D{ 0.f, 0.f, -10.f }, true);
 		}
+
+		std::sort(m_UpdateCallbacks.begin(), m_UpdateCallbacks.end(), [](const auto& a, const auto& b)->bool
+			{
+				return a.Key() < b.Key();
+			});
 	}
 
 	void Scene::Update()
 	{
-		for (GameObject* pG : m_GameObjects)
-			pG->FixedUpdate();
-
-		for (GameObject* pG : m_GameObjects)
-			pG->Update();
-
-		for (GameObject* pG : m_GameObjects)
-			pG->LateUpdate();
-
-		m_GameObjects.EraseAll([](const GameObject* pG)->bool
-			{
-				if (pG->IsMarkedForDestruction())
-				{
-					__DELETE(pG);
-					return true;
-				}
-
-				return false;
-			});
+		for (const auto& [prio, callback] : m_UpdateCallbacks)
+		{
+			callback(*this);
+		}
 	}
 
-	void Scene::Render() const
+	void Scene::Render()
 	{
-		for (const GameObject* pG : m_GameObjects)
-			pG->Render();
+		for (const auto& [prio, callback] : m_RenderCallbacks)
+		{
+			callback(*this);
+		}
 	}
 }

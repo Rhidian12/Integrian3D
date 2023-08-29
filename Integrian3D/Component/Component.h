@@ -1,28 +1,20 @@
 #pragma once
 
 #include "../EngineConstants.h"
-#include "../GameObject/GameObject.h"
 
 namespace Integrian3D
 {
-	class Component : public Object
+	class Component
 	{
 	public:
-		explicit Component(class GameObject* pOwner);
+		Component() = default;
 		virtual ~Component() = default;
 
-		virtual void Awake() {}
-		virtual void Start() {}
-		virtual void FixedUpdate() {}
-		virtual void Update() {}
-		virtual void LateUpdate() {}
-		virtual void Render() const {}
+		__INLINE void SetActive(const bool isActive) { m_IsActive = isActive; }
 
-		void SetOwner(class GameObject* const pOwner);
-
-		__NODISCARD class GameObject* const GetOwner() const { return m_pOwner; }
+		__NODISCARD __INLINE bool IsActive() const { return m_IsActive; }
 
 	protected:
-		class GameObject* m_pOwner;
+		bool m_IsActive;
 	};
 }

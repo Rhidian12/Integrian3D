@@ -69,7 +69,7 @@
     <ClCompile Include="Components\TransformComponent\TransformComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Components\CameraComponent\CameraComponent.cpp">
+    <ClCompile Include="Components\FreeCameraComponent\FreeCameraComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Memory\FreeListAllocator\FreeListAllocator.cpp">
@@ -96,12 +96,6 @@
     <ClCompile Include="IO\File\File.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Object\Object.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GameObject\GameObject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Component\Component.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -109,6 +103,48 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Memory\LowLevelLL\LowLevelLL.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UnitTests\UnitTests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UnitTests\LowLevelLinkedListTests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UnitTests\FreeListAllocatorTests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UnitTests\AllocatorInterfaceTests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UnitTests\NewTests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UnitTests\ArrayTests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UnitTests\TimerTests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UnitTests\SerialisationTests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UnitTests\IAssetTests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UnitTests\MathTests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UnitTests\FileTests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CoreEngine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ECS\Registry\Registry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\TagComponent\TagComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -194,7 +230,7 @@
     <ClInclude Include="Components\TransformComponent\TransformComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Components\CameraComponent\CameraComponent.h">
+    <ClInclude Include="Components\FreeCameraComponent\FreeCameraComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Iterator\Iterator.h">
@@ -260,16 +296,7 @@
     <ClInclude Include="IO\Serializer\Serializer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Object\Object.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GameObject\GameObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Component\Component.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GameObject\GameObjectUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Components\TestRotateComponent\TestRotateComponent.h">
@@ -284,5 +311,38 @@
     <ClInclude Include="IO\FileMode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ECS\Registry\Registry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\ComponentArray\ComponentArray.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\View\View.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Config.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\ComponentIDGenerator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TPair\TPair.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TPair\TPair.full.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\TagComponent\TagComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\DenseSet\DenseSet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UpdateOrder\UpdateOrder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
   </ItemGroup>
 </Project>

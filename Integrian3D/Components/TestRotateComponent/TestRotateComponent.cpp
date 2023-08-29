@@ -1,20 +1,19 @@
 #include "TestRotateComponent.h"
+
 #include "../TransformComponent/TransformComponent.h"
+
 #include "../../Timer/Timer.h"
 
 namespace Integrian3D
 {
-	TestRotateComponent::TestRotateComponent(GameObject* pOwner)
-		: Component{ pOwner }
-	{}
-
-	void TestRotateComponent::Update()
+	void TestRotateComponent::Rotate(TransformComponent& transform)
 	{	
-		m_pOwner->pTransform->Rotate
+		transform.Rotate
 		(
 			Math::Vec3D
 			{
-				Math::ToRadians(25.f) * Time::Timer::GetInstance().GetElapsedSeconds(),
+				0.f,
+				// Math::ToRadians(25.f) * Time::Timer::GetInstance().GetElapsedSeconds(),
 				Math::ToRadians(50.f) * Time::Timer::GetInstance().GetElapsedSeconds(),
 				0.f
 			}
