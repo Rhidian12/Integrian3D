@@ -6,27 +6,36 @@ namespace Integrian3D
 {
 #define LOG(Category, Visibility, Format, ...) Logger::GetInstance().LogMessage(#Category, #Visibility, Format, __VA_ARGS__)
 
-	/* ASSERT() */
+	/* __ASSERT(), __CASSERT(), __CHECK */
 #ifdef _DEBUG
 #	define __BREAK() __debugbreak()
 
-#	define __ASSERT(expr) \
-		if ((expr)) {} \
+#	define __ASSERT(Expr, Format, ...) \
+		if ((Expr)) {} \
 		else \
 		{ \
-			LOG("Assert", "Error", "Assertion Triggered: %s", #expr); \
+			LOG("Assert", "Fatal", Format, __VA_ARGS__); \
 			__BREAK(); \
 		}
 
-#	define __CASSERT(expr) \
-		if constexpr ((expr)) {} \
+#	define __CASSERT(Expr, Format, ...) \
+		if constexpr ((Expr)) {} \
 		else \
 		{ \
-			LOG("Assert", "Error", "Assertion Triggered: %s", #expr); \
+			LOG("Assert", "Fatal", Format, __VA_ARGS__); \
+			__BREAK(); \
+		}
+
+#	define __CHECK(Expr) \
+		if ((Expr)) {} \
+		else \
+		{ \
+			LOG("Check", "Fatal", "Check %s triggered at line %i in file %s", #Expr, __LINE__, __FILE__); \
 			__BREAK(); \
 		}
 #else
-#	define __ASSERT(expr)
-#	define __CASSERT(expr)
+#	define __BREAK()
+#	define __ASSERT(expr, message)
+#	define __CASSERT(expr, message)
 #endif
 }

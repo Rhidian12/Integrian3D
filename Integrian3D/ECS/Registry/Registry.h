@@ -61,7 +61,7 @@ namespace Integrian3D
 		template<typename T>
 		void RemoveComponent(const Entity entity)
 		{
-			__ASSERT(HasEntity(entity));
+			__ASSERT(HasEntity(entity), "Registry::RemoveComponent > Entity %i is not present in registry", entity);
 
 			GetComponentArray(ECS::GenerateComponentID<T>())->Remove(entity);
 		}
@@ -75,20 +75,24 @@ namespace Integrian3D
 		template<typename T>
 		__NODISCARD T& GetComponent(const Entity entity)
 		{
-			__ASSERT(GetComponentArray(ECS::GenerateComponentID<T>()));
+			__ASSERT(HasEntity(entity), "Registry::GetComponent > Entity %i is not present in registry", entity);
+			__CHECK(GetComponentArray(ECS::GenerateComponentID<T>()));
+
 			return static_cast<ComponentArray<T>*>(GetComponentArray(ECS::GenerateComponentID<T>()).get())->GetComponent(entity);
 		}
 		template<typename T>
 		__NODISCARD const T& GetComponent(const Entity entity) const
 		{
-			__ASSERT(GetComponentArray(ECS::GenerateComponentID<T>()));
+			__ASSERT(HasEntity(entity), "Registry::GetComponent > Entity %i is not present in registry", entity);
+			__CHECK(GetComponentArray(ECS::GenerateComponentID<T>()));
+
 			return static_cast<ComponentArray<T>*>(GetComponentArray(ECS::GenerateComponentID<T>()).get())->GetComponent(entity);
 		}
 
 		template<typename T>
 		__NODISCARD Entity FindEntity(const T& comp)
 		{
-			__ASSERT(GetComponentArray(ECS::GenerateComponentID<T>()));
+			__CHECK(GetComponentArray(ECS::GenerateComponentID<T>()));
 			return static_cast<ComponentArray<T>*>(GetComponentArray(ECS::GenerateComponentID<T>()).get())->FindEntity(comp);
 		}
 

@@ -25,7 +25,7 @@ namespace Integrian3D
 
 	InputManager& InputManager::GetInstance()
 	{
-		__ASSERT(Instance != nullptr && "InputManager::GetInstance() > No InputManager has been created");
+		__CHECK(Instance != nullptr);
 
 		return *Instance.get();
 	}

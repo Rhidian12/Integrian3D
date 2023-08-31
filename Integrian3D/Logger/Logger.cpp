@@ -95,7 +95,7 @@ namespace Integrian3D
 
 	void Logger::AddLogCategory(const std::string_view Category)
 	{
-		__ASSERT(Statics != nullptr);
+		__CHECK(Statics != nullptr);
 
 		Statics->Categories.Add(Category);
 	}

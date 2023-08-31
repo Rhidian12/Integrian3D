@@ -25,7 +25,7 @@ namespace Integrian3D
 			vertexShaderID = glCreateShader(GL_VERTEX_SHADER);
 
 			/* Attach the VertexShader code to the ID and compile it */
-			const char* pShaderSource{ vertexShader.GetFileContents().Data() };
+			const char* pShaderSource{ reinterpret_cast<char*>(vertexShader.GetFileContents().Data()) };
 			glShaderSource(vertexShaderID, 1, &pShaderSource, nullptr);
 			glCompileShader(vertexShaderID);
 
@@ -49,7 +49,7 @@ namespace Integrian3D
 			fragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
 
 			/* Attach the VertexShader code to the ID and compile it */
-			const char* pShaderSource{ fragmentShader.GetFileContents().Data() };
+			const char* pShaderSource{ reinterpret_cast<char*>(fragmentShader.GetFileContents().Data()) };
 			glShaderSource(fragmentShaderID, 1, &pShaderSource, nullptr);
 			glCompileShader(fragmentShaderID);
 
@@ -115,7 +115,7 @@ namespace Integrian3D
 
 	void Shader::Activate() const
 	{
-		__ASSERT(ProgramID != std::numeric_limits<uint32_t>::max() && "Shader::Activate() > No program set");
+		__CHECK(ProgramID != std::numeric_limits<uint32_t>::max());
 		glUseProgram(ProgramID);
 	}
 

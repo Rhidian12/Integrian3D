@@ -12,14 +12,12 @@
 
 namespace Integrian3D::IO
 {
-	File::File(const std::string_view Filepath, const OpenMode OpenMode, const FileMode FileMode)
+	File::File(const std::string_view Filepath, const OpenMode OpenMode, const FileMode Mode)
 		: Filepath{ Filepath }
 		, Handle{}
 		, Filesize{}
-		, FileContents{}
+		, Mode{ Mode }
 	{
-		FileMode;
-
 		/* open the file */
 		Handle = CreateFileA(Filepath.data(),
 			GENERIC_READ | GENERIC_WRITE,
@@ -37,14 +35,6 @@ namespace Integrian3D::IO
 
 		/* Get the file size */
 		Filesize = static_cast<int64_t>(GetFileSize(Handle, nullptr));
-		FileContents.Resize(Filesize);
-
-		/* Read the file contents */
-		DWORD readBytes{};
-		if (ReadFile(Handle, FileContents.Data(), static_cast<DWORD>(Filesize), &readBytes, nullptr) == 0)
-		{
-			LOG(File, Error, "File could not read the provided file: %s", Filepath);
-		}
 	}
 
 	File::~File()
@@ -86,8 +76,19 @@ namespace Integrian3D::IO
 		return Filesize;
 	}
 
-	const TArray<char>& File::GetFileContents() const
+	TArray<unsigned char> File::GetFileContents() const
 	{
+		TArray<unsigned char> FileContents{};
+
+		FileContents.Resize(Filesize);
+
+		/* Read the file contents */
+		DWORD readBytes{};
+		if (ReadFile(Handle, FileContents.Data(), static_cast<DWORD>(Filesize), &readBytes, nullptr) == 0)
+		{
+			LOG(File, Error, "File could not read the provided file: %s", Filepath);
+		}
+
 		return FileContents;
 	}
 

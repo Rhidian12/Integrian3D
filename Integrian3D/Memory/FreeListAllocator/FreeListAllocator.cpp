@@ -12,7 +12,7 @@ namespace Integrian3D::Memory
 	{
 		m_pStart = malloc(size);
 
-		__ASSERT(m_pStart != nullptr && "Ran out of memory");
+		__CHECK(m_pStart != nullptr && "Ran out of memory");
 
 		static_cast<FreeHeader*>(m_pStart)->Size = size;
 		m_FreeHeaders.Add(static_cast<FreeHeader*>(m_pStart));
@@ -34,7 +34,7 @@ namespace Integrian3D::Memory
 	{
 		m_pStart = malloc(m_PageSize);
 
-		__ASSERT(m_pStart != nullptr && "Ran out of memory");
+		__CHECK(m_pStart != nullptr && "Ran out of memory");
 
 		static_cast<FreeHeader*>(m_pStart)->Size = m_PageSize;
 		m_FreeHeaders.Add(static_cast<FreeHeader*>(m_pStart));
@@ -63,7 +63,7 @@ namespace Integrian3D::Memory
 		m_pStart = malloc(other.m_PageSize);
 		m_PageSize = other.m_PageSize;
 
-		__ASSERT(m_pStart != nullptr && "Ran out of memory");
+		__CHECK(m_pStart != nullptr && "Ran out of memory");
 
 		static_cast<FreeHeader*>(m_pStart)->Size = other.m_PageSize;
 		m_FreeHeaders.Add(static_cast<FreeHeader*>(m_pStart));
@@ -283,7 +283,7 @@ namespace Integrian3D::Memory
 
 	void* FreeListAllocator::Allocate(const uint64_t n, const uint64_t alignment)
 	{
-		__ASSERT(n > 0 && "Allocation size must be bigger");
+		__CHECK(n > 0 && "Allocation size must be bigger");
 
 		// Search through the free list for a free block that has enough space to allocate our data
 		// padding takes alignment into account

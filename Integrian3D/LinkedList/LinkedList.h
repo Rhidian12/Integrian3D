@@ -197,12 +197,12 @@ namespace Integrian3D
 #pragma region Accessing
 		__NODISCARD constexpr It Front()
 		{
-			__ASSERT(m_pHead);
+			__CHECK(m_pHead);
 			return It{ &m_pHead->Data };
 		}
 		__NODISCARD constexpr CIt Front() const
 		{
-			__ASSERT(m_pHead);
+			__CHECK(m_pHead);
 			return CIt{ &m_pHead->Data };
 		}
 
@@ -215,7 +215,7 @@ namespace Integrian3D
 				pCurrent = pCurrent->pNext;
 			}
 
-			__ASSERT(pCurrent);
+			__CHECK(pCurrent);
 
 			return It{ &pCurrent->Data };
 		}
@@ -228,14 +228,14 @@ namespace Integrian3D
 				pCurrent = pCurrent->pNext;
 			}
 
-			__ASSERT(pCurrent);
+			__CHECK(pCurrent);
 
 			return CIt{ &pCurrent->Data };
 		}
 
 		__NODISCARD constexpr It At(const uint64_t n)
 		{
-			__ASSERT(n < m_Size);
+			__CHECK(n < m_Size);
 
 			Node* pCurrent{ m_pHead };
 			for (uint64_t i{}; i < n; ++i)
@@ -247,7 +247,7 @@ namespace Integrian3D
 		}
 		__NODISCARD constexpr CIt At(const uint64_t n) const
 		{
-			__ASSERT(n < m_Size);
+			__CHECK(n < m_Size);
 
 			Node* pCurrent{ m_pHead };
 			for (uint64_t i{}; i < n; ++i)

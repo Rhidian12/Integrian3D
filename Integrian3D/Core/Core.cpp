@@ -24,14 +24,14 @@ namespace Integrian3D
 
 	Core& Core::GetInstance()
 	{
-		__ASSERT(Instance != nullptr && "Core::GetInstance() > No core has been created");
+		__ASSERT(Instance != nullptr, "Core::GetInstance() > Ensure Core::CreateCore is called before Core::GetInstance");
 
 		return *Instance.get();
 	}
 
 	Core& Core::CreateCore(const int windowWidth, const int windowHeight)
 	{
-		__ASSERT(Instance == nullptr && "Core::CreateCore() > A core has already been created");
+		__ASSERT(Instance == nullptr, "Core::CreateCore() > This function cannot be called more than once");
 
 		Instance = std::unique_ptr<Core>(new Core{ windowWidth, windowHeight });
 

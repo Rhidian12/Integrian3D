@@ -17,7 +17,7 @@ namespace Integrian3D
 	{
 		if (!filePath.empty())
 		{
-			__ASSERT(filePath.substr(filePath.find_last_of('.') + 1) == ".obj");
+			__ASSERT(filePath.substr(filePath.find_last_of('.') + 1) == ".obj", "MeshComponent can only deserialize .obj files currently");
 
 			/* [TODO]: Parse .obj file */
 		}

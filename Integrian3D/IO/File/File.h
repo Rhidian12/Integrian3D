@@ -18,17 +18,20 @@ namespace Integrian3D::IO
 	class File final
 	{
 	public:
-		explicit File(const std::string_view Filepath, const OpenMode OpenMode, const FileMode FileMode);
+		explicit File(const std::string_view Filepath, const OpenMode OpenMode, const FileMode Mode);
 		~File();
 
 		File(const File&) noexcept = delete;
-		File(File&& other) noexcept;
+		File(File&& Other) noexcept;
 		File& operator=(const File&) noexcept = delete;
-		File& operator=(File&& other) noexcept;
+		File& operator=(File&& Other) noexcept;
 
 		const std::string_view GetFilepath() const;
 		const int64_t GetFilesize() const;
-		const TArray<char>& GetFileContents() const;
+		TArray<unsigned char> GetFileContents() const;
+
+		template<typename T>
+		File& operator<<(const T& Val);
 
 	private:
 		void CloseHandle();
@@ -36,6 +39,23 @@ namespace Integrian3D::IO
 		std::string_view Filepath;
 		void* Handle;
 		int64_t Filesize;
-		TArray<char> FileContents;
+		FileMode Mode;
 	};
+
+	template<typename T>
+	inline File& File::operator<<(const T& Val)
+	{
+		__ASSERT(Mode == FileMode::ASCII, "File::operator<< is only available on ASCII files");
+		constexpr static int32_t Size{ sizeof(Val) };
+
+		unsigned char Buffer[Size]{};
+		memcpy(Buffer, &Val, Size);
+
+		if (WriteFile(Handle, Buffer, Size, nullptr, nullptr) == 0)
+		{
+			LOG(File, Warning, "File::operator<< could not write to file %s", Filepath);
+		}
+
+		return *this;
+	}
 }
