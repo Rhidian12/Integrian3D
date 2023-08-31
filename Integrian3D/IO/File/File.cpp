@@ -2,14 +2,6 @@
 
 #include "../../DebugUtility/DebugUtility.h"
 
-#pragma warning ( push )
-#pragma warning ( disable : 4005 ) /* warning C4005: 'APIENTRY': macro redefinition */ 
-#ifdef _WIN32
-#define WIN32_LEAN_AND_MEAN
-#include <Windows.h>
-#endif
-#pragma warning ( pop )
-
 namespace Integrian3D::IO
 {
 	File::File(const std::string_view Filepath, const OpenMode OpenMode, const FileMode Mode)
@@ -42,26 +34,28 @@ namespace Integrian3D::IO
 		CloseHandle();
 	}
 
-	File::File(File&& other) noexcept
-		: Filepath{ __MOVE(other.Filepath) }
-		, Handle{ __MOVE(other.Handle) }
-		, Filesize{ __MOVE(other.Filesize) }
+	File::File(File&& Other) noexcept
+		: Filepath{ __MOVE(Other.Filepath) }
+		, Handle{ __MOVE(Other.Handle) }
+		, Filesize{ __MOVE(Other.Filesize) }
+		, Mode{ __MOVE(Other.Mode) }
 	{
-		other.Handle = nullptr;
+		Other.Handle = nullptr;
 	}
 
-	File& File::operator=(File&& other) noexcept
+	File& File::operator=(File&& Other) noexcept
 	{
 		if (Handle)
 		{
 			CloseHandle();
 		}
 
-		Filepath = __MOVE(other.Filepath);
-		Handle = __MOVE(other.Handle);
-		Filesize = __MOVE(other.Filesize);
+		Filepath = __MOVE(Other.Filepath);
+		Handle = __MOVE(Other.Handle);
+		Filesize = __MOVE(Other.Filesize);
+		Mode = __MOVE(Other.Mode);
 
-		other.Handle = nullptr;
+		Other.Handle = nullptr;
 
 		return *this;
 	}
@@ -76,9 +70,9 @@ namespace Integrian3D::IO
 		return Filesize;
 	}
 
-	TArray<unsigned char> File::GetFileContents() const
+	TArray<char> File::GetFileContents() const
 	{
-		TArray<unsigned char> FileContents{};
+		TArray<char> FileContents{};
 
 		FileContents.Resize(Filesize);
 
@@ -90,6 +84,16 @@ namespace Integrian3D::IO
 		}
 
 		return FileContents;
+	}
+
+	File& File::operator<<(const TArray<char>& SerializedData)
+	{
+		for (const char c : SerializedData)
+		{
+			*this << c;
+		}
+		
+		return *this;
 	}
 
 	void File::CloseHandle()

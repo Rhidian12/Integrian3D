@@ -33,7 +33,7 @@ namespace Integrian3D
 				return pScene->GetSceneName() == sceneName;
 			}) };
 
-		__ASSERT(cIt != m_Scenes.cend() && "SceneManager::ChangeScene() > No scene with the specified name was found");
+		__ASSERT(cIt != m_Scenes.cend(), "SceneManager::ChangeScene() > No scene with the specified name %s was found", sceneName);
 
 		// m_pActiveScene->OnSceneLeave();
 

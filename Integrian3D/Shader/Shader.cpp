@@ -5,10 +5,13 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+
 #pragma warning( push )
 #pragma warning( disable:4201 )
-#include <gtc/type_ptr.hpp>
+#	include <gtc/type_ptr.hpp>
 #pragma warning( pop )
+
+#undef max
 
 namespace Integrian3D
 {
@@ -25,7 +28,7 @@ namespace Integrian3D
 			vertexShaderID = glCreateShader(GL_VERTEX_SHADER);
 
 			/* Attach the VertexShader code to the ID and compile it */
-			const char* pShaderSource{ reinterpret_cast<char*>(vertexShader.GetFileContents().Data()) };
+			const char* pShaderSource{ vertexShader.GetFileContents().Data() };
 			glShaderSource(vertexShaderID, 1, &pShaderSource, nullptr);
 			glCompileShader(vertexShaderID);
 
@@ -49,7 +52,7 @@ namespace Integrian3D
 			fragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
 
 			/* Attach the VertexShader code to the ID and compile it */
-			const char* pShaderSource{ reinterpret_cast<char*>(fragmentShader.GetFileContents().Data()) };
+			const char* pShaderSource{ fragmentShader.GetFileContents().Data() };
 			glShaderSource(fragmentShaderID, 1, &pShaderSource, nullptr);
 			glCompileShader(fragmentShaderID);
 

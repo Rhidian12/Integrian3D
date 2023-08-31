@@ -1,68 +1,80 @@
-//#include <catch.hpp>
-//
-//#include "../IO/File/File.h"
-//#include "../IO/Serializer/Serializer.h"
-//#include "../Math/Math.h"
-//
-//#include <string>
-//
-//TEST_CASE("Testing the File")
-//{
-//	using namespace Integrian3D::IO;
-//	using namespace Integrian3D;
-//
-//	SECTION("Writing to a file some text")
-//	{
-//		File file{ "Resources/TestASCIIFile.txt", OpenMode::CreateAlways };
-//
-//		REQUIRE(file.GetFilesize() == 0);
-//
-//		Write(file, 5);
-//		Write(file, 16.f);
-//		Write(file, "This is some string", false);
-//		Write(file, "\tThis is another string");
-//
-//		REQUIRE(file.GetFilesize() > 0);
-//	}
-//
-//	SECTION("Reading a file with some text")
-//	{
-//		File file{ "Resources/TestASCIIFile.txt" };
-//
-//		REQUIRE(file.GetBuffer().Size() > 0);
-//
-//		REQUIRE(std::stoi(file.GetLine()) == 5);
-//		REQUIRE(Math::AreEqual(std::stof(file.GetLine()), 16.f));
-//		REQUIRE(file.GetLine() == "This is a test string\n");
-//		REQUIRE(file.GetLine() == "This is a second test string on a new line");
-//	}
-//
-//	SECTION("Writing to a file some text using a specific delimiter")
-//	{
-//		File file{ "Resources/TestASCIIFile.txt" };
-//
-//		file.ClearBuffer();
-//		REQUIRE(file.GetBuffer().Size() == 0);
-//
-//		file << 5 << ',';
-//		file << 16.f << ',';
-//		file << "This is a test string,";
-//		file << "This is a second test string on a new line";
-//
-//		REQUIRE(file.GetBuffer().Size() > 0);
-//
-//		file.Write();
-//	}
-//
-//	SECTION("Reading a file with some text using a specific delimiter")
-//	{
-//		File file{ "Resources/TestASCIIFile.txt" };
-//
-//		REQUIRE(file.GetBuffer().Size() > 0);
-//
-//		REQUIRE(std::stoi(file.GetLine(',')) == 5);
-//		REQUIRE(Math::AreEqual(std::stof(file.GetLine(',')), 16.f));
-//		REQUIRE(file.GetLine(',') == "This is a test string,");
-//		REQUIRE(file.GetLine(',') == "This is a second test string on a new line");
-//	}
-//}
+#include <catch.hpp>
+
+#include "../IO/File/File.h"
+#include "../IO/Serializer/Serializer.h"
+#include "../Math/Math.h"
+
+#include <string>
+
+struct FileTestData final
+{
+	std::string Word;
+	int Number;
+};
+
+Integrian3D::IO::File& operator<<(Integrian3D::IO::File& File, const FileTestData& Data)
+{
+	File << Serialize(Data.Number) << "\n";
+	File << Serialize(Data.Word) << "\n";
+
+	return File;
+}
+
+TEST_CASE("Testing the File")
+{
+	using namespace Integrian3D::IO;
+	using namespace Integrian3D;
+
+	SECTION("Writing to a file some text")
+	{
+		File File{ "Resources/TestASCIIFile.txt", OpenMode::CreateAlways, FileMode::ASCII };
+
+		REQUIRE(File.GetFilesize() == 0);
+
+		File << 5 << "\n";
+		File << 16.f << "\n";
+		File << "This is some string";
+		File << "\tThis is another string";
+
+		REQUIRE(File.GetFilesize() > 0);
+	}
+
+	SECTION("Reading a file with some text")
+	{
+		File File{ "Resources/TestASCIIFile.txt", OpenMode::OpenExisting, FileMode::ASCII };
+
+		REQUIRE(File.GetFilesize() > 0);
+
+		const std::string FileContents{ File.GetFileContents().Data() };
+		const std::string ContentsToCompare{ "5\n16\nThis is some string\tThis is another string" };
+
+		REQUIRE(FileContents == ContentsToCompare);
+	}
+
+	SECTION("Writing a Custom Type to a text file")
+	{
+		File File{ "Resources/TestASCIIFile.txt", OpenMode::CreateAlways, FileMode::ASCII };
+
+		REQUIRE(File.GetFilesize() == 0);
+
+		FileTestData Data{};
+		Data.Number = 15;
+		Data.Word = "Hello World!";
+
+		File << Data;
+
+		REQUIRE(File.GetFilesize() > 0);
+	}
+
+	SECTION("Reading a text file with a Custom Type")
+	{
+		File File{ "Resources/TestASCIIFile.txt", OpenMode::OpenExisting, FileMode::ASCII };
+
+		REQUIRE(File.GetFilesize() > 0);
+
+		const std::string FileContents{ File.GetFileContents().Data() };
+		const std::string ContentsToCompare{ "15\nHello World!\n" };
+
+		REQUIRE(FileContents == ContentsToCompare);
+	}
+}
