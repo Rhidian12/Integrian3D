@@ -1,90 +1,34 @@
 #pragma once
 
-#include <glm.hpp> /* GLM */
-
-#include <string> /* std::string */
-#include <string_view> /* std::string_view */
-#include <memory> /* std::unique_ptr */
+#include <memory>
+#include <string_view>
 
 namespace Integrian3D
 {
-	namespace Debug
+	class Logger final
 	{
-#ifdef _WIN32
-		enum class MessageColour : uint8_t
-		{
-			Black = 0,
-			IntenseBlue = 1,
-			Green = 2,
-			LightBlue = 3,
-			Red = 4,
-			Purple = 5,
-			Yellow = 6,
-			White = 7,
-			Grey = 8,
-			Blue = 9,
-			LightGreen = 10,
-			VeryLightBlue = 11,
-			LightRed = 12,
-			LightPurple = 13,
-			VeryLightYellow = 14,
-			IntenseWhite = 15
-		};
-#endif
+	public:
+		~Logger();
 
-		class Logger final
-		{
-		public:
-			static Logger& GetInstance();
+		static Logger& GetInstance();
 
-			void LogMessage(
-				const std::string_view message,
-				[[maybe_unused]] const int lineNumber,
-				[[maybe_unused]] const std::string_view file,
-				const bool bVerbose = false
-			);
+		void LogMessage(
+			const std::string_view Category,
+			const std::string_view Visibility,
+			const std::string_view Format,
+			...
+		);
 
-			void LogWarning(
-				const std::string_view message,
-				[[maybe_unused]] const int lineNumber,
-				[[maybe_unused]] const std::string_view file,
-				const bool bVerbose = false
-			);
+		void AddLogCategory(const std::string_view Category);
 
-			void LogError(
-				const std::string_view message,
-				[[maybe_unused]] const int lineNumber,
-				[[maybe_unused]] const std::string_view file,
-				const bool bVerbose = false
-			);
+	private:
+		Logger();
 
-			void LogCustomMessage(
-				const std::string_view message,
-				[[maybe_unused]] const int lineNumber,
-				[[maybe_unused]] const std::string_view file,
-				const MessageColour colour,
-				const bool bVerbose = false
-			);
+		friend std::unique_ptr<Logger> std::make_unique();
+		inline static std::unique_ptr<Logger> Instance{};
 
-			void LogAssertion(
-				const std::string_view message,
-				[[maybe_unused]] const int lineNumber,
-				[[maybe_unused]] const std::string_view file,
-				const MessageColour colour,
-				const bool bVerbose = false
-			);
-
-			void LogVector(const glm::vec<2, double>& v, const MessageColour colour);
-			void LogVector(const glm::vec<3, double>& v, const MessageColour colour);
-
-		private:
-			Logger();
-
-			friend std::unique_ptr<Logger> std::make_unique();
-			inline static std::unique_ptr<Logger> Instance{};
-
-			/* typedef void* HANDLE, ergo void* == HANDLE */
-			void* ConsoleHandle;
-		};
-	}
+		struct LoggerStatics* Statics; // [TODO]: Use Custom Unique Ptr
+	};
 }
+
+#define DECLARE_LOG_CATEGORY(Category) Integrian3D::Logger::GetInstance().AddLogCategory(Category);

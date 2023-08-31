@@ -163,6 +163,14 @@ namespace Integrian3D
 			EmplaceBack(__MOVE(val));
 		}
 
+		constexpr void AddUnique(const T& Val)
+		{
+			if (Find(Val) == end())
+			{
+				EmplaceBack(Val);
+			}
+		}
+
 		constexpr void AddFront(const T& val)
 		{
 			EmplaceFront(val);

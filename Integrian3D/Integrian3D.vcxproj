@@ -190,7 +190,6 @@
     <ClCompile Include="IO\IAsset\IAssetWriter.cpp" />
     <ClCompile Include="Components\FreeCameraComponent\FreeCameraComponent.cpp" />
     <ClCompile Include="Core\Core.cpp" />
-    <ClCompile Include="IO\ASCII\FileReader.cpp" />
     <ClCompile Include="LinkedList\LinkedList.cpp" />
     <ClCompile Include="Memory\LowLevelLL\LowLevelLL.cpp" />
     <ClCompile Include="Memory\MemoryTracker\MemoryTracker.cpp" />
@@ -247,11 +246,12 @@
     <ClInclude Include="Core\Core.h" />
     <ClInclude Include="DebugUtility\DebugUtility.h" />
     <ClInclude Include="EngineConstants.h" />
-    <ClInclude Include="IO\ASCII\FileReader.h" />
     <ClInclude Include="IO\OpenMode.h" />
     <ClInclude Include="IO\SeekMode.h" />
     <ClInclude Include="IO\Serializer\Serializer.h" />
     <ClInclude Include="LinkedList\LinkedList.h" />
+    <ClInclude Include="Logger\ConsoleColours.h" />
+    <ClInclude Include="Logger\LoggerStatics.h" />
     <ClInclude Include="Memory\LowLevelLL\LowLevelLL.h" />
     <ClInclude Include="Macros\Macros.h" />
     <ClInclude Include="Memory\AllocatorTraits\AllocatorTraits.h" />

@@ -148,7 +148,7 @@ TEST_CASE("Testing Basic Array of integers")
 		public:
 			~Special()
 			{
-				Debug::LogMessage("Getting destroyed", false);
+				LOG(Log, Debug, "Getting destroyed");
 			}
 		};
 
@@ -614,6 +614,24 @@ TEST_CASE("Testing Basic Array of integers")
 		REQUIRE(arr.Size() == 2);
 		REQUIRE(arr.Capacity() >= 10);
 	}
+
+	SECTION("Testing AddUnique")
+	{
+		for (int i{}; i < 10; ++i)
+		{
+			arr.Add(i);
+		}
+
+		REQUIRE(arr.Size() == 10);
+
+		arr.AddUnique(-5);
+
+		REQUIRE(arr.Size() == 11);
+
+		arr.AddUnique(0);
+
+		REQUIRE(arr.Size() == 11);
+	}
 }
 
 TEST_CASE("Testing Basic Array of characters")
@@ -643,5 +661,77 @@ TEST_CASE("Testing Basic Array of characters")
 		size_t counter{};
 		for (int i{ static_cast<int>(arr.Size() - 1) }; i >= 0; --i)
 			REQUIRE(letters[i] == arr[counter++]);
+	}
+}
+
+TEST_CASE("Testing Array with Custom Structure")
+{
+	struct ArrayTestStruct final
+	{
+		ArrayTestStruct(const int Value)
+		{
+			Variable = new int{ Value };
+		}
+		~ArrayTestStruct()
+		{
+			if (Variable)
+			{
+				delete Variable;
+				Variable = nullptr;
+			}
+		}
+		ArrayTestStruct(const ArrayTestStruct& Other)
+			: Variable{ new int{ *Other.Variable } }
+		{}
+		ArrayTestStruct(ArrayTestStruct&& Other)
+			: Variable{ __MOVE(Other.Variable) }
+		{
+			Other.Variable = nullptr;
+		}
+		ArrayTestStruct& operator=(const ArrayTestStruct& Other)
+		{
+			if (Variable)
+			{
+				delete Variable;
+				Variable = nullptr;
+			}
+
+			Variable = new int{ *Other.Variable };
+
+			return *this;
+		}
+		ArrayTestStruct& operator=(ArrayTestStruct&& Other)
+		{
+			if (Variable)
+			{
+				delete Variable;
+				Variable = nullptr;
+			}
+
+			Variable = __MOVE(Other.Variable);
+			Other.Variable = nullptr;
+
+			return *this;
+		}
+
+		int* Variable;
+	};
+
+	using namespace Integrian3D;
+	TArray<ArrayTestStruct> Array{};
+	constexpr static int NrOfElements = 10;
+
+	SECTION("Creating Basic Array of Custom Structure")
+	{
+		REQUIRE(Array.Size() == 0);
+		REQUIRE(Array.Capacity() == 0);
+
+		for (int i{}; i < NrOfElements; ++i)
+		{
+			Array.Add(ArrayTestStruct{ i });
+		}
+
+		REQUIRE(Array.Size() == NrOfElements);
+		REQUIRE(Array.Capacity() >= NrOfElements);
 	}
 }

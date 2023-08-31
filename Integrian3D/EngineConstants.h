@@ -4,6 +4,7 @@
 
 #include "Logger/Logger.h"
 #include "Macros/Macros.h"
+#include "DebugUtility/DebugUtility.h"
 
 #include <bitset>
 #include <cstdint>

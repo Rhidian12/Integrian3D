@@ -18,7 +18,7 @@ namespace Integrian3D::IO
 	class File final
 	{
 	public:
-		explicit File(const std::string_view Filepath, const OpenMode OpenMode);
+		explicit File(const std::string_view Filepath, const OpenMode OpenMode, const FileMode FileMode);
 		~File();
 
 		File(const File&) noexcept = delete;
@@ -28,16 +28,14 @@ namespace Integrian3D::IO
 
 		const std::string_view GetFilepath() const;
 		const int64_t GetFilesize() const;
-
-		void OnFileChanged();
-		Delegate<File*>& GetOnFileChangedDelegate();
+		const TArray<char>& GetFileContents() const;
 
 	private:
 		void CloseHandle();
 
-		Delegate<File*> OnFileChanged;
 		std::string_view Filepath;
 		void* Handle;
 		int64_t Filesize;
+		TArray<char> FileContents;
 	};
 }

@@ -22,7 +22,7 @@ namespace Integrian3D::IO
 		IAssetWriter& operator=(IAssetWriter&& other) noexcept = default;
 
 		template<typename T>
-		void Serialize(const T& val)
+		void Serialize(const T& /*val*/)
 		{
 			/*
 			All values little-endian
@@ -35,30 +35,30 @@ namespace Integrian3D::IO
 			*/
 
 			/* Write magic id */
-			const std::string iasset{ "IASSET" };
-			constexpr uint8_t version{ 1u };
-			constexpr uint8_t padding{ '\0' };
+			//const std::string iasset{ "IASSET" };
+			//constexpr uint8_t version{ 1u };
+			//constexpr uint8_t padding{ '\0' };
 
-			const TArray<char> serializedData{ ::Serialize(val) };
-			m_File.Write(serializedData);
+			//const TArray<char> serializedData{ ::Serialize(val) };
+			//m_File.Write(serializedData);
 
-			const uint32_t length{ static_cast<uint32_t>(serializedData.Size()) };
-			const uint16_t offset{ static_cast<uint16_t>(iasset.size() + sizeof(version) + sizeof(padding) +
-				sizeof(length) + sizeof(offset)) };
+			//const uint32_t length{ static_cast<uint32_t>(serializedData.Size()) };
+			//const uint16_t offset{ static_cast<uint16_t>(iasset.size() + sizeof(version) + sizeof(padding) +
+			//	sizeof(length) + sizeof(offset)) };
 
-			m_File.Write(::Serialize(offset), SeekMode::Start);
-			m_File.Write(::Serialize(length), SeekMode::Start);
+			//m_File.Write(::Serialize(offset), SeekMode::Start);
+			//m_File.Write(::Serialize(length), SeekMode::Start);
 
-			m_File.Write(::Serialize(padding), SeekMode::Start);
-			m_File.Write(::Serialize(version), SeekMode::Start);
+			//m_File.Write(::Serialize(padding), SeekMode::Start);
+			//m_File.Write(::Serialize(version), SeekMode::Start);
 
-			for (int i{ static_cast<int>(iasset.size() - 1) }; i >= 0; --i)
-				m_File.Write(::Serialize(iasset[i]), SeekMode::Start);
+			//for (int i{ static_cast<int>(iasset.size() - 1) }; i >= 0; --i)
+			//	m_File.Write(::Serialize(iasset[i]), SeekMode::Start);
 
-			m_File.Write();
+			//m_File.Write();
 		}
 
 	private:
-		File m_File;
+		// File m_File;
 	};
 }

@@ -1,7 +1,7 @@
 #include "Shader.h"
 
-#include "../IO/ASCII/FileReader.h"
 #include "../DebugUtility/DebugUtility.h"
+#include "../IO/File/File.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -19,13 +19,13 @@ namespace Integrian3D
 
 		/* Get Vertex Shader */
 		{
-			const IO::FileReader reader{ vertexShaderPath };
+			const IO::File vertexShader{ vertexShaderPath, IO::OpenMode::OpenExisting, IO::FileMode::ASCII };
 
 			/* Generate VertexShader ID */
 			vertexShaderID = glCreateShader(GL_VERTEX_SHADER);
 
 			/* Attach the VertexShader code to the ID and compile it */
-			const char* pShaderSource{ reader.GetFileContents().c_str() };
+			const char* pShaderSource{ vertexShader.GetFileContents().Data() };
 			glShaderSource(vertexShaderID, 1, &pShaderSource, nullptr);
 			glCompileShader(vertexShaderID);
 
@@ -37,19 +37,19 @@ namespace Integrian3D
 			if (!success)
 			{
 				glGetShaderInfoLog(vertexShaderID, 512, nullptr, infoLog);
-				Debug::LogError(std::string("Vertex Shader compilation failed: ") + infoLog, false);
+				LOG(Shader, Error, "Vertex Shader compilation failed: %s", infoLog);
 			}
 		}
 
 		/* Get Fragment Shader */
 		{
-			const IO::FileReader reader{ fragmentShaderPath };
+			const IO::File fragmentShader{ fragmentShaderPath, IO::OpenMode::OpenExisting, IO::FileMode::ASCII };
 
 			/* Generate Frament Shader ID */
 			fragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
 
 			/* Attach the VertexShader code to the ID and compile it */
-			const char* pShaderSource{ reader.GetFileContents().c_str() };
+			const char* pShaderSource{ fragmentShader.GetFileContents().Data() };
 			glShaderSource(fragmentShaderID, 1, &pShaderSource, nullptr);
 			glCompileShader(fragmentShaderID);
 
@@ -61,7 +61,7 @@ namespace Integrian3D
 			if (!success)
 			{
 				glGetShaderInfoLog(fragmentShaderID, 512, nullptr, infoLog);
-				Debug::LogError(std::string("Fragment Shader compilation failed: ") + infoLog, false);
+				LOG(Shader, Error, "Fragment Shader compilation failed: %s", infoLog);
 			}
 		}
 
@@ -82,7 +82,7 @@ namespace Integrian3D
 			if (!success)
 			{
 				glGetProgramInfoLog(ProgramID, 512, nullptr, infoLog);
-				Debug::LogError(std::string("Shader program linking failed: ") + infoLog, false);
+				LOG(Shader, Error, "Shader program linking failed: %s", infoLog);
 			}
 		}
 

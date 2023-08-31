@@ -39,7 +39,7 @@ namespace Integrian3D
 
 		Math::SetSeed(SEED);
 
-		Debug::LogMessage("Finished initialisation of engine", false);
+		LOG(Core, Debug, "Finished initialisation of engine");
 
 		return *Instance.get();
 	}
@@ -82,7 +82,7 @@ namespace Integrian3D
 			/* Swap buffers */
 			Window.Update();
 
-			// Debug::LogMessage("FPS: " + std::to_string(Timer::GetInstance().GetFPS()), false);
+			// LogMessage("FPS: " + std::to_string(Timer::GetInstance().GetFPS()), false);
 		}
 	}
 }

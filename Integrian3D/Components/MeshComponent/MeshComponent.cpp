@@ -1,6 +1,5 @@
 #include "MeshComponent.h"
 
-#include "../../IO/ASCII/FileReader.h"
 #include "../../Renderer/Renderer.h"
 #include "../../Texture/Texture.h"
 
@@ -19,10 +18,6 @@ namespace Integrian3D
 		if (!filePath.empty())
 		{
 			__ASSERT(filePath.substr(filePath.find_last_of('.') + 1) == ".obj");
-
-			IO::FileReader reader{ filePath };
-
-			// const std::string fileContents{ reader.GetFileContents() };
 
 			/* [TODO]: Parse .obj file */
 		}

@@ -12,12 +12,14 @@
 
 namespace Integrian3D::IO
 {
-	File::File(const std::string_view Filepath, const OpenMode OpenMode)
+	File::File(const std::string_view Filepath, const OpenMode OpenMode, const FileMode FileMode)
 		: Filepath{ Filepath }
 		, Handle{}
 		, Filesize{}
-		, OnFileChanged{}
+		, FileContents{}
 	{
+		FileMode;
+
 		/* open the file */
 		Handle = CreateFileA(Filepath.data(),
 			GENERIC_READ | GENERIC_WRITE,
@@ -29,19 +31,20 @@ namespace Integrian3D::IO
 
 		if (Handle == INVALID_HANDLE_VALUE)
 		{
-			Debug::LogError("File could not open the provided file", false);
+			LOG(File, Error, "File could not open the provided file: %s", Filepath);
+			return;
 		}
 
 		/* Get the file size */
 		Filesize = static_cast<int64_t>(GetFileSize(Handle, nullptr));
-		//Buffer.Resize(fileSize);
+		FileContents.Resize(Filesize);
 
-		///* Read the file contents */
-		//DWORD readBytes{};
-		//if (ReadFile(Handle, Buffer.Data(), fileSize, &readBytes, nullptr) == 0)
-		//{
-		//	Debug::LogError("File could not read the provided file", false);
-		//}
+		/* Read the file contents */
+		DWORD readBytes{};
+		if (ReadFile(Handle, FileContents.Data(), static_cast<DWORD>(Filesize), &readBytes, nullptr) == 0)
+		{
+			LOG(File, Error, "File could not read the provided file: %s", Filepath);
+		}
 	}
 
 	File::~File()
@@ -53,7 +56,6 @@ namespace Integrian3D::IO
 		: Filepath{ __MOVE(other.Filepath) }
 		, Handle{ __MOVE(other.Handle) }
 		, Filesize{ __MOVE(other.Filesize) }
-		, OnFileChanged{ __MOVE(other.OnFileChanged) }
 	{
 		other.Handle = nullptr;
 	}
@@ -68,7 +70,6 @@ namespace Integrian3D::IO
 		Filepath = __MOVE(other.Filepath);
 		Handle = __MOVE(other.Handle);
 		Filesize = __MOVE(other.Filesize);
-		OnFileChanged = __MOVE(other.OnFileChanged);
 
 		other.Handle = nullptr;
 
@@ -85,14 +86,9 @@ namespace Integrian3D::IO
 		return Filesize;
 	}
 
-	void File::OnFileChanged()
+	const TArray<char>& File::GetFileContents() const
 	{
-		OnFileChanged.Invoke();
-	}
-
-	Delegate<File*>& File::GetOnFileChangedDelegate()
-	{
-		return OnFileChanged;
+		return FileContents;
 	}
 
 	void File::CloseHandle()
@@ -101,7 +97,7 @@ namespace Integrian3D::IO
 		{
 			if (::CloseHandle(Handle) == 0)
 			{
-				Debug::LogError("File could not close the provided file", false);
+				LOG(File, Error, "File could not close the provided file: %s", Filepath);
 			}
 
 			Handle = nullptr;

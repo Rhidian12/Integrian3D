@@ -1,168 +1,102 @@
 #include "Logger.h"
 
+#include "../EngineConstants.h"
+#include "LoggerStatics.h"
+#include "ConsoleColours.h"
+
 #include <iostream> /* std::cout */
 
-#ifdef _WIN32
-#define WIN32_LEAN_AND_MEAN
-#include <Windows.h>
-#endif
+#pragma warning ( push )
+#pragma warning ( disable : 4005 ) /* warning C4005: 'APIENTRY': macro redefinition */ 
+#	ifdef _WIN32
+#		define WIN32_LEAN_AND_MEAN
+#		include <Windows.h>
+#	endif
+#pragma warning ( pop )
 
 namespace Integrian3D
 {
-	namespace Debug
+	namespace
 	{
-		Logger::Logger()
-			: ConsoleHandle{ GetStdHandle(STD_OUTPUT_HANDLE) }
-		{}
-
-		Logger& Logger::GetInstance()
-		{
-			if (!Instance)
-			{
-				Instance = std::make_unique<Logger>();
-			}
-
-			return *Instance.get();
-		}
-
-		void Logger::LogMessage(const std::string_view message,
-			[[maybe_unused]] const int lineNumber,
-			[[maybe_unused]] const std::string_view file,
-			const bool bVerbose)
+		static void SetConsoleColour(LoggerStatics* Statics, const std::string_view Visibility, const bool bIsDebug)
 		{
 #ifdef _WIN32
-			if (bVerbose)
-			{
-				std::cout << "A message was written from file: " << file.substr(file.find_last_of('\\') + 1, file.size()) <<
-					" at line: " << std::to_string(lineNumber) << "\n" << "Message: " << message << "\n\n";
-			}
-			else
-			{
-				std::cout << message << "\n";
-			}
-#endif
-		}
+			// Debug is White by default, and so is any other Visibility that is not pre-defined
+			WORD colour{ MessageColour::White };
 
-		void Logger::LogWarning(const std::string_view message,
-			[[maybe_unused]] const int lineNumber,
-			[[maybe_unused]] const std::string_view file,
-			const bool bVerbose)
-		{
-#ifdef _WIN32
-			/* Set text colour to yellow */
-			SetConsoleTextAttribute(ConsoleHandle, static_cast<WORD>(MessageColour::Yellow));
-
-			if (bVerbose)
+			if (!bIsDebug)
 			{
-				std::cout << "A warning was written from file: " << file.substr(file.find_last_of('\\') + 1, file.size()) <<
-					" at line: " << std::to_string(lineNumber) << "\n" << "Message: " << message << "\n\n";
-			}
-			else
-			{
-				std::cout << message << "\n";
+				if (Visibility == "Warning")
+				{
+					colour = MessageColour::Yellow;
+				}
+				else if (Visibility == "Error")
+				{
+					colour = MessageColour::LightRed;
+				}
+				else if (Visibility == "Fatal")
+				{
+					colour = MessageColour::Red;
+				}
 			}
 
-			/* Reset text colour to white */
-			SetConsoleTextAttribute(ConsoleHandle, static_cast<WORD>(MessageColour::White));
-#endif
-		}
-
-		void Logger::LogError(const std::string_view message,
-			[[maybe_unused]] const int lineNumber,
-			[[maybe_unused]] const std::string_view file,
-			const bool bVerbose)
-		{
-#ifdef _WIN32
-			/* Set text colour to red */
-			SetConsoleTextAttribute(ConsoleHandle, static_cast<WORD>(MessageColour::Red));
-
-			if (bVerbose)
-			{
-				std::cout << "An error was written from file: " << file.substr(file.find_last_of('\\') + 1, file.size()) <<
-					" at line: " << std::to_string(lineNumber) << "\n" << "Message: " << message << "\n\n";
-			}
-			else
-			{
-				std::cout << message << "\n";
-			}
-
-			/* Reset text colour to white */
-			SetConsoleTextAttribute(ConsoleHandle, static_cast<WORD>(MessageColour::White));
-#endif
-		}
-
-		void Logger::LogCustomMessage(const std::string_view message,
-			[[maybe_unused]] const int lineNumber,
-			[[maybe_unused]] const std::string_view file,
-			const MessageColour colour,
-			const bool bVerbose)
-		{
-#ifdef _WIN32
 			/* Set text colour to user defined colour */
-			SetConsoleTextAttribute(ConsoleHandle, static_cast<WORD>(colour));
-
-			if (bVerbose)
-			{
-				std::cout << "A custom message was written from file: " <<
-					file.substr(file.find_last_of('\\') + 1, file.size()) <<
-					" at line: " << std::to_string(lineNumber) << "\n" << "Custom Message: " << message << "\n\n";
-			}
-			else
-			{
-				std::cout << message << "\n";
-			}
-
-			/* Reset text colour to white */
-			SetConsoleTextAttribute(ConsoleHandle, static_cast<WORD>(colour));
+			SetConsoleTextAttribute(Statics->ConsoleHandle, colour);
 #endif
 		}
+	}
 
-		void Logger::LogAssertion(const std::string_view message, const int lineNumber, const std::string_view file, const MessageColour colour, const bool bVerbose)
+	Logger::Logger()
+		: Statics{ new LoggerStatics{} }
+	{
+		Statics->ConsoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+	}
+
+	Logger::~Logger()
+	{
+		if (Statics)
 		{
-#ifdef _WIN32
-			/* Set text colour to user defined colour */
-			SetConsoleTextAttribute(ConsoleHandle, static_cast<WORD>(colour));
-
-			if (bVerbose)
-			{
-				std::cout << "An assertion was triggered in file: " <<
-					file.substr(file.find_last_of('\\') + 1, file.size()) <<
-					" at line: " << std::to_string(lineNumber) << "\n" << "Assertion: " << message << "\n\n";
-			}
-			else
-			{
-				std::cout << message << "\n";
-			}
-
-			/* Reset text colour to white */
-			SetConsoleTextAttribute(ConsoleHandle, static_cast<WORD>(colour));
-#endif
+			delete Statics;
+			Statics = nullptr;
 		}
+	}
 
-		void Logger::LogVector(const glm::vec<2, double>& v, const MessageColour colour)
+	Logger& Logger::GetInstance()
+	{
+		if (!Instance)
 		{
-#ifdef _WIN32
-			/* Set text colour to user defined colour */
-			SetConsoleTextAttribute(ConsoleHandle, static_cast<WORD>(colour));
-
-			std::cout << "x: " << v.x << ", y: " << v.y << "\n";
-
-			/* Reset text colour to white */
-			SetConsoleTextAttribute(ConsoleHandle, static_cast<WORD>(colour));
-#endif
+			Instance = std::make_unique<Logger>();
 		}
 
-		void Logger::LogVector(const glm::vec<3, double>& v, const MessageColour colour)
-		{
-#ifdef _WIN32
-			/* Set text colour to user defined colour */
-			SetConsoleTextAttribute(ConsoleHandle, static_cast<WORD>(colour));
+		return *Instance.get();
+	}
 
-			std::cout << "x: " << v.x << ", y: " << v.y << ", z: " << v.z << "\n";
+	void Logger::LogMessage(
+		const std::string_view Category,
+		const std::string_view Visibility,
+		const std::string_view Format,
+		...)
+	{
+		std::cout << "[" << Category << "]: ";
 
-			/* Reset text colour to white */
-			SetConsoleTextAttribute(ConsoleHandle, static_cast<WORD>(colour));
-#endif
-		}
+		SetConsoleColour(Statics, Visibility, Visibility == "Debug");
+
+		va_list ArgPtr;
+		va_start(ArgPtr, Format);
+
+		vprintf(Format.data(), ArgPtr);
+
+		va_end(ArgPtr);
+
+		std::cout << "\n";
+
+		SetConsoleColour(Statics, "", true);
+	}
+
+	void Logger::AddLogCategory(const std::string_view Category)
+	{
+		__ASSERT(Statics != nullptr);
+
+		Statics->Categories.Add(Category);
 	}
 }
