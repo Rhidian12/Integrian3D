@@ -147,6 +147,7 @@ namespace Integrian3D::IO
 		float Whole{};
 		float Fractional = std::modf(Val, &Whole);
 
+		// [TODO]: Make precision variable. Macro? Config file?
 		constexpr static int32_t Precision{ 2 };
 		constexpr static int32_t Base{ 10 };
 		Fractional *= static_cast<T>(pow(Base, Precision));
