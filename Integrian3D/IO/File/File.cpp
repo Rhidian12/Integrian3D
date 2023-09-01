@@ -2,24 +2,29 @@
 
 #include "../../DebugUtility/DebugUtility.h"
 
+#include <string>
+
 namespace Integrian3D::IO
 {
+	namespace
+	{
+		static bool DoesFileExist(const std::string_view Filepath)
+		{
+			DWORD Attributes = GetFileAttributesA(Filepath.data());
+
+			return Attributes != INVALID_FILE_ATTRIBUTES && !(Attributes & FILE_ATTRIBUTE_DIRECTORY);
+		}
+	}
+
 	File::File(const std::string_view Filepath, const OpenMode OpenMode, const FileMode Mode)
 		: Filepath{ Filepath }
 		, Handle{}
 		, Filesize{}
 		, Mode{ Mode }
 	{
-		/* open the file */
-		Handle = CreateFileA(Filepath.data(),
-			GENERIC_READ | GENERIC_WRITE,
-			FILE_SHARE_READ,
-			nullptr,
-			static_cast<DWORD>(OpenMode),
-			FILE_ATTRIBUTE_NORMAL,
-			nullptr);
+		Handle = OpenFile(OpenMode);
 
-		if (Handle == INVALID_HANDLE_VALUE)
+		if (Handle == INVALID_HANDLE_VALUE || !Handle)
 		{
 			LOG(File, Error, "File could not open the provided file: %s", Filepath);
 			return;
@@ -70,29 +75,46 @@ namespace Integrian3D::IO
 		return Filesize;
 	}
 
-	TArray<char> File::GetFileContents() const
+	std::string File::GetFileContents() const
 	{
-		TArray<char> FileContents{};
+		std::string FileContents{};
+		FileContents.resize(Filesize);
 
-		FileContents.Resize(Filesize);
-
-		/* Read the file contents */
-		DWORD readBytes{};
-		if (ReadFile(Handle, FileContents.Data(), static_cast<DWORD>(Filesize), &readBytes, nullptr) == 0)
+		if (ReadFile(Handle, FileContents.data(), static_cast<DWORD>(Filesize), nullptr, nullptr) == 0)
 		{
-			LOG(File, Error, "File could not read the provided file: %s", Filepath);
+			LOG(File, Warning, "File could not read the provided file: %s", Filepath);
 		}
 
 		return FileContents;
 	}
 
-	File& File::operator<<(const TArray<char>& SerializedData)
+	File& File::operator<<(const char* String)
 	{
-		for (const char c : SerializedData)
+		const int32_t Size{ static_cast<int32_t>(strlen(String)) };
+
+		if (WriteFile(Handle, String, Size, nullptr, nullptr) == 0)
 		{
-			*this << c;
+			LOG(File, Warning, "File::operator<< could not write to file %s", Filepath);
 		}
-		
+		else
+		{
+			Filesize += Size;
+		}
+
+		return *this;
+	}
+
+	File& File::operator<<(const std::string& String)
+	{
+		if (WriteFile(Handle, String.data(), static_cast<DWORD>(String.size()), nullptr, nullptr) == 0)
+		{
+			LOG(File, Warning, "File::operator<< could not write to file %s", Filepath);
+		}
+		else
+		{
+			Filesize += String.size();
+		}
+
 		return *this;
 	}
 
@@ -107,5 +129,31 @@ namespace Integrian3D::IO
 
 			Handle = nullptr;
 		}
+	}
+
+	void* File::OpenFile(const OpenMode OpenMode) const
+	{
+		switch (OpenMode)
+		{
+			case OpenMode::CreateNew:
+				__ASSERT(!DoesFileExist(Filepath), "File::File() > OpenMode::CreateNew > File %s already exists", Filepath);
+				break;
+			case OpenMode::OpenExisting:
+				__ASSERT(DoesFileExist(Filepath), "File::File() > OpenMode::OpenExisting > File %s already exists", Filepath);
+				break;
+			case OpenMode::TruncateExisting:
+				__ASSERT(DoesFileExist(Filepath), "File::File() > OpenMode::TruncateExisting > File %s does not exist", Filepath);
+				break;
+			default:
+				break;
+		}
+
+		return CreateFileA(Filepath.data(),
+			GENERIC_READ | GENERIC_WRITE,
+			FILE_SHARE_READ,
+			nullptr,
+			static_cast<DWORD>(OpenMode),
+			FILE_ATTRIBUTE_NORMAL,
+			nullptr);
 	}
 }

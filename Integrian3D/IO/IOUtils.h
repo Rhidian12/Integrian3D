@@ -9,7 +9,13 @@
 namespace Integrian3D::IO
 {
 	template<typename T>
-	constexpr auto IsPod{ std::is_trivial_v<T> && std::is_standard_layout_v<T> };
+	constexpr static auto IsPod{ std::is_trivial_v<T> && std::is_standard_layout_v<T> };
+
+	template<typename T>
+	constexpr static bool bIsCharacter{ std::is_same_v<char, std::decay_t<T>> || std::is_same_v<unsigned char, std::decay_t<T>> }; 
+
+	template<typename T>
+	constexpr static bool bIsInteger{ std::is_fundamental_v<T> && !bIsCharacter<T> && !std::is_floating_point_v<T> };
 
 	__NODISCARD __INLINE bool IsLittleEndian()
 	{

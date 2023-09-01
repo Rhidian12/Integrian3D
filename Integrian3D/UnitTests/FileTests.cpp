@@ -14,8 +14,8 @@ struct FileTestData final
 
 Integrian3D::IO::File& operator<<(Integrian3D::IO::File& File, const FileTestData& Data)
 {
-	File << Serialize(Data.Number) << "\n";
-	File << Serialize(Data.Word) << "\n";
+	File << Data.Number << "\n";
+	File << Data.Word << "\n";
 
 	return File;
 }
@@ -31,8 +31,8 @@ TEST_CASE("Testing the File")
 
 		REQUIRE(File.GetFilesize() == 0);
 
-		File << 5 << "\n";
-		File << 16.f << "\n";
+		File << 14562 << "\n";
+		File << 16.35f << "\n";
 		File << "This is some string";
 		File << "\tThis is another string";
 
@@ -45,8 +45,8 @@ TEST_CASE("Testing the File")
 
 		REQUIRE(File.GetFilesize() > 0);
 
-		const std::string FileContents{ File.GetFileContents().Data() };
-		const std::string ContentsToCompare{ "5\n16\nThis is some string\tThis is another string" };
+		const std::string FileContents{ File.GetFileContents() };
+		const std::string ContentsToCompare{ "14562\n16.35\nThis is some string\tThis is another string" };
 
 		REQUIRE(FileContents == ContentsToCompare);
 	}
@@ -72,7 +72,7 @@ TEST_CASE("Testing the File")
 
 		REQUIRE(File.GetFilesize() > 0);
 
-		const std::string FileContents{ File.GetFileContents().Data() };
+		const std::string FileContents{ File.GetFileContents().c_str() };
 		const std::string ContentsToCompare{ "15\nHello World!\n" };
 
 		REQUIRE(FileContents == ContentsToCompare);

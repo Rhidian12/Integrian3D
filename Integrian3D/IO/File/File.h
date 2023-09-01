@@ -4,7 +4,9 @@
 #include "../../Array/Array.h"
 #include "../FileMode.h"
 #include "../OpenMode.h"
+#include "../IOUtils.h"
 
+#include <string>
 #include <string_view>
 
 #ifdef _WIN32
@@ -45,18 +47,27 @@ namespace Integrian3D::IO
 
 		const std::string_view GetFilepath() const;
 		const int64_t GetFilesize() const;
-		TArray<char> GetFileContents() const;
+		std::string GetFileContents() const;
 
-		template<typename T, std::enable_if_t<std::is_fundamental_v<T>, bool> = true>
-		File& operator<<(const T& Val);
+		template<typename T, std::enable_if_t<bIsInteger<T>, bool> = true>
+		File& operator<<(T Val);
+
+		template<typename T, std::enable_if_t<bIsCharacter<T>, bool> = true>
+		File& operator<<(T Val);
+
+		template<typename T, std::enable_if_t<std::is_floating_point_v<T>, bool> = true>
+		File& operator<<(T Val);
 
 		template<typename T, std::enable_if_t<!std::is_fundamental_v<T>, bool> = true>
 		File& operator<<(const T& Val);
 
-		File& operator<<(const TArray<char>& SerializedData);
+		File& operator<<(const char* String);
+
+		File& operator<<(const std::string& String);
 
 	private:
 		void CloseHandle();
+		void* OpenFile(const OpenMode OpenMode) const;
 
 		std::string_view Filepath;
 		void* Handle;
@@ -64,23 +75,83 @@ namespace Integrian3D::IO
 		FileMode Mode;
 	};
 
-	template<typename T, std::enable_if_t<std::is_fundamental_v<T>, bool>>
-	inline File& File::operator<<(const T& Val)
+	template<typename T, std::enable_if_t<bIsInteger<T>, bool>>
+	inline File& File::operator<<(T Val)
 	{
 		__ASSERT(Mode == FileMode::ASCII, "File::operator<< is only available on ASCII files");
-		constexpr static int32_t Size{ sizeof(Val) };
 
-		char Buffer[Size]{};
-		memcpy(Buffer, &Val, Size);
+		T Temp{ Val };
+		int32_t NumberOfDigits{};
+		while (Temp)
+		{
+			++NumberOfDigits;
 
-		if (WriteFile(Handle, Buffer, Size, nullptr, nullptr) == 0)
+			Temp /= 10;
+		}
+
+		constexpr static int32_t BufferLength{ 16 };
+		__ASSERT(NumberOfDigits < BufferLength, "File::operator<< integer too long to be printed, max number of digits allowed: %i", BufferLength);
+
+		char Buffer[BufferLength]{};
+
+		for (int i{}; Val; ++i)
+		{
+			Buffer[i] = Val % 10 + '0';
+
+			Val /= 10;
+		}
+
+		for (int32_t i{}; i < NumberOfDigits / 2; ++i)
+		{
+			std::swap(Buffer[i], Buffer[NumberOfDigits - i - 1]);
+		}
+
+		if (WriteFile(Handle, Buffer, static_cast<DWORD>(NumberOfDigits), nullptr, nullptr) == 0)
 		{
 			LOG(File, Warning, "File::operator<< could not write to file %s", Filepath);
 		}
 		else
 		{
-			Filesize += Size;
+			Filesize += NumberOfDigits;
 		}
+
+		return *this;
+	}
+
+	template<typename T, std::enable_if_t<bIsCharacter<T>, bool>>
+	inline File& File::operator<<(T Val)
+	{
+		__ASSERT(Mode == FileMode::ASCII, "File::operator<< is only available on ASCII files");
+
+		if (WriteFile(Handle, &Val, 1, nullptr, nullptr) == 0)
+		{
+			LOG(File, Warning, "File::operator<< could not write to file %s", Filepath);
+		}
+		else
+		{
+			++Filesize;
+		}
+
+		return *this;
+	}
+
+	template<typename T, std::enable_if_t<std::is_floating_point_v<T>, bool>>
+	inline File& File::operator<<(T Val)
+	{
+		__ASSERT(Mode == FileMode::ASCII, "File::operator<< is only available on ASCII files");
+
+		// print whole part
+		*this << static_cast<int32_t>(Val) << '.';
+
+		// print decimal part
+		float Whole{};
+		float Fractional = std::modf(Val, &Whole);
+
+		constexpr static int32_t Precision{ 2 };
+		constexpr static int32_t Base{ 10 };
+		Fractional *= static_cast<T>(pow(Base, Precision));
+
+		*this << static_cast<int32_t>(Fractional);
 
 		return *this;
 	}
