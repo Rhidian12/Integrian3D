@@ -351,7 +351,7 @@ namespace Integrian3D::IO
 	}
 
 	template<typename T, std::enable_if_t<!std::is_fundamental_v<T>, bool>>
-	inline File& File::operator>>(T& Val)
+	inline File& File::operator>>(T&)
 	{
 		static_assert(bDefinesRShiftOp<T>, "File::operator>> non-fundamental types must define operator>>");
 		static_assert(bRShiftOpRetVal<T>, "File::operator>> operator>> must return File&");

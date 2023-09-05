@@ -12,13 +12,13 @@ struct FileTestData final
 	int Number;
 };
 
-Integrian3D::IO::File& operator<<(Integrian3D::IO::File& File, const FileTestData& Data)
-{
-	File << Data.Number << "\n";
-	File << Data.Word << "\n";
-
-	return File;
-}
+//Integrian3D::IO::File& operator<<(Integrian3D::IO::File& File, const FileTestData& Data)
+//{
+//	File << Data.Number << "\n";
+//	File << Data.Word << "\n";
+//
+//	return File;
+//}
 
 TEST_CASE("Testing the File")
 {
@@ -86,6 +86,12 @@ TEST_CASE("Testing the File")
 		const std::string ContentsToCompare{ "15\nHello World!\n" };
 
 		REQUIRE(FileContents == ContentsToCompare);
+
+		FileTestData Data{};
+		File >> Data;
+
+		REQUIRE(Data.Number == 15);
+		REQUIRE(Data.Word == "Hello World!");
 	}
 
 	SECTION("Writing a Binary file with some simple information")
