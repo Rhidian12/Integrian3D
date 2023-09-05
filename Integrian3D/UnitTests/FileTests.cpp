@@ -50,8 +50,15 @@ TEST_CASE("Testing the File")
 
 		REQUIRE(FileContents == ContentsToCompare);
 
-		int A{ 14562 };
-		float B{ 16.35f };
+		int A{};
+		float B{};
+		std::string C{};
+
+		File >> A >> B >> C;
+
+		REQUIRE(A == 14562);
+		REQUIRE(Math::AreEqual(B, 16.35f));
+		REQUIRE(C == "This is some string\tThis is another string");
 	}
 
 	SECTION("Writing a Custom Type to a text file")

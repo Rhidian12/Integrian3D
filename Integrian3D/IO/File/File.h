@@ -250,12 +250,12 @@ namespace Integrian3D::IO
 					LOG(File, Warning, "File::operator>> could not read from file: %s", Filepath);
 				}
 
-				const bool bIsDigit{ std::isdigit(CurrentChar) };
+				const bool bIsDigit{ std::isdigit(CurrentChar) != 0 };
 				bContinue = Filepointer < Filesize && (bIsDigit || CurrentChar == '\n');
 
 				if (bContinue && bIsDigit)
 				{
-					String.append(CurrentChar);
+					String += CurrentChar;
 				}
 			}
 		}
