@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Integrian3D/Integrian3D/EngineConstants.h"
 #include "../../EngineConstants.h"
 #include "../../Array/Array.h"
 #include "../FileMode.h"
@@ -81,6 +82,7 @@ namespace Integrian3D::IO
 		#pragma endregion
 
 	private:
+		void WriteToFile(const char* Buffer, const int32 BufferSize);
 		void CloseHandle();
 		void* OpenFile(const OpenMode OpenMode) const;
 

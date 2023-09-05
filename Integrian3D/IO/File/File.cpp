@@ -293,6 +293,18 @@ namespace Integrian3D::IO
 		return *this;
 	}
 
+	void File::WriteToFile(const char* Buffer, const int32 BufferSize)
+	{
+		if (WriteFile(Handle, Buffer, static_cast<DWORD>(BufferSize), nullptr, nullptr) == 0)
+		{
+			LOG(File, Warning, "File::operator<< could not write to file %s", Filepath);
+		}
+		else
+		{
+			Filesize += BufferSize;
+		}
+	}
+
 	void File::CloseHandle()
 	{
 		if (Handle)
