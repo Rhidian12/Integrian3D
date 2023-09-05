@@ -49,6 +49,9 @@ TEST_CASE("Testing the File")
 		const std::string ContentsToCompare{ "14562\n16.35\nThis is some string\tThis is another string" };
 
 		REQUIRE(FileContents == ContentsToCompare);
+
+		int A{ 14562 };
+		float B{ 16.35f };
 	}
 
 	SECTION("Writing a Custom Type to a text file")
@@ -76,5 +79,38 @@ TEST_CASE("Testing the File")
 		const std::string ContentsToCompare{ "15\nHello World!\n" };
 
 		REQUIRE(FileContents == ContentsToCompare);
+	}
+
+	SECTION("Writing a Binary file with some simple information")
+	{
+		File File{ "Resources/TestBinaryFile.bin", OpenMode::CreateAlways, FileMode::Binary };
+
+		REQUIRE(File.GetFilesize() == 0);
+
+		File << 15 << 265 << 1831 << 15.6 << 3684.51f << 'D' << "HelloWorld!";
+
+		REQUIRE(File.GetFilesize() > 0);
+	}
+	
+	SECTION("Reading a Binary file with some simple information")
+	{
+		File File{ "Resources/TestBinaryFile.bin", OpenMode::OpenExisting, FileMode::Binary };
+
+		REQUIRE(File.GetFilesize() > 0);
+
+		int32 A{}, B{}, C{};
+		double D{};
+		float E{};
+		char F{};
+		std::string G{};
+		File >> A >> B >> C >> D >> E >> F >> G;
+
+		REQUIRE(A == 15);
+		REQUIRE(B == 265);
+		REQUIRE(C == 1831);
+		REQUIRE(Math::AreEqual(D, 15.6, 0.1));
+		REQUIRE(Math::AreEqual(E, 3684.51f, 0.1f));
+		REQUIRE(F == 'D');
+		REQUIRE(G == "HelloWorld!");
 	}
 }
