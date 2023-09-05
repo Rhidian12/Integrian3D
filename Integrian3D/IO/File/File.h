@@ -64,7 +64,7 @@ namespace Integrian3D::IO
 		int64 GetFilesize() const;
 		int64 GetFilepointer() const;
 
-		#pragma region operator<<
+#pragma region operator<<
 		template<typename T, std::enable_if_t<bIsInteger<T>, bool> = true>
 		File& operator<<(T Val);
 
@@ -80,9 +80,9 @@ namespace Integrian3D::IO
 		File& operator<<(const char* String);
 
 		File& operator<<(const std::string& String);
-		#pragma endregion
+#pragma endregion
 
-		#pragma region operator>>
+#pragma region operator>>
 		template<typename T, std::enable_if_t<bIsInteger<T>, bool> = true>
 		File& operator>>(T& Val);
 
@@ -96,7 +96,7 @@ namespace Integrian3D::IO
 		File& operator>>(T& Val);
 
 		File& operator>>(std::string& String);
-		#pragma endregion
+#pragma endregion
 
 	private:
 		void CloseHandle();
@@ -109,7 +109,7 @@ namespace Integrian3D::IO
 		int64 Filepointer;
 	};
 
-	#pragma region operator<<
+#pragma region operator<<
 	template<typename T, std::enable_if_t<bIsInteger<T>, bool>>
 	inline File& File::operator<<(T Val)
 	{
@@ -221,9 +221,9 @@ namespace Integrian3D::IO
 
 		return *this;
 	}
-	#pragma endregion
+#pragma endregion
 
-	#pragma region operator>>
+#pragma region operator>>
 	template<typename T, std::enable_if_t<bIsInteger<T>, bool>>
 	inline File& File::operator>>(T& Val)
 	{
@@ -241,23 +241,38 @@ namespace Integrian3D::IO
 			std::string String{};
 
 			bool bContinue{ true };
+			char CurrentChar{};
 			while (bContinue)
 			{
-				char CurrentChar{};
 				if (ReadFile(Handle, &CurrentChar, 1, nullptr, nullptr) == 0)
 				{
 					bContinue = false;
 					LOG(File, Warning, "File::operator>> could not read from file: %s", Filepath);
 				}
 
-				const bool bIsDigit{ std::isdigit(CurrentChar) != 0 };
-				bContinue = Filepointer < Filesize && (bIsDigit || CurrentChar == '\n');
+				++Filepointer;
 
-				if (bContinue && bIsDigit)
+				if (CurrentChar == '\n')
+				{
+					// Consume newline but stop reading numbers
+					break;
+				}
+
+				const bool bIsDigit{ std::isdigit(CurrentChar) != 0 };
+				bContinue = Filepointer < Filesize && bIsDigit;
+
+				if (bIsDigit)
 				{
 					String += CurrentChar;
 				}
 			}
+
+			if (CurrentChar != '\n')
+			{
+				--Filepointer;
+			}
+
+			Val = std::stoi(String);
 		}
 		else
 		{
@@ -343,5 +358,5 @@ namespace Integrian3D::IO
 
 		return *this;
 	}
-	#pragma endregion
+#pragma endregion
 }

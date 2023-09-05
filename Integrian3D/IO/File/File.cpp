@@ -230,15 +230,12 @@ namespace Integrian3D::IO
 				}
 
 				const bool bIsNewline{ CurrentChar == '\n' };
-				bContinue = Filepointer < Filesize && !bIsNewline;
+				const bool bIsEOF{ CurrentChar == '\0' };
+				bContinue = Filepointer < Filesize && !bIsNewline && !bIsEOF;
 
 				if (bContinue)
 				{
 					String += CurrentChar;
-				}
-				else if (bIsNewline)
-				{
-
 				}
 			}
 		}
