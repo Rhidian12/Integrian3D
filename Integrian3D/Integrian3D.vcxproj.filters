@@ -123,9 +123,6 @@
     <ClCompile Include="UnitTests\TimerTests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="UnitTests\SerialisationTests.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="UnitTests\IAssetTests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -266,16 +263,10 @@
     <ClInclude Include="Timer\TimeLength.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="IO\SeekMode.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="IO\IOUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="IO\IAsset\IAssetWriter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="IO\IAsset\IAssetUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TemplateUtils\TemplateUtils.h">
@@ -285,9 +276,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="IO\File\File.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="IO\Serializer\Serializer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Component\Component.h">

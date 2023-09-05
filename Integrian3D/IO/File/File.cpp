@@ -203,6 +203,32 @@ namespace Integrian3D::IO
 		return *this;
 	}
 
+	File& File::operator<<(const bool bValue)
+	{
+		__CHECK(Handle != nullptr && Handle != INVALID_HANDLE_VALUE);
+
+		if (Mode == FileMode::ASCII)
+		{
+			const std::string StringToWrite{ bValue ? "True" : "False" };
+			*this << StringToWrite;
+		}
+		else
+		{
+			const int8 Value{ bValue ? 1 : 0 };
+
+			if (WriteFile(Handle, &Value, sizeof(int8), nullptr, nullptr) == 0)
+			{
+				LOG(File, Warning, "File::operator<< could not write to file %s", Filepath);
+			}
+			else
+			{
+				Filesize += sizeof(int8) + 1;
+			}
+		}
+
+		return *this;
+	}
+
 	const File& File::operator>>(std::string& String) const
 	{
 		__CHECK(Handle != nullptr && Handle != INVALID_HANDLE_VALUE);
@@ -237,6 +263,28 @@ namespace Integrian3D::IO
 			String.resize(StringSize);
 
 			if (ReadFile(Handle, String.data(), static_cast<DWORD>(StringSize), nullptr, nullptr) == 0)
+			{
+				LOG(File, Warning, "File::operator>> could not read from file: %s", Filepath);
+			}
+		}
+
+		return *this;
+	}
+
+	const File& File::operator>>(bool& bValue) const
+	{
+		__CHECK(Handle != nullptr && Handle != INVALID_HANDLE_VALUE);
+
+		if (Mode == FileMode::ASCII)
+		{
+			std::string String{};
+			*this >> String;
+
+			bValue = String == "True";
+		}
+		else
+		{
+			if (ReadFile(Handle, &bValue, sizeof(int8), nullptr, nullptr) == 0)
 			{
 				LOG(File, Warning, "File::operator>> could not read from file: %s", Filepath);
 			}

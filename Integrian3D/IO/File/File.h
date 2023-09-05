@@ -58,6 +58,8 @@ namespace Integrian3D::IO
 		File& operator<<(const char* String);
 
 		File& operator<<(const std::string& String);
+
+		File& operator<<(const bool bValue);
 		#pragma endregion
 
 		#pragma region operator>>
@@ -74,6 +76,8 @@ namespace Integrian3D::IO
 		const File& operator>>(T& Val) const;
 
 		const File& operator>>(std::string& String) const;
+
+		const File& operator>>(bool& bValue) const;
 		#pragma endregion
 
 	private:
@@ -258,7 +262,7 @@ namespace Integrian3D::IO
 				}
 			}
 
-			Val = std::stoi(String);
+			Val = static_cast<T>(std::stoi(String));
 		}
 		else
 		{

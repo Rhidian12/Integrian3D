@@ -2,9 +2,8 @@
 
 #include "../../EngineConstants.h"
 #include "../File/File.h"
-#include "../Serializer/Serializer.h"
 
-#include <string_view> /* std::string */
+#include <string_view>
 
 namespace Integrian3D::IO
 {
@@ -35,16 +34,15 @@ namespace Integrian3D::IO
 
 			File File{ Filepath, OpenMode::CreateAlways, FileMode::Binary };
 					
-			/* Write magic id */
-			const static std::string iasset{ "IASSET" };
-			constexpr int8 version{ 1 }; // [TODO]: Read this in from a config file
-			constexpr int8 padding{ '\0' };
+			const static std::string IASSET{ "IASSET" };
+			constexpr int8 Version{ 1 }; // [TODO]: Read this in from a config file
+			constexpr int8 Padding{ '\0' };
 
-			File << iasset << version << padding;
+			File << IASSET << Version << Padding;
 
-			const int16 offset{ static_cast<int16>(iasset.size() + sizeof(version) + sizeof(padding) + sizeof(offset)) };
+			const int16 Offset{ static_cast<int16>(IASSET.size() + sizeof(Version) + sizeof(Padding) + sizeof(Offset)) };
 
-			File << offset << Val;
+			File << Offset << Val;
 		}
 	};
 }

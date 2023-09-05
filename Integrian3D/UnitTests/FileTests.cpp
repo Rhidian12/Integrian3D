@@ -1,7 +1,6 @@
 #include <catch.hpp>
 
 #include "../IO/File/File.h"
-#include "../IO/Serializer/Serializer.h"
 #include "../Math/Math.h"
 
 #include <string>
