@@ -19,33 +19,11 @@
 
 namespace Integrian3D::IO
 {
-	namespace Detail
-	{
-		struct NoLShiftOperator final {};
-		template<typename T, typename U, typename = std::enable_if_t<!std::is_fundamental_v<T>>> NoLShiftOperator operator<<(T&, const U&);
-
-		struct NoRShiftOperator final {};
-		template<typename T, typename U, typename = std::enable_if_t<!std::is_fundamental_v<T>>> NoRShiftOperator operator>>(T&, U&);
-	}
-
 	/// <summary>
 	/// Minimal RAII file abstraction.
 	/// </summary>
 	class File final
 	{
-	private:
-		template<typename T>
-		constexpr static bool bDefinesRShiftOp = !std::is_same_v<decltype(*reinterpret_cast<File*>(0) >> *reinterpret_cast<T*>(0)), Detail::NoRShiftOperator>;
-
-		template<typename T>
-		constexpr static bool bDefinesLShiftOp = !std::is_same_v<decltype(*reinterpret_cast<File*>(0) << *reinterpret_cast<T*>(0)), Detail::NoLShiftOperator>;
-
-		template<typename T>
-		constexpr static bool bRShiftOpRetVal = std::is_same_v<decltype(*reinterpret_cast<File*>(0) >> *reinterpret_cast<T*>(0)), File&>;
-
-		template<typename T>
-		constexpr static bool bLShiftOpRetVal = std::is_same_v<decltype(*reinterpret_cast<File*>(0) << *reinterpret_cast<T*>(0)), File&>;
-
 	public:
 		File(const std::string_view Filepath, const OpenMode OpenMode, const FileMode Mode);
 		~File();
@@ -55,16 +33,16 @@ namespace Integrian3D::IO
 		File& operator=(const File&) noexcept = delete;
 		File& operator=(File&& Other) noexcept;
 
-		void Seek(const int64 NewFilepointerPos);
-		void Advance(const int64 AdvanceAmount);
-		void Regress(const int64 RegressAmount);
+		void Seek(const int32 NewFilepointerPos) const;
+		void Advance(const int32 AdvanceAmount) const;
+		void Regress(const int32 RegressAmount) const;
 
 		const std::string_view GetFilepath() const;
 		std::string GetFileContents() const;
-		int64 GetFilesize() const;
-		int64 GetFilepointer() const;
+		int32 GetFilesize() const;
+		int32 GetFilepointer() const;
 
-#pragma region operator<<
+		#pragma region operator<<
 		template<typename T, std::enable_if_t<bIsInteger<T>, bool> = true>
 		File& operator<<(T Val);
 
@@ -80,23 +58,23 @@ namespace Integrian3D::IO
 		File& operator<<(const char* String);
 
 		File& operator<<(const std::string& String);
-#pragma endregion
+		#pragma endregion
 
-#pragma region operator>>
+		#pragma region operator>>
 		template<typename T, std::enable_if_t<bIsInteger<T>, bool> = true>
-		File& operator>>(T& Val);
+		const File& operator>>(T& Val) const;
 
 		template<typename T, std::enable_if_t<bIsCharacter<T>, bool> = true>
-		File& operator>>(T& Val);
+		const File& operator>>(T& Val) const;
 
 		template<typename T, std::enable_if_t<std::is_floating_point_v<T>, bool> = true>
-		File& operator>>(T& Val);
+		const File& operator>>(T& Val) const;
 
 		template<typename T, std::enable_if_t<!std::is_fundamental_v<T>, bool> = true>
-		File& operator>>(T& Val);
+		const File& operator>>(T& Val) const;
 
-		File& operator>>(std::string& String);
-#pragma endregion
+		const File& operator>>(std::string& String) const;
+		#pragma endregion
 
 	private:
 		void CloseHandle();
@@ -104,12 +82,11 @@ namespace Integrian3D::IO
 
 		std::string_view Filepath;
 		void* Handle;
-		int64 Filesize;
+		int32 Filesize;
 		FileMode Mode;
-		int64 Filepointer;
 	};
 
-#pragma region operator<<
+	#pragma region operator<<
 	template<typename T, std::enable_if_t<bIsInteger<T>, bool>>
 	inline File& File::operator<<(T Val)
 	{
@@ -196,19 +173,43 @@ namespace Integrian3D::IO
 	template<typename T, std::enable_if_t<std::is_floating_point_v<T>, bool>>
 	inline File& File::operator<<(T Val)
 	{
-		// print whole part
-		*this << static_cast<int32_t>(Val) << '.';
+		__CHECK(Handle != nullptr && Handle != INVALID_HANDLE_VALUE);
 
-		// print decimal part
-		T Whole{};
-		T Fractional = std::modf(Val, &Whole);
+		if (Mode == FileMode::ASCII)
+		{
+			// print whole part
+			*this << static_cast<int32_t>(Val) << '.';
 
-		// [TODO]: Make precision variable. Macro? Config file?
-		constexpr static int32_t Precision{ 2 };
-		constexpr static int32_t Base{ 10 };
-		Fractional *= static_cast<T>(pow(Base, Precision));
+			// print decimal part
+			T Whole{};
+			T Fractional = std::modf(Val, &Whole);
 
-		*this << static_cast<int32_t>(Fractional);
+			// [TODO]: Make precision variable. Macro? Config file?
+			constexpr static int32_t Precision{ 2 };
+			constexpr static int32_t Base{ 10 };
+			Fractional *= static_cast<T>(pow(Base, Precision));
+
+			*this << static_cast<int32_t>(Fractional);
+		}
+		else
+		{
+			static constexpr int32_t Size{ sizeof(T) };
+			char Buffer[Size]{};
+
+			for (int32_t i{}; i < Size; ++i)
+			{
+				Buffer[i] = *(reinterpret_cast<const char*>(&Val) + i);
+			}
+
+			if (WriteFile(Handle, Buffer, static_cast<DWORD>(Size), nullptr, nullptr) == 0)
+			{
+				LOG(File, Warning, "File::operator<< could not write to file %s", Filepath);
+			}
+			else
+			{
+				Filesize += Size;
+			}
+		}
 
 		return *this;
 	}
@@ -216,25 +217,17 @@ namespace Integrian3D::IO
 	template<typename T, std::enable_if_t<!std::is_fundamental_v<T>, bool>>
 	inline File& File::operator<<(const T&)
 	{
-		static_assert(bDefinesLShiftOp<T>, "File::operator<< non-fundamental types must define operator<<");
-		static_assert(bLShiftOpRetVal<T>, "File::operator<< operator<< must return File&");
+		static_assert(false, "File::operator<< non-fundamental types must define operator<<");
 
 		return *this;
 	}
-#pragma endregion
+	#pragma endregion
 
-#pragma region operator>>
+	#pragma region operator>>
 	template<typename T, std::enable_if_t<bIsInteger<T>, bool>>
-	inline File& File::operator>>(T& Val)
+	inline const File& File::operator>>(T& Val) const
 	{
 		__CHECK(Handle != nullptr && Handle != INVALID_HANDLE_VALUE);
-		__CHECK(SetFilePointer(Handle, static_cast<LONG>(Filepointer), nullptr, FILE_BEGIN) != INVALID_SET_FILE_POINTER);
-
-		if (Filepointer >= Filesize)
-		{
-			LOG(File, Warning, "File::operator>> reached the end of file, nothing is being read from file %s", Filepath);
-			return *this;
-		}
 
 		if (Mode == FileMode::ASCII)
 		{
@@ -250,8 +243,6 @@ namespace Integrian3D::IO
 					LOG(File, Warning, "File::operator>> could not read from file: %s", Filepath);
 				}
 
-				++Filepointer;
-
 				if (CurrentChar == '\n')
 				{
 					// Consume newline but stop reading numbers
@@ -259,17 +250,12 @@ namespace Integrian3D::IO
 				}
 
 				const bool bIsDigit{ std::isdigit(CurrentChar) != 0 };
-				bContinue = Filepointer < Filesize && bIsDigit;
+				bContinue = bIsDigit;
 
 				if (bIsDigit)
 				{
 					String += CurrentChar;
 				}
-			}
-
-			if (CurrentChar != '\n')
-			{
-				--Filepointer;
 			}
 
 			Val = std::stoi(String);
@@ -283,10 +269,6 @@ namespace Integrian3D::IO
 			{
 				LOG(File, Warning, "File::operator>> could not read from file: %s", Filepath);
 			}
-			else
-			{
-				Filepointer += Size;
-			}
 
 			Val = *reinterpret_cast<T*>(&Buffer[0]);
 		}
@@ -295,68 +277,58 @@ namespace Integrian3D::IO
 	}
 
 	template<typename T, std::enable_if_t<bIsCharacter<T>, bool>>
-	inline File& File::operator>>(T& Val)
+	inline const File& File::operator>>(T& Val) const
 	{
 		__CHECK(Handle != nullptr && Handle != INVALID_HANDLE_VALUE);
-		__CHECK(SetFilePointer(Handle, static_cast<LONG>(Filepointer), nullptr, FILE_BEGIN) != INVALID_SET_FILE_POINTER);
-
-		if (Filepointer >= Filesize)
-		{
-			LOG(File, Warning, "File::operator>> reached the end of file, nothing is being read from file %s", Filepath);
-			return *this;
-		}
 
 		if (ReadFile(Handle, &Val, 1, nullptr, nullptr) == 0)
 		{
 			LOG(File, Warning, "File::operator>> could not read from file: %s", Filepath);
-		}
-		else
-		{
-			++Filepointer;
 		}
 
 		return *this;
 	}
 
 	template<typename T, std::enable_if_t<std::is_floating_point_v<T>, bool>>
-	inline File& File::operator>>(T& Val)
+	inline const File& File::operator>>(T& Val) const
 	{
 		__CHECK(Handle != nullptr && Handle != INVALID_HANDLE_VALUE);
-		__CHECK(SetFilePointer(Handle, static_cast<LONG>(Filepointer), nullptr, FILE_BEGIN) != INVALID_SET_FILE_POINTER);
 
-		if (Filepointer >= Filesize)
+		if (Mode == FileMode::ASCII)
 		{
-			LOG(File, Warning, "File::operator>> reached the end of file, nothing is being read from file %s", Filepath);
-			return *this;
+			int32 Whole{}, FractionalTemp{};
+			*this >> Whole >> FractionalTemp;
+
+			T Fractional{ static_cast<T>(FractionalTemp) };
+			while (Fractional > static_cast<T>(1.f))
+			{
+				Fractional /= static_cast<T>(10.f);
+			}
+
+			Val = static_cast<T>(Whole) + Fractional;
 		}
-
-		int32 Whole{};
-		*this >> Whole;
-
-		// ignore dot
-		Advance(1);
-
-		int32 FractionalTemp{};
-		*this >> FractionalTemp;
-
-		T Fractional{ static_cast<T>(FractionalTemp) };
-		while (Fractional > static_cast<T>(1.f))
+		else
 		{
-			Fractional /= static_cast<T>(10.f);
-		}
+			constexpr static int32 Size{ sizeof(T) };
+			char Buffer[Size]{};
 
-		Val = static_cast<T>(Whole) + Fractional;
+			if (ReadFile(Handle, Buffer, static_cast<DWORD>(Size), nullptr, nullptr) == 0)
+			{
+				LOG(File, Warning, "File::operator>> could not read from file: %s", Filepath);
+			}
+
+			Val = *reinterpret_cast<T*>(&Buffer[0]);
+		}
 
 		return *this;
 	}
 
 	template<typename T, std::enable_if_t<!std::is_fundamental_v<T>, bool>>
-	inline File& File::operator>>(T&)
+	inline const File& File::operator>>(T&) const
 	{
-		static_assert(bDefinesRShiftOp<T>, "File::operator>> non-fundamental types must define operator>>");
-		static_assert(bRShiftOpRetVal<T>, "File::operator>> operator>> must return File&");
+		static_assert(false, "File::operator>> non-fundamental types must define operator>>");
 
 		return *this;
 	}
-#pragma endregion
+	#pragma endregion
 }

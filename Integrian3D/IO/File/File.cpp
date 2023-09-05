@@ -21,7 +21,6 @@ namespace Integrian3D::IO
 		, Handle{}
 		, Filesize{}
 		, Mode{ Mode }
-		, Filepointer{}
 	{
 		Handle = OpenFile(OpenMode);
 
@@ -31,8 +30,7 @@ namespace Integrian3D::IO
 			return;
 		}
 
-		/* Get the file size */
-		Filesize = static_cast<int64_t>(GetFileSize(Handle, nullptr));
+		Filesize = static_cast<int32>(GetFileSize(Handle, nullptr));
 	}
 
 	File::~File()
@@ -45,7 +43,6 @@ namespace Integrian3D::IO
 		, Handle{ __MOVE(Other.Handle) }
 		, Filesize{ __MOVE(Other.Filesize) }
 		, Mode{ __MOVE(Other.Mode) }
-		, Filepointer{ __MOVE(Other.Filepointer) }
 	{
 		Other.Handle = nullptr;
 	}
@@ -61,36 +58,25 @@ namespace Integrian3D::IO
 		Handle = __MOVE(Other.Handle);
 		Filesize = __MOVE(Other.Filesize);
 		Mode = __MOVE(Other.Mode);
-		Filepointer = __MOVE(Other.Filepointer);
 
 		Other.Handle = nullptr;
 
 		return *this;
 	}
 
-	void File::Seek(const int64 NewFilepointerPos)
+	void File::Seek(const int32 NewFilepointerPos) const
 	{
-		Filepointer = NewFilepointerPos;
+		SetFilePointer(Handle, NewFilepointerPos, nullptr, FILE_BEGIN);
 	}
 
-	void File::Advance(const int64 AdvanceAmount)
+	void File::Advance(const int32 AdvanceAmount) const
 	{
-		Filepointer += AdvanceAmount;
-
-		if (Filepointer > Filesize)
-		{
-			Filepointer = Filesize;
-		}
+		SetFilePointer(Handle, AdvanceAmount, nullptr, FILE_CURRENT);
 	}
 
-	void File::Regress(const int64 RegressAmount)
+	void File::Regress(const int32 RegressAmount) const
 	{
-		Filepointer -= RegressAmount;
-
-		if (Filepointer < 0)
-		{
-			Filepointer = 0;
-		}
+		SetFilePointer(Handle, RegressAmount, nullptr, FILE_CURRENT);
 	}
 
 	const std::string_view File::GetFilepath() const
@@ -110,17 +96,22 @@ namespace Integrian3D::IO
 			LOG(File, Warning, "File could not read the provided file: %s", Filepath);
 		}
 
+		Seek(0);
+
 		return FileContents;
 	}
 
-	int64 File::GetFilesize() const
+	int32 File::GetFilesize() const
 	{
 		return Filesize;
 	}
 
-	int64 File::GetFilepointer() const
+	int32 File::GetFilepointer() const
 	{
-		return Filepointer;
+		LONG HighOrderBits{};
+		SetFilePointer(Handle, 0, &HighOrderBits, FILE_CURRENT);
+
+		return static_cast<int32>(HighOrderBits);
 	}
 
 	File& File::operator<<(const char* String)
@@ -181,7 +172,7 @@ namespace Integrian3D::IO
 			}
 			else
 			{
-				Filesize += String.size();
+				Filesize += static_cast<int32>(String.size());
 			}
 		}
 		else
@@ -212,10 +203,9 @@ namespace Integrian3D::IO
 		return *this;
 	}
 
-	File& File::operator>>(std::string& String)
+	const File& File::operator>>(std::string& String) const
 	{
 		__CHECK(Handle != nullptr && Handle != INVALID_HANDLE_VALUE);
-		__CHECK(SetFilePointer(Handle, static_cast<LONG>(Filepointer), nullptr, FILE_BEGIN) != INVALID_SET_FILE_POINTER);
 
 		if (Mode == FileMode::ASCII)
 		{
@@ -231,7 +221,7 @@ namespace Integrian3D::IO
 
 				const bool bIsNewline{ CurrentChar == '\n' };
 				const bool bIsEOF{ CurrentChar == '\0' };
-				bContinue = Filepointer < Filesize && !bIsNewline && !bIsEOF;
+				bContinue = !(bIsNewline || bIsEOF);
 
 				if (bContinue)
 				{
@@ -249,10 +239,6 @@ namespace Integrian3D::IO
 			if (ReadFile(Handle, String.data(), static_cast<DWORD>(StringSize), nullptr, nullptr) == 0)
 			{
 				LOG(File, Warning, "File::operator>> could not read from file: %s", Filepath);
-			}
-			else
-			{
-				Filepointer += StringSize;
 			}
 		}
 

@@ -12,13 +12,19 @@ struct FileTestData final
 	int Number;
 };
 
-//Integrian3D::IO::File& operator<<(Integrian3D::IO::File& File, const FileTestData& Data)
-//{
-//	File << Data.Number << "\n";
-//	File << Data.Word << "\n";
-//
-//	return File;
-//}
+Integrian3D::IO::File& operator<<(Integrian3D::IO::File& File, const FileTestData& Data)
+{
+	File << Data.Number << "\n" << Data.Word << "\n";
+
+	return File;
+}
+
+const Integrian3D::IO::File& operator>>(const Integrian3D::IO::File& File, FileTestData& Data)
+{
+	File >> Data.Number >> Data.Word;
+
+	return File;
+}
 
 TEST_CASE("Testing the File")
 {
@@ -41,7 +47,7 @@ TEST_CASE("Testing the File")
 
 	SECTION("Reading a file with some text")
 	{
-		File File{ "Resources/TestASCIIFile.txt", OpenMode::OpenExisting, FileMode::ASCII };
+		const File File{ "Resources/TestASCIIFile.txt", OpenMode::OpenExisting, FileMode::ASCII };
 
 		REQUIRE(File.GetFilesize() > 0);
 
@@ -78,7 +84,7 @@ TEST_CASE("Testing the File")
 
 	SECTION("Reading a text file with a Custom Type")
 	{
-		File File{ "Resources/TestASCIIFile.txt", OpenMode::OpenExisting, FileMode::ASCII };
+		const File File{ "Resources/TestASCIIFile.txt", OpenMode::OpenExisting, FileMode::ASCII };
 
 		REQUIRE(File.GetFilesize() > 0);
 
@@ -107,7 +113,7 @@ TEST_CASE("Testing the File")
 	
 	SECTION("Reading a Binary file with some simple information")
 	{
-		File File{ "Resources/TestBinaryFile.bin", OpenMode::OpenExisting, FileMode::Binary };
+		const File File{ "Resources/TestBinaryFile.bin", OpenMode::OpenExisting, FileMode::Binary };
 
 		REQUIRE(File.GetFilesize() > 0);
 

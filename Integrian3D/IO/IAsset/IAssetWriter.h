@@ -4,7 +4,7 @@
 #include "../File/File.h"
 #include "../Serializer/Serializer.h"
 
-#include <string> /* std::string */
+#include <string_view> /* std::string */
 
 namespace Integrian3D::IO
 {
@@ -14,51 +14,37 @@ namespace Integrian3D::IO
 	class IAssetWriter final
 	{
 	public:
-		explicit IAssetWriter(std::string filepath);
-		
 		IAssetWriter(const IAssetWriter&) noexcept = delete;
-		IAssetWriter(IAssetWriter&& other) noexcept = default;
+		IAssetWriter(IAssetWriter&&) noexcept = delete;
 		IAssetWriter& operator=(const IAssetWriter&) noexcept = delete;
-		IAssetWriter& operator=(IAssetWriter&& other) noexcept = default;
+		IAssetWriter& operator=(IAssetWriter&&) noexcept = delete;
 
 		template<typename T>
-		void Serialize(const T& /*val*/)
+		static void Serialize(const std::string_view Filepath, const T& Val)
 		{
 			/*
-			All values little-endian
-			+00 6B Magic Identification (currently IASSET)
-			+06 1B Version Number (currently 1)
-			+07 1B Padding
-			+08 4B Length of File
-			+0C 2B Offset to data (counted from start of file)
-			+XX [Data]
+				All values little-endian
+				+XX [Memory Address] | X Bytes [Size of Header] | Description
+
+				+00 | 6 Bytes | Magic Identification (currently IASSET)
+				+06 | 1 Bytes | Version Number (currently 1)
+				+07 | 1 Bytes | Padding
+				+08 | 2 Bytes | Offset to data (counted from start of file)
+				+XX | X Bytes | Data
 			*/
 
+			File File{ Filepath, OpenMode::CreateAlways, FileMode::Binary };
+					
 			/* Write magic id */
-			//const std::string iasset{ "IASSET" };
-			//constexpr uint8_t version{ 1u };
-			//constexpr uint8_t padding{ '\0' };
+			const static std::string iasset{ "IASSET" };
+			constexpr int8 version{ 1 }; // [TODO]: Read this in from a config file
+			constexpr int8 padding{ '\0' };
 
-			//const TArray<char> serializedData{ ::Serialize(val) };
-			//m_File.Write(serializedData);
+			File << iasset << version << padding;
 
-			//const uint32_t length{ static_cast<uint32_t>(serializedData.Size()) };
-			//const uint16_t offset{ static_cast<uint16_t>(iasset.size() + sizeof(version) + sizeof(padding) +
-			//	sizeof(length) + sizeof(offset)) };
+			const int16 offset{ static_cast<int16>(iasset.size() + sizeof(version) + sizeof(padding) + sizeof(offset)) };
 
-			//m_File.Write(::Serialize(offset), SeekMode::Start);
-			//m_File.Write(::Serialize(length), SeekMode::Start);
-
-			//m_File.Write(::Serialize(padding), SeekMode::Start);
-			//m_File.Write(::Serialize(version), SeekMode::Start);
-
-			//for (int i{ static_cast<int>(iasset.size() - 1) }; i >= 0; --i)
-			//	m_File.Write(::Serialize(iasset[i]), SeekMode::Start);
-
-			//m_File.Write();
+			File << offset << Val;
 		}
-
-	private:
-		// File m_File;
 	};
 }
