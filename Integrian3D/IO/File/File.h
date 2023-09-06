@@ -1,22 +1,13 @@
 #pragma once
 
-#include "Integrian3D/Integrian3D/EngineConstants.h"
-#include "../../EngineConstants.h"
-#include "../../Array/Array.h"
-#include "../FileMode.h"
-#include "../OpenMode.h"
-#include "../IOUtils.h"
+#include "EngineConstants.h"
+#include "Array/Array.h"
+#include "IO/FileMode.h"
+#include "IO/OpenMode.h"
+#include "IO/IOUtils.h"
 
 #include <string>
 #include <string_view>
-
-#ifdef _WIN32
-#	pragma warning ( push )
-#	pragma warning ( disable : 4005 ) /* warning C4005: 'APIENTRY': macro redefinition */ 
-#		define WIN32_LEAN_AND_MEAN
-#		include <Windows.h>
-#	pragma warning ( pop )
-#endif
 
 namespace Integrian3D::IO
 {
@@ -83,8 +74,11 @@ namespace Integrian3D::IO
 
 	private:
 		void WriteToFile(const char* Buffer, const int32 BufferSize);
+		char ReadCharacterFromFile() const;
+		void ReadFromFile(char* Buffer, const int32 BufferSize) const;
 		void CloseHandle();
 		void* OpenFile(const OpenMode OpenMode) const;
+		bool IsHandleValid() const;
 
 		std::string_view Filepath;
 		void* Handle;
@@ -96,45 +90,11 @@ namespace Integrian3D::IO
 	template<typename T, std::enable_if_t<bIsInteger<T>, bool>>
 	inline File& File::operator<<(T Val)
 	{
-		__CHECK(Handle != nullptr && Handle != INVALID_HANDLE_VALUE);
+		__CHECK(IsHandleValid());
 
 		if (Mode == FileMode::ASCII)
 		{
-			T Temp{ Val };
-			int32_t NumberOfDigits{};
-			while (Temp)
-			{
-				++NumberOfDigits;
-
-				Temp /= 10;
-			}
-
-			constexpr static int32_t BufferLength{ 16 };
-			__ASSERT(NumberOfDigits < BufferLength, "File::operator<< integer too long to be printed, max number of digits allowed: %i", BufferLength);
-
-			char Buffer[BufferLength]{};
-
-			for (int i{}; Val; ++i)
-			{
-				Buffer[i] = Val % 10 + '0';
-
-				Val /= 10;
-			}
-
-			// we insert them backwards, so swap them around
-			for (int32_t i{}; i < NumberOfDigits / 2; ++i)
-			{
-				std::swap(Buffer[i], Buffer[NumberOfDigits - i - 1]);
-			}
-
-			if (WriteFile(Handle, Buffer, static_cast<DWORD>(NumberOfDigits), nullptr, nullptr) == 0)
-			{
-				LOG(File, Warning, "File::operator<< could not write to file %s", Filepath);
-			}
-			else
-			{
-				Filesize += NumberOfDigits;
-			}
+			*this << std::to_string(Val);
 		}
 		else
 		{
@@ -146,14 +106,7 @@ namespace Integrian3D::IO
 				Buffer[i] = *(reinterpret_cast<const char*>(&Val) + i);
 			}
 
-			if (WriteFile(Handle, Buffer, static_cast<DWORD>(Size), nullptr, nullptr) == 0)
-			{
-				LOG(File, Warning, "File::operator<< could not write to file %s", Filepath);
-			}
-			else
-			{
-				Filesize += Size;
-			}
+			WriteToFile(Buffer, Size);
 		}
 
 		return *this;
@@ -162,16 +115,9 @@ namespace Integrian3D::IO
 	template<typename T, std::enable_if_t<bIsCharacter<T>, bool>>
 	inline File& File::operator<<(T Val)
 	{
-		__CHECK(Handle != nullptr && Handle != INVALID_HANDLE_VALUE);
+		__CHECK(IsHandleValid());
 
-		if (WriteFile(Handle, &Val, 1, nullptr, nullptr) == 0)
-		{
-			LOG(File, Warning, "File::operator<< could not write to file %s", Filepath);
-		}
-		else
-		{
-			++Filesize;
-		}
+		WriteToFile(&Val, sizeof(T));
 
 		return *this;
 	}
@@ -179,42 +125,35 @@ namespace Integrian3D::IO
 	template<typename T, std::enable_if_t<std::is_floating_point_v<T>, bool>>
 	inline File& File::operator<<(T Val)
 	{
-		__CHECK(Handle != nullptr && Handle != INVALID_HANDLE_VALUE);
+		__CHECK(IsHandleValid());
 
 		if (Mode == FileMode::ASCII)
 		{
 			// print whole part
-			*this << static_cast<int32_t>(Val) << '.';
+			*this << static_cast<int32>(Val) << '.';
 
 			// print decimal part
 			T Whole{};
 			T Fractional = std::modf(Val, &Whole);
 
 			// [TODO]: Make precision variable. Macro? Config file?
-			constexpr static int32_t Precision{ 2 };
-			constexpr static int32_t Base{ 10 };
+			constexpr static int32 Precision{ 2 };
+			constexpr static int32 Base{ 10 };
 			Fractional *= static_cast<T>(pow(Base, Precision));
 
-			*this << static_cast<int32_t>(Fractional);
+			*this << static_cast<int32>(Fractional);
 		}
 		else
 		{
-			static constexpr int32_t Size{ sizeof(T) };
+			static constexpr int32 Size{ sizeof(T) };
 			char Buffer[Size]{};
 
-			for (int32_t i{}; i < Size; ++i)
+			for (int32 i{}; i < Size; ++i)
 			{
 				Buffer[i] = *(reinterpret_cast<const char*>(&Val) + i);
 			}
 
-			if (WriteFile(Handle, Buffer, static_cast<DWORD>(Size), nullptr, nullptr) == 0)
-			{
-				LOG(File, Warning, "File::operator<< could not write to file %s", Filepath);
-			}
-			else
-			{
-				Filesize += Size;
-			}
+			WriteToFile(Buffer, Size);
 		}
 
 		return *this;
@@ -233,7 +172,7 @@ namespace Integrian3D::IO
 	template<typename T, std::enable_if_t<bIsInteger<T>, bool>>
 	inline const File& File::operator>>(T& Val) const
 	{
-		__CHECK(Handle != nullptr && Handle != INVALID_HANDLE_VALUE);
+		__CHECK(IsHandleValid());
 
 		if (Mode == FileMode::ASCII)
 		{
@@ -243,11 +182,7 @@ namespace Integrian3D::IO
 			char CurrentChar{};
 			while (bContinue)
 			{
-				if (ReadFile(Handle, &CurrentChar, 1, nullptr, nullptr) == 0)
-				{
-					bContinue = false;
-					LOG(File, Warning, "File::operator>> could not read from file: %s", Filepath);
-				}
+				CurrentChar = ReadCharacterFromFile();
 
 				if (CurrentChar == '\n')
 				{
@@ -271,10 +206,7 @@ namespace Integrian3D::IO
 			constexpr static int32 Size{ sizeof(T) };
 			char Buffer[Size]{};
 
-			if (ReadFile(Handle, Buffer, static_cast<DWORD>(Size), nullptr, nullptr) == 0)
-			{
-				LOG(File, Warning, "File::operator>> could not read from file: %s", Filepath);
-			}
+			ReadFromFile(Buffer, Size);
 
 			Val = *reinterpret_cast<T*>(&Buffer[0]);
 		}
@@ -285,12 +217,9 @@ namespace Integrian3D::IO
 	template<typename T, std::enable_if_t<bIsCharacter<T>, bool>>
 	inline const File& File::operator>>(T& Val) const
 	{
-		__CHECK(Handle != nullptr && Handle != INVALID_HANDLE_VALUE);
+		__CHECK(IsHandleValid());
 
-		if (ReadFile(Handle, &Val, 1, nullptr, nullptr) == 0)
-		{
-			LOG(File, Warning, "File::operator>> could not read from file: %s", Filepath);
-		}
+		Val = ReadCharacterFromFile();
 
 		return *this;
 	}
@@ -298,7 +227,7 @@ namespace Integrian3D::IO
 	template<typename T, std::enable_if_t<std::is_floating_point_v<T>, bool>>
 	inline const File& File::operator>>(T& Val) const
 	{
-		__CHECK(Handle != nullptr && Handle != INVALID_HANDLE_VALUE);
+		__CHECK(IsHandleValid());
 
 		if (Mode == FileMode::ASCII)
 		{
@@ -318,10 +247,7 @@ namespace Integrian3D::IO
 			constexpr static int32 Size{ sizeof(T) };
 			char Buffer[Size]{};
 
-			if (ReadFile(Handle, Buffer, static_cast<DWORD>(Size), nullptr, nullptr) == 0)
-			{
-				LOG(File, Warning, "File::operator>> could not read from file: %s", Filepath);
-			}
+			ReadFromFile(Buffer, Size);
 
 			Val = *reinterpret_cast<T*>(&Buffer[0]);
 		}
