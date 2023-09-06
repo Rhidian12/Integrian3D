@@ -158,14 +158,6 @@ namespace Integrian3D::IO
 
 		return *this;
 	}
-
-	template<typename T, std::enable_if_t<!std::is_fundamental_v<T>, bool>>
-	inline File& File::operator<<(const T&)
-	{
-		static_assert(false, "File::operator<< non-fundamental types must define operator<<");
-
-		return *this;
-	}
 	#pragma endregion
 
 	#pragma region operator>>
@@ -251,14 +243,6 @@ namespace Integrian3D::IO
 
 			Val = *reinterpret_cast<T*>(&Buffer[0]);
 		}
-
-		return *this;
-	}
-
-	template<typename T, std::enable_if_t<!std::is_fundamental_v<T>, bool>>
-	inline const File& File::operator>>(T&) const
-	{
-		static_assert(false, "File::operator>> non-fundamental types must define operator>>");
 
 		return *this;
 	}

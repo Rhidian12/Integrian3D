@@ -112,10 +112,7 @@ namespace Integrian3D::IO
 
 	int32 File::GetFilepointer() const
 	{
-		LONG HighOrderBits{};
-		SetFilePointer(Handle, 0, &HighOrderBits, FILE_CURRENT);
-
-		return static_cast<int32>(HighOrderBits);
+		return static_cast<int32>(SetFilePointer(Handle, 0, nullptr, FILE_CURRENT));
 	}
 
 	File& File::operator<<(const char* String)
