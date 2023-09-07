@@ -1,4 +1,5 @@
 #include "File.h"
+#include "Win32/Win32APICall.h"
 
 #ifdef _WIN32
 #	pragma warning ( push )
@@ -30,7 +31,7 @@ namespace Integrian3D::IO
 
 		if (Handle == INVALID_HANDLE_VALUE)
 		{
-			LOG(File, Error, "File could not open the provided file: %s", Filepath);
+			LOG(File, Error, "File could not open the provided file: %s Error:", Filepath);
 			return;
 		}
 
@@ -133,12 +134,7 @@ namespace Integrian3D::IO
 	{
 		__CHECK(IsHandleValid());
 
-		const int32 Size{ static_cast<int32>(String.size()) };
-		if (Mode == FileMode::Binary)
-		{
-			*this << Size;
-		}
-		WriteToFile(String.data(), Size);
+		*this << String.c_str();
 
 		return *this;
 	}
@@ -212,17 +208,23 @@ namespace Integrian3D::IO
 
 	void File::ReadFromFile(char* Buffer, const int32 BufferSize) const
 	{
-		if (ReadFile(Handle, Buffer, static_cast<DWORD>(BufferSize), nullptr, nullptr) == 0)
+		auto Call = CALL_WIN32_API(0, [=]()->int32 { return ReadFile(Handle, Buffer, static_cast<DWORD>(BufferSize), nullptr, nullptr); });
+
+		if (!Call.GetSuccess())
 		{
-			LOG(File, Warning, "File::operator>> could not read from file: %s", Filepath);
+			LOG(File, Warning, "File::operator<< could not write to file %s", Filepath);
+			Call.LogError();
 		}
 	}
 
 	void File::WriteToFile(const char* Buffer, const int32 BufferSize)
 	{
-		if (WriteFile(Handle, Buffer, static_cast<DWORD>(BufferSize), nullptr, nullptr) == 0)
+		auto Call = CALL_WIN32_API(0, [=]()->int32 { return WriteFile(Handle, Buffer, static_cast<DWORD>(BufferSize), nullptr, nullptr); });
+
+		if (!Call.GetSuccess())
 		{
 			LOG(File, Warning, "File::operator<< could not write to file %s", Filepath);
+			Call.LogError();
 		}
 		else
 		{
@@ -234,12 +236,15 @@ namespace Integrian3D::IO
 	{
 		if (Handle)
 		{
-			if (::CloseHandle(Handle) == 0)
+			auto Call = CALL_WIN32_API(0, [this]()->int32 { return ::CloseHandle(Handle); });
+
+			if (!Call.GetSuccess())
 			{
 				LOG(File, Error, "File could not close the provided file: %s", Filepath);
+				Call.LogError();
 			}
 
-			Handle = nullptr;
+			Handle = INVALID_HANDLE_VALUE;
 		}
 	}
 

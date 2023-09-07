@@ -224,6 +224,7 @@
     <ClCompile Include="UnitTests\TimerTests.cpp" />
     <ClCompile Include="UnitTests\UnitTests.cpp" />
     <ClCompile Include="Utils\Utils.cpp" />
+    <ClCompile Include="Win32\Win32APICall.cpp" />
     <ClCompile Include="Window\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -286,6 +287,7 @@
     <ClInclude Include="Utils\Utils.h" />
     <ClInclude Include="Vertex\Vertex.h" />
     <ClInclude Include="ECS\View\View.h" />
+    <ClInclude Include="Win32\Win32APICall.h" />
     <ClInclude Include="Window\Window.h" />
   </ItemGroup>
   <ItemGroup>
