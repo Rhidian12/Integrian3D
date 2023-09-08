@@ -141,7 +141,7 @@
     <ClCompile Include="Components\TagComponent\TagComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Win32\Win32APICall.cpp">
+    <ClCompile Include="Win32Utils\Win32APICall.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -335,7 +335,7 @@
     <ClInclude Include="Logger\ConsoleColours.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Win32\Win32APICall.h">
+    <ClInclude Include="Win32Utils\Win32APICall.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

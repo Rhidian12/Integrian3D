@@ -1,5 +1,5 @@
 #include "File.h"
-#include "Win32/Win32APICall.h"
+#include "Win32Utils/Win32APICall.h"
 
 #ifdef _WIN32
 #	pragma warning ( push )
@@ -197,10 +197,11 @@ namespace Integrian3D::IO
 	char File::ReadCharacterFromFile() const
 	{
 		char CurrentChar{ '\0' };
+		auto Call = CALL_WIN32(ReadFile(Handle, &CurrentChar, 1, nullptr, nullptr));
 
-		if (ReadFile(Handle, &CurrentChar, 1, nullptr, nullptr) == 0)
+		if (!Call.GetSuccess())
 		{
-			LOG(File, Warning, "File::operator>> could not read from file: %s", Filepath);
+			LOG(File, Warning, "File::operator<< could not write to file %s", Filepath);
 		}
 
 		return CurrentChar;
@@ -208,23 +209,21 @@ namespace Integrian3D::IO
 
 	void File::ReadFromFile(char* Buffer, const int32 BufferSize) const
 	{
-		auto Call = CALL_WIN32_API(0, [=]()->int32 { return ReadFile(Handle, Buffer, static_cast<DWORD>(BufferSize), nullptr, nullptr); });
+		auto Call = CALL_WIN32(ReadFile(Handle, Buffer, static_cast<DWORD>(BufferSize), nullptr, nullptr));
 
 		if (!Call.GetSuccess())
 		{
 			LOG(File, Warning, "File::operator<< could not write to file %s", Filepath);
-			Call.LogError();
 		}
 	}
 
 	void File::WriteToFile(const char* Buffer, const int32 BufferSize)
 	{
-		auto Call = CALL_WIN32_API(0, [=]()->int32 { return WriteFile(Handle, Buffer, static_cast<DWORD>(BufferSize), nullptr, nullptr); });
+		auto Call = CALL_WIN32(WriteFile(Handle, Buffer, static_cast<DWORD>(BufferSize), nullptr, nullptr));
 
 		if (!Call.GetSuccess())
 		{
 			LOG(File, Warning, "File::operator<< could not write to file %s", Filepath);
-			Call.LogError();
 		}
 		else
 		{
@@ -236,12 +235,11 @@ namespace Integrian3D::IO
 	{
 		if (Handle)
 		{
-			auto Call = CALL_WIN32_API(0, [this]()->int32 { return ::CloseHandle(Handle); });
+			auto Call = CALL_WIN32(::CloseHandle(Handle));
 
 			if (!Call.GetSuccess())
 			{
 				LOG(File, Error, "File could not close the provided file: %s", Filepath);
-				Call.LogError();
 			}
 
 			Handle = INVALID_HANDLE_VALUE;
@@ -250,28 +248,44 @@ namespace Integrian3D::IO
 
 	void* File::OpenFile(const OpenMode OpenMode) const
 	{
+		DWORD ErrorToIgnore{};
+
 		switch (OpenMode)
 		{
 		case OpenMode::CreateNew:
 			__ASSERT(!DoesFileExist(Filepath), "File::File() > OpenMode::CreateNew > File %s already exists", Filepath);
+			ErrorToIgnore = ERROR_FILE_EXISTS;
 			break;
 		case OpenMode::OpenExisting:
 			__ASSERT(DoesFileExist(Filepath), "File::File() > OpenMode::OpenExisting > File %s already exists", Filepath);
+			ErrorToIgnore = ERROR_FILE_NOT_FOUND;
 			break;
 		case OpenMode::TruncateExisting:
 			__ASSERT(DoesFileExist(Filepath), "File::File() > OpenMode::TruncateExisting > File %s does not exist", Filepath);
+			ErrorToIgnore = ERROR_FILE_NOT_FOUND;
+			break;
+		case OpenMode::CreateAlways:
+		case OpenMode::OpenAlways:
+			ErrorToIgnore = ERROR_ALREADY_EXISTS;
 			break;
 		default:
 			break;
 		}
 
-		return CreateFileA(Filepath.data(),
-			GENERIC_READ | GENERIC_WRITE,
-			FILE_SHARE_READ,
-			nullptr,
-			static_cast<DWORD>(OpenMode),
-			FILE_ATTRIBUTE_NORMAL,
-			nullptr);
+		return CALL_WIN32_RV_IGNORE_ERROR
+			(
+				CreateFileA
+				(
+					Filepath.data(),
+					GENERIC_READ | GENERIC_WRITE,
+					FILE_SHARE_READ,
+					nullptr,
+					static_cast<DWORD>(OpenMode),
+					FILE_ATTRIBUTE_NORMAL,
+					nullptr
+				),
+				ErrorToIgnore
+			);
 	}
 
 	bool File::IsHandleValid() const

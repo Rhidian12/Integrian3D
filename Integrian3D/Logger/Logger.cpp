@@ -77,9 +77,9 @@ namespace Integrian3D
 		const std::string_view Format,
 		...)
 	{
-		std::cout << "[" << Category << "]: ";
-
 		SetConsoleColour(Statics, Visibility, Visibility == "Debug");
+
+		std::cout << "[" << Category << "]: ";
 
 		va_list ArgPtr;
 		va_start(ArgPtr, Format);
