@@ -87,7 +87,7 @@ TEST_CASE("Testing the File")
 
 		REQUIRE(File.GetFilesize() > 0);
 
-		const std::string FileContents{ File.GetFileContents().c_str() };
+		const std::string FileContents{ File.GetFileContents().data() };
 		const std::string ContentsToCompare{ "15\nHello World!\n" };
 
 		REQUIRE(FileContents == ContentsToCompare);

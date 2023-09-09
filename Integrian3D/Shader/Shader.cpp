@@ -27,7 +27,7 @@ namespace Integrian3D
 			vertexShaderID = glCreateShader(GL_VERTEX_SHADER);
 
 			/* Attach the VertexShader code to the ID and compile it */
-			const char* pShaderSource{ vertexShader.GetFileContents().c_str() };
+			const char* pShaderSource{ vertexShader.GetFileContents().data() };
 			glShaderSource(vertexShaderID, 1, &pShaderSource, nullptr);
 			glCompileShader(vertexShaderID);
 
@@ -51,7 +51,7 @@ namespace Integrian3D
 			fragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
 
 			/* Attach the VertexShader code to the ID and compile it */
-			const char* pShaderSource{ fragmentShader.GetFileContents().c_str() };
+			const char* pShaderSource{ fragmentShader.GetFileContents().data() };
 			glShaderSource(fragmentShaderID, 1, &pShaderSource, nullptr);
 			glCompileShader(fragmentShaderID);
 

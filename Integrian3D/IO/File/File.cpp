@@ -1,4 +1,5 @@
 #include "File.h"
+#include "IO/FileContentCache/FileContentCache.h"
 #include "Win32Utils/Win32APICall.h"
 
 #ifdef _WIN32
@@ -31,11 +32,21 @@ namespace Integrian3D::IO
 
 		if (!Handle.IsValid())
 		{
-			LOG(File, Error, "File could not open the provided file: %s Error:", Filepath);
+			LOG(File, Error, "File could not open the provided file: %s Error:", Filepath.data());
 			return;
 		}
 
 		Filesize = static_cast<int32>(GetFileSize(Handle, nullptr));
+
+		FileContentCache::GetInstance().AddFile(this);
+	}
+
+	File::~File()
+	{
+		if (Handle.IsValid())
+		{
+			FileContentCache::GetInstance().RemoveFile(this);
+		}
 	}
 
 	File::File(File&& Other) noexcept
@@ -75,21 +86,9 @@ namespace Integrian3D::IO
 		return Filepath;
 	}
 
-	std::string File::GetFileContents() const
+	std::string_view File::GetFileContents() const
 	{
-		__CHECK(IsHandleValid());
-
-		std::string FileContents{};
-		FileContents.resize(Filesize);
-
-		if (ReadFile(Handle, FileContents.data(), static_cast<DWORD>(Filesize), nullptr, nullptr) == 0)
-		{
-			LOG(File, Warning, "File could not read the provided file: %s", Filepath);
-		}
-
-		Seek(0);
-
-		return FileContents;
+		return FileContentCache::GetInstance().GetFileContents(Filepath);
 	}
 
 	int32 File::GetFilesize() const
@@ -104,7 +103,7 @@ namespace Integrian3D::IO
 
 	File& File::operator<<(const char* String)
 	{
-		__CHECK(IsHandleValid());
+		__CHECK(Handle.IsValid());
 
 		const int32 Size{ static_cast<int32>(strlen(String)) };
 		if (Mode == FileMode::Binary)
@@ -118,7 +117,7 @@ namespace Integrian3D::IO
 
 	File& File::operator<<(const std::string& String)
 	{
-		__CHECK(IsHandleValid());
+		__CHECK(Handle.IsValid());
 
 		*this << String.c_str();
 
@@ -127,7 +126,7 @@ namespace Integrian3D::IO
 
 	File& File::operator<<(const bool bValue)
 	{
-		__CHECK(IsHandleValid());
+		__CHECK(Handle.IsValid());
 
 		*this << (bValue ? static_cast<int8>(1) : static_cast<int8>(0));
 
@@ -136,7 +135,7 @@ namespace Integrian3D::IO
 
 	const File& File::operator>>(std::string& String) const
 	{
-		__CHECK(IsHandleValid());
+		__CHECK(Handle.IsValid());
 
 		if (Mode == FileMode::ASCII)
 		{
@@ -170,7 +169,7 @@ namespace Integrian3D::IO
 
 	const File& File::operator>>(bool& bValue) const
 	{
-		__CHECK(IsHandleValid());
+		__CHECK(Handle.IsValid());
 
 		int8 Value{};
 		*this >> Value;
@@ -187,7 +186,7 @@ namespace Integrian3D::IO
 
 		if (!Call.GetSuccess())
 		{
-			LOG(File, Warning, "File::operator<< could not write to file %s", Filepath);
+			LOG(File, Warning, "File::operator>> could not read from file %s", Filepath.data());
 		}
 
 		return CurrentChar;
@@ -199,8 +198,22 @@ namespace Integrian3D::IO
 
 		if (!Call.GetSuccess())
 		{
-			LOG(File, Warning, "File::operator<< could not write to file %s", Filepath);
+			LOG(File, Warning, "File::operator>> could not read from file %s", Filepath.data());
 		}
+	}
+
+	void File::GetFileContents_Implementation(std::string& OutFileContents)
+	{
+		__CHECK(Handle.IsValid());
+
+		OutFileContents.resize(Filesize);
+
+		if (ReadFile(Handle, OutFileContents.data(), static_cast<DWORD>(Filesize), nullptr, nullptr) == 0)
+		{
+			LOG(File, Warning, "File could not read the provided file: %s", Filepath.data());
+		}
+
+		Seek(0);
 	}
 
 	void File::WriteToFile(const char* Buffer, const int32 BufferSize)
@@ -209,7 +222,7 @@ namespace Integrian3D::IO
 
 		if (!Call.GetSuccess())
 		{
-			LOG(File, Warning, "File::operator<< could not write to file %s", Filepath);
+			LOG(File, Warning, "File::operator<< could not write to file %s", Filepath.data());
 		}
 		else
 		{
@@ -224,15 +237,15 @@ namespace Integrian3D::IO
 		switch (OpenMode)
 		{
 		case OpenMode::CreateNew:
-			__ASSERT(!DoesFileExist(Filepath), "File::File() > OpenMode::CreateNew > File %s already exists", Filepath);
+			__ASSERT(!DoesFileExist(Filepath), "File::File() > OpenMode::CreateNew > File %s already exists", Filepath.data());
 			ErrorToIgnore = ERROR_FILE_EXISTS;
 			break;
 		case OpenMode::OpenExisting:
-			__ASSERT(DoesFileExist(Filepath), "File::File() > OpenMode::OpenExisting > File %s already exists", Filepath);
+			__ASSERT(DoesFileExist(Filepath), "File::File() > OpenMode::OpenExisting > File %s already exists", Filepath.data());
 			ErrorToIgnore = ERROR_FILE_NOT_FOUND;
 			break;
 		case OpenMode::TruncateExisting:
-			__ASSERT(DoesFileExist(Filepath), "File::File() > OpenMode::TruncateExisting > File %s does not exist", Filepath);
+			__ASSERT(DoesFileExist(Filepath), "File::File() > OpenMode::TruncateExisting > File %s does not exist", Filepath.data());
 			ErrorToIgnore = ERROR_FILE_NOT_FOUND;
 			break;
 		case OpenMode::CreateAlways:
@@ -257,10 +270,5 @@ namespace Integrian3D::IO
 				),
 				ErrorToIgnore
 			);
-	}
-
-	bool File::IsHandleValid() const
-	{
-		return Handle != INVALID_HANDLE_VALUE;
 	}
 }

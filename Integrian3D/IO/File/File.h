@@ -1,24 +1,25 @@
 #pragma once
 
 #include "EngineConstants.h"
-#include "Array/Array.h"
 #include "IO/FileMode.h"
 #include "IO/OpenMode.h"
 #include "IO/IOUtils.h"
 #include "Win32Utils/Win32Handle.h"
 
+#include <cmath>
 #include <string>
 #include <string_view>
 
 namespace Integrian3D::IO
 {
 	/// <summary>
-	/// Minimal RAII file abstraction.
+	/// Minimal RAII Win32 File abstraction.
 	/// </summary>
 	class File final
 	{
 	public:
 		File(const std::string_view Filepath, const OpenMode OpenMode, const FileMode Mode);
+		~File();
 
 		File(const File&) noexcept = delete;
 		File(File&& Other) noexcept;
@@ -29,10 +30,10 @@ namespace Integrian3D::IO
 		void Advance(const int32 AdvanceAmount) const;
 		void Regress(const int32 RegressAmount) const;
 
-		const std::string_view GetFilepath() const;
-		std::string GetFileContents() const;
-		int32 GetFilesize() const;
-		int32 GetFilepointer() const;
+		__NODISCARD const std::string_view GetFilepath() const;
+		__NODISCARD std::string_view GetFileContents() const;
+		__NODISCARD int32 GetFilesize() const;
+		__NODISCARD int32 GetFilepointer() const;
 
 		#pragma region operator<<
 		template<typename T, std::enable_if_t<bIsInteger<T>, bool> = true>
@@ -73,13 +74,16 @@ namespace Integrian3D::IO
 		#pragma endregion
 
 	private:
-		void WriteToFile(const char* Buffer, const int32 BufferSize);
-		char ReadCharacterFromFile() const;
-		void ReadFromFile(char* Buffer, const int32 BufferSize) const;
-		void* OpenFile(const OpenMode OpenMode) const;
-		bool IsHandleValid() const;
+		friend class FileContentCache;
+		// function is only called by FileContentCache
+		void GetFileContents_Implementation(std::string& OutFileContents);
 
-		std::string_view Filepath;
+		void WriteToFile(const char* Buffer, const int32 BufferSize);
+		__NODISCARD char ReadCharacterFromFile() const;
+		void ReadFromFile(char* Buffer, const int32 BufferSize) const;
+		__NODISCARD void* OpenFile(const OpenMode OpenMode) const;
+
+		std::string Filepath;
 		Win32Utils::Win32Handle Handle;
 		int32 Filesize;
 		FileMode Mode;
@@ -89,7 +93,7 @@ namespace Integrian3D::IO
 	template<typename T, std::enable_if_t<bIsInteger<T>, bool>>
 	inline File& File::operator<<(T Val)
 	{
-		__CHECK(IsHandleValid());
+		__CHECK(Handle.IsValid());
 
 		if (Mode == FileMode::ASCII)
 		{
@@ -114,7 +118,7 @@ namespace Integrian3D::IO
 	template<typename T, std::enable_if_t<bIsCharacter<T>, bool>>
 	inline File& File::operator<<(T Val)
 	{
-		__CHECK(IsHandleValid());
+		__CHECK(Handle.IsValid());
 
 		WriteToFile(&Val, sizeof(T));
 
@@ -124,7 +128,7 @@ namespace Integrian3D::IO
 	template<typename T, std::enable_if_t<std::is_floating_point_v<T>, bool>>
 	inline File& File::operator<<(T Val)
 	{
-		__CHECK(IsHandleValid());
+		__CHECK(Handle.IsValid());
 
 		if (Mode == FileMode::ASCII)
 		{
@@ -163,7 +167,7 @@ namespace Integrian3D::IO
 	template<typename T, std::enable_if_t<bIsInteger<T>, bool>>
 	inline const File& File::operator>>(T& Val) const
 	{
-		__CHECK(IsHandleValid());
+		__CHECK(Handle.IsValid());
 
 		if (Mode == FileMode::ASCII)
 		{
@@ -208,7 +212,7 @@ namespace Integrian3D::IO
 	template<typename T, std::enable_if_t<bIsCharacter<T>, bool>>
 	inline const File& File::operator>>(T& Val) const
 	{
-		__CHECK(IsHandleValid());
+		__CHECK(Handle.IsValid());
 
 		Val = ReadCharacterFromFile();
 
@@ -218,7 +222,7 @@ namespace Integrian3D::IO
 	template<typename T, std::enable_if_t<std::is_floating_point_v<T>, bool>>
 	inline const File& File::operator>>(T& Val) const
 	{
-		__CHECK(IsHandleValid());
+		__CHECK(Handle.IsValid());
 
 		if (Mode == FileMode::ASCII)
 		{

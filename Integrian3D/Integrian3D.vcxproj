@@ -185,6 +185,7 @@
   <ItemGroup>
     <ClCompile Include="Component\Component.cpp" />
     <ClCompile Include="CoreEngine.cpp" />
+    <ClCompile Include="IO\FileContentCache\FileContentCache.cpp" />
     <ClCompile Include="IO\File\File.cpp" />
     <ClCompile Include="IO\IAsset\IAssetReader.cpp" />
     <ClCompile Include="IO\IAsset\IAssetWriter.cpp" />
@@ -234,6 +235,7 @@
     <ClInclude Include="Config.h" />
     <ClInclude Include="ECS\ComponentIDGenerator.h" />
     <ClInclude Include="ECS\DenseSet\DenseSet.h" />
+    <ClInclude Include="IO\FileContentCache\FileContentCache.h" />
     <ClInclude Include="IO\FileMode.h" />
     <ClInclude Include="IO\File\File.h" />
     <ClInclude Include="IO\IAsset\IAssetReader.h" />
