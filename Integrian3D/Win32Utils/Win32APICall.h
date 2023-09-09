@@ -17,7 +17,7 @@ namespace Integrian3D::Win32Utils
 		template<typename Func>
 		friend Win32APICallInfo Win32APICall(const Func& Function, const std::string_view File, const int32 Line);
 		template<typename Func>
-		friend Win32APICallInfo Win32APICall(const Func& Function, const DWORD ErrorToIgnore, const std::string_view File, const int32 Line);
+		friend Win32APICallInfo Win32APICall_IgnoreError(const Func& Function, const DWORD ErrorToIgnore, const std::string_view File, const int32 Line);
 		template<typename T, typename Func>
 		friend T Win32APICall_RV(const Func& Function, const std::string_view File,const int32 Line);
 		template<typename T, typename Func>
