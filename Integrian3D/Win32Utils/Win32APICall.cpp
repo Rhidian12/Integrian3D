@@ -1,5 +1,13 @@
 #include "Win32Utils/Win32APICall.h"
 
+#ifdef _WIN32
+#	pragma warning ( push )
+#	pragma warning ( disable : 4005 ) /* warning C4005: 'APIENTRY': macro redefinition */ 
+#		define WIN32_LEAN_AND_MEAN
+#		include <Windows.h>
+#	pragma warning ( pop )
+#endif
+
 namespace Integrian3D::Win32Utils
 {
 	Win32APICallInfo::Win32APICallInfo(const std::string_view File, const int32 Line)

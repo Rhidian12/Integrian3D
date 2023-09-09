@@ -29,7 +29,7 @@ namespace Integrian3D::IO
 	{
 		Handle = OpenFile(OpenMode);
 
-		if (Handle == INVALID_HANDLE_VALUE)
+		if (!Handle.IsValid())
 		{
 			LOG(File, Error, "File could not open the provided file: %s Error:", Filepath);
 			return;
@@ -38,33 +38,19 @@ namespace Integrian3D::IO
 		Filesize = static_cast<int32>(GetFileSize(Handle, nullptr));
 	}
 
-	File::~File()
-	{
-		CloseHandle();
-	}
-
 	File::File(File&& Other) noexcept
 		: Filepath{ __MOVE(Other.Filepath) }
 		, Handle{ __MOVE(Other.Handle) }
 		, Filesize{ __MOVE(Other.Filesize) }
 		, Mode{ __MOVE(Other.Mode) }
-	{
-		Other.Handle = INVALID_HANDLE_VALUE;
-	}
+	{}
 
 	File& File::operator=(File&& Other) noexcept
 	{
-		if (Handle)
-		{
-			CloseHandle();
-		}
-
 		Filepath = __MOVE(Other.Filepath);
 		Handle = __MOVE(Other.Handle);
 		Filesize = __MOVE(Other.Filesize);
 		Mode = __MOVE(Other.Mode);
-
-		Other.Handle = INVALID_HANDLE_VALUE;
 
 		return *this;
 	}
@@ -228,21 +214,6 @@ namespace Integrian3D::IO
 		else
 		{
 			Filesize += BufferSize;
-		}
-	}
-
-	void File::CloseHandle()
-	{
-		if (Handle)
-		{
-			auto Call = CALL_WIN32(::CloseHandle(Handle));
-
-			if (!Call.GetSuccess())
-			{
-				LOG(File, Error, "File could not close the provided file: %s", Filepath);
-			}
-
-			Handle = INVALID_HANDLE_VALUE;
 		}
 	}
 

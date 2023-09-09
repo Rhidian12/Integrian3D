@@ -144,6 +144,9 @@
     <ClCompile Include="Win32Utils\Win32APICall.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Win32Utils\Win32Handle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window\Window.h">
@@ -336,6 +339,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Win32Utils\Win32APICall.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Win32Utils\Win32Handle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

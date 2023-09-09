@@ -225,6 +225,7 @@
     <ClCompile Include="UnitTests\UnitTests.cpp" />
     <ClCompile Include="Utils\Utils.cpp" />
     <ClCompile Include="Win32Utils\Win32APICall.cpp" />
+    <ClCompile Include="Win32Utils\Win32Handle.cpp" />
     <ClCompile Include="Window\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -288,6 +289,7 @@
     <ClInclude Include="Vertex\Vertex.h" />
     <ClInclude Include="ECS\View\View.h" />
     <ClInclude Include="Win32Utils\Win32APICall.h" />
+    <ClInclude Include="Win32Utils\Win32Handle.h" />
     <ClInclude Include="Window\Window.h" />
   </ItemGroup>
   <ItemGroup>

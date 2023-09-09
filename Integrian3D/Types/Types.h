@@ -60,6 +60,8 @@ struct WindowsTypes final : public GenericTypes
 {
 	using SIZE_T = unsigned __int64;
 	using SSIZE_T = __int64;
+
+	using DWORD = unsigned long;
 };
 
 using PlatformTypes = WindowsTypes;
@@ -99,6 +101,8 @@ using int64 = PlatformTypes::int64;
 // pointer types
 using SIZE_T = PlatformTypes::SIZE_T;
 using SSIZE_T = PlatformTypes::SSIZE_T;
+
+using DWORD = PlatformTypes::DWORD;
 
 namespace Integrian3D
 {

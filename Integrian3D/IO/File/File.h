@@ -5,6 +5,7 @@
 #include "IO/FileMode.h"
 #include "IO/OpenMode.h"
 #include "IO/IOUtils.h"
+#include "Win32Utils/Win32Handle.h"
 
 #include <string>
 #include <string_view>
@@ -18,7 +19,6 @@ namespace Integrian3D::IO
 	{
 	public:
 		File(const std::string_view Filepath, const OpenMode OpenMode, const FileMode Mode);
-		~File();
 
 		File(const File&) noexcept = delete;
 		File(File&& Other) noexcept;
@@ -76,12 +76,11 @@ namespace Integrian3D::IO
 		void WriteToFile(const char* Buffer, const int32 BufferSize);
 		char ReadCharacterFromFile() const;
 		void ReadFromFile(char* Buffer, const int32 BufferSize) const;
-		void CloseHandle();
 		void* OpenFile(const OpenMode OpenMode) const;
 		bool IsHandleValid() const;
 
 		std::string_view Filepath;
-		void* Handle;
+		Win32Utils::Win32Handle Handle;
 		int32 Filesize;
 		FileMode Mode;
 	};
