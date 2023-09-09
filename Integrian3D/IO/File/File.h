@@ -74,6 +74,7 @@ namespace Integrian3D::IO
 		#pragma endregion
 
 	private:
+		// I don't want to expose Handle and GetFileContents_Implementation, so give FileContentCache private access
 		friend class FileContentCache;
 		// function is only called by FileContentCache
 		void GetFileContents_Implementation(std::string& OutFileContents);
