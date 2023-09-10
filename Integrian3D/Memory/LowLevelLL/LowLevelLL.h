@@ -240,7 +240,7 @@ namespace Integrian3D::Memory
 
 		__NODISCARD T& Get(const uint64_t index)
 		{
-			__ASSERT(index < Count());
+			__CHECK(index < Count());
 
 			Node* pCurrent{ m_pHead };
 
@@ -252,7 +252,7 @@ namespace Integrian3D::Memory
 
 		__NODISCARD const T& Get(const uint64_t index) const
 		{
-			__ASSERT(index < Count());
+			__CHECK(index < Count());
 
 			Node* pCurrent{ m_pHead };
 

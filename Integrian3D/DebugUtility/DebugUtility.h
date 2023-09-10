@@ -1,18 +1,41 @@
 #pragma once
 
-#include "../EngineConstants.h"
-
-#include <iostream> /* std::cout for users */
+#include "../Logger/Logger.h"
 
 namespace Integrian3D
 {
-	namespace Debug
-	{
-		/* [CRINGE]: These macros will only work on MSVC (__FILE__, __LINE__) */
-#define LogMessage(message, bVerbose) Logger::GetInstance().LogMessage((message), __LINE__, __FILE__, (bVerbose))
-#define LogWarning(message, bVerbose) Logger::GetInstance().LogWarning((message), __LINE__, __FILE__, (bVerbose))
-#define LogError(message, bVerbose) Logger::GetInstance().LogError((message), __LINE__, __FILE__, (bVerbose))
-#define LogCustomMessage(message, colour, bVerbose) Logger::GetInstance().LogCustomMessage((message), __LINE__, __FILE__, (colour), (bVerbose))
-#define LogVector(vector, colour) Logger::GetInstance().LogVector((vector), (colour))
-	}
+#define LOG(Category, Visibility, Format, ...) Logger::GetInstance().LogMessage(#Category, #Visibility, Format, __VA_ARGS__)
+
+	/* __ASSERT(), __CASSERT(), __CHECK */
+#ifdef _DEBUG
+#	define __BREAK() __debugbreak()
+
+#	define __ASSERT(Expr, Format, ...) \
+		if ((Expr)) {} \
+		else \
+		{ \
+			LOG("Assert", "Fatal", Format, __VA_ARGS__); \
+			__BREAK(); \
+		}
+
+#	define __CASSERT(Expr, Format, ...) \
+		if constexpr ((Expr)) {} \
+		else \
+		{ \
+			LOG("Assert", "Fatal", Format, __VA_ARGS__); \
+			__BREAK(); \
+		}
+
+#	define __CHECK(Expr) \
+		if ((Expr)) {} \
+		else \
+		{ \
+			LOG("Check", "Fatal", "Check %s triggered at line %i in file %s", #Expr, __LINE__, __FILE__); \
+			__BREAK(); \
+		}
+#else
+#	define __BREAK()
+#	define __ASSERT(expr, message)
+#	define __CASSERT(expr, message)
+#endif
 }

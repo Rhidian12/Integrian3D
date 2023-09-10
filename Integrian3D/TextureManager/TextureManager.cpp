@@ -22,7 +22,7 @@ namespace Integrian3D
 	{
 		const auto cIt{ Textures.find(name.data()) };
 
-		__ASSERT(cIt != Textures.cend() && "TextureManager::GetTexture() > Name was not added");
+		__ASSERT(cIt != Textures.cend(), "TextureManager::GetTexture() > Name %s cannot be found", name);
 
 		return cIt->second.get();
 	}

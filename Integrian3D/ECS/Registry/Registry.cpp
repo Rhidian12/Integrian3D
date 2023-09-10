@@ -41,9 +41,7 @@ namespace Integrian3D
 
 	Entity Registry::CreateEntity()
 	{
-		__ASSERT(CurrentEntityCounter <= MAX_ENTITIES);
-
-		Entity entity{};
+		Entity entity{ InvalidEntityID };
 
 		if (!RecycledEntities.empty())
 		{
@@ -54,6 +52,8 @@ namespace Integrian3D
 		{
 			entity = CurrentEntityCounter++;
 		}
+
+		__ASSERT(entity != InvalidEntityID, "Registry::CreateEntity() > The maximum amount of entities has been created. Consider increasing MAX_ENTITIES");
 
 		Entities.Add(entity);
 

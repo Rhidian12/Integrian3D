@@ -1,10 +1,29 @@
 #include <catch.hpp>
 
 #include "../IO/File/File.h"
-#include "../IO/Serializer/Serializer.h"
 #include "../Math/Math.h"
 
 #include <string>
+
+struct FileTestData final
+{
+	std::string Word;
+	int Number;
+};
+
+Integrian3D::IO::File& operator<<(Integrian3D::IO::File& File, const FileTestData& Data)
+{
+	File << Data.Number << "\n" << Data.Word << "\n";
+
+	return File;
+}
+
+const Integrian3D::IO::File& operator>>(const Integrian3D::IO::File& File, FileTestData& Data)
+{
+	File >> Data.Number >> Data.Word;
+
+	return File;
+}
 
 TEST_CASE("Testing the File")
 {
@@ -13,59 +32,103 @@ TEST_CASE("Testing the File")
 
 	SECTION("Writing to a file some text")
 	{
-		File file{ "Resources/TestASCIIFile.txt" };
+		File File{ "Resources/TestASCIIFile.txt", OpenMode::CreateAlways, FileMode::ASCII };
 
-		file.ClearBuffer();
-		REQUIRE(file.GetBuffer().Size() == 0);
+		REQUIRE(File.GetFilesize() == 0);
 
-		file << 5 << '\n';
-		file << 16.f << '\n';
-		file << "This is a test string\n";
-		file << "This is a second test string on a new line";
+		File << 14562 << "\n";
+		File << 16.35f << "\n";
+		File << "This is some string";
+		File << "\tThis is another string";
 
-		REQUIRE(file.GetBuffer().Size() > 0);
-
-		file.Write();
+		REQUIRE(File.GetFilesize() > 0);
 	}
 
 	SECTION("Reading a file with some text")
 	{
-		File file{ "Resources/TestASCIIFile.txt" };
+		const File File{ "Resources/TestASCIIFile.txt", OpenMode::OpenExisting, FileMode::ASCII };
 
-		REQUIRE(file.GetBuffer().Size() > 0);
+		REQUIRE(File.GetFilesize() > 0);
 
-		REQUIRE(std::stoi(file.GetLine()) == 5);
-		REQUIRE(Math::AreEqual(std::stof(file.GetLine()), 16.f));
-		REQUIRE(file.GetLine() == "This is a test string\n");
-		REQUIRE(file.GetLine() == "This is a second test string on a new line");
+		const std::string FileContents{ File.GetFileContents() };
+		const std::string ContentsToCompare{ "14562\n16.35\nThis is some string\tThis is another string" };
+
+		REQUIRE(FileContents == ContentsToCompare);
+
+		int A{};
+		float B{};
+		std::string C{};
+
+		File >> A >> B >> C;
+
+		REQUIRE(A == 14562);
+		REQUIRE(Math::AreEqual(B, 16.35f));
+		REQUIRE(C == "This is some string\tThis is another string");
 	}
 
-	SECTION("Writing to a file some text using a specific delimiter")
+	SECTION("Writing a Custom Type to a text file")
 	{
-		File file{ "Resources/TestASCIIFile.txt" };
+		File File{ "Resources/TestASCIIFile.txt", OpenMode::CreateAlways, FileMode::ASCII };
 
-		file.ClearBuffer();
-		REQUIRE(file.GetBuffer().Size() == 0);
+		REQUIRE(File.GetFilesize() == 0);
 
-		file << 5 << ',';
-		file << 16.f << ',';
-		file << "This is a test string,";
-		file << "This is a second test string on a new line";
+		FileTestData Data{};
+		Data.Number = 15;
+		Data.Word = "Hello World!";
 
-		REQUIRE(file.GetBuffer().Size() > 0);
+		File << Data;
 
-		file.Write();
+		REQUIRE(File.GetFilesize() > 0);
 	}
 
-	SECTION("Reading a file with some text using a specific delimiter")
+	SECTION("Reading a text file with a Custom Type")
 	{
-		File file{ "Resources/TestASCIIFile.txt" };
+		const File File{ "Resources/TestASCIIFile.txt", OpenMode::OpenExisting, FileMode::ASCII };
 
-		REQUIRE(file.GetBuffer().Size() > 0);
+		REQUIRE(File.GetFilesize() > 0);
 
-		REQUIRE(std::stoi(file.GetLine(',')) == 5);
-		REQUIRE(Math::AreEqual(std::stof(file.GetLine(',')), 16.f));
-		REQUIRE(file.GetLine(',') == "This is a test string,");
-		REQUIRE(file.GetLine(',') == "This is a second test string on a new line");
+		const std::string FileContents{ File.GetFileContents().data() };
+		const std::string ContentsToCompare{ "15\nHello World!\n" };
+
+		REQUIRE(FileContents == ContentsToCompare);
+
+		FileTestData Data{};
+		File >> Data;
+
+		REQUIRE(Data.Number == 15);
+		REQUIRE(Data.Word == "Hello World!");
+	}
+
+	SECTION("Writing a Binary file with some simple information")
+	{
+		File File{ "Resources/TestBinaryFile.bin", OpenMode::CreateAlways, FileMode::Binary };
+
+		REQUIRE(File.GetFilesize() == 0);
+
+		File << 15 << 265 << 1831 << 15.6 << 3684.51f << 'D' << "HelloWorld!";
+
+		REQUIRE(File.GetFilesize() > 0);
+	}
+	
+	SECTION("Reading a Binary file with some simple information")
+	{
+		const File File{ "Resources/TestBinaryFile.bin", OpenMode::OpenExisting, FileMode::Binary };
+
+		REQUIRE(File.GetFilesize() > 0);
+
+		int32 A{}, B{}, C{};
+		double D{};
+		float E{};
+		char F{};
+		std::string G{};
+		File >> A >> B >> C >> D >> E >> F >> G;
+
+		REQUIRE(A == 15);
+		REQUIRE(B == 265);
+		REQUIRE(C == 1831);
+		REQUIRE(Math::AreEqual(D, 15.6, 0.1));
+		REQUIRE(Math::AreEqual(E, 3684.51f, 0.1f));
+		REQUIRE(F == 'D');
+		REQUIRE(G == "HelloWorld!");
 	}
 }

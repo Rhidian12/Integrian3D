@@ -39,9 +39,6 @@
     <ClCompile Include="Renderer\Renderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="IO\ASCII\FileReader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Scene\Scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -126,9 +123,6 @@
     <ClCompile Include="UnitTests\TimerTests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="UnitTests\SerialisationTests.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="UnitTests\IAssetTests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -145,6 +139,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Components\TagComponent\TagComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Win32Utils\Win32APICall.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Win32Utils\Win32Handle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IO\FileContentCache\FileContentCache.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -171,9 +174,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Renderer\Renderer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="IO\ASCII\FileReader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Scene\Scene.h">
@@ -272,16 +272,10 @@
     <ClInclude Include="Timer\TimeLength.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="IO\SeekMode.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="IO\IOUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="IO\IAsset\IAssetWriter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="IO\IAsset\IAssetUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TemplateUtils\TemplateUtils.h">
@@ -291,9 +285,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="IO\File\File.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="IO\Serializer\Serializer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Component\Component.h">
@@ -339,6 +330,24 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="UpdateOrder\UpdateOrder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IO\OpenMode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Logger\LoggerStatics.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Logger\ConsoleColours.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Win32Utils\Win32APICall.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Win32Utils\Win32Handle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IO\FileContentCache\FileContentCache.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,160 +1,274 @@
 #include "File.h"
+#include "IO/FileContentCache/FileContentCache.h"
+#include "Win32Utils/Win32APICall.h"
 
-#include "../../DebugUtility/DebugUtility.h"
-
-#pragma warning ( push )
-#pragma warning ( disable : 4005 ) /* warning C4005: 'APIENTRY': macro redefinition */ 
 #ifdef _WIN32
-#define WIN32_LEAN_AND_MEAN
-#include <Windows.h>
+#	pragma warning ( push )
+#	pragma warning ( disable : 4005 ) /* warning C4005: 'APIENTRY': macro redefinition */ 
+#		define WIN32_LEAN_AND_MEAN
+#		include <Windows.h>
+#	pragma warning ( pop )
 #endif
-#pragma warning ( pop )
 
 namespace Integrian3D::IO
 {
-	File::File()
-		: m_Filepath{}
-		, m_pHandle{}
-		, m_Buffer{}
-		, m_BufferPointer{}
-	{}
-
-	File::File(const std::string& filepath)
-		: m_Filepath{ filepath }
-		, m_pHandle{}
-		, m_Buffer{}
-		, m_BufferPointer{}
+	namespace
 	{
-		/* open the file */
-		m_pHandle = CreateFileA(filepath.data(),
-			GENERIC_READ | GENERIC_WRITE,
-			FILE_SHARE_READ,
-			nullptr,
-			OPEN_ALWAYS,
-			FILE_ATTRIBUTE_NORMAL,
-			nullptr);
+		static bool DoesFileExist(const std::string_view Filepath)
+		{
+			DWORD Attributes = GetFileAttributesA(Filepath.data());
 
-		if (m_pHandle == INVALID_HANDLE_VALUE)
-			Debug::LogError("File could not open the provided file", false);
+			return Attributes != INVALID_FILE_ATTRIBUTES && !(Attributes & FILE_ATTRIBUTE_DIRECTORY);
+		}
+	}
 
-		/* Get the file size */
-		const DWORD fileSize{ GetFileSize(m_pHandle, nullptr) };
-		m_Buffer.Resize(fileSize);
+	File::File(const std::string_view Filepath, const OpenMode OpenMode, const FileMode Mode)
+		: Filepath{ Filepath }
+		, Handle{ INVALID_HANDLE_VALUE }
+		, Filesize{}
+		, Mode{ Mode }
+	{
+		Handle = OpenFile(OpenMode);
 
-		/* Read the file contents */
-		DWORD readBytes{};
-		if (ReadFile(m_pHandle, m_Buffer.Data(), fileSize, &readBytes, nullptr) == 0)
-			Debug::LogError("File could not read the provided file", false);
+		if (!Handle.IsValid())
+		{
+			LOG(File, Error, "File could not open the provided file: %s Error:", Filepath.data());
+			return;
+		}
+
+		Filesize = static_cast<int32>(GetFileSize(Handle, nullptr));
+
+		FileContentCache::GetInstance().AddFile(this);
 	}
 
 	File::~File()
 	{
-		if (m_pHandle)
-			if (CloseHandle(m_pHandle) == 0)
-				Debug::LogError("File could not close the provided file", false);
+		if (Handle.IsValid())
+		{
+			FileContentCache::GetInstance().RemoveFile(this);
+		}
 	}
 
-	File::File(File&& other) noexcept
-		: m_Filepath{ __MOVE(other.m_Filepath) }
-		, m_pHandle{ __MOVE(other.m_pHandle) }
-		, m_Buffer{ __MOVE(other.m_Buffer) }
-		, m_BufferPointer{ __MOVE(other.m_BufferPointer) }
-	{
-		other.m_pHandle = nullptr;
-	}
+	File::File(File&& Other) noexcept
+		: Filepath{ __MOVE(Other.Filepath) }
+		, Handle{ __MOVE(Other.Handle) }
+		, Filesize{ __MOVE(Other.Filesize) }
+		, Mode{ __MOVE(Other.Mode) }
+	{}
 
-	File& File::operator=(File&& other) noexcept
+	File& File::operator=(File&& Other) noexcept
 	{
-		m_Filepath = __MOVE(other.m_Filepath);
-		m_pHandle = __MOVE(other.m_pHandle);
-		m_Buffer = __MOVE(other.m_Buffer);
-		m_BufferPointer = __MOVE(other.m_BufferPointer);
-
-		other.m_pHandle = nullptr;
+		Filepath = __MOVE(Other.Filepath);
+		Handle = __MOVE(Other.Handle);
+		Filesize = __MOVE(Other.Filesize);
+		Mode = __MOVE(Other.Mode);
 
 		return *this;
 	}
 
-	void File::Write() const
+	void File::Seek(const int32 NewFilepointerPos) const
 	{
-		if (SetFilePointer(m_pHandle, 0, nullptr, FILE_BEGIN) == INVALID_SET_FILE_POINTER)
-			Debug::LogError("File::Write() > File could not set the file pointer", false);
-
-		if (SetEndOfFile(m_pHandle) == 0)
-			Debug::LogError("File::Write() > File could not be truncated", false);
-
-		if (WriteFile(m_pHandle, m_Buffer.Data(), static_cast<DWORD>(m_Buffer.Size()), nullptr, nullptr) == 0)
-			Debug::LogError("File::Write() > File could not write the data to the provided file", false);
+		SetFilePointer(Handle, NewFilepointerPos, nullptr, FILE_BEGIN);
 	}
 
-	void File::Write(const TArray<char>& data, const SeekMode mode)
+	void File::Advance(const int32 AdvanceAmount) const
 	{
-		__ASSERT(mode != SeekMode::Regress && "File::Write(const TArray&) > Cannot write while regressing");
+		SetFilePointer(Handle, AdvanceAmount, nullptr, FILE_CURRENT);
+	}
 
-		switch (mode)
+	void File::Regress(const int32 RegressAmount) const
+	{
+		SetFilePointer(Handle, RegressAmount, nullptr, FILE_CURRENT);
+	}
+
+	const std::string_view File::GetFilepath() const
+	{
+		return Filepath;
+	}
+
+	std::string_view File::GetFileContents() const
+	{
+		return FileContentCache::GetInstance().GetFileContents(Filepath);
+	}
+
+	int32 File::GetFilesize() const
+	{
+		return Filesize;
+	}
+
+	int32 File::GetFilepointer() const
+	{
+		return static_cast<int32>(SetFilePointer(Handle, 0, nullptr, FILE_CURRENT));
+	}
+
+	File& File::operator<<(const char* String)
+	{
+		__CHECK(Handle.IsValid());
+
+		const int32 Size{ static_cast<int32>(strlen(String)) };
+		if (Mode == FileMode::Binary)
 		{
-			case SeekMode::Start:
-				for (int32_t i{ static_cast<int32_t>(data.Size()) - 1 }; i >= 0; --i)
-					m_Buffer.AddFront(data[i]);
-				break;
-			case SeekMode::End:
-			case SeekMode::Advance:
-				m_Buffer.AddRange(data.cbegin(), data.cend());
-				break;
+			*this << Size;
 		}
+		WriteToFile(String, Size);
+
+		return *this;
 	}
 
-	void File::ClearBuffer()
+	File& File::operator<<(const std::string& String)
 	{
-		m_Buffer.Clear();
+		__CHECK(Handle.IsValid());
+
+		*this << String.c_str();
+
+		return *this;
 	}
 
-	std::string File::GetLine(const char delim)
+	File& File::operator<<(const bool bValue)
 	{
-		std::string line{};
-		while (m_BufferPointer < m_Buffer.Size())
+		__CHECK(Handle.IsValid());
+
+		*this << (bValue ? static_cast<int8>(1) : static_cast<int8>(0));
+
+		return *this;
+	}
+
+	const File& File::operator>>(std::string& String) const
+	{
+		__CHECK(Handle.IsValid());
+
+		if (Mode == FileMode::ASCII)
 		{
-			line.push_back(m_Buffer[m_BufferPointer++]);
-
-			if (m_Buffer[m_BufferPointer] == delim)
+			bool bContinue{ true };
+			while (bContinue)
 			{
-				line.push_back(m_Buffer[m_BufferPointer++]);
-				break;
+				char CurrentChar{ ReadCharacterFromFile() };
+
+				const bool bIsNewline{ CurrentChar == '\n' };
+				const bool bIsEOF{ CurrentChar == '\0' };
+				bContinue = !(bIsNewline || bIsEOF);
+
+				if (bContinue)
+				{
+					String += CurrentChar;
+				}
 			}
 		}
+		else
+		{
+			int32 StringSize{};
+			*this >> StringSize;
 
-		return line;
+			String.resize(StringSize);
+
+			ReadFromFile(String.data(), StringSize);
+		}
+
+		return *this;
 	}
 
-	void File::Seek(const SeekMode mode, const uint64_t val)
+	const File& File::operator>>(bool& bValue) const
 	{
-		__ASSERT(!m_Buffer.Empty());
+		__CHECK(Handle.IsValid());
 
-		switch (mode)
+		int8 Value{};
+		*this >> Value;
+
+		bValue = static_cast<bool>(Value);
+
+		return *this;
+	}
+
+	char File::ReadCharacterFromFile() const
+	{
+		char CurrentChar{ '\0' };
+		auto Call = CALL_WIN32(ReadFile(Handle, &CurrentChar, 1, nullptr, nullptr));
+
+		if (!Call.GetSuccess())
 		{
-			case SeekMode::Start:
-				m_BufferPointer = val;
-				break;
-			case SeekMode::End:
-				m_BufferPointer = m_Buffer.Size() - 1 - val;
-				break;
-			case SeekMode::Advance:
-				m_BufferPointer += val;
+			LOG(File, Warning, "File::operator>> could not read from file %s", Filepath.data());
+		}
 
-				if (m_BufferPointer >= m_Buffer.Size())
-					m_BufferPointer = m_Buffer.Size() - 1u;
-				break;
-			case SeekMode::Regress:
-				if (val <= m_BufferPointer)
-					m_BufferPointer -= val;
-				else
-					m_BufferPointer = 0;
-				break;
+		return CurrentChar;
+	}
+
+	void File::ReadFromFile(char* Buffer, const int32 BufferSize) const
+	{
+		auto Call = CALL_WIN32(ReadFile(Handle, Buffer, static_cast<DWORD>(BufferSize), nullptr, nullptr));
+
+		if (!Call.GetSuccess())
+		{
+			LOG(File, Warning, "File::operator>> could not read from file %s", Filepath.data());
 		}
 	}
 
-	const TArray<char>& File::GetBuffer() const
+	void File::GetFileContents_Implementation(std::string& OutFileContents)
 	{
-		return m_Buffer;
+		__CHECK(Handle.IsValid());
+
+		OutFileContents.resize(Filesize);
+
+		if (ReadFile(Handle, OutFileContents.data(), static_cast<DWORD>(Filesize), nullptr, nullptr) == 0)
+		{
+			LOG(File, Warning, "File could not read the provided file: %s", Filepath.data());
+		}
+
+		Seek(0);
+	}
+
+	void File::WriteToFile(const char* Buffer, const int32 BufferSize)
+	{
+		auto Call = CALL_WIN32(WriteFile(Handle, Buffer, static_cast<DWORD>(BufferSize), nullptr, nullptr));
+
+		if (!Call.GetSuccess())
+		{
+			LOG(File, Warning, "File::operator<< could not write to file %s", Filepath.data());
+		}
+		else
+		{
+			Filesize += BufferSize;
+		}
+	}
+
+	void* File::OpenFile(const OpenMode OpenMode) const
+	{
+		DWORD ErrorToIgnore{};
+
+		switch (OpenMode)
+		{
+		case OpenMode::CreateNew:
+			__ASSERT(!DoesFileExist(Filepath), "File::File() > OpenMode::CreateNew > File %s already exists", Filepath.data());
+			ErrorToIgnore = ERROR_FILE_EXISTS;
+			break;
+		case OpenMode::OpenExisting:
+			__ASSERT(DoesFileExist(Filepath), "File::File() > OpenMode::OpenExisting > File %s already exists", Filepath.data());
+			ErrorToIgnore = ERROR_FILE_NOT_FOUND;
+			break;
+		case OpenMode::TruncateExisting:
+			__ASSERT(DoesFileExist(Filepath), "File::File() > OpenMode::TruncateExisting > File %s does not exist", Filepath.data());
+			ErrorToIgnore = ERROR_FILE_NOT_FOUND;
+			break;
+		case OpenMode::CreateAlways:
+		case OpenMode::OpenAlways:
+			ErrorToIgnore = ERROR_ALREADY_EXISTS;
+			break;
+		default:
+			break;
+		}
+
+		return CALL_WIN32_RV_IGNORE_ERROR
+			(
+				CreateFileA
+				(
+					Filepath.data(),
+					GENERIC_READ | GENERIC_WRITE,
+					FILE_SHARE_READ,
+					nullptr,
+					static_cast<DWORD>(OpenMode),
+					FILE_ATTRIBUTE_NORMAL,
+					nullptr
+				),
+				ErrorToIgnore
+			);
 	}
 }

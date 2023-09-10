@@ -55,7 +55,7 @@ namespace Integrian3D::Memory
 		struct _CanDestroy : public std::false_type {};
 
 		template<typename T, typename U>
-		struct _CanDestroy<T, U, Void<decltype(std::declval<T>().Destroy<U>(nullptr))>> : public std::true_type {};
+		struct _CanDestroy<T, U, Void<decltype(std::declval<T>().template Destroy<U>(nullptr))>> : public std::true_type {};
 
 		template<typename T, typename = void>
 		struct _HasInitialize : public std::false_type {};

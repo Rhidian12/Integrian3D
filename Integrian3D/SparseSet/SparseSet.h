@@ -38,21 +38,6 @@ namespace Integrian3D
 			return (value < Sparse.size()) && (Sparse[value] != InvalidEntityID);
 		}
 
-		T GetSparse(const T value) const
-		{
-			for (const T sparse : Sparse)
-			{
-				if (sparse != InvalidEntityID && sparse == value)
-				{
-					return sparse;
-				}
-			}
-
-			__ASSERT(false);
-
-			return static_cast<T>(0);
-		}
-
 		size_t Size() const { return _Size; }
 		void Clear() { Sparse.clear(); Packed.clear(); _Size = 0; }
 
@@ -72,15 +57,15 @@ namespace Integrian3D
 
 		void Reserve(const size_t capacity) { Sparse.reserve(capacity); Packed.reserve(capacity); }
 
-		__NODISCARD __INLINE T& operator[](const T val)
+		__NODISCARD __INLINE T& operator[](const T Val)
 		{
-			__ASSERT(Contains(val));
-			return Packed[Sparse[val]];
+			__ASSERT(Contains(Val), "SparseSet::operator[] > does not contain %i", Val);
+			return Packed[Sparse[Val]];
 		}
-		__NODISCARD __INLINE const T operator[](const T val) const
+		__NODISCARD __INLINE const T operator[](const T Val) const
 		{
-			__ASSERT(Contains(val));
-			return Packed[Sparse[val]];
+			__ASSERT(Contains(Val), "SparseSet::operator[] > does not contain %i", Val);
+			return Packed[Sparse[Val]];
 		}
 
 		VectorIt begin() { return Packed.begin(); }

@@ -163,6 +163,14 @@ namespace Integrian3D
 			EmplaceBack(__MOVE(val));
 		}
 
+		constexpr void AddUnique(const T& Val)
+		{
+			if (Find(Val) == end())
+			{
+				EmplaceBack(Val);
+			}
+		}
+
 		constexpr void AddFront(const T& val)
 		{
 			EmplaceFront(val);
@@ -195,7 +203,7 @@ namespace Integrian3D
 		}
 		constexpr void AddRange(T* pArr, const size_t n)
 		{
-			__ASSERT(pArr != nullptr);
+			__ASSERT(pArr != nullptr, "Array::AddRange > Passed array cannot be null");
 
 			for (size_t i{}; i < n; ++i)
 			{
@@ -205,7 +213,7 @@ namespace Integrian3D
 
 		constexpr It EraseByIndex(const size_t index)
 		{
-			__ASSERT(index < Size() && "Array::Erase() > index is out of range");
+			__ASSERT(index < Size(), "Array::Erase() > index %i is out of range", index);
 
 			const size_t oldSize{ Size() };
 
@@ -232,7 +240,7 @@ namespace Integrian3D
 
 		constexpr It Erase(It pos)
 		{
-			__ASSERT(pos != end() && "Array::Erase() > invalid iterator was passed as a parameter");
+			__ASSERT(pos != end(), "Array::Erase() > Pos cannot be equal to end()");
 
 			return EraseByIndex(pos.Data() - begin().Data());
 		}
@@ -292,13 +300,13 @@ namespace Integrian3D
 
 		constexpr void EraseRange(const size_t start, const size_t count)
 		{
-			__ASSERT(start < Size() && "Array::EraseRange() > Start is out of range");
+			__ASSERT(start < Size(), "Array::EraseRange() > Start cannot be greater than the Array size");
 
 			EraseRange(It{ m_pHead + start }, It{ m_pHead + start + count });
 		}
 		constexpr void EraseRange(It beg, It endIt)
 		{
-			__ASSERT(beg != end() && "Array::EraseRange() > Cannot iterator past the end");
+			__ASSERT(beg < end(), "Array::EraseRange() > Begin cannot be greater or equal to End");
 
 			if (endIt >= end())
 			{
@@ -364,7 +372,7 @@ namespace Integrian3D
 		template<typename ... Ts>
 		constexpr T& Emplace(const size_t index, Ts&&... args)
 		{
-			__ASSERT(index <= Size() && "Array::Emplace() > index is out of range");
+			__ASSERT(index <= Size(), "Array::Emplace() > Index cannot be greater or equal to the Array size");
 
 			const size_t oldSize{ Size() };
 
@@ -593,39 +601,39 @@ namespace Integrian3D
 	#pragma region Accessing Elements
 		constexpr T& Front()
 		{
-			__ASSERT(Size() > 0 && "Array::Front() > Array is empty");
+			__CHECK(Size() > 0);
 
 			return *m_pHead;
 		}
 		constexpr const T& Front() const
 		{
-			__ASSERT(Size() > 0 && "Array::Front() > Array is empty");
+			__CHECK(Size() > 0);
 
 			return *m_pHead;
 		}
 
 		constexpr T& Back()
 		{
-			__ASSERT(Size() > 0 && "Array::Back() > Array is empty");
+			__CHECK(Size() > 0);
 
 			return *(m_pCurrentEnd - 1);
 		}
 		constexpr const T& Back() const
 		{
-			__ASSERT(Size() > 0 && "Array::Back() > Array is empty");
+			__CHECK(Size() > 0);
 
 			return *(m_pCurrentEnd - 1);
 		}
 
 		constexpr T& At(const size_t index)
 		{
-			__ASSERT((index < Size()) && "Array::At() > Index is out of range");
+			__ASSERT(index < Size(), "Array::At() > Index is out of range");
 
 			return *(m_pHead + index);
 		}
 		constexpr const T& At(const size_t index) const
 		{
-			__ASSERT((index < Size()) && "Array::At() > Index is out of range");
+			__ASSERT(index < Size(), "Array::At() > Index is out of range");
 
 			return *(m_pHead + index);
 		}

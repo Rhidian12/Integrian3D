@@ -33,7 +33,7 @@ namespace Integrian3D
 				return pScene->GetSceneName() == sceneName;
 			}) };
 
-		__ASSERT(cIt != m_Scenes.cend() && "SceneManager::ChangeScene() > No scene with the specified name was found");
+		__ASSERT(cIt != m_Scenes.cend(), "SceneManager::ChangeScene() > No scene with the specified name %s was found", sceneName);
 
 		// m_pActiveScene->OnSceneLeave();
 
@@ -51,7 +51,7 @@ namespace Integrian3D
 
 		if (it == m_Scenes.end())
 		{
-			Debug::LogError("SceneManager::GetScene() > No scene with the specified name was found", false);
+			LOG(SceneManager, Error, "No scene with the name: %s was found", sceneName);
 			return nullptr;
 		}
 
@@ -67,7 +67,7 @@ namespace Integrian3D
 
 		if (cIt == m_Scenes.cend())
 		{
-			Debug::LogError("SceneManager::GetScene() > No scene with the specified name was found", false);
+			LOG(SceneManager, Error, "No scene with the name: %s was found", sceneName);
 			return nullptr;
 		}
 

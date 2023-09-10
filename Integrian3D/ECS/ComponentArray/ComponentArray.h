@@ -53,7 +53,7 @@ namespace Integrian3D
 
 		__NODISCARD Entity FindEntity(const T& comp) const
 		{
-			__ASSERT(std::find(m_Components.cbegin(), m_Components.cend(), comp) != m_Components.cend());
+			__ASSERT(std::find(m_Components.cbegin(), m_Components.cend(), comp) != m_Components.cend(), "ComponentArray::FindEntity cannot find Entity bound to Component");
 
 			return m_Entities.GetFirst(std::distance(m_Components.cbegin(), std::find(m_Components.cbegin(), m_Components.cend(), comp)));
 		}

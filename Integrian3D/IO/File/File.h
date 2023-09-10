@@ -1,215 +1,254 @@
 #pragma once
 
-#include "../../EngineConstants.h"
-#include "../../Array/Array.h"
-#include "../SeekMode.h"
-#include "../FileMode.h"
-#include "../Serializer/Serializer.h"
+#include "EngineConstants.h"
+#include "IO/FileMode.h"
+#include "IO/OpenMode.h"
+#include "IO/IOUtils.h"
+#include "Win32Utils/Win32Handle.h"
 
-#include <string> /* std::string */
+#include <cmath>
+#include <string>
+#include <string_view>
 
 namespace Integrian3D::IO
 {
 	/// <summary>
-	/// An RAII File abstraction. Loads in the requested file into memory upon creation.
-	/// Writing and Reading from a file leads to Undefined Behaviour, as File uses an internal pointer to its
-	/// internal buffer, writing to the buffer might offset the pointer.
+	/// Minimal RAII Win32 File abstraction.
 	/// </summary>
 	class File final
 	{
 	public:
-		File();
-		explicit File(const std::string& filepath);
+		File(const std::string_view Filepath, const OpenMode OpenMode, const FileMode Mode);
 		~File();
 
 		File(const File&) noexcept = delete;
-		File(File&& other) noexcept;
+		File(File&& Other) noexcept;
 		File& operator=(const File&) noexcept = delete;
-		File& operator=(File&& other) noexcept;
+		File& operator=(File&& Other) noexcept;
 
-		/// <summary>
-		/// Write all data in the internal buffer to the file.
-		/// </summary>
-		void Write() const;
+		void Seek(const int32 NewFilepointerPos) const;
+		void Advance(const int32 AdvanceAmount) const;
+		void Regress(const int32 RegressAmount) const;
 
-		void Write(const TArray<char>& data, const SeekMode mode = SeekMode::Advance);
+		__NODISCARD const std::string_view GetFilepath() const;
+		__NODISCARD std::string_view GetFileContents() const;
+		__NODISCARD int32 GetFilesize() const;
+		__NODISCARD int32 GetFilepointer() const;
 
-		/// <summary>
-		/// Reads data from the internal buffer, according to the size of T
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <returns>a std::string which can be deserialized by a user-defined function or an engine provided one</returns>
-		template<typename T>
-		__NODISCARD TArray<char> Read()
-		{
-			__ASSERT(!m_Buffer.Empty());
+		#pragma region operator<<
+		template<typename T, std::enable_if_t<bIsInteger<T>, bool> = true>
+		File& operator<<(T Val);
 
-			TArray<char> data{};
-			data.Resize(sizeof(T));
+		template<typename T, std::enable_if_t<bIsCharacter<T>, bool> = true>
+		File& operator<<(T Val);
 
-			for (uint64_t i{}; i < data.Size(); ++i)
-				data[i] = m_Buffer[m_BufferPointer++];
+		template<typename T, std::enable_if_t<std::is_floating_point_v<T>, bool> = true>
+		File& operator<<(T Val);
 
-			return data;
-		}
+		template<typename T, std::enable_if_t<!std::is_fundamental_v<T>, bool> = true>
+		File& operator<<(const T& Val);
 
-		template<>
-		__NODISCARD TArray<char> Read<std::string>()
-		{
-			__ASSERT(!m_Buffer.Empty());
+		File& operator<<(const char* String);
 
-			TArray<char> data{};
-			const uint32_t size{ Deserialize<uint32_t>(m_Buffer) };
-			m_BufferPointer += sizeof(size);
+		File& operator<<(const std::string& String);
 
-			for (uint64_t i{}; i < size; ++i)
-				data[i] = m_Buffer[m_BufferPointer++];
+		File& operator<<(const bool bValue);
+		#pragma endregion
 
-			return data;
-		}
+		#pragma region operator>>
+		template<typename T, std::enable_if_t<bIsInteger<T>, bool> = true>
+		const File& operator>>(T& Val) const;
 
-		/// <summary>
-		/// Set the internal buffer pointer, this does NOT affect Write(), only Read()
-		/// </summary>
-		/// <param name="mode">: From where to set the buffer pointer</param>
-		/// <param name="val">: From the mode selected, what offset to apply to the buffer pointer</param>
-		void Seek(const SeekMode mode, const uint64_t val);
+		template<typename T, std::enable_if_t<bIsCharacter<T>, bool> = true>
+		const File& operator>>(T& Val) const;
 
-		void ClearBuffer();
+		template<typename T, std::enable_if_t<std::is_floating_point_v<T>, bool> = true>
+		const File& operator>>(T& Val) const;
 
-		__NODISCARD std::string GetLine(const char delim = '\n');
+		template<typename T, std::enable_if_t<!std::is_fundamental_v<T>, bool> = true>
+		const File& operator>>(T& Val) const;
 
-		__NODISCARD const TArray<char>& GetBuffer() const;
+		const File& operator>>(std::string& String) const;
 
-	#pragma region Operator<<
-
-		File & operator<<(const bool val)
-		{
-			val ? m_Buffer.Add('1') : m_Buffer.Add('0');
-		
-			return *this;
-		}
-
-		File& operator<<(const char val)
-		{
-			m_Buffer.Add(val);
-
-			return *this;
-		}
-
-		File& operator<<(const int8_t val)
-		{
-			InsertIntegralNumber(val);
-
-			return *this;
-		}
-
-		File& operator<<(const uint8_t val)
-		{
-			InsertIntegralNumber(val);
-
-			return *this;
-		}
-
-		File& operator<<(const int16_t val)
-		{
-			InsertIntegralNumber(val);
-
-			return *this;
-		}
-
-		File& operator<<(const uint16_t val)
-		{
-			InsertIntegralNumber(val);
-
-			return *this;
-		}
-
-		File& operator<<(const int32_t val)
-		{
-			InsertIntegralNumber(val);
-
-			return *this;
-		}
-
-		File& operator<<(const uint32_t val)
-		{
-			InsertIntegralNumber(val);
-
-			return *this;
-		}
-
-		File& operator<<(const int64_t val)
-		{
-			InsertIntegralNumber(val);
-
-			return *this;
-		}
-
-		File& operator<<(const uint64_t val)
-		{
-			InsertIntegralNumber(val);
-
-			return *this;
-		}
-
-		File& operator<<(const float val)
-		{
-			const int len{ _scprintf("%f", val) };
-			std::string str(len, '\0');
-			sprintf_s(&str[0], len + 1, "%f", val);
-
-			for (const char c : str)
-				m_Buffer.Add(c);
-
-			return *this;
-		}
-
-		File& operator<<(const double val)
-		{
-			const int len{ _scprintf("%f", val) };
-			std::string str(len, '\0');
-			sprintf_s(&str[0], len + 1, "%f", val);
-
-			for (const char c : str)
-				m_Buffer.Add(c);
-
-			return *this;
-		}
-
-		File& operator<<(const std::string& val)
-		{
-			for (const char c : val)
-				m_Buffer.Add(c);
-
-			return *this;
-		}
-
-		File& operator<<(const char* pStr)
-		{
-			while (*pStr != '\0')
-				m_Buffer.Add(*pStr++);
-
-			return *this;
-		}
-
-	#pragma endregion
+		const File& operator>>(bool& bValue) const;
+		#pragma endregion
 
 	private:
-		template<typename T>
-		void InsertIntegralNumber(const T val)
-		{
-			static_assert(std::is_integral_v<T>, "File::InsertIntegralNumber(T) > T must be integral");
-		
-			if (val >= 10)
-				InsertIntegralNumber(val / 10);
+		// I don't want to expose Handle and GetFileContents_Implementation, so give FileContentCache private access
+		friend class FileContentCache;
+		// function is only called by FileContentCache
+		void GetFileContents_Implementation(std::string& OutFileContents);
 
-			m_Buffer.Add(static_cast<char>(val) + '0');
+		void WriteToFile(const char* Buffer, const int32 BufferSize);
+		__NODISCARD char ReadCharacterFromFile() const;
+		void ReadFromFile(char* Buffer, const int32 BufferSize) const;
+		__NODISCARD void* OpenFile(const OpenMode OpenMode) const;
+
+		std::string Filepath;
+		Win32Utils::Win32Handle Handle;
+		int32 Filesize;
+		FileMode Mode;
+	};
+
+	#pragma region operator<<
+	template<typename T, std::enable_if_t<bIsInteger<T>, bool>>
+	inline File& File::operator<<(T Val)
+	{
+		__CHECK(Handle.IsValid());
+
+		if (Mode == FileMode::ASCII)
+		{
+			*this << std::to_string(Val);
+		}
+		else
+		{
+			static constexpr int32_t Size{ sizeof(T) };
+			char Buffer[Size]{};
+
+			for (int32_t i{}; i < Size; ++i)
+			{
+				Buffer[i] = *(reinterpret_cast<const char*>(&Val) + i);
+			}
+
+			WriteToFile(Buffer, Size);
 		}
 
-		std::string m_Filepath;
-		void* m_pHandle;
-		TArray<char> m_Buffer;
-		uint64_t m_BufferPointer;
-	};
+		return *this;
+	}
+
+	template<typename T, std::enable_if_t<bIsCharacter<T>, bool>>
+	inline File& File::operator<<(T Val)
+	{
+		__CHECK(Handle.IsValid());
+
+		WriteToFile(&Val, sizeof(T));
+
+		return *this;
+	}
+
+	template<typename T, std::enable_if_t<std::is_floating_point_v<T>, bool>>
+	inline File& File::operator<<(T Val)
+	{
+		__CHECK(Handle.IsValid());
+
+		if (Mode == FileMode::ASCII)
+		{
+			// print whole part
+			*this << static_cast<int32>(Val) << '.';
+
+			// print decimal part
+			T Whole{};
+			T Fractional = std::modf(Val, &Whole);
+
+			// [TODO]: Make precision variable. Macro? Config file?
+			constexpr static int32 Precision{ 2 };
+			constexpr static int32 Base{ 10 };
+			Fractional *= static_cast<T>(pow(Base, Precision));
+
+			*this << static_cast<int32>(Fractional);
+		}
+		else
+		{
+			static constexpr int32 Size{ sizeof(T) };
+			char Buffer[Size]{};
+
+			for (int32 i{}; i < Size; ++i)
+			{
+				Buffer[i] = *(reinterpret_cast<const char*>(&Val) + i);
+			}
+
+			WriteToFile(Buffer, Size);
+		}
+
+		return *this;
+	}
+	#pragma endregion
+
+	#pragma region operator>>
+	template<typename T, std::enable_if_t<bIsInteger<T>, bool>>
+	inline const File& File::operator>>(T& Val) const
+	{
+		__CHECK(Handle.IsValid());
+
+		if (Mode == FileMode::ASCII)
+		{
+			std::string String{};
+
+			bool bContinue{ true };
+			char CurrentChar{};
+			while (bContinue)
+			{
+				CurrentChar = ReadCharacterFromFile();
+
+				if (CurrentChar == '\n')
+				{
+					// Consume newline but stop reading numbers
+					break;
+				}
+
+				const bool bIsDigit{ std::isdigit(CurrentChar) != 0 };
+				bContinue = bIsDigit;
+
+				if (bIsDigit)
+				{
+					String += CurrentChar;
+				}
+			}
+
+			Val = static_cast<T>(std::stoi(String));
+		}
+		else
+		{
+			constexpr static int32 Size{ sizeof(T) };
+			char Buffer[Size]{};
+
+			ReadFromFile(Buffer, Size);
+
+			Val = *reinterpret_cast<T*>(&Buffer[0]);
+		}
+
+		return *this;
+	}
+
+	template<typename T, std::enable_if_t<bIsCharacter<T>, bool>>
+	inline const File& File::operator>>(T& Val) const
+	{
+		__CHECK(Handle.IsValid());
+
+		Val = ReadCharacterFromFile();
+
+		return *this;
+	}
+
+	template<typename T, std::enable_if_t<std::is_floating_point_v<T>, bool>>
+	inline const File& File::operator>>(T& Val) const
+	{
+		__CHECK(Handle.IsValid());
+
+		if (Mode == FileMode::ASCII)
+		{
+			int32 Whole{}, FractionalTemp{};
+			*this >> Whole >> FractionalTemp;
+
+			T Fractional{ static_cast<T>(FractionalTemp) };
+			while (Fractional > static_cast<T>(1.f))
+			{
+				Fractional /= static_cast<T>(10.f);
+			}
+
+			Val = static_cast<T>(Whole) + Fractional;
+		}
+		else
+		{
+			constexpr static int32 Size{ sizeof(T) };
+			char Buffer[Size]{};
+
+			ReadFromFile(Buffer, Size);
+
+			Val = *reinterpret_cast<T*>(&Buffer[0]);
+		}
+
+		return *this;
+	}
+	#pragma endregion
 }
