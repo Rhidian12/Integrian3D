@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Win32Utils/Win32Handle.h"
+
 #include <memory>
 #include <string_view>
 
@@ -8,7 +10,7 @@ namespace Integrian3D
 	class Logger final
 	{
 	public:
-		~Logger();
+		~Logger() = default;
 
 		static Logger& GetInstance();
 
@@ -19,16 +21,25 @@ namespace Integrian3D
 			...
 		);
 
-		void AddLogCategory(const std::string_view Category);
-
 	private:
 		Logger();
 
 		friend std::unique_ptr<Logger> std::make_unique();
 		inline static std::unique_ptr<Logger> Instance{};
 
-		struct LoggerStatics* Statics; // [TODO]: Use Custom Unique Ptr
+		Win32Utils::Win32Handle ConsoleHandle;
 	};
+
+	constexpr const struct LoggerStatics& GetLoggerStatics();
+
+	template<typename T>
+	constexpr bool CheckLogCategory(const T);
+
+	template<>
+	constexpr bool CheckLogCategory<const char*>(const char* Category)
+	{
+		return Statics.Categories.Contains(Category);
+	}
 }
 
-#define DECLARE_LOG_CATEGORY(Category) Integrian3D::Logger::GetInstance().AddLogCategory(Category);
+#define DECLARE_LOG_CATEGORY(Category) Integrian3D::Statics.Categories.AddUnique(Category);

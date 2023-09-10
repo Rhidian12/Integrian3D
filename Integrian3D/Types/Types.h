@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Macros/Macros.h"
+#include "Macros/Macros.h"
 
 namespace Detail
 {
@@ -108,26 +108,26 @@ namespace Integrian3D
 {
 	struct Size_P final
 	{
-		constexpr explicit Size_P(const uint64_t n)
+		constexpr explicit Size_P(const uint64 n)
 			: _Size{ n }
 		{}
 
-		uint64_t _Size;
+		uint64 _Size;
 	};
 	struct Capacity_P final
 	{
-		constexpr explicit Capacity_P(const uint64_t n)
+		constexpr explicit Capacity_P(const uint64 n)
 			: _Capacity{ n }
 		{}
 
-		uint64_t _Capacity;
+		uint64 _Capacity;
 	};
 
-	__NODISCARD __INLINE constexpr Size_P operator""_size(const uint64_t i)
+	__NODISCARD __INLINE constexpr Size_P operator""_size(const uint64 i)
 	{
 		return Size_P{ i };
 	}
-	__NODISCARD __INLINE constexpr Capacity_P operator""_capacity(const uint64_t i)
+	__NODISCARD __INLINE constexpr Capacity_P operator""_capacity(const uint64 i)
 	{
 		return Capacity_P{ i };
 	}

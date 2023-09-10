@@ -16,9 +16,11 @@
 
 namespace Integrian3D
 {
+	static constexpr LoggerStatics Statics{};
+
 	namespace
 	{
-		static void SetConsoleColour(LoggerStatics* Statics, const std::string_view Visibility, const bool bIsDebug)
+		static void SetConsoleColour(const Win32Utils::Win32Handle& ConsoleHandle, const std::string_view Visibility, const bool bIsDebug)
 		{
 #ifdef _WIN32
 			// Debug is White by default, and so is any other Visibility that is not pre-defined
@@ -41,25 +43,14 @@ namespace Integrian3D
 			}
 
 			/* Set text colour to user defined colour */
-			SetConsoleTextAttribute(Statics->ConsoleHandle, colour);
+			SetConsoleTextAttribute(ConsoleHandle, colour);
 #endif
 		}
 	}
 
 	Logger::Logger()
-		: Statics{ new LoggerStatics{} }
-	{
-		Statics->ConsoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
-	}
-
-	Logger::~Logger()
-	{
-		if (Statics)
-		{
-			delete Statics;
-			Statics = nullptr;
-		}
-	}
+		: ConsoleHandle{ GetStdHandle(STD_OUTPUT_HANDLE) }
+	{}
 
 	Logger& Logger::GetInstance()
 	{
@@ -77,7 +68,7 @@ namespace Integrian3D
 		const std::string_view Format,
 		...)
 	{
-		SetConsoleColour(Statics, Visibility, Visibility == "Debug");
+		SetConsoleColour(ConsoleHandle, Visibility, Visibility == "Debug");
 
 		std::cout << "[" << Category << "]: ";
 
@@ -90,13 +81,11 @@ namespace Integrian3D
 
 		std::cout << "\n";
 
-		SetConsoleColour(Statics, "", true);
+		SetConsoleColour(ConsoleHandle, "", true);
 	}
 
-	void Logger::AddLogCategory(const std::string_view Category)
+	constexpr const LoggerStatics& GetLoggerStatics()
 	{
-		__CHECK(Statics != nullptr);
-
-		Statics->Categories.Add(Category);
+		return Statics;
 	}
 }

@@ -1,10 +1,11 @@
 #pragma once
 
-#include "../Logger/Logger.h"
+#include "Logger/Logger.h"
 
 namespace Integrian3D
 {
-#define LOG(Category, Visibility, Format, ...) Logger::GetInstance().LogMessage(#Category, #Visibility, Format, __VA_ARGS__)
+#define LOG(Category, Visibility, Format, ...)	static_assert(Integrian3D::CheckLogCategory(#Category), "Log Category has not been defined"); \
+												Logger::GetInstance().LogMessage(#Category, #Visibility, Format, __VA_ARGS__)
 
 	/* __ASSERT(), __CASSERT(), __CHECK */
 #ifdef _DEBUG
