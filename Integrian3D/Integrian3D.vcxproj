@@ -251,7 +251,8 @@
     <ClInclude Include="IO\OpenMode.h" />
     <ClInclude Include="LinkedList\LinkedList.h" />
     <ClInclude Include="Logger\ConsoleColours.h" />
-    <ClInclude Include="Logger\LoggerStatics.h" />
+    <ClInclude Include="Logger\LogMacros.h" />
+    <ClInclude Include="Logger\LogVisibility.h" />
     <ClInclude Include="Memory\LowLevelLL\LowLevelLL.h" />
     <ClInclude Include="Macros\Macros.h" />
     <ClInclude Include="Memory\AllocatorTraits\AllocatorTraits.h" />

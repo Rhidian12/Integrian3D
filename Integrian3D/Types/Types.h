@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Macros/Macros.h"
-
 namespace Detail
 {
 	template<typename Type32Bits, typename Type64Bits, int PointerSize>
@@ -123,11 +121,11 @@ namespace Integrian3D
 		uint64 _Capacity;
 	};
 
-	__NODISCARD __INLINE constexpr Size_P operator""_size(const uint64 i)
+	constexpr Size_P operator""_size(const uint64 i)
 	{
 		return Size_P{ i };
 	}
-	__NODISCARD __INLINE constexpr Capacity_P operator""_capacity(const uint64 i)
+	constexpr Capacity_P operator""_capacity(const uint64 i)
 	{
 		return Capacity_P{ i };
 	}

@@ -3,8 +3,8 @@
 #endif
 
 // #define ENGINE
-#define UNIT_TESTS
-// #define TEST_ENGINE
+// #define UNIT_TESTS
+#define TEST_ENGINE
 
 #ifdef ENGINE
 

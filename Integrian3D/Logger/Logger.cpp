@@ -1,8 +1,7 @@
 #include "Logger.h"
 
-#include "../EngineConstants.h"
-#include "LoggerStatics.h"
-#include "ConsoleColours.h"
+#include "DebugUtility/DebugUtility.h"
+#include "Logger/ConsoleColours.h"
 
 #include <iostream> /* std::cout */
 
@@ -16,8 +15,6 @@
 
 namespace Integrian3D
 {
-	static constexpr LoggerStatics Statics{};
-
 	namespace
 	{
 		static void SetConsoleColour(const Win32Utils::Win32Handle& ConsoleHandle, const std::string_view Visibility, const bool bIsDebug)
@@ -70,7 +67,7 @@ namespace Integrian3D
 	{
 		SetConsoleColour(ConsoleHandle, Visibility, Visibility == "Debug");
 
-		std::cout << "[" << Category << "]: ";
+		std::cout << "[" << Category << "] ";
 
 		va_list ArgPtr;
 		va_start(ArgPtr, Format);
@@ -82,10 +79,5 @@ namespace Integrian3D
 		std::cout << "\n";
 
 		SetConsoleColour(ConsoleHandle, "", true);
-	}
-
-	constexpr const LoggerStatics& GetLoggerStatics()
-	{
-		return Statics;
 	}
 }

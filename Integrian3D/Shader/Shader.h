@@ -1,11 +1,13 @@
 #pragma once
 
-#include "../EngineConstants.h"
+#include "EngineConstants.h"
 
 #include <string> /* std::string */
 #include <assert.h> /* assert() */
 #include <string_view> /* std::string_view */
 #include <glm.hpp> /* GLM */
+
+DECLARE_LOG_CATEGORY(Shader)
 
 namespace Integrian3D
 {

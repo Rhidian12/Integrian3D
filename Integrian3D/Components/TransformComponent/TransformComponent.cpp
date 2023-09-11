@@ -82,20 +82,15 @@ namespace Integrian3D
 		}
 	}
 
-	void TransformComponent::Translate(const Math::Vec3D& v, const bool bForce)
+	void TransformComponent::Translate(const Math::Vec3D& v)
 	{
 		Transformation[3] += Math::Vec4D{ v, 0.f };
 
 		bShouldRecalculateWorldData = true;
 		bShouldRecalculateTransform = true;
-
-		if (bForce)
-		{
-			RecalculateTransform();
-		}
 	}
 
-	void TransformComponent::Rotate(const Math::Vec3D& rotationRad, const bool bForce)
+	void TransformComponent::Rotate(const Math::Vec3D& rotationRad)
 	{
 		LocalAngle.x += rotationRad.x;
 		LocalAngle.y += rotationRad.y;
@@ -103,24 +98,14 @@ namespace Integrian3D
 
 		bShouldRecalculateTransform = true;
 		bShouldRecalculateWorldData = true;
-
-		if (bForce)
-		{
-			RecalculateTransform();
-		}
 	}
 
-	void TransformComponent::Scale(const Math::Vec3D& v, const bool bForce)
+	void TransformComponent::Scale(const Math::Vec3D& v)
 	{
 		LocalScale += v;
 
 		bShouldRecalculateTransform = true;
 		bShouldRecalculateWorldData = true;
-
-		if (bForce)
-		{
-			RecalculateTransform();
-		}
 	}
 
 	void TransformComponent::SetLocalLocation(const Math::Vec3D& pos)
@@ -130,30 +115,20 @@ namespace Integrian3D
 		bShouldRecalculateWorldData = true;
 	}
 
-	void TransformComponent::SetLocalScale(const Math::Vec3D& scale, bool bForce)
+	void TransformComponent::SetLocalScale(const Math::Vec3D& scale)
 	{
 		LocalScale = scale;
 
 		bShouldRecalculateTransform = true;
 		bShouldRecalculateWorldData = true;
-
-		if (bForce)
-		{
-			RecalculateTransform();
-		}
 	}
 
-	void TransformComponent::SetLocalAngle(const Math::Vec3D& angleRad, bool bForce)
+	void TransformComponent::SetLocalAngle(const Math::Vec3D& angleRad)
 	{
 		LocalAngle = angleRad;
 
 		bShouldRecalculateTransform = true;
 		bShouldRecalculateWorldData = true;
-
-		if (bForce)
-		{
-			RecalculateTransform();
-		}
 	}
 
 	void TransformComponent::SetForward(const Math::Vec3D& forward)

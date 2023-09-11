@@ -1,9 +1,11 @@
 #pragma once
 
-#include "../EngineConstants.h"
-#include "../Window/Window.h"
+#include "EngineConstants.h"
+#include "Window/Window.h"
 
 #include <memory> /* std::unique_ptr */
+
+DECLARE_LOG_CATEGORY(Core)
 
 namespace Integrian3D
 {

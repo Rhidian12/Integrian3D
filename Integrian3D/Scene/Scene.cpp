@@ -142,7 +142,7 @@ namespace Integrian3D
 					static_cast<float>(Core::GetInstance().GetWindowWidth() / Core::GetInstance().GetWindowHeight())
 					);
 
-			m_Registry.GetComponent<TransformComponent>(m_ActiveCameraEntity).Translate(Math::Vec3D{ 0.f, 0.f, -10.f }, true);
+			m_Registry.GetComponent<TransformComponent>(m_ActiveCameraEntity).Translate(Math::Vec3D{ 0.f, 0.f, -10.f });
 		}
 
 		std::sort(m_UpdateCallbacks.begin(), m_UpdateCallbacks.end(), [](const auto& a, const auto& b)->bool

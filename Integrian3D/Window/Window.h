@@ -1,6 +1,8 @@
 #pragma once
 
-#include "../EngineConstants.h"
+#include "EngineConstants.h"
+
+DECLARE_LOG_CATEGORY(Window)
 
 struct GLFWwindow;
 namespace Integrian3D

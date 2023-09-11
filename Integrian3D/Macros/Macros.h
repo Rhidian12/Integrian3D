@@ -3,8 +3,6 @@
 #undef max
 #undef min
 
-#include "../Logger/Logger.h"
-
 namespace Integrian3D
 {
 	/* [[nodiscard]] */

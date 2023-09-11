@@ -8,6 +8,8 @@
 #include <string_view>
 #include <unordered_map>
 
+DECLARE_LOG_CATEGORY(FileContentCache)
+
 namespace Integrian3D::IO
 {
 	class FileContentCache final

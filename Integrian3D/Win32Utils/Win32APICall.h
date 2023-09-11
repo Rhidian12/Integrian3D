@@ -3,6 +3,8 @@
 
 #include <string_view>
 
+DECLARE_LOG_CATEGORY(Win32)
+
 namespace Integrian3D::Win32Utils
 {
 	class Win32APICallInfo final

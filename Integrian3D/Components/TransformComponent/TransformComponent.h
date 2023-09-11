@@ -20,13 +20,13 @@ namespace Integrian3D
 
 		void RecalculateTransform();
 
-		void Translate(const Math::Vec3D& v, const bool bForce = false);
-		void Rotate(const Math::Vec3D& rotationRad, const bool bForce = false);
-		void Scale(const Math::Vec3D& v, const bool bForce = false);
+		void Translate(const Math::Vec3D& v);
+		void Rotate(const Math::Vec3D& rotationRad);
+		void Scale(const Math::Vec3D& v);
 
 		void SetLocalLocation(const Math::Vec3D& pos);
-		void SetLocalScale(const Math::Vec3D& scale, bool bForce = false);
-		void SetLocalAngle(const Math::Vec3D& angleRad, bool bForce = false);
+		void SetLocalScale(const Math::Vec3D& scale);
+		void SetLocalAngle(const Math::Vec3D& angleRad);
 
 		void SetForward(const Math::Vec3D& forward);
 

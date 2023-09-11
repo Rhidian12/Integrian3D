@@ -1,5 +1,8 @@
 #pragma once
 
+#include "Logger/LogVisibility.h"
+#include "Macros/Macros.h"
+#include "TemplateUtils/TemplateUtils.h"
 #include "Win32Utils/Win32Handle.h"
 
 #include <memory>
@@ -7,6 +10,8 @@
 
 namespace Integrian3D
 {
+	struct LoggerStatics;
+
 	class Logger final
 	{
 	public:
@@ -30,16 +35,21 @@ namespace Integrian3D
 		Win32Utils::Win32Handle ConsoleHandle;
 	};
 
-	constexpr const struct LoggerStatics& GetLoggerStatics();
-
-	template<typename T>
-	constexpr bool CheckLogCategory(const T);
-
-	template<>
-	constexpr bool CheckLogCategory<const char*>(const char* Category)
+	namespace Detail
 	{
-		return Statics.Categories.Contains(Category);
+		template<typename T, typename = void>
+		struct __LogCategoryCheck : std::false_type {};
+
+		template<typename T>
+		struct __LogCategoryCheck<T, TUtils::Void<T>> : std::true_type {};
+
+		template<typename T>
+		inline constexpr void CheckLogCategory()
+		{
+			static_assert(__LogCategoryCheck<T>::value, "Log Category was not defined with DECLARE_LOG_CATEGORY");
+		}
 	}
 }
 
-#define DECLARE_LOG_CATEGORY(Category) Integrian3D::Statics.Categories.AddUnique(Category);
+#define LOG_INTERNAL(Category, Visibility, Format, ...) Integrian3D::Detail::CheckLogCategory<__LogCategory##Category>(); \
+														Integrian3D::Logger::GetInstance().LogMessage(#Category, #Visibility, Format, __VA_ARGS__)

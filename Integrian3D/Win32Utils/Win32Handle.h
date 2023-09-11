@@ -1,6 +1,8 @@
 #pragma once
 
-#include "EngineConstants.h"
+#include "Logger/LogMacros.h"
+
+DECLARE_LOG_CATEGORY(Win32Handle)
 
 namespace Integrian3D::Win32Utils
 {

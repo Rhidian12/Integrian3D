@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../EngineConstants.h"
+#include <type_traits>
 
 namespace Integrian3D::TUtils
 {

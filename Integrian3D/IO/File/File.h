@@ -10,6 +10,8 @@
 #include <string>
 #include <string_view>
 
+DECLARE_LOG_CATEGORY(File)
+
 namespace Integrian3D::IO
 {
 	/// <summary>

@@ -1,11 +1,13 @@
 #pragma once
 
-#include "../EngineConstants.h"
-#include "../Scene/Scene.h"
+#include "EngineConstants.h"
+#include "Scene/Scene.h"
 
 #include <memory> /* std::unique_ptr */
 #include <vector> /* std::vector */
 #include <string_view> /* std::string_view */
+
+DECLARE_LOG_CATEGORY(SceneManager)
 
 namespace Integrian3D
 {

@@ -53,12 +53,12 @@ namespace Integrian3D
 		dir.y += inputManager.GetIsKeyPressed(KeyboardInput::Q) ? -1.0 : 0.0;
 
 		transform.Translate(transform.GetForward() * dir.z
-			* m_Speed * Timer::GetInstance().GetElapsedSeconds(), true);
+			* m_Speed * Timer::GetInstance().GetElapsedSeconds());
 
 		transform.Translate(transform.GetRight() * dir.x
-			* m_Speed * Timer::GetInstance().GetElapsedSeconds(), true);
+			* m_Speed * Timer::GetInstance().GetElapsedSeconds());
 
-		transform.Translate(transform.GetUp() * dir.y * m_Speed * Timer::GetInstance().GetElapsedSeconds(), true);
+		transform.Translate(transform.GetUp() * dir.y * m_Speed * Timer::GetInstance().GetElapsedSeconds());
 
 		UpdateView(transform);
 	}
@@ -73,15 +73,11 @@ namespace Integrian3D
 		double xOffset{ mousePos.x - lastMousePos.x };
 		double yOffset{ lastMousePos.y - mousePos.y };
 
-		// xOffset = Math::ToRadians(xOffset);
-		// yOffset = Math::ToRadians(yOffset);
-		// constexpr double sensitivity{ 0.2 };
-
-		constexpr double sensitivity{ 0.002 };
+		constexpr static double sensitivity{ 0.002 };
 		xOffset *= sensitivity;
 		yOffset *= sensitivity;
 
-		transform.Rotate(Math::Vec3D{ yOffset, xOffset, 0.0 }, true);
+		transform.Rotate(Math::Vec3D{ yOffset, xOffset, 0.0 });
 
 		UpdateView(transform);
 	}

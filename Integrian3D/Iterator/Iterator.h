@@ -1,7 +1,5 @@
 #pragma once
 
-#include "../EngineConstants.h"
-
 #include <iterator> /* std::iterator, ... */
 
 namespace Integrian3D
