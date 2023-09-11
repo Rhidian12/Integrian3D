@@ -13,7 +13,6 @@ namespace Integrian3D
 			Math::Vec3D
 			{
 				0.f,
-				// Math::ToRadians(25.f) * Time::Timer::GetInstance().GetElapsedSeconds(),
 				Math::ToRadians(50.f) * Time::Timer::GetInstance().GetElapsedSeconds(),
 				0.f
 			}

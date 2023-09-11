@@ -2,9 +2,9 @@
 
 #include "../Core/Core.h"
 #include "../InputManager/InputManager.h"
-#include "../Math/Math.h"
-#include "../Renderer/Renderer.h"
-#include "../TPair/TPair.full.h"
+#include "Math/Math.h"
+#include "Renderer/Renderer.h"
+#include "TPair/TPair.full.h"
 
 #include "../Components/FreeCameraComponent/FreeCameraComponent.h"
 #include "../Components/MeshComponent/MeshComponent.h"
@@ -78,19 +78,19 @@ namespace Integrian3D
 		m_Registry.Clear();
 	}
 
-	void Scene::AddInitialisationCallback(const size_t prio, void(*fn)(Scene&))
+	void Scene::AddInitialisationCallback(const size_t prio, const std::function<void(Scene&)>& Function)
 	{
-		m_InitCallbacks.emplace_back(MakePair(prio, fn));
+		m_InitCallbacks.emplace_back(MakePair(prio, Function));
 	}
 
-	void Scene::AddUpdateCallback(const size_t prio, void(*fn)(Scene&))
+	void Scene::AddUpdateCallback(const size_t prio, const std::function<void(Scene&)>& Function)
 	{
-		m_UpdateCallbacks.emplace_back(MakePair(prio, fn));
+		m_UpdateCallbacks.emplace_back(MakePair(prio, Function));
 	}
 
-	void Scene::AddRenderCallback(const size_t prio, void(*fn)(Scene&))
+	void Scene::AddRenderCallback(const size_t prio, const std::function<void(Scene&)>& Function)
 	{
-		m_RenderCallbacks.emplace_back(MakePair(prio, fn));
+		m_RenderCallbacks.emplace_back(MakePair(prio, Function));
 	}
 
 	Entity Scene::CreateEntity()

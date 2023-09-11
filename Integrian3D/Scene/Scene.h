@@ -6,6 +6,7 @@
 #include "../ECS/Registry/Registry.h"
 #include "../ECS/View/View.h"
 
+#include <functional>
 #include <string>
 #include <string_view>
 
@@ -20,13 +21,13 @@ namespace Integrian3D
 		~Scene();
 
 		// Does not accept member functions, only free functions
-		void AddInitialisationCallback(const size_t prio, void(*fn)(Scene&));
+		void AddInitialisationCallback(const size_t prio, const std::function<void(Scene&)>& Function);
 
 		// Does not accept member functions, only free functions
-		void AddUpdateCallback(const size_t prio, void(*fn)(Scene&));
+		void AddUpdateCallback(const size_t prio, const std::function<void(Scene&)>& Function);
 
 		// Does not accept member functions, only free functions
-		void AddRenderCallback(const size_t prio, void(*fn)(Scene&));
+		void AddRenderCallback(const size_t prio, const std::function<void(Scene&)>& Function);
 
 		__NODISCARD std::string_view GetSceneName() const { return m_SceneName; }
 
@@ -81,10 +82,10 @@ namespace Integrian3D
 	private:
 		// Scene Info
 		std::string m_SceneName;
-		std::vector<TPair<size_t, void(*)(Scene&)>> m_InitCallbacks; // Does not accept member functions
-		std::vector<TPair<size_t, void(*)(Scene&)>> m_UpdateCallbacks; // Does not accept member functions
+		std::vector<TPair<size_t, std::function<void(Scene&)>>> m_InitCallbacks; // Does not accept member functions
+		std::vector<TPair<size_t, std::function<void(Scene&)>>> m_UpdateCallbacks; // Does not accept member functions
 		// [TODO]: SHOULD BE CONST SCENE&
-		std::vector<TPair<size_t, void(*)(Scene&)>> m_RenderCallbacks; // Does not accept member functions
+		std::vector<TPair<size_t, std::function<void(Scene&)>>> m_RenderCallbacks; // Does not accept member functions
 		Entity m_ActiveCameraEntity;
 
 		// ECS Info
