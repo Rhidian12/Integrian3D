@@ -110,7 +110,7 @@ public:
 		}
 
 		Data = new int{ *Other.Data };
-		
+
 		return *this;
 	}
 	TestData& operator=(TestData&& Other) noexcept
@@ -234,5 +234,61 @@ TEST_CASE("Creating Unique Pointer For Forward Declared Types")
 
 		REQUIRE(Pointer.Get() == nullptr);
 		REQUIRE(static_cast<bool>(Pointer) == false);
+	}
+}
+
+TEST_CASE("Creating Unique Pointer For Int Array Types")
+{
+	SECTION("Creating Empty Int Array Pointer")
+	{
+		const UniquePtr<int[]> Pointer{};
+
+		REQUIRE(Pointer.Get() == nullptr);
+		REQUIRE(static_cast<bool>(Pointer) == false);
+	}
+
+	SECTION("Creating Int Array pointer with MakeUnique")
+	{
+		const UniquePtr<int[]> Pointer{ MakeUnique<int[]>(5) };
+
+		REQUIRE(Pointer.Get() != nullptr);
+		REQUIRE(static_cast<bool>(Pointer) == true);
+	}
+
+	SECTION("Creating int pointer and then assigning another pointer with Reset")
+	{
+		UniquePtr<int[]> Pointer{ MakeUnique<int[]>(5) };
+
+		Pointer.Reset(new int[10]{});
+
+		REQUIRE(Pointer.Get() != nullptr);
+		REQUIRE(static_cast<bool>(Pointer) == true);
+	}
+
+	SECTION("Creating int pointer and then moving it to another unique pointer")
+	{
+		{
+			UniquePtr<int[]> Pointer{ MakeUnique<int[]>(5) };
+
+			UniquePtr<int[]> MoveCtorPointer{ __MOVE(Pointer) };
+
+			REQUIRE(Pointer.Get() == nullptr);
+			REQUIRE(static_cast<bool>(Pointer) == false);
+
+			REQUIRE(MoveCtorPointer.Get() != nullptr);
+			REQUIRE(static_cast<bool>(MoveCtorPointer) == true);
+		}
+
+		{
+			UniquePtr<int[]> Pointer{ MakeUnique<int[]>(5) };
+
+			UniquePtr<int[]> MoveOpPointer = __MOVE(Pointer);
+
+			REQUIRE(Pointer.Get() == nullptr);
+			REQUIRE(static_cast<bool>(Pointer) == false);
+
+			REQUIRE(MoveOpPointer.Get() != nullptr);
+			REQUIRE(static_cast<bool>(MoveOpPointer) == true);
+		}
 	}
 }
