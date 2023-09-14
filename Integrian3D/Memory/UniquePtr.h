@@ -29,7 +29,9 @@ namespace Integrian3D
 		const T& operator*() const;
 
 		explicit operator bool() const;
+
 		bool operator==(std::nullptr_t) const;
+		bool operator!=(std::nullptr_t) const;
 
 	private:
 		T* Data;
@@ -140,6 +142,12 @@ namespace Integrian3D
 	bool UniquePtr<T>::operator==(std::nullptr_t) const
 	{
 		return Data == nullptr;
+	}
+
+	template<typename T>
+	bool UniquePtr<T>::operator!=(std::nullptr_t) const
+	{
+		return Data != nullptr;
 	}
 
 	template<typename T, typename ... Args>
