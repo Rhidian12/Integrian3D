@@ -118,7 +118,7 @@ int RunTestEngine(int, char* [])
 		Entity entity{ pTestScene->CreateEntity() };
 		pTestScene->AddComponent<TestRotateComponent>(entity);
 		pTestScene->AddComponent<MeshComponent>(entity, vertices, indices, TextureManager::GetInstance().GetTexture("__Wall"));
-		// pTestScene->GetComponent<TransformComponent>(entity).Rotate(Math::Vec3D{ Math::ToRadians(-55.f), 0.f, 0.f });
+		pTestScene->GetComponent<TransformComponent>(entity).Rotate(Math::Vec3D{ Math::ToRadians(-55.f), 0.f, 0.f });
 	}
 
 	for (size_t i{}; i < 9; ++i)
@@ -126,7 +126,7 @@ int RunTestEngine(int, char* [])
 		Entity entity{ pTestScene->CreateEntity() };
 		pTestScene->AddComponent<TestRotateComponent>(entity);
 		pTestScene->AddComponent<MeshComponent>(entity, vertices, indices, TextureManager::GetInstance().GetTexture("__Wall"));
-		// pTestScene->GetComponent<TransformComponent>(entity).Rotate(Math::Vec3D{ Math::ToRadians(-55.f), 0.f, 0.f });
+		pTestScene->GetComponent<TransformComponent>(entity).Rotate(Math::Vec3D{ Math::ToRadians(-55.f), 0.f, 0.f });
 		pTestScene->GetComponent<TransformComponent>(entity).Translate(Math::RandomVec3D(-5.f, 5.f));
 	}
 
