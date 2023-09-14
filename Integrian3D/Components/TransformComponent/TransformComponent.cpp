@@ -4,7 +4,7 @@
 #include <gtx/rotate_vector.hpp>
 #pragma warning( push )
 #pragma warning( disable : 4201 )
-#include <gtx/euler_angles.hpp>
+#include <gtx/quaternion.hpp>
 #pragma warning( pop )
 
 namespace Integrian3D
@@ -15,7 +15,7 @@ namespace Integrian3D
 		, WorldScale{ 1.0, 1.0, 1.0 }
 		, LocalScale{ 1.0, 1.0, 1.0 }
 		, WorldAngle{}
-		, LocalAngle{}
+		, LocalAngle{ glm::quat_identity<double, glm::packed_highp>() }
 		, bShouldRecalculateTransform{}
 		, bShouldRecalculateWorldData{}
 		, Forward{ 0.0, 0.0, 1.0 }
@@ -64,7 +64,7 @@ namespace Integrian3D
 	{
 		if (bShouldRecalculateTransform)
 		{
-			const Math::Mat4D rotationMat{ glm::eulerAngleXYZ(LocalAngle.x, LocalAngle.y, LocalAngle.z) };
+			const Math::Mat4D rotationMat{ glm::toMat4(LocalAngle) };
 
 			Math::Mat4D translationMat{ glm::identity<Math::Mat4D>() };
 			translationMat[3] = Transformation[3];
@@ -92,9 +92,7 @@ namespace Integrian3D
 
 	void TransformComponent::Rotate(const Math::Vec3D& rotationRad)
 	{
-		LocalAngle.x += rotationRad.x;
-		LocalAngle.y += rotationRad.y;
-		LocalAngle.z += rotationRad.z;
+		LocalAngle *= Math::QuatD(rotationRad);
 
 		bShouldRecalculateTransform = true;
 		bShouldRecalculateWorldData = true;
@@ -142,9 +140,7 @@ namespace Integrian3D
 	{
 		Forward = Math::Vec3D{ 0.0, 0.0, 1.0 };
 
-		Forward = glm::rotateX(Forward, LocalAngle.x);
-		Forward = glm::rotateY(Forward, LocalAngle.y);
-		Forward = glm::rotateZ(Forward, LocalAngle.z);
+		Forward = Forward * LocalAngle;
 
 		Forward = glm::normalize(Forward);
 

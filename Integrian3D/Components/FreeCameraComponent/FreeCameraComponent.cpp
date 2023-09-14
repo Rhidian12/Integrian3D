@@ -58,7 +58,7 @@ namespace Integrian3D
 		transform.Translate(transform.GetRight() * dir.x
 			* m_Speed * Timer::GetInstance().GetElapsedSeconds());
 
-		transform.Translate(transform.GetUp() * dir.y * m_Speed * Timer::GetInstance().GetElapsedSeconds());
+		transform.Translate(Math::Up * dir.y * m_Speed * Timer::GetInstance().GetElapsedSeconds());
 
 		UpdateView(transform);
 	}

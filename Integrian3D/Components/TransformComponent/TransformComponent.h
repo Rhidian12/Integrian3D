@@ -1,10 +1,8 @@
 #pragma once
 
-#include "../../EngineConstants.h"
-#include "../../Math/Math.h"
-#include "../../Component/Component.h"
-
-#include <glm.hpp> /* GLM */
+#include "EngineConstants.h"
+#include "Math/Math.h"
+#include "Component/Component.h"
 
 namespace Integrian3D
 {
@@ -37,7 +35,7 @@ namespace Integrian3D
 		__NODISCARD const Math::Vec3D& GetLocalScale() const { return LocalScale; }
 
 		__NODISCARD const Math::Vec3D& GetWorldAngle() const { return WorldAngle; }
-		__NODISCARD const Math::Vec3D& GetLocalAngle() const { return LocalAngle; }
+		__NODISCARD const Math::QuatD& GetLocalAngle() const { return LocalAngle; }
 
 		__NODISCARD const Math::Vec3D& GetForward() const { return Forward; };
 		__NODISCARD const Math::Vec3D& GetRight() const { return Right; };
@@ -57,7 +55,7 @@ namespace Integrian3D
 		Math::Vec3D LocalScale;
 
 		Math::Vec3D WorldAngle; /* In Radians */
-		Math::Vec3D LocalAngle; /* In Radians */
+		Math::QuatD LocalAngle; /* In Radians */
 
 		Math::Vec3D Forward;
 		Math::Vec3D Right;

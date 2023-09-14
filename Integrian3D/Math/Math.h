@@ -2,7 +2,11 @@
 
 #include "../EngineConstants.h"
 
-#include <glm.hpp> /* GLM */
+#pragma warning( push )
+#pragma warning( disable : 4201 )
+#include <glm.hpp>
+#include <gtc/quaternion.hpp>
+#pragma warning( pop )
 #include <limits> /* std::numeric_limits */
 #include <random> /* std::random_device */
 #include <type_traits> /* std::enable_if */
@@ -18,6 +22,7 @@ namespace Integrian3D::Math
 	using Vec4F = glm::vec<4, float>;
 	using Mat4D = glm::mat<4, 4, double>;
 	using Mat4F = glm::mat<4, 4, double>;
+	using QuatD = glm::qua<double, glm::packed_highp>;
 #pragma endregion
 
 #pragma region Variables

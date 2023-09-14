@@ -138,38 +138,6 @@ int RunTestEngine(int, char* [])
 				});
 		});
 
-	auto Start = Time::Timer::Now();
-	int32 Sign = 1;
-	constexpr static double Time{ 2.0 };
-	constexpr static double HalfTime{ Time / 2.0 };
-	bool bFirstTurnCompleted{};
-	pTestScene->AddUpdateCallback(0, [&Start, &Sign, &bFirstTurnCompleted](Scene& Scene)->void
-		{
-			Scene.CreateView<FreeCameraComponent, TransformComponent>().ForEach([&Start, &Sign, &bFirstTurnCompleted](const FreeCameraComponent&,
-				TransformComponent& Transform)->void
-				{
-					const auto Now = Time::Timer::Now();
-					const double TimeToCompareTo{ bFirstTurnCompleted ? Time : HalfTime };
-
-					if ((Now - Start).Count<Time::TimeLength::Seconds>() >= TimeToCompareTo)
-					{
-						Start = Now;
-						Sign *= -1;
-
-						if (!bFirstTurnCompleted)
-						{
-							bFirstTurnCompleted = true;
-						}
-					}
-
-					constexpr static double RotationSpeed = 0.5;
-					constexpr static double TranslationSpeed = 0.1;
-
-					Transform.Rotate(Math::Vec3D{ Math::ToRadians(sin(Sign * 45)) * RotationSpeed, 0.0, 0.0 });
-					Transform.Translate(Transform.GetUp() * static_cast<double>(Sign) * TranslationSpeed);
-				});
-		});
-
 	core.Run();
 
 	delete pTestScene;
