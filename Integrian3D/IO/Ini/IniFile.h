@@ -60,7 +60,7 @@ namespace Integrian3D
 		bool GetInteger(const std::string& Section, const std::string& Key, int32& Value) const;
 		bool GetFloat(const std::string& Section, const std::string& Key, float& Value) const;
 		bool GetBoolean(const std::string& Section, const std::string& Key, bool& bValue) const;
-		// [TODO]: Add boolean support
+		// [TODO]: Add array support
 
 	private:
 		void ParseIniFile(const std::string_view FileContents);
