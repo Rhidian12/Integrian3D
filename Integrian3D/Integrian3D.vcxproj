@@ -220,6 +220,7 @@
     <ClCompile Include="UnitTests\FileTests.cpp" />
     <ClCompile Include="UnitTests\FreeListAllocatorTests.cpp" />
     <ClCompile Include="UnitTests\IAssetTests.cpp" />
+    <ClCompile Include="UnitTests\IniFileUnitTests.cpp" />
     <ClCompile Include="UnitTests\LowLevelLinkedListTests.cpp" />
     <ClCompile Include="UnitTests\MathTests.cpp" />
     <ClCompile Include="UnitTests\NewTests.cpp" />
