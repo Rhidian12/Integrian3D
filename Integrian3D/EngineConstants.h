@@ -8,7 +8,6 @@
 #include "Types/Types.h"
 
 #include <bitset>
-#include <cstdint>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -31,9 +30,9 @@
 
 namespace Integrian3D
 {
-	using Entity = size_t;
+	using Entity = SIZE_T;
 	using EntitySignature = std::bitset<MAX_COMPONENTS>;
 
-	constexpr size_t InvalidEntityID{ MAX_ENTITIES };
-	constexpr size_t InvalidComponentID{ MAX_COMPONENTS };
+	constexpr SIZE_T InvalidEntityID{ MAX_ENTITIES };
+	constexpr SIZE_T InvalidComponentID{ MAX_COMPONENTS };
 }

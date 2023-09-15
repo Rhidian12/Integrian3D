@@ -191,6 +191,7 @@
     <ClCompile Include="IO\IAsset\IAssetWriter.cpp" />
     <ClCompile Include="Components\FreeCameraComponent\FreeCameraComponent.cpp" />
     <ClCompile Include="Core\Core.cpp" />
+    <ClCompile Include="IO\Ini\IniFile.cpp" />
     <ClCompile Include="LinkedList\LinkedList.cpp" />
     <ClCompile Include="Memory\LowLevelLL\LowLevelLL.cpp" />
     <ClCompile Include="Memory\MemoryTracker\MemoryTracker.cpp" />
@@ -241,6 +242,7 @@
     <ClInclude Include="IO\File\File.h" />
     <ClInclude Include="IO\IAsset\IAssetReader.h" />
     <ClInclude Include="IO\IAsset\IAssetWriter.h" />
+    <ClInclude Include="IO\Ini\IniFile.h" />
     <ClInclude Include="IO\IOUtils.h" />
     <ClInclude Include="Components\FreeCameraComponent\FreeCameraComponent.h" />
     <ClInclude Include="Delegate\Delegate.h" />
