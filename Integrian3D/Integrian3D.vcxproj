@@ -223,6 +223,7 @@
     <ClCompile Include="UnitTests\MathTests.cpp" />
     <ClCompile Include="UnitTests\NewTests.cpp" />
     <ClCompile Include="UnitTests\TimerTests.cpp" />
+    <ClCompile Include="UnitTests\UniquePtrTests.cpp" />
     <ClCompile Include="UnitTests\UnitTests.cpp" />
     <ClCompile Include="Utils\Utils.cpp" />
     <ClCompile Include="Win32Utils\Win32APICall.cpp" />
@@ -270,6 +271,7 @@
     <ClInclude Include="Components\MeshComponent\MeshComponent.h" />
     <ClInclude Include="Memory\MemoryUtils.h" />
     <ClInclude Include="ECS\Registry\Registry.h" />
+    <ClInclude Include="Memory\UniquePtr.h" />
     <ClInclude Include="Renderer\Renderer.h" />
     <ClInclude Include="SceneManager\SceneManager.h" />
     <ClInclude Include="Scene\Scene.h" />
