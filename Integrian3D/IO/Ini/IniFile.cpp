@@ -12,53 +12,14 @@ namespace Integrian3D
 			return std::isspace(Char) != 0;
 		}
 
-		static bool IsLineComment(const std::string_view Line)
+		__INLINE static bool IsLineComment(const std::string_view Line)
 		{
-			for (const char C : Line)
-			{
-				if (IsCharWhitespace(C))
-				{
-					continue;
-				}
-
-				if (C == ';')
-				{
-					return true;
-				}
-				else
-				{
-					return false;
-				}
-			}
-
-			return false;
+			return Line[0] == ';';
 		}
 
-		static bool IsLineSection(const std::string_view Line, SIZE_T& Start)
+		__INLINE static bool IsLineSection(const std::string_view Line, SIZE_T& Start)
 		{
-			Start = std::string::npos;
-
-			for (SIZE_T I{}; I < Line.size(); ++I)
-			{
-				const char Char{ Line[I] };
-
-				if (IsCharWhitespace(Char))
-				{
-					continue;
-				}
-
-				if (Char == '[')
-				{
-					Start = I;
-					return true;
-				}
-				else
-				{
-					return false;
-				}
-			}
-
-			return false;
+			return Line[0] == '[';
 		}
 
 		__INLINE static void StringToLowercase(std::string& String)
@@ -67,6 +28,19 @@ namespace Integrian3D
 				{
 					return std::tolower(Char);
 				}); 
+		}
+
+		__INLINE static void TrimWhiteSpace(std::string& String)
+		{
+			String.erase(String.begin(), std::find_if(String.begin(), String.end(), [](const char Char)->bool
+				{
+					return IsCharWhitespace(Char);
+				}));
+
+			String.erase(std::find_if(String.rbegin(), String.rend(), [](const char Char)->bool
+				{
+					return IsCharWhitespace(Char);
+				}).base(), String.end());
 		}
 	}
 
@@ -140,6 +114,8 @@ namespace Integrian3D
 
 		while (std::getline(Stream, Line))
 		{
+			TrimWhiteSpace(Line);
+
 			if (Line.empty() || IsLineComment(Line))
 			{
 				continue;
