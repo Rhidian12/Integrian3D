@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+	<Type Name="Integrian3D::Array&lt;*&gt;">
+		<DisplayString>Size = {m_pCurrentEnd - m_pHead}</DisplayString>
+		<Expand>
+			<Item Name="Size" ExcludeView="simple">m_pCurrentEnd - m_pHead</Item>
+			<Item Name="Capacity" ExcludeView="simple">m_pTail - m_pHead</Item>
+			<ArrayItems>
+				<Size>m_pCurrentEnd - m_pHead</Size>
+				<ValuePointer>m_pHead</ValuePointer>
+			</ArrayItems>
+		</Expand>
+	</Type>
+</AutoVisualizer>

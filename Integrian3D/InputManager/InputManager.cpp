@@ -34,11 +34,11 @@ namespace Integrian3D
 	{
 		glfwPollEvents();
 
-		 double x{}, y{};
-		 glfwGetCursorPos(Core::GetInstance().GetWindow().GetWindow(), &x, &y);
-		 
-		 /* Update MousePosition and PreviousMousePosition */
-		 SetMousePosition(Math::Vec2D{ x, y });
+		double x{}, y{};
+		glfwGetCursorPos(Core::GetInstance().GetWindow().GetWindow(), &x, &y);
+
+		/* Update MousePosition and PreviousMousePosition */
+		SetMousePosition(Math::Vec2D{ x, y });
 	}
 
 	bool InputManager::GetIsKeyPressed(const KeyboardInput input) const

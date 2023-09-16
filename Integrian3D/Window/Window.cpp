@@ -1,9 +1,9 @@
 #include "Window.h"
 
-#include "../Core/Core.h" /* g_IsRunning */
-#include "../DebugUtility/DebugUtility.h"
-#include "../InputManager/InputManager.h"
-#include "../Math/Math.h"
+#include "Core/Core.h" /* g_IsRunning */
+#include "DebugUtility/DebugUtility.h"
+#include "InputManager/InputManager.h"
+#include "Math/Math.h"
 
 namespace Integrian3D
 {
@@ -55,6 +55,8 @@ namespace Integrian3D
 
 		void Window::Update()
 		{
+			__ASSERT(pWindow, "");
+
 			glfwSwapBuffers(pWindow);
 
 			g_IsRunning = !glfwWindowShouldClose(pWindow);
