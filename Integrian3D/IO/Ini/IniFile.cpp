@@ -7,17 +7,12 @@ namespace Integrian3D
 {
 	namespace
 	{
-		__INLINE static bool IsCharWhitespace(const char Char)
-		{
-			return std::isspace(Char) != 0;
-		}
-
 		__INLINE static bool IsLineComment(const std::string_view Line)
 		{
 			return Line[0] == ';';
 		}
 
-		__INLINE static bool IsLineSection(const std::string_view Line, SIZE_T& Start)
+		__INLINE static bool IsLineSection(const std::string_view Line)
 		{
 			return Line[0] == '[';
 		}
@@ -26,21 +21,13 @@ namespace Integrian3D
 		{
 			std::transform(String.begin(), String.end(), String.begin(), [](const char Char)->char
 				{
-					return std::tolower(Char);
+					return static_cast<char>(std::tolower(static_cast<unsigned char>(Char)));
 				}); 
 		}
 
 		__INLINE static void TrimWhiteSpace(std::string& String)
 		{
-			String.erase(String.begin(), std::find_if(String.begin(), String.end(), [](const char Char)->bool
-				{
-					return IsCharWhitespace(Char);
-				}));
-
-			String.erase(std::find_if(String.rbegin(), String.rend(), [](const char Char)->bool
-				{
-					return IsCharWhitespace(Char);
-				}).base(), String.end());
+			String.erase(std::remove_if(String.begin(), String.end(), std::isspace), String.end());
 		}
 	}
 
@@ -121,10 +108,9 @@ namespace Integrian3D
 				continue;
 			}
 
-			SIZE_T SectionStart{};
-			if (IsLineSection(Line, SectionStart))
+			if (IsLineSection(Line))
 			{
-				KeyValuePairs.AddEmptyKeyValue(CurrentSection = Line.substr(SectionStart + 1, Line.find(']')));
+				KeyValuePairs.AddEmptyKeyValue(CurrentSection = Line.substr(Line.find('[') + 1, Line.find(']') - 1));
 				bIsInSection = true;
 			}
 			else
@@ -133,7 +119,14 @@ namespace Integrian3D
 
 				const int32 EqualsPos{ static_cast<int32>(Line.find('=')) };
 				const std::string Key{ Line.substr(0, EqualsPos) };
-				const std::string Value{ Line.substr(EqualsPos + 1) };
+				std::string Value{ Line.substr(EqualsPos + 1) };
+
+				// if Value is a string, we need to get rid of the quotation marks
+				if (Value[0] == '"')
+				{
+					Value.erase(Value.begin());
+					Value.pop_back();
+				}
 
 				KeyValuePairs[CurrentSection][Key] = Value;
 			}

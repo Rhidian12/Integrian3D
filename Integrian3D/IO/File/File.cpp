@@ -241,7 +241,7 @@ namespace Integrian3D::IO
 			ErrorToIgnore = ERROR_FILE_EXISTS;
 			break;
 		case OpenMode::OpenExisting:
-			__ASSERT(DoesFileExist(Filepath), "File::File() > OpenMode::OpenExisting > File %s already exists", Filepath.data());
+			__ASSERT(DoesFileExist(Filepath), "File::File() > OpenMode::OpenExisting > File %s does not exist", Filepath.data());
 			ErrorToIgnore = ERROR_FILE_NOT_FOUND;
 			break;
 		case OpenMode::TruncateExisting:

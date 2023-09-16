@@ -10,7 +10,7 @@ namespace Integrian3D
 {
 #define LOG(Category, Visibility, Format, ...) LOG_INTERNAL(Category, Visibility, Format, __VA_ARGS__)
 
-	/* __ASSERT(), __CASSERT(), __CHECK */
+	/* __BREAK(), __ASSERT(), __CASSERT(), __CHECK */
 #ifdef _DEBUG
 #	define __BREAK() __debugbreak()
 
@@ -41,5 +41,6 @@ namespace Integrian3D
 #	define __BREAK()
 #	define __ASSERT(expr, message)
 #	define __CASSERT(expr, message)
+#	define __CHECK(Expr)
 #endif
 }

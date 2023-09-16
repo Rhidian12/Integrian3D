@@ -1,6 +1,7 @@
 #pragma once
 
 #include "EngineConstants.h"
+#include "DebugUtility/DebugUtility.h"
 #include "Array/Array.h"
 #include "IO/File/File.h"
 #include "TPair/TPair.full.h"
@@ -31,9 +32,9 @@ namespace Integrian3D
 
 			__NODISCARD const T& Get(const std::string& Key) const
 			{
-				__CHECK(ContainsKey(Key));
+				__ASSERT(ContainsKey(Key), "Missing Key in Ini Map: %s", Key.c_str());
 
-				return DataIndices.find(Key)->second;
+				return Data[DataIndices.find(Key)->second].Value();
 			}
 
 			int32 AddEmptyKeyValue(const std::string& Key)
