@@ -1,7 +1,8 @@
 #pragma once
 
-#include "../../EngineConstants.h"
-#include "../File/File.h"
+#include "EngineConstants.h"
+#include "IO/File/File.h"
+#include "IO/Ini/IniFile.h"
 
 #include <string_view>
 
@@ -40,10 +41,13 @@ namespace Integrian3D::IO
 				File << c;
 			}
 
-			constexpr int8 Version{ 1 }; // [TODO]: Read this in from a config file
+			IniFile EngineIni{ "Config/Engine.ini" };
+			int32 Version{};
+			__CHECK(EngineIni.GetInteger("IO/IAsset", "Version", Version));
+
 			constexpr int8 Padding{ '\0' };
 
-			File << Version << Padding;
+			File << static_cast<int8>(Version) << Padding;
 
 			const int16 Offset{ static_cast<int16>(IASSET.size() + sizeof(Version) + sizeof(Padding) + sizeof(Offset)) };
 
