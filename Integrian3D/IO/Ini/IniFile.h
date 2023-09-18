@@ -1,9 +1,10 @@
 #pragma once
 
 #include "EngineConstants.h"
-#include "DebugUtility/DebugUtility.h"
 #include "Array/Array.h"
+#include "DebugUtility/DebugUtility.h"
 #include "IO/File/File.h"
+#include "Math/Math.h"
 #include "TPair/TPair.full.h"
 
 #include <string>
@@ -61,6 +62,8 @@ namespace Integrian3D
 		bool GetInteger(const std::string& Section, const std::string& Key, int32& Value) const;
 		bool GetFloat(const std::string& Section, const std::string& Key, float& Value) const;
 		bool GetBoolean(const std::string& Section, const std::string& Key, bool& bValue) const;
+		bool GetVector2D(const std::string& Section, const std::string& Key, Math::Vec2D& Value) const;
+		bool GetVector3D(const std::string& Section, const std::string& Key, Math::Vec3D& Value) const;
 		// [TODO]: Add array support
 
 	private:

@@ -234,6 +234,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Array\Array.h" />
+    <ClInclude Include="Components\MeshComponent\OBJLoader.h" />
     <ClInclude Include="Component\Component.h" />
     <ClInclude Include="Config.h" />
     <ClInclude Include="ECS\ComponentIDGenerator.h" />

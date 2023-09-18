@@ -119,7 +119,7 @@ int RunTestEngine(int, char* [])
 		// pTestScene->AddComponent<TestRotateComponent>(entity);
 		pTestScene->AddComponent<MeshComponent>(entity, "Resources/StanfordBunny2.obj", TextureManager::GetInstance().GetTexture("__Wall"));
 		pTestScene->GetComponent<TransformComponent>(entity).Rotate(Math::Vec3D{ 0.f, Math::ToRadians(180.f), 0.f });
-		//pTestScene->GetComponent<TransformComponent>(entity).Scale(Math::Vec3D{ 20.0, 20.0, 20.0 });
+		// pTestScene->GetComponent<TransformComponent>(entity).Scale(Math::Vec3D{ 0.01, 0.01, 0.01 });
 	}
 
 	//for (size_t i{}; i < 9; ++i)

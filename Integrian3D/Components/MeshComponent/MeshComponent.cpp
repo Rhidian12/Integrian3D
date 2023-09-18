@@ -1,10 +1,13 @@
 #include "MeshComponent.h"
 
+#define MUTE_OBJL_CONSOLE_OUTPUT
+#include "Components/MeshComponent/OBJLoader.h"
 #include "IO/File/File.h"
 #include "Renderer/Renderer.h"
 #include "Texture/Texture.h"
 
 #include <glad/glad.h>
+#include <gtx/vector_angle.hpp>
 #include <sstream>
 
 namespace Integrian3D
@@ -13,257 +16,23 @@ namespace Integrian3D
 
 	namespace
 	{
-		static void SplitString(const std::string& OriginalString, const char SplitCharacter, TArray<std::string>& SplitParts)
-		{
-			SIZE_T Start{};
-			SIZE_T SplitCharacterPos{ OriginalString.find(SplitCharacter) };
-
-			while (SplitCharacterPos != std::string::npos)
-			{
-				SplitParts.Add(OriginalString.substr(Start, SplitCharacterPos - Start));
-
-				Start = SplitCharacterPos + 1;
-				SplitCharacterPos = OriginalString.find(SplitCharacter, Start);
-			}
-
-			if (Start < OriginalString.size())
-			{
-				SplitParts.Add(OriginalString.substr(Start));
-			}
-		}
-
 		static void ParseObjFile(const std::string_view Filepath, TArray<Vertex>& OutVertices, TArray<uint32>& OutIndices)
 		{
-			const IO::File ObjFile{ Filepath, IO::OpenMode::OpenExisting, IO::FileMode::ASCII };
+			objl::Loader OBJLoader{};
 
-			const std::string_view Filecontents{ ObjFile.GetFileContents() };
-			std::stringstream Stream{ Filecontents.data() };
+			OBJLoader.LoadFile(Filepath.data());
 
-			TArray<Math::Vec3D> Positions{};
-			TArray<Math::Vec2D> UVs{};
-
-			std::string Line{};
-			while (std::getline(Stream, Line))
+			for (const unsigned int Index : OBJLoader.LoadedIndices)
 			{
-				if (Line.empty())
-				{
-					continue;
-				}
+				OutIndices.Add(static_cast<uint32>(Index));
+			}
 
-				switch (Line[0])
-				{
-					case '#':
-						continue;
-						break;
-					case 'v':
-					{
-						if (Line[1] == 't')
-						{
-							std::stringstream LineStream{ Line.substr(3) };
-							Math::Vec2D UV{};
-							LineStream >> UV.x >> UV.y;
-							UVs.Add(UV);
-						}
-						else
-						{
-							std::stringstream LineStream{ Line.substr(2) };
-							Math::Vec3D Position{};
-							LineStream >> Position.x >> Position.y >> Position.z;
-							Positions.Add(Position);
-						}
-					}
-					break;
-					case 'f':
-					{
-						TArray<std::string> FaceElements{};
-						SplitString(Line.substr(2), ' ', FaceElements);
-
-						FaceElements.Erase([](const std::string& Element)->bool
-							{
-								for (const char Character : Element)
-								{
-									if (std::isspace(Character))
-									{
-										return true;
-									}
-								}
-
-								return false;
-							});
-
-						TArray<Vertex> Vertices{};
-						TArray<uint32> Indices{};
-
-						for (const std::string& FaceInfo : FaceElements)
-						{
-							Vertex Vertex{};
-							const int64 NrOfElements{ std::count(FaceInfo.cbegin(), FaceInfo.cend(), '/') };
-
-							switch (NrOfElements)
-							{
-								case 0: // Only index info
-									Vertex.Position = Positions[std::stoi(FaceInfo) - 1];
-									break;
-								case 1: // Index + UV info
-								{
-									TArray<std::string> IndexUVInfo{};
-									SplitString(FaceInfo, '/', IndexUVInfo);
-
-									__ASSERT(IndexUVInfo.Size() == 2, "SplitString() is broken");
-
-									Vertex.Position = Positions[std::stoi(IndexUVInfo[0]) - 1];
-									Vertex.UV = UVs[std::stoi(IndexUVInfo[1]) - 1];
-								}
-								break;
-								case 2: // Index + UV + Normal info
-								{
-									TArray<std::string> IndexUVInfo{};
-									SplitString(FaceInfo, '/', IndexUVInfo);
-
-									__ASSERT(IndexUVInfo.Size() == 3, "SplitString() is broken");
-
-									Vertex.Position = Positions[std::stoi(IndexUVInfo[0]) - 1];
-									Vertex.UV = UVs[std::stoi(IndexUVInfo[1]) - 1];
-
-									// [TODO]: Handle Normals
-								}
-								break;
-								default:
-									__ASSERT(false, "");
-									break;
-							}
-
-							Vertices.Add(Vertex);
-						}
-
-						const SIZE_T NrOfVertices{ Vertices.Size() };
-						if (NrOfVertices < 3)
-						{
-							break;
-						}
-						else if (NrOfVertices == 3)
-						{
-							Indices.AddRange({ 0,1,2 });
-						}
-						else
-						{
-							TArray<Vertex> TempVertices{ Vertices };
-
-							while (true)
-							{
-								for (int32 I{}; I < static_cast<int32>(TempVertices.Size()); ++I)
-								{
-									Vertex PreviousVertex{};
-									if (I == 0)
-									{
-										PreviousVertex = TempVertices[TempVertices.Size() - 1];
-									}
-									else
-									{
-										PreviousVertex = TempVertices[I - 1];
-									}
-
-									Vertex CurrentVertex{ TempVertices[I] };
-
-									Vertex NextVertex{};
-									if (I == TempVertices.Size() - 1)
-									{
-										NextVertex = TempVertices[0];
-									}
-									else
-									{
-										NextVertex = TempVertices[I + 1];
-									}
-
-									// If there are only 3 vertices left, then we're on the last triangle
-									if (TempVertices.Size() == 3)
-									{
-										// create a triangle from Previous, Current and Next
-										for (uint32 J{}; J < static_cast<uint32>(TempVertices.Size()); ++J)
-										{
-											if (Vertices[J].Position == CurrentVertex.Position)
-											{
-												Indices.Add(J);
-											}
-											else if (Vertices[J].Position == PreviousVertex.Position)
-											{
-												Indices.Add(J);
-											}
-											else if (Vertices[J].Position == NextVertex.Position)
-											{
-												Indices.Add(J);
-											}
-										}
-
-										TempVertices.Clear();
-										break;
-									}
-									else if (TempVertices.Size() == 4)
-									{
-										// create a triangle from Previous, Current and Next
-										for (uint32 J{}; J < static_cast<uint32>(TempVertices.Size()); ++J)
-										{
-											if (Vertices[J].Position == CurrentVertex.Position)
-											{
-												Indices.Add(J);
-											}
-											else if (Vertices[J].Position == PreviousVertex.Position)
-											{
-												Indices.Add(J);
-											}
-											else if (Vertices[J].Position == NextVertex.Position)
-											{
-												Indices.Add(J);
-											}
-										}
-
-										Math::Vec3D TempPosition{};
-										for (uint32 J{}; J < static_cast<uint32>(TempVertices.Size()); ++J)
-										{
-											if (TempVertices[J].Position != CurrentVertex.Position &&
-												TempVertices[J].Position != PreviousVertex.Position &&
-												TempVertices[J].Position != NextVertex.Position)
-											{
-												TempPosition = TempVertices[J].Position;
-												break;
-											}
-										}
-
-										// create a triangle from Previous, Current and Next
-										for (uint32 J{}; J < static_cast<uint32>(TempVertices.Size()); ++J)
-										{
-											if (Vertices[J].Position == TempPosition)
-											{
-												Indices.Add(J);
-											}
-											else if (Vertices[J].Position == PreviousVertex.Position)
-											{
-												Indices.Add(J);
-											}
-											else if (Vertices[J].Position == NextVertex.Position)
-											{
-												Indices.Add(J);
-											}
-										}
-
-										TempVertices.Clear();
-										break;
-									}
-								}
-							}
-						}
-
-						OutVertices.AddRange(Vertices);
-
-						for (const uint32 Index : Indices)
-						{
-							OutIndices.Add(static_cast<uint32>(OutVertices.Size() - Vertices.Size()) + Index);
-						}
-					}
-					break;
-					default:
-						break;
-				}
+			for (const objl::Vertex& OBJVertex : OBJLoader.LoadedVertices)
+			{
+				Vertex Vertex{};
+				Vertex.Position = Math::Vec3D{ OBJVertex.Position.X, OBJVertex.Position.Y, OBJVertex.Position.Z };
+				Vertex.UV = Math::Vec2D{ OBJVertex.TextureCoordinate.X, OBJVertex.TextureCoordinate.Y };
+				OutVertices.Add(Vertex);
 			}
 		}
 	}

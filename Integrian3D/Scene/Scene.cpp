@@ -1,15 +1,16 @@
 #include "Scene.h"
 
-#include "../Core/Core.h"
-#include "../InputManager/InputManager.h"
+#include "Core/Core.h"
+#include "InputManager/InputManager.h"
+#include "IO/Ini/IniFile.h"
 #include "Math/Math.h"
 #include "Renderer/Renderer.h"
 #include "TPair/TPair.full.h"
 
-#include "../Components/FreeCameraComponent/FreeCameraComponent.h"
-#include "../Components/MeshComponent/MeshComponent.h"
-#include "../Components/TagComponent/TagComponent.h"
-#include "../Components/TransformComponent/TransformComponent.h"
+#include "Components/FreeCameraComponent/FreeCameraComponent.h"
+#include "Components/MeshComponent/MeshComponent.h"
+#include "Components/TagComponent/TagComponent.h"
+#include "Components/TransformComponent/TransformComponent.h"
 
 #include <gtc/matrix_transform.hpp>
 
@@ -142,7 +143,15 @@ namespace Integrian3D
 					static_cast<float>(Core::GetInstance().GetWindowWidth() / Core::GetInstance().GetWindowHeight())
 					);
 
-			m_Registry.GetComponent<TransformComponent>(m_ActiveCameraEntity).Translate(Math::Vec3D{ 0.f, 0.f, -10.f });
+			IniFile EngineIni{ "Config/Engine.ini" };
+
+			Math::Vec3D CameraPosition{};
+			if (!EngineIni.GetVector3D("Scene", "CameraStartPosition", CameraPosition))
+			{
+				CameraPosition = Math::Vec3D{ 0.0, 10.0, -10.0 };
+			}
+
+			m_Registry.GetComponent<TransformComponent>(m_ActiveCameraEntity).Translate(CameraPosition);
 		}
 
 		std::sort(m_UpdateCallbacks.begin(), m_UpdateCallbacks.end(), [](const auto& a, const auto& b)->bool

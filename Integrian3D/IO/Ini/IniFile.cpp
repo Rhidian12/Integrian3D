@@ -1,4 +1,5 @@
 #include "IO/Ini/IniFile.h"
+#include "Math/Math.h"
 
 #include <algorithm>
 #include <sstream>
@@ -28,6 +29,40 @@ namespace Integrian3D
 		__INLINE static void TrimWhiteSpace(std::string& String)
 		{
 			String.erase(std::remove_if(String.begin(), String.end(), std::isspace), String.end());
+		}
+
+		static void SplitString(const std::string& OriginalString, const char SplitCharacter, TArray<std::string>& SplitParts)
+		{
+			SIZE_T Start{};
+			SIZE_T SplitCharacterPos{ OriginalString.find(SplitCharacter) };
+
+			while (SplitCharacterPos != std::string::npos)
+			{
+				SplitParts.Add(OriginalString.substr(Start, SplitCharacterPos - Start));
+
+				Start = SplitCharacterPos + 1;
+				SplitCharacterPos = OriginalString.find(SplitCharacter, Start);
+			}
+
+			if (Start < OriginalString.size())
+			{
+				const std::string FinalPart{ OriginalString.substr(Start) };
+
+				bool bIsWhitespace{ true };
+				for (const char Character : FinalPart)
+				{
+					if (!std::isspace(Character))
+					{
+						bIsWhitespace = false;
+						break;
+					}
+				}
+
+				if (!bIsWhitespace)
+				{
+					SplitParts.Add(OriginalString.substr(Start));
+				}
+			}
 		}
 	}
 
@@ -83,6 +118,68 @@ namespace Integrian3D
 		{
 			StringToLowercase(RawIniValue);
 			bValue = RawIniValue == "true";
+			return true;
+		}
+
+		return false;
+	}
+
+	bool IniFile::GetVector2D(const std::string& Section, const std::string& Key, Math::Vec2D& Value) const
+	{
+		std::string RawIniValue{};
+		if (GetString(Section, Key, RawIniValue))
+		{
+			// remove ( )
+			RawIniValue.erase(0);
+			RawIniValue.pop_back();
+
+			TArray<std::string> VectorComponents{};
+			SplitString(RawIniValue, ',', VectorComponents);
+
+			__ASSERT(VectorComponents.Size() == 2, "IniFile::GetVector2D() > Requested Key is not a Vector2D");
+
+			for (SIZE_T I{}; I < VectorComponents.Size(); ++I)
+			{
+				std::string& Component{ VectorComponents[I] };
+				Component.erase(std::remove_if(Component.begin(), Component.end(), [](const char C)->bool
+					{
+						return std::isspace(C);
+					}), Component.end());
+
+				Value[static_cast<int32>(I)] = std::stod(Component);
+			}
+
+			return true;
+		}
+
+		return false;
+	}
+
+	bool IniFile::GetVector3D(const std::string& Section, const std::string& Key, Math::Vec3D& Value) const
+	{
+		std::string RawIniValue{};
+		if (GetString(Section, Key, RawIniValue))
+		{
+			// remove ( )
+			RawIniValue.erase(0, 1);
+			RawIniValue.pop_back();
+
+			TArray<std::string> VectorComponents{};
+			SplitString(RawIniValue, ',', VectorComponents);
+
+			__ASSERT(VectorComponents.Size() == 3, "IniFile::GetVector3D() > Requested Key is not a Vector2D");
+
+			for (SIZE_T I{}; I < VectorComponents.Size(); ++I)
+			{
+				std::string& Component{ VectorComponents[I] };
+				Component.erase(std::remove_if(Component.begin(), Component.end(), [](const char C)->bool
+					{
+						return std::isspace(C);
+					}), Component.end());
+
+				Value[static_cast<int32>(I)] = std::stod(Component);
+			}
+
 			return true;
 		}
 

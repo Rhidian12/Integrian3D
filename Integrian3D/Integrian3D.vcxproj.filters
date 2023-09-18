@@ -368,6 +368,9 @@
     <ClInclude Include="IO\Ini\IniFile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Components\MeshComponent\OBJLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
