@@ -20,7 +20,11 @@ namespace Integrian3D
 		{
 			objl::Loader OBJLoader{};
 
-			OBJLoader.LoadFile(Filepath.data());
+			if (!OBJLoader.LoadFile(Filepath.data()))
+			{
+				LOG(MeshComponent, Error, "MeshComponent could not read file %s", Filepath.data());
+				return;
+			}
 
 			for (const unsigned int Index : OBJLoader.LoadedIndices)
 			{

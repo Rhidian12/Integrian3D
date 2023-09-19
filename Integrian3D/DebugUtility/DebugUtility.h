@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Logger/LogCategory.h"
 #include "Logger/Logger.h"
 
 DECLARE_LOG_CATEGORY(Assert)

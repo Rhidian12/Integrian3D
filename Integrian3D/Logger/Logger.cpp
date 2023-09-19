@@ -1,7 +1,9 @@
 #include "Logger.h"
 
+#include "Array/Array.h"
 #include "DebugUtility/DebugUtility.h"
 #include "Logger/ConsoleColours.h"
+#include "Logger/LogCategory.h"
 
 #include <iostream> /* std::cout */
 
@@ -45,29 +47,35 @@ namespace Integrian3D
 		}
 	}
 
+	struct LoggerStatics
+	{
+		TArray<LogCategory> Categories;
+	};
+
 	Logger::Logger()
 		: ConsoleHandle{ GetStdHandle(STD_OUTPUT_HANDLE) }
+		, Statics{ MakeUnique<LoggerStatics>() }
 	{}
 
 	Logger& Logger::GetInstance()
 	{
 		if (!Instance)
 		{
-			Instance = std::make_unique<Logger>();
+			Instance = MakeUnique<Logger>();
 		}
 
-		return *Instance.get();
+		return *Instance.Get();
 	}
 
 	void Logger::LogMessage(
-		const std::string_view Category,
+		const LogCategory& Category,
 		const std::string_view Visibility,
 		const std::string_view Format,
 		...)
 	{
 		SetConsoleColour(ConsoleHandle, Visibility, Visibility == "Debug");
 
-		std::cout << "[" << Category << "] ";
+		std::cout << "[" << Category.GetName() << "] ";
 
 		va_list ArgPtr;
 		va_start(ArgPtr, Format);
