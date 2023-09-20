@@ -37,7 +37,7 @@ namespace Integrian3D::Win32Utils
 
 		char* Buffer{};
 		FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, nullptr, Result, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (char*)&Buffer, 0, nullptr);
-		LOG(Win32, Error, "[%s, %i] Win32 API Call Error: %s", File.data(), Line, Buffer);
+		LOG(Win32Log, LogErrorLevel::Error, "[%s, %i] Win32 API Call Error: %s", File, Line, Buffer);
 		LocalFree(Buffer);
 	}
 

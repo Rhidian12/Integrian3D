@@ -7,7 +7,7 @@
 #include <vector> /* std::vector */
 #include <string_view> /* std::string_view */
 
-DECLARE_LOG_CATEGORY(SceneManager)
+DEFINE_LOG_CATEGORY(SceneManagerLog, Integrian3D::LogVerbosity::Verbose);
 
 namespace Integrian3D
 {

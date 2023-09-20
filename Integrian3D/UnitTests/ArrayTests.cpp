@@ -148,7 +148,7 @@ TEST_CASE("Testing Basic Array of integers")
 		public:
 			~Special()
 			{
-				LOG(Log, Debug, "Getting destroyed");
+				LOG(Log, LogErrorLevel::Log, "Getting destroyed");
 			}
 		};
 

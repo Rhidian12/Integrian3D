@@ -3,13 +3,13 @@
 #include "Logger/LogCategory.h"
 #include "Logger/Logger.h"
 
-DECLARE_LOG_CATEGORY(Assert)
-DECLARE_LOG_CATEGORY(Check)
-DECLARE_LOG_CATEGORY(Log)
+DEFINE_LOG_CATEGORY(Assert, Integrian3D::LogVerbosity::Verbose)
+DEFINE_LOG_CATEGORY(Check, Integrian3D::LogVerbosity::Verbose)
+DEFINE_LOG_CATEGORY(Log, Integrian3D::LogVerbosity::Verbose);
 
 namespace Integrian3D
 {
-#define LOG(Category, Visibility, Format, ...) LOG_INTERNAL(Category, Visibility, Format, __VA_ARGS__)
+#define LOG(Category, ErrorLevel, Format, ...) Integrian3D::Logger::GetInstance().LogMessage(#Category, ErrorLevel, Format, __VA_ARGS__)
 
 	/* __BREAK(), __ASSERT(), __CASSERT(), __CHECK */
 #ifdef _DEBUG
@@ -19,7 +19,7 @@ namespace Integrian3D
 		if ((Expr)) {} \
 		else \
 		{ \
-			LOG(Assert, Fatal, Format, __VA_ARGS__); \
+			LOG(Assert, Integrian3D::LogErrorLevel::Fatal, Format, __VA_ARGS__); \
 			__BREAK(); \
 		}
 
@@ -27,7 +27,7 @@ namespace Integrian3D
 		if constexpr ((Expr)) {} \
 		else \
 		{ \
-			LOG(Assert, Fatal, Format, __VA_ARGS__); \
+			LOG(Assert, Integrian3D::LogErrorLevel::Fatal, Format, __VA_ARGS__); \
 			__BREAK(); \
 		}
 
@@ -35,7 +35,7 @@ namespace Integrian3D
 		if ((Expr)) {} \
 		else \
 		{ \
-			LOG(Check, Fatal, "Check %s triggered at line %i in file %s", #Expr, __LINE__, __FILE__); \
+			LOG(Check, Integrian3D::LogErrorLevel::Fatal, "Check {} triggered at line {} in file {}", #Expr, __LINE__, __FILE__); \
 			__BREAK(); \
 		}
 #else

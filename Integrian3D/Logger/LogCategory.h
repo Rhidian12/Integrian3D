@@ -1,34 +1,18 @@
 #pragma once
 
+#include "Logger/LogVerbosity.h"
+
 #include <string>
 
 namespace Integrian3D
 {
-	enum class LogVerbosity
-	{
-		Log,
-		Warning,
-		Error,
-		Fatal
-	};
-
 	class LogCategory final
 	{
 	public:
-		explicit LogCategory(const std::string& Name, const LogVerbosity Verbosity)
-			: Name{ Name }
-			, Verbosity{ Verbosity }
-		{}
+		explicit LogCategory(const std::string& Name, const LogVerbosity Verbosity);
 
-		const std::string& GetName() const
-		{
-			return Name;
-		}
-
-		LogVerbosity GetVerbosity() const
-		{
-			return Verbosity;
-		}
+		const std::string& GetName() const;
+		LogVerbosity GetVerbosity() const;
 
 	private:
 		std::string Name;
@@ -36,4 +20,4 @@ namespace Integrian3D
 	};
 }
 
-#define DEFINE_LOG_CATEGORY()
+#define DEFINE_LOG_CATEGORY(Name, Verbosity) inline static Integrian3D::LogCategory Name{ #Name, Verbosity };

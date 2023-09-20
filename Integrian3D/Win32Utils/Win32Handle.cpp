@@ -80,7 +80,7 @@ namespace Integrian3D::Win32Utils
 
 			if (!Call.GetSuccess())
 			{
-				LOG(Win32Handle, Error, "Handle could not be closed");
+				LOG(Win32HandleLog, LogErrorLevel::Error, "Handle could not be closed");
 			}
 
 			Handle = INVALID_HANDLE_VALUE;

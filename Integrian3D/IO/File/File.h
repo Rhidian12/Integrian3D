@@ -10,7 +10,7 @@
 #include <string>
 #include <string_view>
 
-DECLARE_LOG_CATEGORY(File)
+DEFINE_LOG_CATEGORY(FileLog, Integrian3D::LogVerbosity::Verbose);
 
 namespace Integrian3D::IO
 {

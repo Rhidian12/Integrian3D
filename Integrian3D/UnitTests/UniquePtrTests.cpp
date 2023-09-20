@@ -225,12 +225,16 @@ TEST_CASE("Creating Unique Pointer For Custom Types")
 	}
 }
 
-class Win32Utils::Win32Handle;
+namespace Integrian3D::Win32Utils
+{
+	class Win32Handle;
+}
+
 TEST_CASE("Creating Unique Pointer For Forward Declared Types")
 {
 	SECTION("Creating Empty Custom Pointer")
 	{
-		const UniquePtr<Win32Utils::Win32Handle> Pointer{};
+		const UniquePtr<Integrian3D::Win32Utils::Win32Handle> Pointer{};
 
 		REQUIRE(Pointer.Get() == nullptr);
 		REQUIRE(static_cast<bool>(Pointer) == false);

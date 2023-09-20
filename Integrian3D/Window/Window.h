@@ -2,7 +2,7 @@
 
 #include "EngineConstants.h"
 
-DECLARE_LOG_CATEGORY(Window)
+DEFINE_LOG_CATEGORY(WindowLog, Integrian3D::LogVerbosity::Verbose);
 
 struct GLFWwindow;
 namespace Integrian3D

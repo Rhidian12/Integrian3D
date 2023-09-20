@@ -2,6 +2,8 @@
 
 #include "EngineConstants.h"
 
+#include <type_traits>
+
 namespace Integrian3D
 {
 	namespace Detail
@@ -240,14 +242,17 @@ namespace Integrian3D
 	};
 
 	template<typename T, typename Deleter = Integrian3D::Detail::DefaultDeleter<T>, typename ... Args, std::enable_if_t<!std::is_array_v<T>, bool> = true>
-	inline UniquePtr<T, Deleter> MakeUnique(Args&& ... Arguments)
+	__NODISCARD inline UniquePtr<T, Deleter> MakeUnique(Args&& ... Arguments)
 	{
-		return UniquePtr<T>(new T{ Arguments... });
+		return UniquePtr<T>(new T{ __FORWARD(Arguments)...});
 	}
 
 	template<typename T, typename Deleter = Integrian3D::Detail::DefaultDeleter<T>, std::enable_if_t<std::is_array_v<T> && std::extent_v<T> == 0, bool> = true>
-	inline UniquePtr<T, Deleter> MakeUnique(const int32 NrOfElements)
+	__NODISCARD inline UniquePtr<T, Deleter> MakeUnique(const int32 NrOfElements)
 	{
 		return UniquePtr<T>(new std::remove_extent_t<T>[NrOfElements]{});
 	}
+
+	template<typename T, typename Deleter = Integrian3D::Detail::DefaultDeleter<T>, typename ... Args, std::enable_if_t<std::extent_v<T> != 0, bool> = true>
+	void MakeUnique(Args&& ... Arguments) = delete;
 }

@@ -3,7 +3,7 @@
 
 #include <string_view>
 
-DECLARE_LOG_CATEGORY(Win32)
+DEFINE_LOG_CATEGORY(Win32Log, Integrian3D::LogVerbosity::Verbose);
 
 namespace Integrian3D::Win32Utils
 {

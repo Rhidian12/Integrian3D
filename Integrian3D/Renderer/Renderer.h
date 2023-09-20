@@ -1,8 +1,8 @@
 #pragma once 
 
-#include "../EngineConstants.h"
+#include "EngineConstants.h"
 
-#include "../Shader/Shader.h"
+#include "Shader/Shader.h"
 
 #include <memory> /* std::unique_ptr */
 

@@ -2,6 +2,7 @@
 #include "Math/Math.h"
 
 #include <algorithm>
+#include <execution>
 #include <sstream>
 
 namespace Integrian3D
@@ -28,7 +29,10 @@ namespace Integrian3D
 
 		__INLINE static void TrimWhiteSpace(std::string& String)
 		{
-			String.erase(std::remove_if(String.begin(), String.end(), std::isspace), String.end());
+			String.erase(std::remove_if(String.begin(), String.end(), [](const char C)->bool
+				{
+					return std::isspace(C);
+				}), String.end());
 		}
 
 		static void SplitString(const std::string& OriginalString, const char SplitCharacter, TArray<std::string>& SplitParts)

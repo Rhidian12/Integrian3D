@@ -26,7 +26,7 @@ namespace Integrian3D
 
 			if (!pWindow)
 			{
-				LOG(Window, Fatal, "Failed to create GLFW window");
+				LOG(WindowLog, LogErrorLevel::Fatal, "Failed to create GLFW window");
 
 				glfwTerminate();
 				return;
@@ -36,7 +36,7 @@ namespace Integrian3D
 
 			if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 			{
-				LOG(Window, Fatal, "Failed to initialize GLAD");
+				LOG(WindowLog, LogErrorLevel::Fatal, "Failed to initialize GLAD");
 				return;
 			}
 

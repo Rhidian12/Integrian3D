@@ -32,7 +32,7 @@ namespace Integrian3D::IO
 
 		if (!Handle.IsValid())
 		{
-			LOG(File, Error, "File could not open the provided file: %s Error:", Filepath.data());
+			LOG(FileLog, LogErrorLevel::Error, "File could not open the provided file: %s Error:", Filepath);
 			return;
 		}
 
@@ -186,7 +186,7 @@ namespace Integrian3D::IO
 
 		if (!Call.GetSuccess())
 		{
-			LOG(File, Warning, "File::operator>> could not read from file %s", Filepath.data());
+			LOG(FileLog, LogErrorLevel::Warning, "File::operator>> could not read from file %s", Filepath);
 		}
 
 		return CurrentChar;
@@ -198,7 +198,7 @@ namespace Integrian3D::IO
 
 		if (!Call.GetSuccess())
 		{
-			LOG(File, Warning, "File::operator>> could not read from file %s", Filepath.data());
+			LOG(FileLog, LogErrorLevel::Warning, "File::operator>> could not read from file %s", Filepath);
 		}
 	}
 
@@ -210,7 +210,7 @@ namespace Integrian3D::IO
 
 		if (ReadFile(Handle, OutFileContents.data(), static_cast<DWORD>(Filesize), nullptr, nullptr) == 0)
 		{
-			LOG(File, Warning, "File could not read the provided file: %s", Filepath.data());
+			LOG(FileLog, LogErrorLevel::Warning, "File could not read the provided file: %s", Filepath);
 		}
 
 		Seek(0);
@@ -222,7 +222,7 @@ namespace Integrian3D::IO
 
 		if (!Call.GetSuccess())
 		{
-			LOG(File, Warning, "File::operator<< could not write to file %s", Filepath.data());
+			LOG(FileLog, LogErrorLevel::Warning, "File::operator<< could not write to file %s", Filepath);
 		}
 		else
 		{

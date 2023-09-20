@@ -42,12 +42,13 @@ namespace Integrian3D::IO
 			}
 
 			IniFile EngineIni{ "Config/Engine.ini" };
-			int32 Version{};
-			__CHECK(EngineIni.GetInteger("IO/IAsset", "Version", Version));
+			int32 IniVersion{};
+			__CHECK(EngineIni.GetInteger("IO/IAsset", "Version", IniVersion));
+			int8 Version{ static_cast<int8>(IniVersion) };
 
 			constexpr int8 Padding{ '\0' };
 
-			File << static_cast<int8>(Version) << Padding;
+			File << Version << Padding;
 
 			const int16 Offset{ static_cast<int16>(IASSET.size() + sizeof(Version) + sizeof(Padding) + sizeof(Offset)) };
 

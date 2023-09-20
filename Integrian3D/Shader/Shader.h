@@ -7,7 +7,7 @@
 #include <string_view> /* std::string_view */
 #include <glm.hpp> /* GLM */
 
-DECLARE_LOG_CATEGORY(Shader)
+DEFINE_LOG_CATEGORY(ShaderLog, Integrian3D::LogVerbosity::Verbose);
 
 namespace Integrian3D
 {

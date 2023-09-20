@@ -5,8 +5,6 @@
 #include "Logger/ConsoleColours.h"
 #include "Logger/LogCategory.h"
 
-#include <iostream> /* std::cout */
-
 #pragma warning ( push )
 #pragma warning ( disable : 4005 ) /* warning C4005: 'APIENTRY': macro redefinition */ 
 #	ifdef _WIN32
@@ -17,75 +15,134 @@
 
 namespace Integrian3D
 {
-	namespace
+	namespace Detail
 	{
-		static void SetConsoleColour(const Win32Utils::Win32Handle& ConsoleHandle, const std::string_view Visibility, const bool bIsDebug)
+		static void SetConsoleColour(const Win32Utils::Win32Handle& ConsoleHandle, const LogErrorLevel ErrorLevel)
 		{
-#ifdef _WIN32
-			// Debug is White by default, and so is any other Visibility that is not pre-defined
+			#ifdef _WIN32
+			// Log is White by default
 			WORD colour{ MessageColour::White };
 
-			if (!bIsDebug)
+			switch (ErrorLevel)
 			{
-				if (Visibility == "Warning")
-				{
+				case LogErrorLevel::Warning:
 					colour = MessageColour::Yellow;
-				}
-				else if (Visibility == "Error")
-				{
+					break;
+				case LogErrorLevel::Error:
 					colour = MessageColour::LightRed;
-				}
-				else if (Visibility == "Fatal")
-				{
+					break;
+				case LogErrorLevel::Fatal:
 					colour = MessageColour::Red;
-				}
+					break;
+				default:
+					break;
 			}
 
 			/* Set text colour to user defined colour */
 			SetConsoleTextAttribute(ConsoleHandle, colour);
-#endif
+			#endif
 		}
 	}
 
 	struct LoggerStatics
 	{
 		TArray<LogCategory> Categories;
+
+		const LogCategory* const GetLogCategory(const std::string_view CategoryName) const
+		{
+			const auto CIt{ Categories.Find([CategoryName](const LogCategory& LogCategory)->bool
+				{
+					return LogCategory.GetName() == CategoryName;
+				}) };
+
+			return CIt != Categories.cend() ? &(*CIt) : nullptr;
+		}
 	};
 
 	Logger::Logger()
 		: ConsoleHandle{ GetStdHandle(STD_OUTPUT_HANDLE) }
-		, Statics{ MakeUnique<LoggerStatics>() }
+		, Statics{ new LoggerStatics{} }
+		, VerbosityLevel{ LogVerbosity::VeryVerbose }
 	{}
+
+	Logger::~Logger()
+	{
+		delete Statics;
+		Statics = nullptr;
+	}
 
 	Logger& Logger::GetInstance()
 	{
 		if (!Instance)
 		{
-			Instance = MakeUnique<Logger>();
+			Instance = new Logger{};
 		}
 
-		return *Instance.Get();
+		return *Instance;
 	}
 
-	void Logger::LogMessage(
-		const LogCategory& Category,
-		const std::string_view Visibility,
-		const std::string_view Format,
-		...)
+	void Logger::Cleanup()
 	{
-		SetConsoleColour(ConsoleHandle, Visibility, Visibility == "Debug");
+		if (Instance)
+		{
+			delete Instance;
+			Instance = nullptr;
+		}
+	}
 
-		std::cout << "[" << Category.GetName() << "] ";
+	void Logger::SetLogVerbosityLevel(const LogVerbosity NewVerbosity)
+	{
+		VerbosityLevel = NewVerbosity;
+	}
 
-		va_list ArgPtr;
-		va_start(ArgPtr, Format);
+	void Logger::AddCategory(const LogCategory& LogCategory)
+	{
+		Statics->Categories.Add(LogCategory);
+	}
 
-		vprintf(Format.data(), ArgPtr);
+	const LogCategory* const Logger::GetLogCategory(const std::string_view RequestedLogCategory) const
+	{
+		return Statics->GetLogCategory(RequestedLogCategory);
+	}
 
-		va_end(ArgPtr);
+	bool Logger::CheckLogCategory(const LogCategory* const LogCategory, const std::string_view RequestedLogCategory) const
+	{
+		if (!LogCategory)
+		{
+			Detail::SetConsoleColour(ConsoleHandle, LogErrorLevel::Fatal);
 
-		std::cout << "\n";
+			std::cout << std::format("Category {} was not added with DEFINE_CATEGORY()\n", RequestedLogCategory);
 
-		SetConsoleColour(ConsoleHandle, "", true);
+			ResetConsoleColour();
+
+			__BREAK();
+
+			return false;
+		}
+
+		if (LogCategory->GetVerbosity() == LogVerbosity::MuteAll || LogCategory->GetVerbosity() < VerbosityLevel)
+		{
+			return false;
+		}
+
+		return true;
+	}
+
+	void Logger::SetConsoleColour(const LogErrorLevel ErrorLevel) const
+	{
+		Detail::SetConsoleColour(ConsoleHandle, ErrorLevel);
+	}
+
+	void Logger::ResetConsoleColour() const
+	{
+		Detail::SetConsoleColour(ConsoleHandle, LogErrorLevel::Log);
+	}
+
+	void Logger::CheckErrorLevel(const LogErrorLevel ErrorLevel) const
+	{
+		if (ErrorLevel == LogErrorLevel::Fatal)
+		{
+			__BREAK();
+		}
 	}
 }

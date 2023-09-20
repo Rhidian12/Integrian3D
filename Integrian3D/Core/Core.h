@@ -5,7 +5,7 @@
 
 #include <memory> /* std::unique_ptr */
 
-DECLARE_LOG_CATEGORY(Core)
+DEFINE_LOG_CATEGORY(CoreLog, Integrian3D::LogVerbosity::Verbose)
 
 namespace Integrian3D
 {
@@ -15,6 +15,8 @@ namespace Integrian3D
 	class Core final
 	{
 	public:
+		~Core();
+
 		static Core& GetInstance();
 		static Core& CreateCore(const int windowWidth, const int windowHeight);
 			

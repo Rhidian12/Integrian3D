@@ -22,7 +22,7 @@ namespace Integrian3D
 
 			if (!OBJLoader.LoadFile(Filepath.data()))
 			{
-				LOG(MeshComponent, Error, "MeshComponent could not read file %s", Filepath.data());
+				LOG(LogMeshComponent, LogErrorLevel::Error, "MeshComponent could not read file {}", Filepath);
 				return;
 			}
 

@@ -40,7 +40,7 @@ namespace Integrian3D::IO
 
 		if (!ContainsFilepath(Filepath, FileInfo))
 		{
-			LOG(FileContentCache, Fatal, "FileContentCache is trying to remove %s which was never added!", Filepath.data());
+			LOG(FileContentCacheLog, LogErrorLevel::Fatal, "FileContentCache is trying to remove %s which was never added!", Filepath.data());
 			return;
 		}
 

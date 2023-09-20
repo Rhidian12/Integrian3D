@@ -22,6 +22,11 @@ namespace Integrian3D
 		InputManager::CreateInputManager(&Window);
 	}
 
+	Core::~Core()
+	{
+		Logger::Cleanup();
+	}
+
 	Core& Core::GetInstance()
 	{
 		__ASSERT(Instance != nullptr, "Core::GetInstance() > Ensure Core::CreateCore is called before Core::GetInstance");
@@ -39,7 +44,7 @@ namespace Integrian3D
 
 		Math::SetSeed(SEED);
 
-		LOG(Core, Debug, "Finished initialisation of engine");
+		LOG(CoreLog, LogErrorLevel::Log, "Finished initialisation of engine");
 
 		return *Instance.get();
 	}

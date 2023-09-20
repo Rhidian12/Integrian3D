@@ -39,7 +39,7 @@ namespace Integrian3D
 			if (!success)
 			{
 				glGetShaderInfoLog(vertexShaderID, 512, nullptr, infoLog);
-				LOG(Shader, Error, "Vertex Shader compilation failed: %s", infoLog);
+				LOG(ShaderLog, LogErrorLevel::Fatal, "Vertex Shader compilation failed: %s", infoLog);
 			}
 		}
 
@@ -63,7 +63,7 @@ namespace Integrian3D
 			if (!success)
 			{
 				glGetShaderInfoLog(fragmentShaderID, 512, nullptr, infoLog);
-				LOG(Shader, Error, "Fragment Shader compilation failed: %s", infoLog);
+				LOG(ShaderLog, LogErrorLevel::Fatal, "Fragment Shader compilation failed: %s", infoLog);
 			}
 		}
 
@@ -84,7 +84,7 @@ namespace Integrian3D
 			if (!success)
 			{
 				glGetProgramInfoLog(ProgramID, 512, nullptr, infoLog);
-				LOG(Shader, Error, "Shader program linking failed: %s", infoLog);
+				LOG(ShaderLog, LogErrorLevel::Fatal, "Shader program linking failed: %s", infoLog);
 			}
 		}
 

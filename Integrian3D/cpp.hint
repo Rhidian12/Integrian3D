@@ -3,3 +3,4 @@
 // For more information see https://go.microsoft.com/fwlink/?linkid=865984
 #define __NODISCARD [[nodiscard]]
 #define __INLINE
+#define DEFINE_LOG_CATEGORY(Name, Verbosity) inline static Integrian3D::LogCategory Name{ #Name, Verbosity };

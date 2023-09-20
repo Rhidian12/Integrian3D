@@ -51,7 +51,7 @@ namespace Integrian3D
 
 		if (it == m_Scenes.end())
 		{
-			LOG(SceneManager, Error, "No scene with the name: %s was found", sceneName);
+			LOG(SceneManagerLog, LogErrorLevel::Error, "No scene with the name: %s was found", sceneName);
 			return nullptr;
 		}
 
@@ -67,7 +67,7 @@ namespace Integrian3D
 
 		if (cIt == m_Scenes.cend())
 		{
-			LOG(SceneManager, Error, "No scene with the name: %s was found", sceneName);
+			LOG(SceneManagerLog, LogErrorLevel::Error, "No scene with the name: %s was found", sceneName);
 			return nullptr;
 		}
 

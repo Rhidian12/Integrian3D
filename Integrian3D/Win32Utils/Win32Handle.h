@@ -1,5 +1,9 @@
 #pragma once
 
+#include "Logger/LogCategory.h"
+
+DEFINE_LOG_CATEGORY(Win32HandleLog, Integrian3D::LogVerbosity::Verbose);
+
 namespace Integrian3D::Win32Utils
 {
 	class Win32Handle final

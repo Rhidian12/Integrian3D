@@ -8,7 +8,7 @@
 #include <string_view>
 #include <unordered_map>
 
-DECLARE_LOG_CATEGORY(FileContentCache)
+DEFINE_LOG_CATEGORY(FileContentCacheLog, Integrian3D::LogVerbosity::Verbose)
 
 namespace Integrian3D::IO
 {

@@ -8,6 +8,8 @@
 
 #include <string>
 
+DEFINE_LOG_CATEGORY(LogMeshComponent, Integrian3D::LogVerbosity::Verbose);
+
 namespace Integrian3D
 {
 	class Texture;
