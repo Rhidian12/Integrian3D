@@ -48,7 +48,7 @@ namespace Integrian3D
 
 			SetConsoleColour(ErrorLevel);
 
-			std::cout << std::format("[{}] {}\n", Category, std::vformat(Format, std::make_format_args(Arguments...)));
+			std::cout << std::format("[{}] {}\n", Category, std::vformat(Format, std::make_format_args(__FORWARD(Arguments)...)));
 
 			CheckErrorLevel(ErrorLevel);
 
