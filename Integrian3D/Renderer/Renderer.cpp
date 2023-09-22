@@ -1,14 +1,13 @@
 #include "Renderer.h"
 
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
+#include "DebugUtility/DebugUtility.h"
+#include "Components/MeshComponent/MeshComponent.h"
+#include "Components/TransformComponent/TransformComponent.h"
+#include "Components/FreeCameraComponent/FreeCameraComponent.h"
+#include "Shader/Shader.h"
+#include "Texture/Texture.h"
 
-#include "../DebugUtility/DebugUtility.h"
-#include "../Components/MeshComponent/MeshComponent.h"
-#include "../Components/TransformComponent/TransformComponent.h"
-#include "../Components/FreeCameraComponent/FreeCameraComponent.h"
-#include "../Shader/Shader.h"
-#include "../Texture/Texture.h"
+#include <raylib.h>
 
 namespace Integrian3D
 {
@@ -32,8 +31,9 @@ namespace Integrian3D
 
 	void Renderer::StartRenderLoop(const FreeCameraComponent& camera) const
 	{
-		/* Sets the Clear Colour */
-		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+		BeginDrawing();
+		ClearBackground(Color{ 51, 77, 77, 1 });
+
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		if (!bShouldRenderWireframe)

@@ -74,29 +74,29 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)Build\$(PlatformTarget)\</OutDir>
     <IntDir>$(SolutionDir)Build-Int\$(PlatformTarget)\</IntDir>
-    <IncludePath>$(SolutionDir)Libraries\glad\include;$(SolutionDir)\Libraries\glfw-3.3.8\include;$(SolutionDir)\Libraries\glm;$(SolutionDir)\Libraries\Catch2;$(SolutionDir);$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)Libraries\glad\src;$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)\Libraries\raylib-4.5.0\include;$(SolutionDir)\Libraries\Catch2;$(SolutionDir);$(SolutionDir)\Libraries\glm;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Libraries\raylib-4.5.0\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)Build\$(PlatformTarget)\</OutDir>
     <IntDir>$(SolutionDir)Build-Int\$(PlatformTarget)\</IntDir>
-    <IncludePath>$(SolutionDir)Libraries\glad\include;$(SolutionDir)\Libraries\glfw-3.3.8\include;$(SolutionDir)\Libraries\glm;$(SolutionDir)\Libraries\Catch2;$(SolutionDir);$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)Libraries\glad\src;$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)\Libraries\raylib-4.5.0\include;$(SolutionDir)\Libraries\Catch2;$(SolutionDir);$(SolutionDir)\Libraries\glm;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Libraries\raylib-4.5.0\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)Build\$(PlatformTarget)\</OutDir>
     <IntDir>$(SolutionDir)Build-Int\$(PlatformTarget)\</IntDir>
-    <IncludePath>$(SolutionDir)Libraries\glad\include;$(SolutionDir)\Libraries\glfw-3.3.8\include;$(SolutionDir)\Libraries\glm;$(SolutionDir)\Libraries\Catch2;$(SolutionDir);$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)Libraries\glad\src;$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)\Libraries\raylib-4.5.0\include;$(SolutionDir)\Libraries\Catch2;$(SolutionDir);$(SolutionDir)\Libraries\glm;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Libraries\raylib-4.5.0\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)Build\$(PlatformTarget)\</OutDir>
     <IntDir>$(SolutionDir)Build-Int\$(PlatformTarget)\</IntDir>
-    <IncludePath>$(SolutionDir)Libraries\glad\include;$(SolutionDir)\Libraries\glfw-3.3.8\include;$(SolutionDir)\Libraries\glm;$(SolutionDir)\Libraries\Catch2;$(SolutionDir);$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)Libraries\glad\src;$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)\Libraries\raylib-4.5.0\include;$(SolutionDir)\Libraries\Catch2;$(SolutionDir);$(SolutionDir)\Libraries\glm;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Libraries\raylib-4.5.0\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -104,14 +104,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Libraries\glad\include;$(SolutionDir)Libraries\glfw-3.3.8\include;$(SolutionDir)\Libraries\glm;$(SolutionDir)\Libraries\Catch2;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Libraries\raylib-4.5.0\include;$(SolutionDir)\Libraries\Catch2;$(SolutionDir);$(SolutionDir)\Libraries\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)Libraries\glad\src;$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>raylib.lib;raylibdll.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Libraries\raylib-4.5.0\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>xcopy "$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022\*.dll" "$(OutDir)" /y /D </Command>
@@ -125,7 +125,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Libraries\glad\include;$(SolutionDir)Libraries\glfw-3.3.8\include;$(SolutionDir)\Libraries\glm;$(SolutionDir)\Libraries\Catch2;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Libraries\raylib-4.5.0\include;$(SolutionDir)\Libraries\Catch2;$(SolutionDir);$(SolutionDir)\Libraries\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
@@ -133,8 +133,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)Libraries\glad\src;$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>raylib.lib;raylibdll.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Libraries\raylib-4.5.0\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>xcopy "$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022\*.dll" "$(OutDir)" /y /D </Command>
@@ -146,14 +146,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Libraries\glad\include;$(SolutionDir)Libraries\glfw-3.3.8\include;$(SolutionDir)\Libraries\glm;$(SolutionDir)\Libraries\Catch2;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Libraries\raylib-4.5.0\include;$(SolutionDir)\Libraries\Catch2;$(SolutionDir);$(SolutionDir)\Libraries\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)Libraries\glad\src;$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>raylib.lib;raylibdll.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Libraries\raylib-4.5.0\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>xcopy "$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022\*.dll" "$(OutDir)" /y /D </Command>
@@ -167,7 +167,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Libraries\glad\include;$(SolutionDir)Libraries\glfw-3.3.8\include;$(SolutionDir)\Libraries\glm;$(SolutionDir)\Libraries\Catch2;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Libraries\raylib-4.5.0\include;$(SolutionDir)\Libraries\Catch2;$(SolutionDir);$(SolutionDir)\Libraries\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
@@ -175,8 +175,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)Libraries\glad\src;$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>raylib.lib;raylibdll.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Libraries\raylib-4.5.0\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>xcopy "$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022\*.dll" "$(OutDir)" /y /D </Command>
@@ -194,6 +194,7 @@
     <ClCompile Include="IO\Ini\IniFile.cpp" />
     <ClCompile Include="LinkedList\LinkedList.cpp" />
     <ClCompile Include="Logger\LogCategory.cpp" />
+    <ClCompile Include="Math\RayToGlm.cpp" />
     <ClCompile Include="Memory\LowLevelLL\LowLevelLL.cpp" />
     <ClCompile Include="Memory\MemoryTracker\MemoryTracker.cpp" />
     <ClCompile Include="Memory\FreeListAllocator\FreeListAllocator.cpp" />
@@ -235,11 +236,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Array\Array.h" />
-    <ClInclude Include="Components\MeshComponent\OBJLoader.h" />
     <ClInclude Include="Component\Component.h" />
     <ClInclude Include="Config.h" />
     <ClInclude Include="ECS\ComponentIDGenerator.h" />
     <ClInclude Include="ECS\DenseSet\DenseSet.h" />
+    <ClInclude Include="InputManager\KeyboardInput.h" />
+    <ClInclude Include="InputManager\MouseInput.h" />
     <ClInclude Include="IO\FileContentCache\FileContentCache.h" />
     <ClInclude Include="IO\FileMode.h" />
     <ClInclude Include="IO\File\File.h" />
@@ -259,6 +261,7 @@
     <ClInclude Include="Logger\ConsoleColours.h" />
     <ClInclude Include="Logger\LogCategory.h" />
     <ClInclude Include="Logger\LogVerbosity.h" />
+    <ClInclude Include="Math\RayToGlm.h" />
     <ClInclude Include="Memory\LowLevelLL\LowLevelLL.h" />
     <ClInclude Include="Macros\Macros.h" />
     <ClInclude Include="Memory\AllocatorTraits\AllocatorTraits.h" />
@@ -266,8 +269,6 @@
     <ClInclude Include="Memory\MemoryTracker\MemoryTracker.h" />
     <ClInclude Include="Memory\FreeListAllocator\FreeListAllocator.h" />
     <ClInclude Include="InputManager\InputManager.h" />
-    <ClInclude Include="InputManager\KeyboardInput\KeyboardInput.h" />
-    <ClInclude Include="InputManager\MouseInput\MouseInput.h" />
     <ClInclude Include="Iterator\Iterator.h" />
     <ClInclude Include="Libraries\stb\stb_image.h" />
     <ClInclude Include="Logger\Logger.h" />

@@ -15,10 +15,8 @@ namespace Integrian3D
 	class Core final
 	{
 	public:
+		Core(const int windowWidth, const int windowHeight);
 		~Core();
-
-		static Core& GetInstance();
-		static Core& CreateCore(const int windowWidth, const int windowHeight);
 			
 		Core(const Core&) noexcept = delete;
 		Core(Core&&) noexcept = delete;
@@ -32,8 +30,6 @@ namespace Integrian3D
 		__NODISCARD const Detail::Window& GetWindow() const { return Window; }
 
 	private:
-		Core(const int windowWidth, const int windowHeight);
-
 		Detail::Window Window;
 
 		inline static std::unique_ptr<Core> Instance{};

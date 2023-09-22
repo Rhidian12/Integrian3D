@@ -4,7 +4,6 @@
 
 DEFINE_LOG_CATEGORY(WindowLog, Integrian3D::LogVerbosity::Verbose);
 
-struct GLFWwindow;
 namespace Integrian3D
 {
 	namespace Detail
@@ -24,21 +23,10 @@ namespace Integrian3D
 
 			__NODISCARD int GetWidth() const { return Width; }
 			__NODISCARD int GetHeight() const { return Height; }
-			__NODISCARD GLFWwindow* const GetWindow() const { return pWindow; }
 
 		private:
-			GLFWwindow* pWindow;
 			int Width;
 			int Height;
 		};
-	}
-
-	namespace
-	{
-		/* Ignore intellisense, this function is defined in Window.cpp */
-		inline void OnResize(GLFWwindow* pWindow, int width, int height);
-
-		/* Ignore intellisense, this function is defined in Window.cpp */
-		inline void OnMouseMovement(GLFWwindow* pWindow, double x, double y);
 	}
 }

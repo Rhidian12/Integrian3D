@@ -1,12 +1,13 @@
 #pragma once
 
-#include "../EngineConstants.h"
+#include "EngineConstants.h"
 
 #pragma warning( push )
 #pragma warning( disable : 4201 )
 #include <glm.hpp>
 #include <gtc/quaternion.hpp>
 #pragma warning( pop )
+
 #include <limits> /* std::numeric_limits */
 #include <random> /* std::random_device */
 #include <type_traits> /* std::enable_if */

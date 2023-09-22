@@ -55,7 +55,7 @@ int RunTestEngine(int, char* [])
 {
 	using namespace Integrian3D;
 
-	Core& core{ Core::CreateCore(1080,720) };
+	Core core{ 1080,720 };
 
 	TextureManager::GetInstance().AddTexture("__Wall", "Resources/wall.jpg");
 

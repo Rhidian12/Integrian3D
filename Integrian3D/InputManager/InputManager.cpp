@@ -1,54 +1,45 @@
-#include "InputManager.h"
+#include "InputManager/InputManager.h"
 
-#include "../Core/Core.h"
-#include "../DebugUtility/DebugUtility.h"
-#include "../Window/Window.h"
+#include "Core/Core.h"
+#include "DebugUtility/DebugUtility.h"
+#include "Math/RayToGlm.h"
+#include "Window/Window.h"
+
+#include <raylib.h>
 
 namespace Integrian3D
 {
 	/* Defined in Core.h */
 	extern inline volatile bool g_IsRunning;
 
-	InputManager::InputManager(Detail::Window* pWindow)
+	InputManager::InputManager()
 		: PreviousMousePosition{}
 		, MousePosition{}
-		, pWindow{ pWindow }
 	{}
-
-	void InputManager::CreateInputManager(Detail::Window* pWindow)
-	{
-		if (!Instance)
-		{
-			Instance.reset(new InputManager{ pWindow });
-		}
-	}
 
 	InputManager& InputManager::GetInstance()
 	{
-		__CHECK(Instance != nullptr);
+		if (!Instance)
+		{
+			Instance.reset(new InputManager{});
+		}
 
 		return *Instance.get();
 	}
 
 	void InputManager::ProcessInput()
 	{
-		glfwPollEvents();
-
-		double x{}, y{};
-		glfwGetCursorPos(Core::GetInstance().GetWindow().GetWindow(), &x, &y);
-
-		/* Update MousePosition and PreviousMousePosition */
-		SetMousePosition(Math::Vec2D{ x, y });
+		SetMousePosition(ToGLM2D(::GetMousePosition()));
 	}
 
 	bool InputManager::GetIsKeyPressed(const KeyboardInput input) const
 	{
-		return glfwGetKey(pWindow->GetWindow(), static_cast<int>(input));
+		return IsKeyPressed(static_cast<int>(input));
 	}
 
 	bool InputManager::GetIsMouseButtonPressed(const MouseInput mouseInput) const
 	{
-		return glfwGetMouseButton(pWindow->GetWindow(), static_cast<int>(mouseInput));
+		return IsMouseButtonPressed(static_cast<int>(mouseInput));
 	}
 
 	void InputManager::SetMousePosition(const Math::Vec2D& mousePosition)

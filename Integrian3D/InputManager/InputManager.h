@@ -1,23 +1,17 @@
 #pragma once
 
-#include "../EngineConstants.h"
-#include "KeyboardInput/KeyboardInput.h"
-#include "MouseInput/MouseInput.h"
-#include "../Math/Math.h"
+#include "EngineConstants.h"
+#include "InputManager/KeyboardInput.h"
+#include "InputManager/MouseInput.h"
+#include "Math/Math.h"
 
 #include <memory> /* std::unique_ptr */
 
 namespace Integrian3D
 {
-	namespace Detail
-	{
-		class Window;
-	}
-
 	class InputManager final
 	{
 	public:
-		static void CreateInputManager(Detail::Window* pWindow);
 		__NODISCARD static InputManager& GetInstance();
 
 		void ProcessInput();
@@ -31,13 +25,11 @@ namespace Integrian3D
 		__NODISCARD const Math::Vec2D& GetPreviousMousePosition() const { return PreviousMousePosition; }
 
 	private:
-		InputManager(Detail::Window* pWindow);
+		InputManager();
 
 		inline static std::unique_ptr<InputManager> Instance{};
 
 		Math::Vec2D PreviousMousePosition;
 		Math::Vec2D MousePosition;
-
-		Detail::Window* pWindow;
 	};
 }
