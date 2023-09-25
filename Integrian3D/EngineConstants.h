@@ -9,9 +9,6 @@
 
 #include <bitset>
 
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-
 #ifdef max
 #	undef max
 #endif

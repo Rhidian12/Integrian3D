@@ -1,39 +1,22 @@
 #include "FreeCameraComponent.h"
 
-#include "../TransformComponent/TransformComponent.h"
-#include "../../SceneManager/SceneManager.h"
-#include "../../Math/Math.h"
-#include "../../InputManager/InputManager.h"
-#include "../../Timer/Timer.h"
+#include "Components/TransformComponent/TransformComponent.h"
+#include "SceneManager/SceneManager.h"
+#include "Math/Math.h"
+#include "Math/GlmToRay.h"
+#include "InputManager/InputManager.h"
+#include "Timer/Timer.h"
 
 #include <gtc/matrix_transform.hpp>
 #include <iostream>
+#include <raylib.h>
 
 namespace Integrian3D
 {
-	FreeCameraComponent::FreeCameraComponent(const float nearPlane, const float farPlane, const float fov, const float aspectRatio, const double speed)
-		: m_NearPlane{ nearPlane }
-		, m_FarPlane{ farPlane }
-		, m_FOV{ fov }
-		, m_AspectRatio{ aspectRatio }
-		, m_Speed{ speed }
-		, m_View{ 1.f }
-		, m_Projection{ 1.f }
-	{
-		const Math::Vec3D startPos{ 0.0, 0.0, -3.0 };
-		m_View = glm::lookAt(startPos, startPos + Math::Forward, Math::Up);
-		m_Projection = glm::perspective(m_FOV, m_AspectRatio, m_NearPlane, m_FarPlane);
-	}
-
-	void FreeCameraComponent::UpdateView(const TransformComponent& transform)
-	{
-		m_View = glm::lookAt
-			(
-				transform.GetLocalLocation(),
-				transform.GetLocalLocation() + transform.GetForward(),
-				transform.GetUp()
-			);
-	}
+	FreeCameraComponent::FreeCameraComponent(const float FOV, const double Speed)
+		: CameraImpl{ MakeUnique<Camera3D>(ToRay3(Math::Vec3D{}), ToRay3(Math::Vec3D{}), ToRay3(Math::Up), FOV, CAMERA_PERSPECTIVE) }
+		, Speed{ Speed }
+	{}
 
 	void FreeCameraComponent::UpdateTranslation(TransformComponent& transform)
 	{
@@ -53,14 +36,19 @@ namespace Integrian3D
 		dir.y += inputManager.GetIsKeyPressed(KeyboardInput::Q) ? -1.0 : 0.0;
 
 		transform.Translate(transform.GetForward() * dir.z
-			* m_Speed * Timer::GetInstance().GetElapsedSeconds());
+			* Speed * Timer::GetInstance().GetElapsedSeconds());
 
 		transform.Translate(transform.GetRight() * dir.x
-			* m_Speed * Timer::GetInstance().GetElapsedSeconds());
+			* Speed * Timer::GetInstance().GetElapsedSeconds());
 
-		transform.Translate(Math::Up * dir.y * m_Speed * Timer::GetInstance().GetElapsedSeconds());
+		transform.Translate(Math::Up * dir.y * Speed * Timer::GetInstance().GetElapsedSeconds());
 
-		UpdateView(transform);
+		Math::Vec3D eulerAngles{ glm::eulerAngles(transform.GetLocalAngle()) };
+		eulerAngles.x = Math::ToDegrees(eulerAngles.x);
+		eulerAngles.y = Math::ToDegrees(eulerAngles.y);
+		eulerAngles.z = Math::ToDegrees(eulerAngles.z);
+
+		UpdateCameraPro(CameraImpl.Get(), ToRay3(transform.GetLocalLocation()), ToRay3(eulerAngles), 1.f);
 	}
 
 	void FreeCameraComponent::UpdateRotation(TransformComponent& transform)
@@ -79,15 +67,26 @@ namespace Integrian3D
 
 		transform.Rotate(Math::Vec3D{ yOffset, xOffset, 0.0 });
 
-		UpdateView(transform);
+		Math::Vec3D eulerAngles{ glm::eulerAngles(transform.GetLocalAngle()) };
+		eulerAngles.x = Math::ToDegrees(eulerAngles.x);
+		eulerAngles.y = Math::ToDegrees(eulerAngles.y);
+		eulerAngles.z = Math::ToDegrees(eulerAngles.z);
+
+		UpdateCameraPro(CameraImpl.Get(), ToRay3(transform.GetLocalLocation()), ToRay3(eulerAngles), 1.f);
 	}
 
-	bool FreeCameraComponent::operator==(const FreeCameraComponent& other) const
+	void FreeCameraComponent::SetSpeed(const double NewSpeed)
 	{
-		using namespace Math;
+		Speed = NewSpeed;
+	}
 
-		return AreEqual(m_Speed, other.m_Speed) && AreEqual(m_AspectRatio, other.m_AspectRatio) &&
-			AreEqual(m_FarPlane, other.m_FarPlane) && AreEqual(m_FOV, other.m_FOV) && AreEqual(m_NearPlane, other.m_NearPlane) &&
-			(m_IsActive == other.m_IsActive) && (m_Projection == other.m_Projection) && (m_View == other.m_View);
+	double FreeCameraComponent::GetSpeed() const
+	{
+		return Speed;
+	}
+
+	const Camera3D* FreeCameraComponent::GetRayLibCamera() const
+	{
+		return CameraImpl.Get();
 	}
 }

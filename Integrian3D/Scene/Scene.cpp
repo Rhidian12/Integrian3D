@@ -63,9 +63,7 @@ namespace Integrian3D
 
 					view.ForEach([](FreeCameraComponent& camera, TransformComponent& transform)->void
 						{
-							camera.UpdateView(transform);
-
-							if (!InputManager::GetInstance().GetIsMouseButtonPressed(MouseInput::RMB)) return;
+							if (!InputManager::GetInstance().GetIsMouseButtonPressed(MouseInput::Right)) return;
 
 							camera.UpdateTranslation(transform);
 							camera.UpdateRotation(transform);
@@ -137,10 +135,8 @@ namespace Integrian3D
 			m_Registry.AddComponent<FreeCameraComponent>
 				(
 					m_ActiveCameraEntity,
-					0.1f,
-					100.f,
 					Math::ToRadians(90.f),
-					static_cast<float>(Core::GetInstance().GetWindowWidth() / Core::GetInstance().GetWindowHeight())
+					10.0
 					);
 
 			IniFile EngineIni{ "Config/Engine.ini" };

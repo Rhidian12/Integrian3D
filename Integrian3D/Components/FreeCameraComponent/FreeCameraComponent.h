@@ -3,6 +3,7 @@
 #include "EngineConstants.h"
 #include "Component/Component.h"
 #include "Math/Math.h"
+#include "Memory/UniquePtr.h"
 
 namespace Integrian3D
 {
@@ -12,30 +13,19 @@ namespace Integrian3D
 	class FreeCameraComponent : public Component
 	{
 	public:
-		FreeCameraComponent(const float nearPlane, const float farPlane, const float fov,
-			const float aspectRatio, const double speed = 10.0);
+		explicit FreeCameraComponent(const float FOV, const double Speed);
 		virtual ~FreeCameraComponent() = default;
 
-		void UpdateView(const TransformComponent& transform);
 		void UpdateTranslation(TransformComponent& transform);
 		void UpdateRotation(TransformComponent& transform);
 
-		void SetSpeed(const double speed) { m_Speed = speed; }
+		void SetSpeed(const double NewSpeed);
 
-		__NODISCARD __INLINE double GetSpeed() const { return m_Speed; }
-		__NODISCARD __INLINE const Math::Mat4D& GetView() const { return m_View; }
-		__NODISCARD __INLINE const Math::Mat4D& GetProjection() const { return m_Projection; }
-
-		bool operator==(const FreeCameraComponent& other) const;
+		__NODISCARD double GetSpeed() const;
+		__NODISCARD const struct Camera3D* GetRayLibCamera() const;
 
 	private:
-		float m_NearPlane;
-		float m_FarPlane;
-		float m_FOV;
-		float m_AspectRatio;
-		double m_Speed;
-
-		Math::Mat4D m_View;
-		Math::Mat4D m_Projection;
+		UniquePtr<struct Camera3D> CameraImpl;
+		double Speed;
 	};
 }

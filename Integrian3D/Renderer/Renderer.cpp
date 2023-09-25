@@ -4,7 +4,7 @@
 #include "Components/MeshComponent/MeshComponent.h"
 #include "Components/TransformComponent/TransformComponent.h"
 #include "Components/FreeCameraComponent/FreeCameraComponent.h"
-#include "Shader/Shader.h"
+#include "Math/GlmToRay.h"
 #include "Texture/Texture.h"
 
 #include <raylib.h>
@@ -34,46 +34,11 @@ namespace Integrian3D
 		BeginDrawing();
 		ClearBackground(Color{ 51, 77, 77, 1 });
 
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		if (!bShouldRenderWireframe)
-		{
-			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		}
-		else
-		{
-			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		}
-
-		/* Use our shader program! */
-		Shader.Activate();
-
-		Shader.SetMatrix("_View", camera.GetView());
-
-		Shader.SetMatrix("_Projection", camera.GetProjection());
+		BeginMode3D(*camera.GetRayLibCamera());
 	}
 
 	void Renderer::Render(const MeshComponent& mesh, const TransformComponent& transform) const
 	{
-		/* Set our Matrix */
-		Shader.SetMatrix("_Transform", transform.Transformation);
-
-		/* Activate the texture */
-		glActiveTexture(GL_TEXTURE0);
-
-		/* Bind the Texture ID */
-		glBindTexture(GL_TEXTURE_2D, mesh.GetTexture()->GetTextureID());
-
-		/* Bind the Vertex Array ID */
-		glBindVertexArray(mesh.GetVertexArrayID());
-
-		/* Bind the ID to a vertex buffer */
-		glBindBuffer(GL_ARRAY_BUFFER, mesh.GetVertexBufferID());
-
-		/* Bind the ID to an index buffer */
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.GetIndexBufferID());
-
-		/* Render our rectangle */
-		glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(mesh.GetIndices().Size()), GL_UNSIGNED_INT, 0);
+		DrawModelEx(*mesh.GetRayLibModel(), ToRay3(transform.GetLocalLocation()), ToRayRotation(transform.GetLocalAngle()), )
 	}
 }

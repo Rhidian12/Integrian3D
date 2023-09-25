@@ -165,6 +165,9 @@
     <ClCompile Include="Math\RayToGlm.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Math\GlmToRay.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window\Window.h">
@@ -375,6 +378,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Math\RayToGlm.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\GlmToRay.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

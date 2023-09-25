@@ -194,6 +194,7 @@
     <ClCompile Include="IO\Ini\IniFile.cpp" />
     <ClCompile Include="LinkedList\LinkedList.cpp" />
     <ClCompile Include="Logger\LogCategory.cpp" />
+    <ClCompile Include="Math\GlmToRay.cpp" />
     <ClCompile Include="Math\RayToGlm.cpp" />
     <ClCompile Include="Memory\LowLevelLL\LowLevelLL.cpp" />
     <ClCompile Include="Memory\MemoryTracker\MemoryTracker.cpp" />
@@ -261,6 +262,7 @@
     <ClInclude Include="Logger\ConsoleColours.h" />
     <ClInclude Include="Logger\LogCategory.h" />
     <ClInclude Include="Logger\LogVerbosity.h" />
+    <ClInclude Include="Math\GlmToRay.h" />
     <ClInclude Include="Math\RayToGlm.h" />
     <ClInclude Include="Memory\LowLevelLL\LowLevelLL.h" />
     <ClInclude Include="Macros\Macros.h" />
