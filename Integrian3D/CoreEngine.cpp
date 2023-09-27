@@ -4,7 +4,7 @@ int RunEngine(int, char*[])
 {
 	using namespace Integrian3D;
 
-	Core& core{ Core::CreateCore(1080,720) };
+	Core core{ 1080,720 };
 
 	core.Run();
 

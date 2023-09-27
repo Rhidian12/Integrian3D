@@ -9,7 +9,7 @@ namespace Integrian3D
 	Texture::Texture(const std::string_view filePath)
 		: TextureImplementation{}
 	{
-		TextureImplementation = MakeUnique<Texture>(LoadTexture(filePath.data()));
+		TextureImplementation = MakeUnique<Texture2D>(LoadTexture(filePath.data()));
 	}
 
 	Texture::Texture(Texture&& other) noexcept

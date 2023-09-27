@@ -15,9 +15,7 @@ namespace Integrian3D
 		: ShaderProgramID{}
 		, bShouldRenderWireframe{}
 		, Shader{ "Resources/VertexShader.txt", "Resources/FragmentShader.txt" }
-	{
-		glEnable(GL_DEPTH_TEST);
-	}
+	{}
 
 	Renderer& Renderer::GetInstance()
 	{
@@ -39,6 +37,7 @@ namespace Integrian3D
 
 	void Renderer::Render(const MeshComponent& mesh, const TransformComponent& transform) const
 	{
-		DrawModelEx(*mesh.GetRayLibModel(), ToRay3(transform.GetLocalLocation()), ToRayRotation(transform.GetLocalAngle()), )
+		// [TODO]: Figure out the Quaternion stuff over here
+		DrawModelEx(*mesh.GetRayLibModel(), ToRay3(transform.GetLocalLocation()), ToRayRotation(transform.GetLocalAngle()), 60.f, ToRay3(transform.GetLocalScale()), Color{});
 	}
 }

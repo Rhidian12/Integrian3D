@@ -6,6 +6,7 @@
 #include <string_view> /* std::string_view */
 
 struct Texture;
+typedef Texture Texture2D;
 namespace Integrian3D
 {
 	class Texture final
@@ -21,6 +22,6 @@ namespace Integrian3D
 		void UseTexture(struct Material* Material) const;
 
 	private:
-		UniquePtr<Texture> TextureImplementation;
+		UniquePtr<Texture2D> TextureImplementation;
 	};
 }

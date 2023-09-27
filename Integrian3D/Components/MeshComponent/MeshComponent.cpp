@@ -4,7 +4,9 @@
 #include "Renderer/Renderer.h"
 #include "Texture/Texture.h"
 
+I_DISABLE_WARNING(4201)
 #include <gtx/vector_angle.hpp>
+I_ENABLE_WARNING(4201)
 #include <raylib.h>
 
 namespace Integrian3D

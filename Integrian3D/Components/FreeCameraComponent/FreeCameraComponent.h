@@ -5,6 +5,7 @@
 #include "Math/Math.h"
 #include "Memory/UniquePtr.h"
 
+struct Camera3D;
 namespace Integrian3D
 {
 	class TransformComponent;
@@ -22,10 +23,10 @@ namespace Integrian3D
 		void SetSpeed(const double NewSpeed);
 
 		__NODISCARD double GetSpeed() const;
-		__NODISCARD const struct Camera3D* GetRayLibCamera() const;
+		__NODISCARD const Camera3D* GetRayLibCamera() const;
 
 	private:
-		UniquePtr<struct Camera3D> CameraImpl;
+		UniquePtr<Camera3D> CameraImpl;
 		double Speed;
 	};
 }

@@ -10,6 +10,7 @@
 
 DEFINE_LOG_CATEGORY(LogMeshComponent, Integrian3D::LogVerbosity::Verbose);
 
+struct Model;
 namespace Integrian3D
 {
 	class Texture;
@@ -25,10 +26,10 @@ namespace Integrian3D
 		MeshComponent& operator=(MeshComponent&& other) noexcept;
 
 		__NODISCARD const Texture* const GetTexture() const { return pTexture; }
-		__NODISCARD const struct Model* const GetRayLibModel() const;
+		__NODISCARD const Model* const GetRayLibModel() const;
 
 	private:
-		UniquePtr<struct Model> ModelImplementation;
+		UniquePtr<Model> ModelImplementation;
 		Texture* pTexture;
 	};
 }

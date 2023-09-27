@@ -48,7 +48,7 @@ namespace Integrian3D
 		eulerAngles.y = Math::ToDegrees(eulerAngles.y);
 		eulerAngles.z = Math::ToDegrees(eulerAngles.z);
 
-		UpdateCameraPro(CameraImpl.Get(), ToRay3(transform.GetLocalLocation()), ToRay3(eulerAngles), 1.f);
+		UpdateCameraPro(static_cast<Camera*>(CameraImpl.Get()), ToRay3(transform.GetLocalLocation()), ToRay3(eulerAngles), 1.f);
 	}
 
 	void FreeCameraComponent::UpdateRotation(TransformComponent& transform)
@@ -72,7 +72,7 @@ namespace Integrian3D
 		eulerAngles.y = Math::ToDegrees(eulerAngles.y);
 		eulerAngles.z = Math::ToDegrees(eulerAngles.z);
 
-		UpdateCameraPro(CameraImpl.Get(), ToRay3(transform.GetLocalLocation()), ToRay3(eulerAngles), 1.f);
+		UpdateCameraPro(static_cast<Camera*>(CameraImpl.Get()), ToRay3(transform.GetLocalLocation()), ToRay3(eulerAngles), 1.f);
 	}
 
 	void FreeCameraComponent::SetSpeed(const double NewSpeed)

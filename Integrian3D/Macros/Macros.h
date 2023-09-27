@@ -36,4 +36,8 @@ namespace Integrian3D
 
 #define __DELETE(p) do { delete p; p = nullptr; } while (0);
 #define __DELETEARR(p) do { delete[] (p); (p) = nullptr; } while (0);
+
+#define I_DISABLE_WARNING(WarningNr)	__pragma(warning( push )) \
+										__pragma(warning(disable:WarningNr))
+#define I_ENABLE_WARNING(WarningNr)	__pragma(warning( pop ))
 }
