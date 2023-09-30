@@ -30,6 +30,7 @@ namespace Integrian3D
 		BeginDrawing();
 		ClearBackground(Color{ 51, 77, 77, 1 });
 
+		auto test = camera.GetRayLibCamera();
 		BeginMode3D(*camera.GetRayLibCamera());
 	}
 

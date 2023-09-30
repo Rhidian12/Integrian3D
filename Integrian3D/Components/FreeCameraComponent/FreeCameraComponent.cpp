@@ -25,6 +25,7 @@ namespace Integrian3D
 
 	FreeCameraComponent::FreeCameraComponent(FreeCameraComponent&& Other) noexcept
 		: CameraImpl{ __MOVE(Other.CameraImpl) }
+		, Speed{ __MOVE(Other.Speed) }
 	{
 		Other.CameraImpl = nullptr;
 	}
@@ -37,6 +38,8 @@ namespace Integrian3D
 		}
 
 		CameraImpl = __MOVE(Other.CameraImpl);
+		Speed = __MOVE(Other.Speed);
+
 		Other.CameraImpl = nullptr;
 
 		return *this;

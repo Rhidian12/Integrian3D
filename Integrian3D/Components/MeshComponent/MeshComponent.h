@@ -12,12 +12,12 @@ DEFINE_LOG_CATEGORY(LogMeshComponent, Integrian3D::LogVerbosity::Verbose);
 struct Model;
 namespace Integrian3D
 {
-	class Texture;
+	class DiffuseTexture;
 
 	class MeshComponent final : public Component
 	{
 	public:
-		MeshComponent(const std::string_view Filepath, Texture* const pTex);
+		MeshComponent(const std::string_view Filepath, DiffuseTexture* const pTex);
 		~MeshComponent();
 
 		MeshComponent(const MeshComponent&) noexcept = delete;
@@ -25,11 +25,11 @@ namespace Integrian3D
 		MeshComponent& operator=(const MeshComponent&) noexcept = delete;
 		MeshComponent& operator=(MeshComponent&& other) noexcept;
 
-		__NODISCARD const Texture* const GetTexture() const { return pTexture; }
+		__NODISCARD const DiffuseTexture* const GetTexture() const { return pTexture; }
 		__NODISCARD const Model* const GetRayLibModel() const;
 
 	private:
 		Model* ModelImplementation; // By Exception, this is owned by MeshComponent
-		Texture* pTexture;
+		DiffuseTexture* pTexture;
 	};
 }

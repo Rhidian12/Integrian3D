@@ -3,6 +3,9 @@
 
 namespace Integrian3D
 {
+	TextureManager::TextureManager() {}
+	TextureManager::~TextureManager() {}
+	
 	TextureManager& TextureManager::GetInstance()
 	{
 		if (!Instance)
@@ -16,6 +19,15 @@ namespace Integrian3D
 	void TextureManager::AddTexture(const std::string& name, const std::string& filePath)
 	{
 		Textures.insert(std::make_pair(name, MakeUnique<DiffuseTexture>(filePath)));
+	}
+
+	DiffuseTexture* const TextureManager::GetTexture(const std::string_view name)
+	{
+		MapType::iterator CIt{ Textures.find(name.data()) };
+
+		__ASSERT(CIt != Textures.cend(), "TextureManager::GetTexture() > Name %s cannot be found", name);
+
+		return CIt->second.Get();
 	}
 
 	const DiffuseTexture* const TextureManager::GetTexture(const std::string_view name) const

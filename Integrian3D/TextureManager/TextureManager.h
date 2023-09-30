@@ -12,20 +12,23 @@ namespace Integrian3D
 	class TextureManager final
 	{
 	public:
+		~TextureManager();
+
 		static TextureManager& GetInstance();
 
 		void AddTexture(const std::string& name, const std::string& filePath);
 
+		__NODISCARD DiffuseTexture* const GetTexture(const std::string_view name);
 		__NODISCARD const DiffuseTexture* const GetTexture(const std::string_view name) const;
 
 	private:
 		using MapType = std::unordered_map<std::string, UniquePtr<DiffuseTexture>>;
 
-		TextureManager() = default;
+		TextureManager();
 
 		friend std::unique_ptr<TextureManager> std::make_unique();
 		inline static std::unique_ptr<TextureManager> Instance{};
 
-		MapType Textures;
+		MapType Textures{};
 	};
 }
