@@ -5,7 +5,6 @@
 #include "Components/TransformComponent/TransformComponent.h"
 #include "Components/FreeCameraComponent/FreeCameraComponent.h"
 #include "Math/GlmToRay.h"
-#include "Texture/Texture.h"
 
 #include <raylib.h>
 
@@ -14,7 +13,6 @@ namespace Integrian3D
 	Renderer::Renderer()
 		: ShaderProgramID{}
 		, bShouldRenderWireframe{}
-		, Shader{ "Resources/VertexShader.txt", "Resources/FragmentShader.txt" }
 	{}
 
 	Renderer& Renderer::GetInstance()

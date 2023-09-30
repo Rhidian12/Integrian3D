@@ -51,10 +51,7 @@
     <ClCompile Include="SceneManager\SceneManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Shader\Shader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Texture\Texture.cpp">
+    <ClCompile Include="Texture\DiffuseTexture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TextureManager\TextureManager.cpp">
@@ -227,10 +224,7 @@
     <ClInclude Include="Math\RGBColour.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Shader\Shader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Texture\Texture.h">
+    <ClInclude Include="Texture\DiffuseTexture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Libraries\stb\stb_image.h">

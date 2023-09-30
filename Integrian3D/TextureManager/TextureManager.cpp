@@ -1,5 +1,5 @@
-#include "TextureManager.h"
-#include "../Texture/Texture.h"
+#include "TextureManager/TextureManager.h"
+#include "Texture/DiffuseTexture.h"
 
 namespace Integrian3D
 {
@@ -15,15 +15,15 @@ namespace Integrian3D
 
 	void TextureManager::AddTexture(const std::string& name, const std::string& filePath)
 	{
-		Textures.insert(std::make_pair(name, std::make_unique<Texture>(filePath)));
+		Textures.insert(std::make_pair(name, MakeUnique<DiffuseTexture>(filePath)));
 	}
 
-	Texture* TextureManager::GetTexture(const std::string_view name) const
+	const DiffuseTexture* const TextureManager::GetTexture(const std::string_view name) const
 	{
-		const auto cIt{ Textures.find(name.data()) };
+		MapType::const_iterator CIt{ Textures.find(name.data()) };
 
-		__ASSERT(cIt != Textures.cend(), "TextureManager::GetTexture() > Name %s cannot be found", name);
+		__ASSERT(CIt != Textures.cend(), "TextureManager::GetTexture() > Name %s cannot be found", name);
 
-		return cIt->second.get();
+		return CIt->second.Get();
 	}
 }

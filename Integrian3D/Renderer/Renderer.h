@@ -2,8 +2,6 @@
 
 #include "EngineConstants.h"
 
-#include "Shader/Shader.h"
-
 #include <memory> /* std::unique_ptr */
 
 namespace Integrian3D
@@ -28,8 +26,6 @@ namespace Integrian3D
 
 		void ShouldRenderWireframe(const bool bShouldRenderWireFrame) { bShouldRenderWireframe = bShouldRenderWireFrame; }
 
-		__NODISCARD const Shader& GetShader() const { return Shader; }
-
 	private:
 		Renderer();
 
@@ -38,6 +34,5 @@ namespace Integrian3D
 
 		uint32_t ShaderProgramID;
 		bool bShouldRenderWireframe;
-		Shader Shader;
 	};
 }

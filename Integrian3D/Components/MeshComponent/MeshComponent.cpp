@@ -1,8 +1,8 @@
-#include "MeshComponent.h"
+#include "Components/MeshComponent/MeshComponent.h"
 
 #include "IO/File/File.h"
 #include "Renderer/Renderer.h"
-#include "Texture/Texture.h"
+#include "Texture/DiffuseTexture.h"
 
 I_DISABLE_WARNING(4201)
 #include <gtx/vector_angle.hpp>
