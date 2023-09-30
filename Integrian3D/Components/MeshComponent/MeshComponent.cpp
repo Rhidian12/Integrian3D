@@ -19,22 +19,34 @@ namespace Integrian3D
 	{
 		if (!Filepath.empty())
 		{
-			ModelImplementation = MakeUnique<Model>(LoadModel(Filepath.data()));
+			ModelImplementation = new Model{ LoadModel(Filepath.data()) };
 		}
+	}
+
+	MeshComponent::~MeshComponent()
+	{
+		__DELETE(ModelImplementation);
 	}
 
 	MeshComponent::MeshComponent(MeshComponent&& other) noexcept
 		: ModelImplementation{ __MOVE(other.ModelImplementation) }
 		, pTexture{ __MOVE(other.pTexture) }
 	{
+		other.ModelImplementation = nullptr;
 		other.pTexture = nullptr;
 	}
 
 	MeshComponent& MeshComponent::operator=(MeshComponent&& other) noexcept
 	{
+		if (ModelImplementation)
+		{
+			__DELETE(ModelImplementation);
+		}
+
 		ModelImplementation = __MOVE(other.ModelImplementation);
 		pTexture = __MOVE(other.pTexture);
 
+		other.ModelImplementation = nullptr;
 		other.pTexture = nullptr;
 
 		return *this;
@@ -42,6 +54,6 @@ namespace Integrian3D
 
 	const Model* const MeshComponent::GetRayLibModel() const
 	{
-		return ModelImplementation.Get();
+		return ModelImplementation;
 	}
 }

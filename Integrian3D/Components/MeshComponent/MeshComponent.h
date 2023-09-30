@@ -4,7 +4,6 @@
 
 #include "Array/Array.h"
 #include "Component/Component.h"
-#include "Memory/UniquePtr.h"
 
 #include <string_view>
 
@@ -19,6 +18,7 @@ namespace Integrian3D
 	{
 	public:
 		MeshComponent(const std::string_view Filepath, Texture* const pTex);
+		~MeshComponent();
 
 		MeshComponent(const MeshComponent&) noexcept = delete;
 		MeshComponent(MeshComponent&& other) noexcept;
@@ -29,7 +29,7 @@ namespace Integrian3D
 		__NODISCARD const Model* const GetRayLibModel() const;
 
 	private:
-		UniquePtr<Model> ModelImplementation;
+		Model* ModelImplementation; // By Exception, this is owned by MeshComponent
 		Texture* pTexture;
 	};
 }

@@ -14,9 +14,33 @@
 namespace Integrian3D
 {
 	FreeCameraComponent::FreeCameraComponent(const float FOV, const double Speed)
-		: CameraImpl{ MakeUnique<Camera3D>(ToRay3(Math::Vec3D{}), ToRay3(Math::Vec3D{}), ToRay3(Math::Up), FOV, CAMERA_PERSPECTIVE) }
+		: CameraImpl{ new Camera3D{ ToRay3(Math::Vec3D{}), ToRay3(Math::Vec3D{}), ToRay3(Math::Up), FOV, CAMERA_PERSPECTIVE } }
 		, Speed{ Speed }
 	{}
+
+	FreeCameraComponent::~FreeCameraComponent()
+	{
+		__DELETE(CameraImpl);
+	}
+
+	FreeCameraComponent::FreeCameraComponent(FreeCameraComponent&& Other) noexcept
+		: CameraImpl{ __MOVE(Other.CameraImpl) }
+	{
+		Other.CameraImpl = nullptr;
+	}
+
+	FreeCameraComponent& FreeCameraComponent::operator=(FreeCameraComponent&& Other) noexcept
+	{
+		if (CameraImpl)
+		{
+			__DELETE(CameraImpl);
+		}
+
+		CameraImpl = __MOVE(Other.CameraImpl);
+		Other.CameraImpl = nullptr;
+
+		return *this;
+	}
 
 	void FreeCameraComponent::UpdateTranslation(TransformComponent& transform)
 	{
@@ -48,7 +72,7 @@ namespace Integrian3D
 		eulerAngles.y = Math::ToDegrees(eulerAngles.y);
 		eulerAngles.z = Math::ToDegrees(eulerAngles.z);
 
-		UpdateCameraPro(static_cast<Camera*>(CameraImpl.Get()), ToRay3(transform.GetLocalLocation()), ToRay3(eulerAngles), 1.f);
+		UpdateCameraPro(static_cast<Camera*>(CameraImpl), ToRay3(transform.GetLocalLocation()), ToRay3(eulerAngles), 1.f);
 	}
 
 	void FreeCameraComponent::UpdateRotation(TransformComponent& transform)
@@ -72,7 +96,7 @@ namespace Integrian3D
 		eulerAngles.y = Math::ToDegrees(eulerAngles.y);
 		eulerAngles.z = Math::ToDegrees(eulerAngles.z);
 
-		UpdateCameraPro(static_cast<Camera*>(CameraImpl.Get()), ToRay3(transform.GetLocalLocation()), ToRay3(eulerAngles), 1.f);
+		UpdateCameraPro(static_cast<Camera*>(CameraImpl), ToRay3(transform.GetLocalLocation()), ToRay3(eulerAngles), 1.f);
 	}
 
 	void FreeCameraComponent::SetSpeed(const double NewSpeed)
@@ -85,8 +109,13 @@ namespace Integrian3D
 		return Speed;
 	}
 
-	const Camera3D* FreeCameraComponent::GetRayLibCamera() const
+	const Camera3D* const FreeCameraComponent::GetRayLibCamera() const
 	{
-		return CameraImpl.Get();
+		return CameraImpl;
+	}
+
+	bool FreeCameraComponent::operator==(const FreeCameraComponent& Other) const
+	{
+		return CameraImpl == Other.CameraImpl && Math::AreEqual(Speed, Other.Speed);
 	}
 }
