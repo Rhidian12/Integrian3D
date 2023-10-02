@@ -25,6 +25,7 @@ namespace Integrian3D
 
 	MeshComponent::~MeshComponent()
 	{
+		UnloadModel(*ModelImplementation);
 		__DELETE(ModelImplementation);
 	}
 
@@ -40,6 +41,7 @@ namespace Integrian3D
 	{
 		if (ModelImplementation)
 		{
+			UnloadModel(*ModelImplementation);
 			__DELETE(ModelImplementation);
 		}
 

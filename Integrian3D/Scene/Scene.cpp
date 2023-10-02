@@ -38,6 +38,8 @@ namespace Integrian3D
 							renderer.Render(mesh, transform);
 						});
 				}
+
+				renderer.EndRenderLoop();
 			});
 
 		// Transform update

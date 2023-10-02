@@ -21,6 +21,7 @@ namespace Integrian3D
 		Renderer& operator=(Renderer&&) noexcept = delete;
 
 		void StartRenderLoop(const FreeCameraComponent& camera) const;
+		void EndRenderLoop() const;
 
 		void Render(const MeshComponent& mesh, const TransformComponent& transform) const;
 
