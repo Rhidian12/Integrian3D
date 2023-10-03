@@ -45,11 +45,10 @@ int main(int argc, char* argv[])
 #include "Components/MeshComponent/MeshComponent.h"
 #include "TextureManager/TextureManager.h"
 #include "Components/TransformComponent/TransformComponent.h"
-#include "Timer/Timer.h"
-#include "Memory/Allocator/Allocator.h"
 #include "Memory/UniquePtr.h"
 #include "Components/TestRotateComponent/TestRotateComponent.h"
 #include "Components/FreeCameraComponent/FreeCameraComponent.h"
+#include "DebugUtility/DebugUtility.h"
 
 int RunTestEngine(int, char* [])
 {

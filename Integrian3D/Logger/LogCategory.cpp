@@ -19,4 +19,9 @@ namespace Integrian3D
 	{
 		return Verbosity;
 	}
+
+	bool LogCategory::operator==(const LogCategory& Other) const
+	{
+		return Name == Other.Name && Verbosity == Other.Verbosity;
+	}
 }

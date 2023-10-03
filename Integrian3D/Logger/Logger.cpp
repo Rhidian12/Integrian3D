@@ -4,6 +4,9 @@
 #include "DebugUtility/DebugUtility.h"
 #include "Logger/ConsoleColours.h"
 #include "Logger/LogCategory.h"
+#include "IO/File/File.h"
+
+#include <iostream>
 
 #pragma warning ( push )
 #pragma warning ( disable : 4005 ) /* warning C4005: 'APIENTRY': macro redefinition */ 
@@ -46,7 +49,13 @@ namespace Integrian3D
 
 	struct LoggerStatics
 	{
+		LoggerStatics()
+			: Categories{}
+			, File{ "Logs.txt", IO::OpenMode::CreateAlways, IO::FileMode::ASCII }
+		{}
+
 		TArray<LogCategory> Categories;
+		IO::File File;
 
 		const LogCategory* const GetLogCategory(const std::string_view CategoryName) const
 		{
@@ -62,7 +71,7 @@ namespace Integrian3D
 	Logger::Logger()
 		: ConsoleHandle{ GetStdHandle(STD_OUTPUT_HANDLE) }
 		, Statics{ new LoggerStatics{} }
-		, VerbosityLevel{ LogVerbosity::VeryVerbose }
+		, VerbosityLevel{ LogVerbosity::Verbose }
 	{}
 
 	Logger::~Logger()
@@ -97,7 +106,7 @@ namespace Integrian3D
 
 	void Logger::AddCategory(const LogCategory& LogCategory)
 	{
-		Statics->Categories.Add(LogCategory);
+		Statics->Categories.AddUnique(LogCategory);
 	}
 
 	const LogCategory* const Logger::GetLogCategory(const std::string_view RequestedLogCategory) const
@@ -144,5 +153,12 @@ namespace Integrian3D
 		{
 			__BREAK();
 		}
+	}
+
+	void Logger::WriteMessage(const std::string& Message) const
+	{
+		std::cout << Message;
+
+		Statics->File << Message;
 	}
 }

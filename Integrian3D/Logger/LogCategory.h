@@ -14,6 +14,8 @@ namespace Integrian3D
 		const std::string& GetName() const;
 		LogVerbosity GetVerbosity() const;
 
+		bool operator==(const LogCategory& Other) const;
+
 	private:
 		std::string Name;
 		LogVerbosity Verbosity;
