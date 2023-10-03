@@ -41,6 +41,6 @@ namespace Integrian3D
 	void Renderer::Render(const MeshComponent& mesh, const TransformComponent& transform) const
 	{
 		// [TODO]: Figure out the Quaternion stuff over here
-		DrawModelEx(*mesh.GetRayLibModel(), ToRay3(transform.GetLocalLocation()), ToRayRotation(transform.GetLocalAngle()), 60.f, ToRay3(transform.GetLocalScale()), Color{});
+		DrawModelEx(*mesh.GetRayLibModel(), ToRay3(transform.GetLocalLocation()), ToRayRotation(transform.GetLocalAngle()), 0.f, ToRay3(transform.GetLocalScale()), Color{255,255,255,255});
 	}
 }

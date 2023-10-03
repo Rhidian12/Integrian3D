@@ -150,6 +150,9 @@ namespace Integrian3D
 			}
 
 			m_Registry.GetComponent<TransformComponent>(m_ActiveCameraEntity).Translate(CameraPosition);
+
+			// [TODO]: This is a hack for the fact that Components have no proper initialization besides their Ctor
+			m_Registry.GetComponent<FreeCameraComponent>(m_ActiveCameraEntity).UpdateTranslation(m_Registry.GetComponent<TransformComponent>(m_ActiveCameraEntity));
 		}
 
 		std::sort(m_UpdateCallbacks.begin(), m_UpdateCallbacks.end(), [](const auto& a, const auto& b)->bool

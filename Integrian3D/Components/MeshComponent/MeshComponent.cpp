@@ -11,8 +11,6 @@ I_ENABLE_WARNING(4201)
 
 namespace Integrian3D
 {
-	static constexpr uint32 MeshErrorValue = std::numeric_limits<uint32>::max();
-
 	MeshComponent::MeshComponent(const std::string_view Filepath, DiffuseTexture* const pTex)
 		: ModelImplementation{}
 		, pTexture{ pTex }
