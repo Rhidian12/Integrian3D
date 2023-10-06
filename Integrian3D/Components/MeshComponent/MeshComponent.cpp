@@ -1,7 +1,5 @@
 #include "MeshComponent.h"
 
-#define MUTE_OBJL_CONSOLE_OUTPUT
-#include "Components/MeshComponent/OBJLoader.h"
 #include "IO/File/File.h"
 #include "Renderer/Renderer.h"
 #include "Texture/Texture.h"
@@ -14,58 +12,31 @@ namespace Integrian3D
 {
 	static constexpr uint32 MeshErrorValue = std::numeric_limits<uint32>::max();
 
-	namespace
-	{
-		static void ParseObjFile(const std::string_view Filepath, TArray<Vertex>& OutVertices, TArray<uint32>& OutIndices)
-		{
-			objl::Loader OBJLoader{};
-
-			if (!OBJLoader.LoadFile(Filepath.data()))
-			{
-				LOG(LogMeshComponent, LogErrorLevel::Error, "MeshComponent could not read file {}", Filepath);
-				return;
-			}
-
-			for (const unsigned int Index : OBJLoader.LoadedIndices)
-			{
-				OutIndices.Add(static_cast<uint32>(Index));
-			}
-
-			for (const objl::Vertex& OBJVertex : OBJLoader.LoadedVertices)
-			{
-				Vertex Vertex{};
-				Vertex.Position = Math::Vec3D{ OBJVertex.Position.X, OBJVertex.Position.Y, OBJVertex.Position.Z };
-				Vertex.UV = Math::Vec2D{ OBJVertex.TextureCoordinate.X, OBJVertex.TextureCoordinate.Y };
-				OutVertices.Add(Vertex);
-			}
-		}
-	}
-
-	MeshComponent::MeshComponent(const std::string_view Filepath, Texture* const pTex)
+	MeshComponent::MeshComponent(const std::string_view Filepath)
 		: VertexArrayID{ MeshErrorValue }
 		, VertexBufferID{ MeshErrorValue }
 		, IndexBufferID{ MeshErrorValue }
 		, Vertices{}
 		, Indices{}
-		, pTexture{ pTex }
+		, Textures{}
 	{
 		if (!Filepath.empty())
 		{
 			__ASSERT(Filepath.substr(Filepath.find_last_of('.')) == ".obj", "MeshComponent can only deserialize .obj files currently");
 
-			ParseObjFile(Filepath, Vertices, Indices);
+			// ParseObjFile(Filepath, Vertices, Indices);
 
 			SetupMesh();
 		}
 	}
 
-	MeshComponent::MeshComponent(const TArray<Vertex>& vertices, const TArray<uint32>& indices, Texture* const pTex)
+	MeshComponent::MeshComponent(const TArray<Vertex>& vertices, const TArray<uint32>& indices)
 		: VertexArrayID{ MeshErrorValue }
 		, VertexBufferID{ MeshErrorValue }
 		, IndexBufferID{ MeshErrorValue }
 		, Vertices{ vertices }
 		, Indices{ indices }
-		, pTexture{ pTex }
+		, Textures{}
 	{
 		SetupMesh();
 	}
@@ -97,16 +68,15 @@ namespace Integrian3D
 		, IndexBufferID{ __MOVE(other.IndexBufferID) }
 		, Vertices{ __MOVE(other.Vertices) }
 		, Indices{ __MOVE(other.Indices) }
-		, pTexture{ __MOVE(other.pTexture) }
+		, Textures{ __MOVE(other.Textures) }
 	{
 		other.Vertices.Clear();
 		other.Indices.Clear();
+		other.Textures.Clear();
 
 		other.VertexArrayID = MeshErrorValue;
 		other.VertexBufferID = MeshErrorValue;
 		other.IndexBufferID = MeshErrorValue;
-
-		other.pTexture = nullptr;
 	}
 
 	MeshComponent& MeshComponent::operator=(MeshComponent&& other) noexcept
@@ -116,16 +86,15 @@ namespace Integrian3D
 		IndexBufferID = __MOVE(other.IndexBufferID);
 		Vertices = __MOVE(other.Vertices);
 		Indices = __MOVE(other.Indices);
-		pTexture = __MOVE(other.pTexture);
+		Textures = __MOVE(other.Textures);
 
 		other.Vertices.Clear();
 		other.Indices.Clear();
+		other.Textures.Clear();
 
 		other.VertexArrayID = MeshErrorValue;
 		other.VertexBufferID = MeshErrorValue;
 		other.IndexBufferID = MeshErrorValue;
-
-		other.pTexture = nullptr;
 
 		return *this;
 	}
@@ -164,9 +133,12 @@ namespace Integrian3D
 		Position Attribute:
 		Stride = 20
 		Offset = 0
+		Normal Attribute:
+		Stride = ???
+		Offset = 12
 		UV Attribute:
 		Stride = 20
-		Offset = 12
+		Offset = 24
 		*/
 
 		/* Enable the Position Attribute */
@@ -174,11 +146,17 @@ namespace Integrian3D
 
 		glVertexAttribPointer(0, 3, GL_DOUBLE, GL_FALSE, sizeof(Vertex), /* offset = */ reinterpret_cast<void*>(0));
 
-		/* Enable the UV Coord attribute */
+		/* Enable the Normal attribute */
 		glEnableVertexAttribArray(1);
 
 		/* Set Vertex Buffer UV Coord Attribute layout */
-		glVertexAttribPointer(1, 2, GL_DOUBLE, GL_FALSE, sizeof(Vertex), /* offset = */ reinterpret_cast<void*>(sizeof(Math::Vec3D)));
+		glVertexAttribPointer(1, 3, GL_DOUBLE, GL_FALSE, sizeof(Vertex), /* offset = */ reinterpret_cast<void*>(sizeof(Math::Vec3D)));
+
+		/* Enable the UV Coord attribute */
+		glEnableVertexAttribArray(2);
+
+		/* Set Vertex Buffer UV Coord Attribute layout */
+		glVertexAttribPointer(2, 2, GL_DOUBLE, GL_FALSE, sizeof(Vertex), /* offset = */ reinterpret_cast<void*>(sizeof(Math::Vec3D) * 2));
 
 		glBindVertexArray(0);
 	}

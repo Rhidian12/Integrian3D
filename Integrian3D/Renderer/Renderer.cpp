@@ -62,7 +62,7 @@ namespace Integrian3D
 		glActiveTexture(GL_TEXTURE0);
 
 		/* Bind the Texture ID */
-		glBindTexture(GL_TEXTURE_2D, mesh.GetTexture()->GetTextureID());
+		// glBindTexture(GL_TEXTURE_2D, mesh.GetTexture()->GetTextureID());
 
 		/* Bind the Vertex Array ID */
 		glBindVertexArray(mesh.GetVertexArrayID());

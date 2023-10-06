@@ -237,15 +237,15 @@ namespace Integrian3D::IO
 		switch (OpenMode)
 		{
 		case OpenMode::CreateNew:
-			__ASSERT(!DoesFileExist(Filepath), "File::File() > OpenMode::CreateNew > File %s already exists", Filepath.data());
+			ICHECK_MSG(!DoesFileExist(Filepath), "File::File() > OpenMode::CreateNew > File {} already exists", Filepath);
 			ErrorToIgnore = ERROR_FILE_EXISTS;
 			break;
 		case OpenMode::OpenExisting:
-			__ASSERT(DoesFileExist(Filepath), "File::File() > OpenMode::OpenExisting > File %s does not exist", Filepath.data());
+			ICHECK_MSG(DoesFileExist(Filepath), "File::File() > OpenMode::OpenExisting > File {} does not exist", Filepath);
 			ErrorToIgnore = ERROR_FILE_NOT_FOUND;
 			break;
 		case OpenMode::TruncateExisting:
-			__ASSERT(DoesFileExist(Filepath), "File::File() > OpenMode::TruncateExisting > File %s does not exist", Filepath.data());
+			ICHECK_MSG(DoesFileExist(Filepath), "File::File() > OpenMode::TruncateExisting > File {} does not exist", Filepath);
 			ErrorToIgnore = ERROR_FILE_NOT_FOUND;
 			break;
 		case OpenMode::CreateAlways:

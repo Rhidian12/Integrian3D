@@ -35,8 +35,14 @@ namespace Integrian3D
 		if ((Expr)) {} \
 		else \
 		{ \
-			LOG(Check, Integrian3D::LogErrorLevel::Fatal, "Check {} triggered at line {} in file {}", #Expr, __LINE__, __FILE__); \
-			__BREAK(); \
+			LOG(Check, Integrian3D::LogErrorLevel::Error, "Check {} triggered at line {} in file {}", #Expr, __LINE__, __FILE__); \
+		}
+
+#	define ICHECK_MSG(Expr, Format, ...) \
+		if (Expr) {} \
+		else \
+		{ \
+			LOG(Check, Integrian3D::LogErrorLevel::Error, Format, __VA_ARGS__); \
 		}
 #else
 #	define __BREAK()

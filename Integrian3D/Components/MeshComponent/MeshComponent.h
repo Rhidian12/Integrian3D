@@ -17,8 +17,8 @@ namespace Integrian3D
 	class MeshComponent final : public Component
 	{
 	public:
-		MeshComponent(const std::string_view Filepath, Texture* const pTex);
-		MeshComponent(const TArray<Vertex>& vertices, const TArray<uint32>& indices, Texture* const pTex);
+		MeshComponent(const std::string_view Filepath);
+		MeshComponent(const TArray<Vertex>& vertices, const TArray<uint32>& indices);
 		~MeshComponent();
 
 		MeshComponent(const MeshComponent&) noexcept = delete;
@@ -33,8 +33,6 @@ namespace Integrian3D
 		__NODISCARD const TArray<Vertex>& GetVertices() const { return Vertices; }
 		__NODISCARD const TArray<uint32>& GetIndices() const { return Indices; }
 
-		__NODISCARD const Texture* const GetTexture() const { return pTexture; }
-
 	private:
 		void SetupMesh();
 
@@ -44,7 +42,6 @@ namespace Integrian3D
 
 		TArray<Vertex> Vertices;
 		TArray<uint32> Indices;
-
-		Texture* pTexture;
+		TArray<Texture*> Textures;
 	};
 }
