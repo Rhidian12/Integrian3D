@@ -14,19 +14,89 @@
 
 namespace Integrian3D
 {
-	Shader::Shader(const std::string& vertexShaderPath, const std::string& fragmentShaderPath)
-		: ProgramID{ std::numeric_limits<uint32_t>::max() }
-	{
-		uint32_t vertexShaderID{}, fragmentShaderID{};
+	static constexpr uint32 ShaderErrorValue = std::numeric_limits<uint32>::max();
 
-		/* Get Vertex Shader */
+	Shader::Shader()
+		: ProgramID{ ShaderErrorValue } 
+	{}
+
+	Shader::Shader(const std::string& vertexShaderPath, const std::string& fragmentShaderPath)
+		: ProgramID{ ShaderErrorValue }
+	{
+		SetupShaders(vertexShaderPath, fragmentShaderPath);
+	}
+
+	Shader::~Shader()
+	{
+		if (ProgramID != ShaderErrorValue)
 		{
-			const IO::File vertexShader{ vertexShaderPath, IO::OpenMode::OpenExisting, IO::FileMode::ASCII };
+			glDeleteProgram(ProgramID);
+		}
+	}
+
+	Shader::Shader(Shader&& other) noexcept
+		: ProgramID{ __MOVE(other.ProgramID) }
+	{
+		other.ProgramID = ShaderErrorValue;
+	}
+
+	Shader& Shader::operator=(Shader&& other) noexcept
+	{
+		ProgramID = __MOVE(other.ProgramID);
+
+		other.ProgramID = ShaderErrorValue;
+
+		return *this;
+	}
+
+	void Shader::SetShaders(const std::string& VertexShader, const std::string& FragmentShader)
+	{
+		SetupShaders(VertexShader, FragmentShader);
+	}
+
+	void Shader::Activate() const
+	{
+		__CHECK(ProgramID != ShaderErrorValue);
+		glUseProgram(ProgramID);
+	}
+
+	void Shader::SetBool(const std::string_view name, const bool value) const
+	{
+		glUniform1i(glGetUniformLocation(ProgramID, name.data()), static_cast<int>(value));
+	}
+
+	void Shader::SetInt(const std::string_view name, const int value) const
+	{
+		glUniform1i(glGetUniformLocation(ProgramID, name.data()), value);
+	}
+
+	void Shader::SetFloat(const std::string_view name, const float value) const
+	{
+		glUniform1f(glGetUniformLocation(ProgramID, name.data()), value);
+	}
+
+	void Shader::SetMatrix(const std::string_view name, const glm::mat4& value) const
+	{
+		glUniformMatrix4fv(glGetUniformLocation(ProgramID, name.data()), 1, GL_FALSE, glm::value_ptr(value));
+	}
+
+	void Shader::SetVec3(const std::string_view Name, const Math::Vec3D& Vec) const
+	{
+		glUniform3d(glGetUniformLocation(ProgramID, Name.data()), Vec.x, Vec.y, Vec.z);
+	}
+
+	void Shader::SetupShaders(const std::string& VertexShader, const std::string& FragmentShader)
+	{
+		uint32 vertexShaderID{}, fragmentShaderID{};
+
+/* Get Vertex Shader */
+		{
+			const IO::File vertexShader{ VertexShader, IO::OpenMode::OpenExisting, IO::FileMode::ASCII };
 
 			/* Generate VertexShader ID */
 			vertexShaderID = glCreateShader(GL_VERTEX_SHADER);
 
-			/* Attach the VertexShader code to the ID and compile it */
+			/* Attach the Vertex Shader code to the ID and compile it */
 			const char* pShaderSource{ vertexShader.GetFileContents().data() };
 			glShaderSource(vertexShaderID, 1, &pShaderSource, nullptr);
 			glCompileShader(vertexShaderID);
@@ -45,12 +115,12 @@ namespace Integrian3D
 
 		/* Get Fragment Shader */
 		{
-			const IO::File fragmentShader{ fragmentShaderPath, IO::OpenMode::OpenExisting, IO::FileMode::ASCII };
+			const IO::File fragmentShader{ FragmentShader, IO::OpenMode::OpenExisting, IO::FileMode::ASCII };
 
 			/* Generate Frament Shader ID */
 			fragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
 
-			/* Attach the VertexShader code to the ID and compile it */
+			/* Attach the Fragment Shader code to the ID and compile it */
 			const char* pShaderSource{ fragmentShader.GetFileContents().data() };
 			glShaderSource(fragmentShaderID, 1, &pShaderSource, nullptr);
 			glCompileShader(fragmentShaderID);
@@ -84,65 +154,11 @@ namespace Integrian3D
 			if (!success)
 			{
 				glGetProgramInfoLog(ProgramID, 512, nullptr, infoLog);
-				LOG(ShaderLog, LogErrorLevel::Fatal, "Shader program linking failed: %s", infoLog);
+				LOG(ShaderLog, LogErrorLevel::Fatal, "Shader program linking failed: {}", infoLog);
 			}
 		}
 
 		glDeleteShader(vertexShaderID);
 		glDeleteShader(fragmentShaderID);
-	}
-
-	Shader::~Shader()
-	{
-		if (ProgramID != std::numeric_limits<uint32_t>::max())
-		{
-			glDeleteProgram(ProgramID);
-		}
-	}
-
-	Shader::Shader(Shader&& other) noexcept
-		: ProgramID{ __MOVE(other.ProgramID) }
-	{
-		other.ProgramID = std::numeric_limits<uint32_t>::max();
-	}
-
-	Shader& Shader::operator=(Shader&& other) noexcept
-	{
-		ProgramID = __MOVE(other.ProgramID);
-
-		other.ProgramID = std::numeric_limits<uint32_t>::max();
-
-		return *this;
-	}
-
-	void Shader::Activate() const
-	{
-		__CHECK(ProgramID != std::numeric_limits<uint32_t>::max());
-		glUseProgram(ProgramID);
-	}
-
-	void Shader::SetBool(const std::string_view name, const bool value) const
-	{
-		glUniform1i(glGetUniformLocation(ProgramID, name.data()), static_cast<int>(value));
-	}
-
-	void Shader::SetInt(const std::string_view name, const int value) const
-	{
-		glUniform1i(glGetUniformLocation(ProgramID, name.data()), value);
-	}
-
-	void Shader::SetFloat(const std::string_view name, const float value) const
-	{
-		glUniform1f(glGetUniformLocation(ProgramID, name.data()), value);
-	}
-
-	void Shader::SetMatrix(const std::string_view name, const glm::mat4& value) const
-	{
-		glUniformMatrix4fv(glGetUniformLocation(ProgramID, name.data()), 1, GL_FALSE, glm::value_ptr(value));
-	}
-
-	void Shader::SetVec3(const std::string_view Name, const Math::Vec3D& Vec) const
-	{
-		glUniform3d(glGetUniformLocation(ProgramID, Name.data()), Vec.x, Vec.y, Vec.z);
 	}
 }

@@ -378,4 +378,7 @@
   <ItemGroup>
     <Natvis Include="NatvisFile.natvis" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="Resources\LightVertexShader.txt" />
+  </ItemGroup>
 </Project>

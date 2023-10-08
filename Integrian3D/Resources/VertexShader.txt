@@ -1,11 +1,12 @@
 #version 460 core
+
 layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec3 aNormal;
 layout (location = 2) in vec2 aTexCoord;
 
-out vec2 _TexCoord;
-out vec3 _Normal;
-out vec3 _FragPos;
+out vec2 vTexCoord;
+out vec3 vNormal;
+out vec3 vFragPos;
 
 uniform mat4 _Transform;
 uniform mat4 _View;
@@ -14,7 +15,8 @@ uniform mat4 _Projection;
 void main()
 {
     gl_Position = _Projection * _View * _Transform * vec4(aPos, 1.0f);
-    _FragPos = vec3(model * vec4(aPos, 1.0f));
-    _TexCoord = aTexCoord;
-    _Normal = aNormal;
+
+    vFragPos = vec3(_Transform * vec4(aPos, 1.0f));
+    vTexCoord = aTexCoord;
+    vNormal = aNormal;
 }

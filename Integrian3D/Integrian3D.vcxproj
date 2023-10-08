@@ -323,6 +323,9 @@ xcopy "$(SolutionDir)Config\*.*" "$(OutDir)Config\" /y /d /e /q</Command>
   <ItemGroup>
     <Natvis Include="NatvisFile.natvis" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="Resources\LightVertexShader.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

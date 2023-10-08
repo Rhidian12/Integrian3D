@@ -3,20 +3,30 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "../DebugUtility/DebugUtility.h"
-#include "../Components/MeshComponent/MeshComponent.h"
-#include "../Components/TransformComponent/TransformComponent.h"
-#include "../Components/FreeCameraComponent/FreeCameraComponent.h"
-#include "../Shader/Shader.h"
-#include "../Texture/Texture.h"
+#include "DebugUtility/DebugUtility.h"
+#include "Components/MeshComponent/MeshComponent.h"
+#include "Components/TransformComponent/TransformComponent.h"
+#include "Components/FreeCameraComponent/FreeCameraComponent.h"
+#include "Shader/Shader.h"
+#include "Texture/Texture.h"
+#include "IO/Ini/IniFile.h"
 
 namespace Integrian3D
 {
 	Renderer::Renderer()
 		: bShouldRenderWireframe{}
-		, Shader{ "Resources/VertexShader.txt", "Resources/FragmentShader.txt" }
+		, Shader{}
 	{
 		glEnable(GL_DEPTH_TEST);
+
+		const IniFile EngineIni{ "Config/Engine.ini" };
+
+		std::string VSPath{}, FSPath{};
+
+		ICHECK_MSG(EngineIni.GetString("Renderer", "VertexShader", VSPath), "Renderer could not get Vertex Shader path from Engine.ini");
+		ICHECK_MSG(EngineIni.GetString("Renderer", "FragmentShader", FSPath), "Renderer could not get Fragment Shader path from Engine.ini");
+
+		Shader.SetShaders(VSPath, FSPath);
 	}
 
 	Renderer& Renderer::GetInstance()
