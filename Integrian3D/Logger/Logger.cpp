@@ -62,7 +62,7 @@ namespace Integrian3D
 	Logger::Logger()
 		: ConsoleHandle{ GetStdHandle(STD_OUTPUT_HANDLE) }
 		, Statics{ new LoggerStatics{} }
-		, VerbosityLevel{ LogVerbosity::VeryVerbose }
+		, VerbosityLevel{ LogVerbosity::Verbose }
 	{}
 
 	Logger::~Logger()

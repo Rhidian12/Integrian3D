@@ -114,7 +114,11 @@
       <AdditionalLibraryDirectories>$(SolutionDir)Libraries\glad\src;$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022;$(SolutionDir)Libraries\assimp\lib\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022\*.dll" "$(OutDir)" /y /D </Command>
+      <Command>xcopy "$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022\*.dll" "$(OutDir)" /y /d
+mkdir "$(OutDir)Resources"
+xcopy "$(SolutionDir)Resources\*.*" "$(OutDir)Resources\" /y /d /e /q
+mkdir "$(OutDir)Config"
+xcopy "$(SolutionDir)Config\*.*" "$(OutDir)Config\" /y /d /e /q</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -137,7 +141,11 @@
       <AdditionalLibraryDirectories>$(SolutionDir)Libraries\glad\src;$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022;$(SolutionDir)Libraries\assimp\lib\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022\*.dll" "$(OutDir)" /y /D </Command>
+      <Command>xcopy "$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022\*.dll" "$(OutDir)" /y /d
+mkdir "$(OutDir)Resources"
+xcopy "$(SolutionDir)Resources\*.*" "$(OutDir)Resources\" /y /d /e /q
+mkdir "$(OutDir)Config"
+xcopy "$(SolutionDir)Config\*.*" "$(OutDir)Config\" /y /d /e /q</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -156,7 +164,11 @@
       <AdditionalLibraryDirectories>$(SolutionDir)Libraries\glad\src;$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022;$(SolutionDir)Libraries\assimp\lib\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022\*.dll" "$(OutDir)" /y /D </Command>
+      <Command>xcopy "$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022\*.dll" "$(OutDir)" /y /d
+mkdir "$(OutDir)Resources"
+xcopy "$(SolutionDir)Resources\*.*" "$(OutDir)Resources\" /y /d /e /q
+mkdir "$(OutDir)Config"
+xcopy "$(SolutionDir)Config\*.*" "$(OutDir)Config\" /y /d /e /q</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -179,7 +191,11 @@
       <AdditionalLibraryDirectories>$(SolutionDir)Libraries\glad\src;$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022;$(SolutionDir)Libraries\assimp\lib\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022\*.dll" "$(OutDir)" /y /D </Command>
+      <Command>xcopy "$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022\*.dll" "$(OutDir)" /y /d
+mkdir "$(OutDir)Resources"
+xcopy "$(SolutionDir)Resources\*.*" "$(OutDir)Resources\" /y /d /e /q
+mkdir "$(OutDir)Config"
+xcopy "$(SolutionDir)Config\*.*" "$(OutDir)Config\" /y /d /e /q</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

@@ -99,6 +99,11 @@ namespace Integrian3D
 		return *this;
 	}
 
+	void MeshComponent::AddTexture(Texture* const TextureToApply)
+	{
+		Textures.Add(TextureToApply);
+	}
+
 	void MeshComponent::SetupMesh()
 	{
 		/* Generate a vertex array ID (VAO) */

@@ -26,12 +26,16 @@ namespace Integrian3D
 		MeshComponent& operator=(const MeshComponent&) noexcept = delete;
 		MeshComponent& operator=(MeshComponent&& other) noexcept;
 
+		void AddTexture(Texture* const TextureToApply);
+
 		__NODISCARD uint32 GetVertexArrayID() const { return VertexArrayID; }
 		__NODISCARD uint32 GetIndexBufferID() const { return IndexBufferID; }
 		__NODISCARD uint32 GetVertexBufferID() const { return VertexBufferID; }
 
 		__NODISCARD const TArray<Vertex>& GetVertices() const { return Vertices; }
 		__NODISCARD const TArray<uint32>& GetIndices() const { return Indices; }
+
+		__NODISCARD const TArray<Texture*>& GetTextures() const { return Textures; }
 
 	private:
 		void SetupMesh();

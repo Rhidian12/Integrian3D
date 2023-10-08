@@ -13,8 +13,7 @@
 namespace Integrian3D
 {
 	Renderer::Renderer()
-		: ShaderProgramID{}
-		, bShouldRenderWireframe{}
+		: bShouldRenderWireframe{}
 		, Shader{ "Resources/VertexShader.txt", "Resources/FragmentShader.txt" }
 	{
 		glEnable(GL_DEPTH_TEST);
@@ -58,11 +57,17 @@ namespace Integrian3D
 		/* Set our Matrix */
 		Shader.SetMatrix("_Transform", transform.Transformation);
 
+		// Set Light Position [TODO]: Dont hardcode this!
+		Shader.SetVec3("_LightPos", Math::Vec3D{ 5.0, 0.0, 2.0 });
+
+		// Set Light Direction [TODO]: Don't hardcode this
+		Shader.SetVec3("_LightColor", Math::Vec3D{ 255.0, 0.0, 0.0 });
+
 		/* Activate the texture */
 		glActiveTexture(GL_TEXTURE0);
-
+		
 		/* Bind the Texture ID */
-		// glBindTexture(GL_TEXTURE_2D, mesh.GetTexture()->GetTextureID());
+		glBindTexture(GL_TEXTURE_2D, mesh.GetTextures()[0]->GetTextureID());
 
 		/* Bind the Vertex Array ID */
 		glBindVertexArray(mesh.GetVertexArrayID());

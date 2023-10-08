@@ -1,12 +1,29 @@
 #version 460 core
 
-out vec4 FragColor;
+in vec2 aTexCoord;
+in vec3 aNormal;
+in vec3 aFragPos;
 
-in vec2 _TexCoord;
+out vec4 _FragColor;
 
 uniform sampler2D _Texture;
+uniform vec3 _LightPos;
+uniform vec3 _LightColor;
+
+vec3 CalculateDiffuse()
+{
+    vec3 normal = normalize(aNormal);
+    vec3 lightDir = normalize(_LightPos - aFragPos);
+
+    float diffuse = max(dot(normal, lightDir), 0.f);
+    vec3 diffuseVec = diffuse * _LightColor;
+    
+    return diffuseVec;
+}
 
 void main()
 {
-    FragColor = texture(_Texture, _TexCoord);
+    vec3 diffuse = CalculateDiffuse();
+
+    _FragColor = texture(_Texture, aTexCoord) * vec4(diffuse, 1.0f);
 } 

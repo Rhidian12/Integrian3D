@@ -118,6 +118,8 @@ int RunTestEngine(int, char* [])
 		Entity entity{ TestScene->CreateEntity() };
 		TestScene->AddComponent<TestRotateComponent>(entity);
 		TestScene->AddComponent<MeshComponent>(entity, vertices, indices);
+
+		TestScene->GetComponent<MeshComponent>(entity).AddTexture(TextureManager::GetInstance().GetTexture("__Wall"));
 		TestScene->GetComponent<TransformComponent>(entity).Rotate(Math::Vec3D{ 0.f, Math::ToRadians(180.f), 0.f });
 	}
 
