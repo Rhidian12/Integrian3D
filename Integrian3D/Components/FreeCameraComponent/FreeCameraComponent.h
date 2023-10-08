@@ -1,10 +1,9 @@
 #pragma once
 
-#include "../../EngineConstants.h"
+#include "EngineConstants.h"
 
-#include "../../Component/Component.h"
-
-#include <glm.hpp> /* GLM */
+#include "Component/Component.h"
+#include "Math/Math.h"
 
 namespace Integrian3D
 {
@@ -25,8 +24,8 @@ namespace Integrian3D
 		void SetSpeed(const double speed) { m_Speed = speed; }
 
 		__NODISCARD __INLINE double GetSpeed() const { return m_Speed; }
-		__NODISCARD __INLINE const glm::mat4& GetView() const { return m_View; }
-		__NODISCARD __INLINE const glm::mat4& GetProjection() const { return m_Projection; }
+		__NODISCARD __INLINE const Math::Mat4D& GetView() const { return m_View; }
+		__NODISCARD __INLINE const Math::Mat4D& GetProjection() const { return m_Projection; }
 
 		bool operator==(const FreeCameraComponent& other) const;
 
@@ -37,7 +36,7 @@ namespace Integrian3D
 		float m_AspectRatio;
 		double m_Speed;
 
-		glm::mat4 m_View;
-		glm::mat4 m_Projection;
+		Math::Mat4D m_View;
+		Math::Mat4D m_Projection;
 	};
 }

@@ -1,6 +1,7 @@
 #include "MeshComponent.h"
 
 #include "IO/File/File.h"
+#include "Material/Material.h"
 #include "Renderer/Renderer.h"
 #include "Texture/Texture.h"
 
@@ -12,13 +13,13 @@ namespace Integrian3D
 {
 	static constexpr uint32 MeshErrorValue = std::numeric_limits<uint32>::max();
 
-	MeshComponent::MeshComponent(const std::string_view Filepath)
+	MeshComponent::MeshComponent(const std::string_view Filepath, Material* const Material)
 		: VertexArrayID{ MeshErrorValue }
 		, VertexBufferID{ MeshErrorValue }
 		, IndexBufferID{ MeshErrorValue }
 		, Vertices{}
 		, Indices{}
-		, Textures{}
+		, MeshMaterial{ __MOVE(Material) }
 	{
 		if (!Filepath.empty())
 		{
@@ -30,13 +31,13 @@ namespace Integrian3D
 		}
 	}
 
-	MeshComponent::MeshComponent(const TArray<Vertex>& vertices, const TArray<uint32>& indices)
+	MeshComponent::MeshComponent(const TArray<Vertex>& vertices, const TArray<uint32>& indices, Material* const Material)
 		: VertexArrayID{ MeshErrorValue }
 		, VertexBufferID{ MeshErrorValue }
 		, IndexBufferID{ MeshErrorValue }
 		, Vertices{ vertices }
 		, Indices{ indices }
-		, Textures{}
+		, MeshMaterial{ __MOVE(Material) }
 	{
 		SetupMesh();
 	}
@@ -68,11 +69,10 @@ namespace Integrian3D
 		, IndexBufferID{ __MOVE(other.IndexBufferID) }
 		, Vertices{ __MOVE(other.Vertices) }
 		, Indices{ __MOVE(other.Indices) }
-		, Textures{ __MOVE(other.Textures) }
+		, MeshMaterial{ __MOVE(other.MeshMaterial) }
 	{
 		other.Vertices.Clear();
 		other.Indices.Clear();
-		other.Textures.Clear();
 
 		other.VertexArrayID = MeshErrorValue;
 		other.VertexBufferID = MeshErrorValue;
@@ -86,11 +86,10 @@ namespace Integrian3D
 		IndexBufferID = __MOVE(other.IndexBufferID);
 		Vertices = __MOVE(other.Vertices);
 		Indices = __MOVE(other.Indices);
-		Textures = __MOVE(other.Textures);
+		MeshMaterial = __MOVE(other.MeshMaterial);
 
 		other.Vertices.Clear();
 		other.Indices.Clear();
-		other.Textures.Clear();
 
 		other.VertexArrayID = MeshErrorValue;
 		other.VertexBufferID = MeshErrorValue;
@@ -101,7 +100,12 @@ namespace Integrian3D
 
 	void MeshComponent::AddTexture(Texture* const TextureToApply)
 	{
-		Textures.Add(TextureToApply);
+		MeshMaterial->AddTexture(TextureToApply);
+	}
+
+	void MeshComponent::StartShader(const Math::Mat4D& Transform, const Math::Mat4D& View, const Math::Mat4D& Projection) const
+	{
+		MeshMaterial->StartShader(Transform, View, Projection);
 	}
 
 	void MeshComponent::SetupMesh()

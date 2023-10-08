@@ -26,7 +26,7 @@ namespace Integrian3D
 		// Render meshes
 		AddRenderCallback(0u, [](Scene& scene)->void
 			{
-				const auto& renderer{ Renderer::GetInstance() };
+				auto& renderer{ Renderer::GetInstance() };
 				renderer.StartRenderLoop(scene.GetComponent<FreeCameraComponent>(scene.GetActiveCameraEntity()));
 
 				if (scene.GetNrOfEntities() > 0u && scene.CanViewBeCreated<TransformComponent, MeshComponent>())

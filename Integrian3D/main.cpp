@@ -50,6 +50,7 @@ int main(int argc, char* argv[])
 #include "Memory/UniquePtr.h"
 #include "Components/TestRotateComponent/TestRotateComponent.h"
 #include "Components/FreeCameraComponent/FreeCameraComponent.h"
+#include "Material/Material.h"
 
 int RunTestEngine(int, char* [])
 {
@@ -117,7 +118,7 @@ int RunTestEngine(int, char* [])
 	{
 		Entity entity{ TestScene->CreateEntity() };
 		TestScene->AddComponent<TestRotateComponent>(entity);
-		TestScene->AddComponent<MeshComponent>(entity, vertices, indices);
+		TestScene->AddComponent<MeshComponent>(entity, vertices, indices, new Material{"Resources/VertexShader.txt", "Resources/FragmentShader.txt"});
 
 		TestScene->GetComponent<MeshComponent>(entity).AddTexture(TextureManager::GetInstance().GetTexture("__Wall"));
 		TestScene->GetComponent<TransformComponent>(entity).Rotate(Math::Vec3D{ 0.f, Math::ToRadians(180.f), 0.f });

@@ -25,5 +25,5 @@ void main()
 {
     vec3 diffuse = CalculateDiffuse();
 
-    _FragColor = texture(_Texture, vTexCoord) * vec4(diffuse, 1.0f);
+    _FragColor = texture(_Texture, vTexCoord);
 } 

@@ -162,6 +162,9 @@
     <ClCompile Include="Logger\LogCategory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Material\Material.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window\Window.h">
@@ -371,6 +374,9 @@
     <ClInclude Include="Logger\LogVerbosity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Material\Material.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
@@ -380,5 +386,6 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="Resources\LightVertexShader.txt" />
+    <Text Include="Resources\LightFragmentShader.txt" />
   </ItemGroup>
 </Project>

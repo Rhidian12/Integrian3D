@@ -15,18 +15,8 @@ namespace Integrian3D
 {
 	Renderer::Renderer()
 		: bShouldRenderWireframe{}
-		, Shader{}
 	{
 		glEnable(GL_DEPTH_TEST);
-
-		const IniFile EngineIni{ "Config/Engine.ini" };
-
-		std::string VSPath{}, FSPath{};
-
-		ICHECK_MSG(EngineIni.GetString("Renderer", "VertexShader", VSPath), "Renderer could not get Vertex Shader path from Engine.ini");
-		ICHECK_MSG(EngineIni.GetString("Renderer", "FragmentShader", FSPath), "Renderer could not get Fragment Shader path from Engine.ini");
-
-		Shader.SetShaders(VSPath, FSPath);
 	}
 
 	Renderer& Renderer::GetInstance()
@@ -39,7 +29,7 @@ namespace Integrian3D
 		return *Instance.get();
 	}
 
-	void Renderer::StartRenderLoop(const FreeCameraComponent& camera) const
+	void Renderer::StartRenderLoop(const FreeCameraComponent& camera)
 	{
 		/* Sets the Clear Colour */
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -54,30 +44,13 @@ namespace Integrian3D
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		}
 
-		/* Use our shader program! */
-		Shader.Activate();
-
-		Shader.SetMatrix("_View", camera.GetView());
-
-		Shader.SetMatrix("_Projection", camera.GetProjection());
+		View = camera.GetView();
+		Projection = camera.GetProjection();
 	}
 
 	void Renderer::Render(const MeshComponent& mesh, const TransformComponent& transform) const
 	{
-		/* Set our Matrix */
-		Shader.SetMatrix("_Transform", transform.Transformation);
-
-		// Set Light Position [TODO]: Dont hardcode this!
-		Shader.SetVec3("_LightPos", Math::Vec3D{ 5.0, 0.0, 2.0 });
-
-		// Set Light Direction [TODO]: Don't hardcode this
-		Shader.SetVec3("_LightColor", Math::Vec3D{ 255.0, 0.0, 0.0 });
-
-		/* Activate the texture */
-		glActiveTexture(GL_TEXTURE0);
-		
-		/* Bind the Texture ID */
-		glBindTexture(GL_TEXTURE_2D, mesh.GetTextures()[0]->GetTextureID());
+		mesh.StartShader(transform.Transformation, View, Projection);
 
 		/* Bind the Vertex Array ID */
 		glBindVertexArray(mesh.GetVertexArrayID());
