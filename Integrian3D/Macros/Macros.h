@@ -3,8 +3,6 @@
 #undef max
 #undef min
 
-namespace Integrian3D
-{
 	/* [[nodiscard]] */
 #define __NODISCARD [[nodiscard]]
 
@@ -36,4 +34,3 @@ namespace Integrian3D
 
 #define __DELETE(p) do { delete p; p = nullptr; } while (0);
 #define __DELETEARR(p) do { delete[] (p); (p) = nullptr; } while (0);
-}

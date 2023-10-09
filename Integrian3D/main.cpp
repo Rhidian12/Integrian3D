@@ -117,11 +117,23 @@ int RunTestEngine(int, char* [])
 
 	{
 		Entity entity{ TestScene->CreateEntity() };
-		TestScene->AddComponent<TestRotateComponent>(entity);
-		TestScene->AddComponent<MeshComponent>(entity, vertices, indices, new Material{"Resources/VertexShader.txt", "Resources/FragmentShader.txt"});
+		// TestScene->AddComponent<TestRotateComponent>(entity);
 
-		TestScene->GetComponent<MeshComponent>(entity).AddTexture(TextureManager::GetInstance().GetTexture("__Wall"));
-		TestScene->GetComponent<TransformComponent>(entity).Rotate(Math::Vec3D{ 0.f, Math::ToRadians(180.f), 0.f });
+		UniquePtr<Material> MeshMaterial = MakeUnique<Material>("Resources/LightVertexShader.txt", "Resources/LightFragmentShader.txt");
+		MeshMaterial->SetVec3("_ObjectColor", Math::Vec3D{ 1.0, 0.5, 0.3 });
+		MeshMaterial->SetVec3("_LightColor", Math::Vec3D{ 1.0, 1.0, 1.0 });
+		TestScene->AddComponent<MeshComponent>(entity, vertices, indices, __MOVE(MeshMaterial));
+	}
+
+	{
+		Entity Entity{ TestScene->CreateEntity() };
+
+		UniquePtr<Material> MeshMaterial = MakeUnique<Material>("Resources/LightVertexShader.txt", "Resources/LightFragmentShader.txt");
+		MeshMaterial->SetVec3("_ObjectColor", Math::Vec3D{ 1.0, 0.5, 0.3 });
+		MeshMaterial->SetVec3("_LightColor", Math::Vec3D{ 1.0, 1.0, 1.0 });
+		TestScene->AddComponent<MeshComponent>(Entity, vertices, indices, __MOVE(MeshMaterial));
+
+		TestScene->GetComponent<TransformComponent>(Entity).Translate(Math::Vec3D{ -2.0,0.0,2.0 });
 	}
 
 	TestScene->AddUpdateCallback(0, [](Scene& scene)->void

@@ -13,7 +13,7 @@ namespace Integrian3D
 {
 	static constexpr uint32 MeshErrorValue = std::numeric_limits<uint32>::max();
 
-	MeshComponent::MeshComponent(const std::string_view Filepath, Material* const Material)
+	MeshComponent::MeshComponent(const std::string_view Filepath, UniquePtr<Material>&& Material)
 		: VertexArrayID{ MeshErrorValue }
 		, VertexBufferID{ MeshErrorValue }
 		, IndexBufferID{ MeshErrorValue }
@@ -31,7 +31,7 @@ namespace Integrian3D
 		}
 	}
 
-	MeshComponent::MeshComponent(const TArray<Vertex>& vertices, const TArray<uint32>& indices, Material* const Material)
+	MeshComponent::MeshComponent(const TArray<Vertex>& vertices, const TArray<uint32>& indices, UniquePtr<Material>&& Material)
 		: VertexArrayID{ MeshErrorValue }
 		, VertexBufferID{ MeshErrorValue }
 		, IndexBufferID{ MeshErrorValue }

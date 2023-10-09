@@ -7,15 +7,97 @@
 #include "../Components/MeshComponent/MeshComponent.h"
 #include "../Components/TransformComponent/TransformComponent.h"
 
-#include <gtc/matrix_transform.hpp>
-
-#pragma warning( push )
-#pragma warning( disable : 4201 )
-#include <gtx/euler_angles.hpp>
-#pragma warning( pop )
+#include <string_view>
 
 namespace Integrian3D
 {
+	namespace
+	{
+		static void LogGLError(GLenum Source, GLenum Type, GLuint ID, GLenum Severity, GLsizei /*Length*/, const GLchar* message, const void* /*UserParam*/)
+		{
+			if (Type != GL_DEBUG_TYPE_ERROR)
+			{
+				return;
+			}
+
+			std::string_view SourceStr{}, TypeStr{}, SeverityStr{};
+
+			switch (Source)
+			{
+				case GL_DEBUG_SOURCE_API:
+					SourceStr = "API";
+					break;
+				case GL_DEBUG_SOURCE_WINDOW_SYSTEM:
+					SourceStr = "WINDOW SYSTEM";
+					break;
+				case GL_DEBUG_SOURCE_SHADER_COMPILER:
+					SourceStr = "SHADER COMPILER";
+					break;
+				case GL_DEBUG_SOURCE_THIRD_PARTY:
+					SourceStr = "THIRD PARTY";
+					break;
+				case GL_DEBUG_SOURCE_APPLICATION:
+					SourceStr = "APPLICATION";
+					break;
+				case GL_DEBUG_SOURCE_OTHER:
+					SourceStr = "UNKNOWN";
+					break;
+				default:
+					SourceStr = "UNKNOWN";
+					break;
+			}
+
+			switch (Type)
+			{
+				case GL_DEBUG_TYPE_ERROR:
+					TypeStr = "ERROR";
+					break;
+				case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR:
+					TypeStr = "DEPRECATED BEHAVIOR";
+					break;
+				case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:
+					TypeStr = "UDEFINED BEHAVIOR";
+					break;
+				case GL_DEBUG_TYPE_PORTABILITY:
+					TypeStr = "PORTABILITY";
+					break;
+				case GL_DEBUG_TYPE_PERFORMANCE:
+					TypeStr = "PERFORMANCE";
+					break;
+				case GL_DEBUG_TYPE_OTHER:
+					TypeStr = "OTHER";
+					break;
+				case GL_DEBUG_TYPE_MARKER:
+					TypeStr = "MARKER";
+					break;
+				default:
+					TypeStr = "UNKNOWN";
+					break;
+			}
+
+			switch (Severity)
+			{
+				case GL_DEBUG_SEVERITY_HIGH:
+					SeverityStr = "HIGH";
+					break;
+				case GL_DEBUG_SEVERITY_MEDIUM:
+					SeverityStr = "MEDIUM";
+					break;
+				case GL_DEBUG_SEVERITY_LOW:
+					SeverityStr = "LOW";
+					break;
+				case GL_DEBUG_SEVERITY_NOTIFICATION:
+					SeverityStr = "NOTIFICATION";
+					break;
+				default:
+					SeverityStr = "UNKNOWN";
+					break;
+			}
+
+			LOG(ShaderLog, LogErrorLevel::Error, "{}: {} of {} severity, raised from {}: {}", ID, TypeStr, SeverityStr, SourceStr, message);
+		}
+	}
+
 	Core::Core(const int windowWidth, const int windowHeight)
 		: Window{ windowWidth, windowHeight }
 	{
@@ -43,6 +125,9 @@ namespace Integrian3D
 		srand(static_cast<unsigned int>(time(nullptr)));
 
 		Math::SetSeed(SEED);
+
+		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+		glDebugMessageCallback(LogGLError, nullptr);
 
 		LOG(CoreLog, LogErrorLevel::Log, "Finished initialisation of engine");
 

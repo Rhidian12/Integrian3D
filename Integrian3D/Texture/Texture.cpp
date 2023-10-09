@@ -48,8 +48,6 @@ namespace Integrian3D
 
 		/* free stb image */
 		stbi_image_free(pData);
-
-		Renderer::GetInstance().GetShader().SetInt("_Texture", 0);
 	}
 
 	Texture::~Texture()

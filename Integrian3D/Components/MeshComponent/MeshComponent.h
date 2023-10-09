@@ -20,8 +20,8 @@ namespace Integrian3D
 	class MeshComponent final : public Component
 	{
 	public:
-		MeshComponent(const std::string_view Filepath, Material* const Material);
-		MeshComponent(const TArray<Vertex>& vertices, const TArray<uint32>& indices, Material* const Material);
+		MeshComponent(const std::string_view Filepath, UniquePtr<Material>&& Material);
+		MeshComponent(const TArray<Vertex>& vertices, const TArray<uint32>& indices, UniquePtr<Material>&& Material);
 		~MeshComponent();
 
 		MeshComponent(const MeshComponent&) noexcept = delete;

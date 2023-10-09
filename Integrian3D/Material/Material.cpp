@@ -25,9 +25,42 @@ namespace Integrian3D
 
 		MaterialShader.SetMatrix("_Transform", Transform);
 
-		glActiveTexture(GL_TEXTURE0);
+		for (const auto& Request : SetShaderVarRequests)
+		{
+			Request();
+		}
 
-		// [TODO]: Currently only able to process 1 texture
-		glBindTexture(GL_TEXTURE_2D, Textures[0]->GetTextureID());
+		if (Textures.Size() > 0)
+		{
+			glActiveTexture(GL_TEXTURE0);
+
+			// [TODO]: Currently only able to process 1 texture
+			glBindTexture(GL_TEXTURE_2D, Textures[0]->GetTextureID());
+		}
+	}
+
+	void Material::SetBool(const std::string_view Name, const bool Value)
+	{
+		SetShaderVarRequests.Add([=]() { MaterialShader.SetBool(Name, Value); });
+	}
+
+	void Material::SetInt(const std::string_view Name, const int Value)
+	{
+		SetShaderVarRequests.Add([=]() { MaterialShader.SetInt(Name, Value); });
+	}
+
+	void Material::SetFloat(const std::string_view Name, const float Value)
+	{
+		SetShaderVarRequests.Add([=]() { MaterialShader.SetFloat(Name, Value); });
+	}
+
+	void Material::SetMatrix(const std::string_view Name, const Math::Mat4D& Value)
+	{
+		SetShaderVarRequests.Add([=]() { MaterialShader.SetMatrix(Name, Value); });
+	}
+
+	void Material::SetVec3(const std::string_view Name, const Math::Vec3D& Value)
+	{
+		SetShaderVarRequests.Add([=]() { MaterialShader.SetVec3(Name, Value); });
 	}
 }

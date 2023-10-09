@@ -89,7 +89,7 @@ namespace Integrian3D
 	{
 		uint32 vertexShaderID{}, fragmentShaderID{};
 
-/* Get Vertex Shader */
+		/* Get Vertex Shader */
 		{
 			const IO::File vertexShader{ VertexShader, IO::OpenMode::OpenExisting, IO::FileMode::ASCII };
 
