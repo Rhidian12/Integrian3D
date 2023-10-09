@@ -1,11 +1,29 @@
 #version 460 core
 
+in vec3 vPos;
+in vec3 vNormal;
+
 out vec4 FragColor;
   
 uniform vec3 _ObjectColor;
 uniform vec3 _LightColor;
+uniform vec3 _LightPos;
+
+vec3 CalculateDiffuse()
+{
+    vec3 lightDirection = normalize(_LightPos - vPos);
+    float diff = max(dot(normalize(vNormal), lightDirection), 0.0);
+
+    return diff * _LightColor;
+}
 
 void main()
 {
-    FragColor = vec4(_LightColor * _ObjectColor, 1.0);
+    float ambientStrength = 0.1;
+    vec3 ambient = ambientStrength * _LightColor;
+    vec3 diffuse = CalculateDiffuse();
+
+    vec3 result = (ambient + diffuse) * _ObjectColor;
+
+    FragColor = vec4(result, 1.0);
 }

@@ -65,47 +65,47 @@ int RunTestEngine(int, char* [])
 
 	TArray<Vertex> vertices =
 	{
-		Vertex{ glm::vec3{ -0.5f, -0.5f, -0.5f },  glm::vec2{ 0.0f, 0.0f } },
-		Vertex{ glm::vec3{  0.5f, -0.5f, -0.5f },  glm::vec2{ 1.0f, 0.0f } },
-		Vertex{ glm::vec3{  0.5f,  0.5f, -0.5f },  glm::vec2{ 1.0f, 1.0f } },
-		Vertex{ glm::vec3{  0.5f,  0.5f, -0.5f },  glm::vec2{ 1.0f, 1.0f } },
-		Vertex{ glm::vec3{ -0.5f,  0.5f, -0.5f },  glm::vec2{ 0.0f, 1.0f } },
-		Vertex{ glm::vec3{ -0.5f, -0.5f, -0.5f },  glm::vec2{ 0.0f, 0.0f } },
+		Vertex{ glm::vec3{ -0.5f, -0.5f, -0.5f }, Math::Vec3D{ 0.f, 0.f, -1.f }, glm::vec2{ 0.0f, 0.0f } },
+		Vertex{ glm::vec3{  0.5f, -0.5f, -0.5f }, Math::Vec3D{ 0.f, 0.f, -1.f }, glm::vec2{ 1.0f, 0.0f } },
+		Vertex{ glm::vec3{  0.5f,  0.5f, -0.5f }, Math::Vec3D{ 0.f, 0.f, -1.f }, glm::vec2{ 1.0f, 1.0f } },
+		Vertex{ glm::vec3{  0.5f,  0.5f, -0.5f }, Math::Vec3D{ 0.f, 0.f, -1.f }, glm::vec2{ 1.0f, 1.0f } },
+		Vertex{ glm::vec3{ -0.5f,  0.5f, -0.5f }, Math::Vec3D{ 0.f, 0.f, -1.f }, glm::vec2{ 0.0f, 1.0f } },
+		Vertex{ glm::vec3{ -0.5f, -0.5f, -0.5f }, Math::Vec3D{ 0.f, 0.f, -1.f }, glm::vec2{ 0.0f, 0.0f } },
 
-		Vertex{ glm::vec3{ -0.5f, -0.5f,  0.5f },  glm::vec2{ 0.0f, 0.0f } },
-		Vertex{ glm::vec3{  0.5f, -0.5f,  0.5f },  glm::vec2{ 1.0f, 0.0f } },
-		Vertex{ glm::vec3{  0.5f,  0.5f,  0.5f },  glm::vec2{ 1.0f, 1.0f } },
-		Vertex{ glm::vec3{  0.5f,  0.5f,  0.5f },  glm::vec2{ 1.0f, 1.0f } },
-		Vertex{ glm::vec3{ -0.5f,  0.5f,  0.5f },  glm::vec2{ 0.0f, 1.0f } },
-		Vertex{ glm::vec3{ -0.5f, -0.5f,  0.5f },  glm::vec2{ 0.0f, 0.0f } },
+		Vertex{ glm::vec3{ -0.5f, -0.5f,  0.5f }, Math::Vec3D{ 0.f, 0.f, 1.f }, glm::vec2{ 0.0f, 0.0f } },
+		Vertex{ glm::vec3{  0.5f, -0.5f,  0.5f }, Math::Vec3D{ 0.f, 0.f, 1.f }, glm::vec2{ 1.0f, 0.0f } },
+		Vertex{ glm::vec3{  0.5f,  0.5f,  0.5f }, Math::Vec3D{ 0.f, 0.f, 1.f }, glm::vec2{ 1.0f, 1.0f } },
+		Vertex{ glm::vec3{  0.5f,  0.5f,  0.5f }, Math::Vec3D{ 0.f, 0.f, 1.f }, glm::vec2{ 1.0f, 1.0f } },
+		Vertex{ glm::vec3{ -0.5f,  0.5f,  0.5f }, Math::Vec3D{ 0.f, 0.f, 1.f }, glm::vec2{ 0.0f, 1.0f } },
+		Vertex{ glm::vec3{ -0.5f, -0.5f,  0.5f }, Math::Vec3D{ 0.f, 0.f, 1.f }, glm::vec2{ 0.0f, 0.0f } },
 
-		Vertex{ glm::vec3{ -0.5f,  0.5f,  0.5f },  glm::vec2{ 1.0f, 0.0f } },
-		Vertex{ glm::vec3{ -0.5f,  0.5f, -0.5f },  glm::vec2{ 1.0f, 1.0f } },
-		Vertex{ glm::vec3{ -0.5f, -0.5f, -0.5f },  glm::vec2{ 0.0f, 1.0f } },
-		Vertex{ glm::vec3{ -0.5f, -0.5f, -0.5f },  glm::vec2{ 0.0f, 1.0f } },
-		Vertex{ glm::vec3{ -0.5f, -0.5f,  0.5f },  glm::vec2{ 0.0f, 0.0f } },
-		Vertex{ glm::vec3{ -0.5f,  0.5f,  0.5f },  glm::vec2{ 1.0f, 0.0f } },
+		Vertex{ glm::vec3{ -0.5f,  0.5f,  0.5f }, Math::Vec3D{ -1.f, 0.f, 0.f }, glm::vec2{ 1.0f, 0.0f } },
+		Vertex{ glm::vec3{ -0.5f,  0.5f, -0.5f }, Math::Vec3D{ -1.f, 0.f, 0.f }, glm::vec2{ 1.0f, 1.0f } },
+		Vertex{ glm::vec3{ -0.5f, -0.5f, -0.5f }, Math::Vec3D{ -1.f, 0.f, 0.f }, glm::vec2{ 0.0f, 1.0f } },
+		Vertex{ glm::vec3{ -0.5f, -0.5f, -0.5f }, Math::Vec3D{ -1.f, 0.f, 0.f }, glm::vec2{ 0.0f, 1.0f } },
+		Vertex{ glm::vec3{ -0.5f, -0.5f,  0.5f }, Math::Vec3D{ -1.f, 0.f, 0.f }, glm::vec2{ 0.0f, 0.0f } },
+		Vertex{ glm::vec3{ -0.5f,  0.5f,  0.5f }, Math::Vec3D{ -1.f, 0.f, 0.f }, glm::vec2{ 1.0f, 0.0f } },
 
-		Vertex{ glm::vec3{  0.5f,  0.5f,  0.5f },  glm::vec2{ 1.0f, 0.0f } },
-		Vertex{ glm::vec3{  0.5f,  0.5f, -0.5f },  glm::vec2{ 1.0f, 1.0f } },
-		Vertex{ glm::vec3{  0.5f, -0.5f, -0.5f },  glm::vec2{ 0.0f, 1.0f } },
-		Vertex{ glm::vec3{  0.5f, -0.5f, -0.5f },  glm::vec2{ 0.0f, 1.0f } },
-		Vertex{ glm::vec3{  0.5f, -0.5f,  0.5f },  glm::vec2{ 0.0f, 0.0f } },
-		Vertex{ glm::vec3{  0.5f,  0.5f,  0.5f },  glm::vec2{ 1.0f, 0.0f } },
+		Vertex{ glm::vec3{  0.5f,  0.5f,  0.5f }, Math::Vec3D{ 1.f, 0.f, 0.f }, glm::vec2{ 1.0f, 0.0f } },
+		Vertex{ glm::vec3{  0.5f,  0.5f, -0.5f }, Math::Vec3D{ 1.f, 0.f, 0.f }, glm::vec2{ 1.0f, 1.0f } },
+		Vertex{ glm::vec3{  0.5f, -0.5f, -0.5f }, Math::Vec3D{ 1.f, 0.f, 0.f }, glm::vec2{ 0.0f, 1.0f } },
+		Vertex{ glm::vec3{  0.5f, -0.5f, -0.5f }, Math::Vec3D{ 1.f, 0.f, 0.f }, glm::vec2{ 0.0f, 1.0f } },
+		Vertex{ glm::vec3{  0.5f, -0.5f,  0.5f }, Math::Vec3D{ 1.f, 0.f, 0.f }, glm::vec2{ 0.0f, 0.0f } },
+		Vertex{ glm::vec3{  0.5f,  0.5f,  0.5f }, Math::Vec3D{ 1.f, 0.f, 0.f }, glm::vec2{ 1.0f, 0.0f } },
 
-		Vertex{ glm::vec3{ -0.5f, -0.5f, -0.5f },  glm::vec2{ 0.0f, 1.0f } },
-		Vertex{ glm::vec3{  0.5f, -0.5f, -0.5f },  glm::vec2{ 1.0f, 1.0f } },
-		Vertex{ glm::vec3{  0.5f, -0.5f,  0.5f },  glm::vec2{ 1.0f, 0.0f } },
-		Vertex{ glm::vec3{  0.5f, -0.5f,  0.5f },  glm::vec2{ 1.0f, 0.0f } },
-		Vertex{ glm::vec3{ -0.5f, -0.5f,  0.5f },  glm::vec2{ 0.0f, 0.0f } },
-		Vertex{ glm::vec3{ -0.5f, -0.5f, -0.5f },  glm::vec2{ 0.0f, 1.0f } },
+		Vertex{ glm::vec3{ -0.5f, -0.5f, -0.5f }, Math::Vec3D{ 0.f, -1.f, 0.f }, glm::vec2{ 0.0f, 1.0f } },
+		Vertex{ glm::vec3{  0.5f, -0.5f, -0.5f }, Math::Vec3D{ 0.f, -1.f, 0.f }, glm::vec2{ 1.0f, 1.0f } },
+		Vertex{ glm::vec3{  0.5f, -0.5f,  0.5f }, Math::Vec3D{ 0.f, -1.f, 0.f }, glm::vec2{ 1.0f, 0.0f } },
+		Vertex{ glm::vec3{  0.5f, -0.5f,  0.5f }, Math::Vec3D{ 0.f, -1.f, 0.f }, glm::vec2{ 1.0f, 0.0f } },
+		Vertex{ glm::vec3{ -0.5f, -0.5f,  0.5f }, Math::Vec3D{ 0.f, -1.f, 0.f }, glm::vec2{ 0.0f, 0.0f } },
+		Vertex{ glm::vec3{ -0.5f, -0.5f, -0.5f }, Math::Vec3D{ 0.f, -1.f, 0.f }, glm::vec2{ 0.0f, 1.0f } },
 
-		Vertex{ glm::vec3{ -0.5f,  0.5f, -0.5f },  glm::vec2{ 0.0f, 1.0f } },
-		Vertex{ glm::vec3{  0.5f,  0.5f, -0.5f },  glm::vec2{ 1.0f, 1.0f } },
-		Vertex{ glm::vec3{  0.5f,  0.5f,  0.5f },  glm::vec2{ 1.0f, 0.0f } },
-		Vertex{ glm::vec3{  0.5f,  0.5f,  0.5f },  glm::vec2{ 1.0f, 0.0f } },
-		Vertex{ glm::vec3{ -0.5f,  0.5f,  0.5f },  glm::vec2{ 0.0f, 0.0f } },
-		Vertex{ glm::vec3{ -0.5f,  0.5f, -0.5f },  glm::vec2{ 0.0f, 1.0f } }
+		Vertex{ glm::vec3{ -0.5f,  0.5f, -0.5f }, Math::Vec3D{ 0.f, 1.f, 0.f }, glm::vec2{ 0.0f, 1.0f } },
+		Vertex{ glm::vec3{  0.5f,  0.5f, -0.5f }, Math::Vec3D{ 0.f, 1.f, 0.f }, glm::vec2{ 1.0f, 1.0f } },
+		Vertex{ glm::vec3{  0.5f,  0.5f,  0.5f }, Math::Vec3D{ 0.f, 1.f, 0.f }, glm::vec2{ 1.0f, 0.0f } },
+		Vertex{ glm::vec3{  0.5f,  0.5f,  0.5f }, Math::Vec3D{ 0.f, 1.f, 0.f }, glm::vec2{ 1.0f, 0.0f } },
+		Vertex{ glm::vec3{ -0.5f,  0.5f,  0.5f }, Math::Vec3D{ 0.f, 1.f, 0.f }, glm::vec2{ 0.0f, 0.0f } },
+		Vertex{ glm::vec3{ -0.5f,  0.5f, -0.5f }, Math::Vec3D{ 0.f, 1.f, 0.f }, glm::vec2{ 0.0f, 1.0f } }
 	};
 
 	TArray<uint32_t> indices{};
@@ -122,6 +122,7 @@ int RunTestEngine(int, char* [])
 		UniquePtr<Material> MeshMaterial = MakeUnique<Material>("Resources/LightVertexShader.txt", "Resources/LightFragmentShader.txt");
 		MeshMaterial->SetVec3("_ObjectColor", Math::Vec3D{ 1.0f, 0.5f, 0.3f });
 		MeshMaterial->SetVec3("_LightColor", Math::Vec3D{ 1.0f, 1.0f, 1.0f });
+		MeshMaterial->SetVec3("_LightPos", Math::Vec3D{ 1.2f,1.0f,-2.0f });
 		TestScene->AddComponent<MeshComponent>(entity, vertices, indices, __MOVE(MeshMaterial));
 	}
 
@@ -129,11 +130,9 @@ int RunTestEngine(int, char* [])
 		Entity Entity{ TestScene->CreateEntity() };
 
 		UniquePtr<Material> MeshMaterial = MakeUnique<Material>("Resources/LightVertexShader2.txt", "Resources/LightFragmentShader2.txt");
-		MeshMaterial->SetVec3("_ObjectColor", Math::Vec3D{ 1.0f, 0.5f, 0.3f });
-		MeshMaterial->SetVec3("_LightColor", Math::Vec3D{ 1.0f, 1.0f, 1.0f });
 		TestScene->AddComponent<MeshComponent>(Entity, vertices, indices, __MOVE(MeshMaterial));
 
-		TestScene->GetComponent<TransformComponent>(Entity).Translate(Math::Vec3D{ 2.0f,0.0f,-2.0f });
+		TestScene->GetComponent<TransformComponent>(Entity).Translate(Math::Vec3D{ 1.2f,1.0f,-2.0f });
 	}
 
 	TestScene->AddUpdateCallback(0, [](Scene& scene)->void
