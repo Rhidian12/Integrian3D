@@ -138,7 +138,7 @@ namespace Integrian3D
 
 	void TransformComponent::RecalculateDirectionVectors()
 	{
-		Forward = Math::Vec3D{ 0.0, 0.0, 1.0 };
+		Forward = Math::Vec3D{ 0.0, 0.0, -1.0 };
 
 		Forward = Forward * LocalAngle;
 

@@ -133,7 +133,7 @@ int RunTestEngine(int, char* [])
 		MeshMaterial->SetVec3("_LightColor", Math::Vec3D{ 1.0, 1.0, 1.0 });
 		TestScene->AddComponent<MeshComponent>(Entity, vertices, indices, __MOVE(MeshMaterial));
 
-		TestScene->GetComponent<TransformComponent>(Entity).Translate(Math::Vec3D{ -2.0,0.0,2.0 });
+		TestScene->GetComponent<TransformComponent>(Entity).Translate(Math::Vec3D{ 2.0,0.0,-2.0 });
 	}
 
 	TestScene->AddUpdateCallback(0, [](Scene& scene)->void

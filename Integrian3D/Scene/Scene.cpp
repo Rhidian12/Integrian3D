@@ -148,7 +148,7 @@ namespace Integrian3D
 			Math::Vec3D CameraPosition{};
 			if (!EngineIni.GetVector3D("Scene", "CameraStartPosition", CameraPosition))
 			{
-				CameraPosition = Math::Vec3D{ 0.0, 10.0, -10.0 };
+				CameraPosition = Math::Vec3D{ 0.0, 10.0, 10.0 };
 			}
 
 			m_Registry.GetComponent<TransformComponent>(m_ActiveCameraEntity).Translate(CameraPosition);
