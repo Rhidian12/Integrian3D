@@ -25,15 +25,15 @@ namespace Integrian3D::Time
 		void Update();
 
 		__NODISCARD static Timepoint Now();
-		__NODISCARD double GetElapsedSeconds() const { return m_ElapsedSeconds; }
-		__NODISCARD double GetFixedElapsedSeconds() const { return m_TimePerFrame; }
-		__NODISCARD double GetTotalElapsedSeconds() const { return m_TotalElapsedSeconds; }
+		__NODISCARD float GetElapsedSeconds() const { return m_ElapsedSeconds; }
+		__NODISCARD float GetFixedElapsedSeconds() const { return m_TimePerFrame; }
+		__NODISCARD float GetTotalElapsedSeconds() const { return m_TotalElapsedSeconds; }
 		__NODISCARD int GetFPS() const { return m_FPS; }
-		__NODISCARD double GetTimePerFrame() const { return m_TimePerFrame; }
+		__NODISCARD float GetTimePerFrame() const { return m_TimePerFrame; }
 
 #pragma region GetElapsedTime
 		template<TimeLength T>
-		__NODISCARD double GetElapsedTime() const
+		__NODISCARD float GetElapsedTime() const
 		{
 			if constexpr (T == TimeLength::NanoSeconds)
 				return m_ElapsedSeconds * SecToNano;
@@ -68,7 +68,7 @@ namespace Integrian3D::Time
 
 #pragma region GetFixedElapsedTime
 		template<TimeLength T>
-		__NODISCARD double GetFixedElapsedTime() const
+		__NODISCARD float GetFixedElapsedTime() const
 		{
 			if constexpr (T == TimeLength::NanoSeconds)
 				return m_TimePerFrame * SecToNano;
@@ -103,7 +103,7 @@ namespace Integrian3D::Time
 
 #pragma region GetTotalElapsedTime
 		template<TimeLength T>
-		__NODISCARD double GetTotalElapsedTime() const
+		__NODISCARD float GetTotalElapsedTime() const
 		{
 			if constexpr (T == TimeLength::NanoSeconds)
 				return m_TotalElapsedSeconds * SecToNano;
@@ -141,13 +141,13 @@ namespace Integrian3D::Time
 
 		inline static std::unique_ptr<Timer> m_pInstance{};
 
-		const double m_MaxElapsedSeconds;
-		double m_ElapsedSeconds;
-		double m_TotalElapsedSeconds;
+		const float m_MaxElapsedSeconds;
+		float m_ElapsedSeconds;
+		float m_TotalElapsedSeconds;
 		int m_FPS;
 		int m_FPSCounter;
-		double m_FPSTimer;
-		double m_TimePerFrame;
+		float m_FPSTimer;
+		float m_TimePerFrame;
 
 		Timepoint m_StartTimepoint;
 		Timepoint m_PreviousTimepoint;

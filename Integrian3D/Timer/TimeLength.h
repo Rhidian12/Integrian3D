@@ -14,15 +14,15 @@ namespace Integrian3D::Time
 		Hours,
 	};
 
-	inline constexpr double SecToNano{ 1'000'000'000.0 };
-	inline constexpr double SecToMicro{ 1'000'000.0 };
-	inline constexpr double SecToMilli{ 1'000.0 };
-	inline constexpr double SecToMin{ 1.0 / 60.0 };
-	inline constexpr double SecToHours{ 1.0 / 3600.0 };
+	inline constexpr float SecToNano{ 1'000'000'000.f };
+	inline constexpr float SecToMicro{ 1'000'000.f };
+	inline constexpr float SecToMilli{ 1'000.f };
+	inline constexpr float SecToMin{ 1.f / 60.f };
+	inline constexpr float SecToHours{ 1.f / 3600.f };
 
-	inline constexpr double NanoToSec{ 1.0 / 1'000'000'000.0 };
-	inline constexpr double MicroToSec{ 1.0 / 1'000'000.0 };
-	inline constexpr double MilliToSec{ 1.0 / 1'000.0 };
-	inline constexpr double MinToSec{ 60.0 };
-	inline constexpr double HoursToSec{ 3600.0 };
+	inline constexpr float NanoToSec{ 1.f / 1'000'000'000.f };
+	inline constexpr float MicroToSec{ 1.f / 1'000'000.f };
+	inline constexpr float MilliToSec{ 1.f / 1'000.f };
+	inline constexpr float MinToSec{ 60.f };
+	inline constexpr float HoursToSec{ 3600.f };
 }

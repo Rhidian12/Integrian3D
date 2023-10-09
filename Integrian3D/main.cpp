@@ -58,7 +58,7 @@ int RunTestEngine(int, char* [])
 
 	Core& core{ Core::CreateCore(1080,720) };
 
-	TextureManager::GetInstance().AddTexture("__Wall", "Resources/wall.jpg");
+	// TextureManager::GetInstance().AddTexture("__Wall", "Resources/wall.jpg");
 
 	UniquePtr<Scene> TestScene{ new Scene{ "TestScene" } };
 	SceneManager::GetInstance().AddScene(TestScene.Get());
@@ -120,8 +120,8 @@ int RunTestEngine(int, char* [])
 		// TestScene->AddComponent<TestRotateComponent>(entity);
 
 		UniquePtr<Material> MeshMaterial = MakeUnique<Material>("Resources/LightVertexShader.txt", "Resources/LightFragmentShader.txt");
-		MeshMaterial->SetVec3("_ObjectColor", Math::Vec3D{ 1.0, 0.5, 0.3 });
-		MeshMaterial->SetVec3("_LightColor", Math::Vec3D{ 1.0, 1.0, 1.0 });
+		MeshMaterial->SetVec3("_ObjectColor", Math::Vec3D{ 1.0f, 0.5f, 0.3f });
+		MeshMaterial->SetVec3("_LightColor", Math::Vec3D{ 1.0f, 1.0f, 1.0f });
 		TestScene->AddComponent<MeshComponent>(entity, vertices, indices, __MOVE(MeshMaterial));
 	}
 
@@ -129,11 +129,11 @@ int RunTestEngine(int, char* [])
 		Entity Entity{ TestScene->CreateEntity() };
 
 		UniquePtr<Material> MeshMaterial = MakeUnique<Material>("Resources/LightVertexShader2.txt", "Resources/LightFragmentShader2.txt");
-		MeshMaterial->SetVec3("_ObjectColor", Math::Vec3D{ 1.0, 0.5, 0.3 });
-		MeshMaterial->SetVec3("_LightColor", Math::Vec3D{ 1.0, 1.0, 1.0 });
+		MeshMaterial->SetVec3("_ObjectColor", Math::Vec3D{ 1.0f, 0.5f, 0.3f });
+		MeshMaterial->SetVec3("_LightColor", Math::Vec3D{ 1.0f, 1.0f, 1.0f });
 		TestScene->AddComponent<MeshComponent>(Entity, vertices, indices, __MOVE(MeshMaterial));
 
-		TestScene->GetComponent<TransformComponent>(Entity).Translate(Math::Vec3D{ 2.0,0.0,-2.0 });
+		TestScene->GetComponent<TransformComponent>(Entity).Translate(Math::Vec3D{ 2.0f,0.0f,-2.0f });
 	}
 
 	TestScene->AddUpdateCallback(0, [](Scene& scene)->void

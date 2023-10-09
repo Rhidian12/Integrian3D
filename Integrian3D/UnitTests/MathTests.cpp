@@ -72,20 +72,20 @@ TEST_CASE("Testing Math functions")
 		REQUIRE(IsInRange(RandomI(0, 1), 0, 2));
 		REQUIRE(IsInRange(RandomI(0, 10), 0, 11));
 
-		const Vec2D randomVec2{ RandomVec2D(-5.0, 10.0) };
-		REQUIRE(IsInRange(randomVec2.x, -5.0, 10.0));
-		REQUIRE(IsInRange(randomVec2.y, -5.0, 10.0));
+		const Vec2D randomVec2{ RandomVec2D(-5.f, 10.f) };
+		REQUIRE(IsInRange(randomVec2.x, -5.f, 10.f));
+		REQUIRE(IsInRange(randomVec2.y, -5.f, 10.f));
 
-		const Vec3D randomVec3{ RandomVec3D(-5.0, 10.0) };
-		REQUIRE(IsInRange(randomVec3.x, -5.0, 10.0));
-		REQUIRE(IsInRange(randomVec3.y, -5.0, 10.0));
-		REQUIRE(IsInRange(randomVec3.z, -5.0, 10.0));
+		const Vec3D randomVec3{ RandomVec3D(-5.f, 10.f) };
+		REQUIRE(IsInRange(randomVec3.x, -5.f, 10.f));
+		REQUIRE(IsInRange(randomVec3.y, -5.f, 10.f));
+		REQUIRE(IsInRange(randomVec3.z, -5.f, 10.f));
 
-		const Vec4D randomVec4{ RandomVec4D(-5.0, 10.0) };
-		REQUIRE(IsInRange(randomVec4.x, -5.0, 10.0));
-		REQUIRE(IsInRange(randomVec4.y, -5.0, 10.0));
-		REQUIRE(IsInRange(randomVec4.z, -5.0, 10.0));
-		REQUIRE(IsInRange(randomVec4.w, -5.0, 10.0));
+		const Vec4D randomVec4{ RandomVec4D(-5.f, 10.f) };
+		REQUIRE(IsInRange(randomVec4.x, -5.f, 10.f));
+		REQUIRE(IsInRange(randomVec4.y, -5.f, 10.f));
+		REQUIRE(IsInRange(randomVec4.z, -5.f, 10.f));
+		REQUIRE(IsInRange(randomVec4.w, -5.f, 10.f));
 	}
 
 	SECTION("Testing Max and Min")

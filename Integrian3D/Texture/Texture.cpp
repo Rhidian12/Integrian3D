@@ -46,6 +46,7 @@ namespace Integrian3D
 		/* Generate mipmaps */
 		glGenerateMipmap(TextureID);
 
+		// [TODO]: This generates an OpenGL error???
 		/* free stb image */
 		stbi_image_free(pData);
 	}

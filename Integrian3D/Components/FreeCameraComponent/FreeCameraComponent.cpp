@@ -11,7 +11,7 @@
 
 namespace Integrian3D
 {
-	FreeCameraComponent::FreeCameraComponent(const float nearPlane, const float farPlane, const float fov, const float aspectRatio, const double speed)
+	FreeCameraComponent::FreeCameraComponent(const float nearPlane, const float farPlane, const float fov, const float aspectRatio, const float speed)
 		: m_NearPlane{ nearPlane }
 		, m_FarPlane{ farPlane }
 		, m_FOV{ fov }
@@ -20,7 +20,7 @@ namespace Integrian3D
 		, m_View{ 1.f }
 		, m_Projection{ 1.f }
 	{
-		const Math::Vec3D startPos{ 0.0, 0.0, -3.0 };
+		const Math::Vec3D startPos{ 0.f, 0.f, -3.f };
 		m_View = glm::lookAt(startPos, startPos + Math::Forward, Math::Up);
 		m_Projection = glm::perspective(m_FOV, m_AspectRatio, m_NearPlane, m_FarPlane);
 	}
@@ -43,14 +43,14 @@ namespace Integrian3D
 
 		Math::Vec3D dir{};
 
-		dir.x += inputManager.GetIsKeyPressed(KeyboardInput::A) ? -1.0 : 0.0;
-		dir.x += inputManager.GetIsKeyPressed(KeyboardInput::D) ? 1.0 : 0.0;
+		dir.x += inputManager.GetIsKeyPressed(KeyboardInput::A) ? -1.f : 0.f;
+		dir.x += inputManager.GetIsKeyPressed(KeyboardInput::D) ? 1.f : 0.f;
 
-		dir.z += inputManager.GetIsKeyPressed(KeyboardInput::W) ? 1.0 : 0.0;
-		dir.z += inputManager.GetIsKeyPressed(KeyboardInput::S) ? -1.0 : 0.0;
+		dir.z += inputManager.GetIsKeyPressed(KeyboardInput::W) ? 1.f : 0.f;
+		dir.z += inputManager.GetIsKeyPressed(KeyboardInput::S) ? -1.f : 0.f;
 
-		dir.y += inputManager.GetIsKeyPressed(KeyboardInput::E) ? 1.0 : 0.0;
-		dir.y += inputManager.GetIsKeyPressed(KeyboardInput::Q) ? -1.0 : 0.0;
+		dir.y += inputManager.GetIsKeyPressed(KeyboardInput::E) ? 1.f : 0.f;
+		dir.y += inputManager.GetIsKeyPressed(KeyboardInput::Q) ? -1.f : 0.f;
 
 		transform.Translate(transform.GetForward() * dir.z
 			* m_Speed * Timer::GetInstance().GetElapsedSeconds());
@@ -73,13 +73,18 @@ namespace Integrian3D
 		double xOffset{ mousePos.x - lastMousePos.x };
 		double yOffset{ lastMousePos.y - mousePos.y };
 
-		constexpr static double sensitivity{ 0.002 };
+		constexpr static float sensitivity{ 0.002f };
 		xOffset *= sensitivity;
 		yOffset *= sensitivity;
 
-		transform.Rotate(Math::Vec3D{ yOffset, xOffset, 0.0 });
+		transform.Rotate(Math::Vec3D{ yOffset, xOffset, 0.f });
 
 		UpdateView(transform);
+	}
+
+	void FreeCameraComponent::SetSpeed(const float speed)
+	{
+		m_Speed = speed;
 	}
 
 	bool FreeCameraComponent::operator==(const FreeCameraComponent& other) const

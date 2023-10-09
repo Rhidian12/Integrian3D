@@ -153,19 +153,19 @@ namespace Integrian3D
 		/* Enable the Position Attribute */
 		glEnableVertexAttribArray(0);
 
-		glVertexAttribPointer(0, 3, GL_DOUBLE, GL_FALSE, sizeof(Vertex), /* offset = */ reinterpret_cast<void*>(0));
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), /* offset = */ reinterpret_cast<void*>(0));
 
 		/* Enable the Normal attribute */
 		glEnableVertexAttribArray(1);
 
 		/* Set Vertex Buffer UV Coord Attribute layout */
-		glVertexAttribPointer(1, 3, GL_DOUBLE, GL_FALSE, sizeof(Vertex), /* offset = */ reinterpret_cast<void*>(sizeof(Math::Vec3D)));
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), /* offset = */ reinterpret_cast<void*>(sizeof(Math::Vec3D)));
 
 		/* Enable the UV Coord attribute */
 		glEnableVertexAttribArray(2);
 
 		/* Set Vertex Buffer UV Coord Attribute layout */
-		glVertexAttribPointer(2, 2, GL_DOUBLE, GL_FALSE, sizeof(Vertex), /* offset = */ reinterpret_cast<void*>(sizeof(Math::Vec3D) * 2));
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), /* offset = */ reinterpret_cast<void*>(sizeof(Math::Vec3D) * 2));
 
 		glBindVertexArray(0);
 	}

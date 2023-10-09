@@ -15,7 +15,10 @@ namespace Integrian3D
 	{
 		static void LogGLError(GLenum Source, GLenum Type, GLuint ID, GLenum Severity, GLsizei /*Length*/, const GLchar* message, const void* /*UserParam*/)
 		{
-			if (Type != GL_DEBUG_TYPE_ERROR)
+			if (!(Type == GL_DEBUG_TYPE_ERROR ||
+				Type == GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR ||
+				Type == GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR ||
+				Type == GL_DEBUG_TYPE_PERFORMANCE))
 			{
 				return;
 			}
@@ -126,6 +129,7 @@ namespace Integrian3D
 
 		Math::SetSeed(SEED);
 
+		glEnable(GL_DEBUG_OUTPUT);
 		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 		glDebugMessageCallback(LogGLError, nullptr);
 

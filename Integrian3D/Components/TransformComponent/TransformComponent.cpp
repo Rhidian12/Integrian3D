@@ -15,7 +15,7 @@ namespace Integrian3D
 		, WorldScale{ 1.0, 1.0, 1.0 }
 		, LocalScale{ 1.0, 1.0, 1.0 }
 		, WorldAngle{}
-		, LocalAngle{ glm::quat_identity<double, glm::packed_highp>() }
+		, LocalAngle{ glm::quat_identity<float, glm::packed_highp>() }
 		, bShouldRecalculateTransform{}
 		, bShouldRecalculateWorldData{}
 		, Forward{ 0.0, 0.0, 1.0 }
@@ -92,7 +92,7 @@ namespace Integrian3D
 
 	void TransformComponent::Rotate(const Math::Vec3D& rotationRad)
 	{
-		LocalAngle *= Math::QuatD(rotationRad);
+		LocalAngle *= Math::Quat(rotationRad);
 
 		bShouldRecalculateTransform = true;
 		bShouldRecalculateWorldData = true;

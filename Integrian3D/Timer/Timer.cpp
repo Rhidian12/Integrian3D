@@ -14,13 +14,13 @@
 namespace Integrian3D::Time
 {
 	Timer::Timer()
-		: m_MaxElapsedSeconds{ 0.1 }
+		: m_MaxElapsedSeconds{ 0.1f }
 		, m_ElapsedSeconds{}
 		, m_TotalElapsedSeconds{}
 		, m_FPS{}
 		, m_FPSCounter{}
 		, m_FPSTimer{}
-		, m_TimePerFrame{ 1.0 / 144.0 }
+		, m_TimePerFrame{ 1.f / 144.f }
 		, m_StartTimepoint{}
 		, m_PreviousTimepoint{}
 	{
@@ -52,7 +52,7 @@ namespace Integrian3D::Time
 
 		m_PreviousTimepoint = m_StartTimepoint;
 
-		m_FPS = static_cast<int>(1.0 / m_ElapsedSeconds);
+		m_FPS = static_cast<int>(1.f / m_ElapsedSeconds);
 	}
 
 	Timepoint Timer::Now()

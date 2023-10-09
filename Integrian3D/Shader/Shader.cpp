@@ -82,7 +82,7 @@ namespace Integrian3D
 
 	void Shader::SetVec3(const std::string_view Name, const Math::Vec3D& Vec) const
 	{
-		glUniform3d(glGetUniformLocation(ProgramID, Name.data()), Vec.x, Vec.y, Vec.z);
+		glUniform3f(glGetUniformLocation(ProgramID, Name.data()), Vec.x, Vec.y, Vec.z);
 	}
 
 	void Shader::SetupShaders(const std::string& VertexShader, const std::string& FragmentShader)

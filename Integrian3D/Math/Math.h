@@ -14,15 +14,12 @@
 namespace Integrian3D::Math
 {
 #pragma region Using
-	using Vec2D = glm::vec<2, double>;
-	using Vec2F = glm::vec<2, float>;
-	using Vec3D = glm::vec<3, double>;
-	using Vec3F = glm::vec<3, float>;
-	using Vec4D = glm::vec<4, double>;
-	using Vec4F = glm::vec<4, float>;
-	using Mat4D = glm::mat<4, 4, double>;
-	using Mat4F = glm::mat<4, 4, double>;
-	using QuatD = glm::qua<double, glm::packed_highp>;
+	using Vec2D = glm::vec<2, float>;
+	using Vec3D = glm::vec<3, float>;
+	using Vec4D = glm::vec<4, float>;
+	using Mat4D = glm::mat<4, 4, float>;
+	using Mat4F = glm::mat<4, 4, float>;
+	using Quat = glm::qua<float, glm::packed_highp>;
 #pragma endregion
 
 #pragma region Variables
@@ -148,19 +145,6 @@ namespace Integrian3D::Math
 		return Vec4D{ RandomF(min, max),RandomF(min, max),RandomF(min, max),RandomF(min, max) };
 	}
 
-	__NODISCARD constexpr Vec2F RandomVec2F(const float min, const float max)
-	{
-		return Vec2F{ RandomF(min, max),RandomF(min, max) };
-	}
-	__NODISCARD constexpr Vec3F RandomVec3F(const float min, const float max)
-	{
-		return Vec3F{ RandomF(min, max),RandomF(min, max),RandomF(min, max) };
-	}
-
-	__NODISCARD constexpr Vec4F RandomVec4F(const float min, const float max)
-	{
-		return Vec4F{ RandomF(min, max),RandomF(min, max),RandomF(min, max),RandomF(min, max) };
-	}
 #pragma endregion
 
 	template<typename T>

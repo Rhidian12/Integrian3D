@@ -17,7 +17,7 @@ namespace Integrian3D::Time
 		constexpr Timepoint()
 			: m_Time{}
 		{}
-		constexpr explicit Timepoint(const double time)
+		constexpr explicit Timepoint(const float time)
 			: m_Time{ time }
 		{}
 		constexpr ~Timepoint() = default;
@@ -28,7 +28,7 @@ namespace Integrian3D::Time
 		constexpr Timepoint& operator=(Timepoint&&) noexcept = default;
 
 		template<TimeLength T = TimeLength::Seconds>
-		__NODISCARD constexpr double Count() const
+		__NODISCARD constexpr float Count() const
 		{
 			if constexpr (T == TimeLength::NanoSeconds)
 				return m_Time * SecToNano;
@@ -78,7 +78,7 @@ namespace Integrian3D::Time
 #pragma endregion
 
 	private:
-		double m_Time; /* Stored in seconds */
+		float m_Time; /* Stored in seconds */
 	};
 
 #pragma region Operators

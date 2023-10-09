@@ -150,7 +150,7 @@ namespace Integrian3D
 						return std::isspace(C);
 					}), Component.end());
 
-				Value[static_cast<int32>(I)] = std::stod(Component);
+				Value[static_cast<int32>(I)] = std::stof(Component);
 			}
 
 			return true;
@@ -171,7 +171,7 @@ namespace Integrian3D
 			TArray<std::string> VectorComponents{};
 			SplitString(RawIniValue, ',', VectorComponents);
 
-			__ASSERT(VectorComponents.Size() == 3, "IniFile::GetVector3D() > Requested Key is not a Vector2D");
+			__ASSERT(VectorComponents.Size() == 3, "IniFile::GetVector3D() > Requested Key is not a Vector3D");
 
 			for (SIZE_T I{}; I < VectorComponents.Size(); ++I)
 			{
@@ -181,7 +181,7 @@ namespace Integrian3D
 						return std::isspace(C);
 					}), Component.end());
 
-				Value[static_cast<int32>(I)] = std::stod(Component);
+				Value[static_cast<int32>(I)] = std::stof(Component);
 			}
 
 			return true;
