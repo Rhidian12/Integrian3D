@@ -1,0 +1,11 @@
+#version 460 core
+
+out vec4 FragColor;
+  
+uniform dvec3 _ObjectColor;
+uniform dvec3 _LightColor;
+
+void main()
+{
+    FragColor = vec4(1.0);
+}

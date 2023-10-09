@@ -327,7 +327,9 @@ xcopy "$(SolutionDir)Config\*.*" "$(OutDir)Config\" /y /d /e /q</Command>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Resources\LightFragmentShader.txt" />
+    <Text Include="Resources\LightFragmentShader2.txt" />
     <Text Include="Resources\LightVertexShader.txt" />
+    <Text Include="Resources\LightVertexShader2.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

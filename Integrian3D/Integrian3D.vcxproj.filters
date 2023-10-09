@@ -387,5 +387,7 @@
   <ItemGroup>
     <Text Include="Resources\LightVertexShader.txt" />
     <Text Include="Resources\LightFragmentShader.txt" />
+    <Text Include="Resources\LightVertexShader2.txt" />
+    <Text Include="Resources\LightFragmentShader2.txt" />
   </ItemGroup>
 </Project>

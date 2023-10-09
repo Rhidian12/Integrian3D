@@ -128,7 +128,7 @@ int RunTestEngine(int, char* [])
 	{
 		Entity Entity{ TestScene->CreateEntity() };
 
-		UniquePtr<Material> MeshMaterial = MakeUnique<Material>("Resources/LightVertexShader.txt", "Resources/LightFragmentShader.txt");
+		UniquePtr<Material> MeshMaterial = MakeUnique<Material>("Resources/LightVertexShader2.txt", "Resources/LightFragmentShader2.txt");
 		MeshMaterial->SetVec3("_ObjectColor", Math::Vec3D{ 1.0, 0.5, 0.3 });
 		MeshMaterial->SetVec3("_LightColor", Math::Vec3D{ 1.0, 1.0, 1.0 });
 		TestScene->AddComponent<MeshComponent>(Entity, vertices, indices, __MOVE(MeshMaterial));
