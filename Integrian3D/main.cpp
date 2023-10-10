@@ -124,8 +124,10 @@ int RunTestEngine(int, char* [])
 		MeshMaterial->SetVec3("_Material.Diffuse", Math::Vec3D{ 1.0f, 0.5f, 0.3f });
 		MeshMaterial->SetVec3("_Material.Specular", Math::Vec3D{ 0.5f, 0.5f, 0.5f });
 		MeshMaterial->SetFloat("_Material.Shininess", 32.f);
-		MeshMaterial->SetVec3("_LightColor", Math::Vec3D{ 1.0f, 1.0f, 1.0f });
-		MeshMaterial->SetVec3("_LightPos", Math::Vec3D{ 1.2f,1.0f,-2.0f });
+
+		MeshMaterial->SetVec3("_Light.Ambient", Math::Vec3D{ 0.2f, 0.2f, 0.2f });
+		MeshMaterial->SetVec3("_Light.Diffuse", Math::Vec3D{ 0.5f, 0.5f, 0.5f });
+		MeshMaterial->SetVec3("_Light.Specular", Math::Vec3D{ 1.f, 1.f, 1.f });
 		TestScene->AddComponent<MeshComponent>(entity, vertices, indices, __MOVE(MeshMaterial));
 	}
 

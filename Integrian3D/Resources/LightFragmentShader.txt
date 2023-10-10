@@ -8,26 +8,34 @@ struct GLMaterial
     float Shininess;
 };
 
+struct GLLight
+{
+    vec3 Position;
+
+    vec3 Ambient;
+    vec3 Diffuse;
+    vec3 Specular;
+};
+
 in vec3 vPos;
 in vec3 vNormal;
 
 out vec4 FragColor;
   
-uniform vec3 _LightColor;
-uniform vec3 _LightPos;
 uniform vec3 _ViewPos;
 uniform GLMaterial _Material;
+uniform GLLight _Light;
 
 vec3 CalculateAmbient()
 {
-    return _Material.Ambient * _LightColor;
+    return _Material.Ambient * _Light.Ambient;
 }
 
 vec3 CalculateDiffuse(vec3 normal, vec3 lightDirection)
 {
     float diff = max(dot(normal, lightDirection), 0.0);
 
-    return (diff * _Material.Diffuse) * _LightColor;
+    return (diff * _Material.Diffuse) * _Light.Diffuse;
 }
 
 vec3 CalculateSpecular(vec3 normal, vec3 lightDirection)
@@ -37,13 +45,13 @@ vec3 CalculateSpecular(vec3 normal, vec3 lightDirection)
 
     float specular = pow(max(dot(viewDirection, reflectDirection), 0.0), _Material.Shininess);
 
-    return (_Material.Specular * specular) * _LightColor;
+    return (_Material.Specular * specular) * _Light.Specular;
 }
 
 void main()
 {
     vec3 normal = normalize(vNormal);
-    vec3 lightDirection = normalize(_LightPos - vPos);
+    vec3 lightDirection = normalize(_Light.Position - vPos);
 
     vec3 result = CalculateAmbient() + CalculateDiffuse(normal, lightDirection) + CalculateSpecular(normal, lightDirection);
 
