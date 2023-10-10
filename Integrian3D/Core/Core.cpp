@@ -107,7 +107,7 @@ namespace Integrian3D
 		InputManager::CreateInputManager(&Window);
 	}
 
-	Core::~Core()
+	void Core::Shutdown()
 	{
 		Logger::Cleanup();
 	}
@@ -178,5 +178,7 @@ namespace Integrian3D
 
 			// LogMessage("FPS: " + std::to_string(Timer::GetInstance().GetFPS()), false);
 		}
+
+		Shutdown();
 	}
 }

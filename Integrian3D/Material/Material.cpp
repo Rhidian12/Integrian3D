@@ -15,7 +15,7 @@ namespace Integrian3D
 		Textures.Add(Texture);
 	}
 
-	void Material::StartShader(const Math::Mat4D& Transform, const Math::Mat4D& View, const Math::Mat4D& Projection) const
+	void Material::StartShader(const Math::Mat4D& Transform, const Math::Mat4D& View, const Math::Mat4D& Projection, const Math::Vec3D& CameraPosition) const
 	{
 		MaterialShader.Activate();
 
@@ -24,6 +24,9 @@ namespace Integrian3D
 		MaterialShader.SetMatrix("_Projection", Projection);
 
 		MaterialShader.SetMatrix("_Transform", Transform);
+
+		// [TODO]: we can convert everything to view space, which means we dont need to do this
+		MaterialShader.SetVec3("_ViewPos", CameraPosition);
 
 		for (const auto& Request : SetShaderVarRequests)
 		{

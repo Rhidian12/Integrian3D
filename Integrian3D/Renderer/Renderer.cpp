@@ -29,7 +29,7 @@ namespace Integrian3D
 		return *Instance.get();
 	}
 
-	void Renderer::StartRenderLoop(const FreeCameraComponent& camera)
+	void Renderer::StartRenderLoop(const FreeCameraComponent& camera, const TransformComponent& Transform)
 	{
 		/* Sets the Clear Colour */
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -46,11 +46,12 @@ namespace Integrian3D
 
 		View = camera.GetView();
 		Projection = camera.GetProjection();
+		CameraPosition = Transform.GetLocalLocation();
 	}
 
 	void Renderer::Render(const MeshComponent& mesh, const TransformComponent& transform) const
 	{
-		mesh.StartShader(transform.Transformation, View, Projection);
+		mesh.StartShader(transform.Transformation, View, Projection, CameraPosition);
 
 		/* Bind the Vertex Array ID */
 		glBindVertexArray(mesh.GetVertexArrayID());

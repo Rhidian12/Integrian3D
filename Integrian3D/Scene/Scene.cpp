@@ -27,7 +27,18 @@ namespace Integrian3D
 		AddRenderCallback(0u, [](Scene& scene)->void
 			{
 				auto& renderer{ Renderer::GetInstance() };
-				renderer.StartRenderLoop(scene.GetComponent<FreeCameraComponent>(scene.GetActiveCameraEntity()));
+
+				if (scene.GetNrOfEntities() > 0u && scene.CanViewBeCreated<TransformComponent, FreeCameraComponent>())
+				{
+					const View CameraView{ scene.CreateView<TransformComponent, FreeCameraComponent>() };
+
+					__CHECK(CameraView.GetNrOfEntities() == 1);
+
+					CameraView.ForEach([&renderer](const auto& Transform, const auto& Camera)->void
+						{
+							renderer.StartRenderLoop(Camera, Transform);
+						});
+				}
 
 				if (scene.GetNrOfEntities() > 0u && scene.CanViewBeCreated<TransformComponent, MeshComponent>())
 				{

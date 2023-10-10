@@ -36,12 +36,37 @@ namespace Integrian3D
 			}
 		}
 
+		// Warning: This is an EXPENSIVE function, only use when absolutely necessary!
+		int32 GetNrOfEntities() const
+		{
+			auto indexSequence{ std::make_index_sequence<sizeof ... (Ts)>{} };
+			int32 Count{};
+
+			for (const Entity Ent : Entities)
+			{
+				GetNrOfEntitiesImpl(Ent, Count, indexSequence);
+			}
+
+			return Count;
+		}
+
 	private:
 		template<size_t ... Is>
 		void ForEachImpl(const std::function<void(Ts&...)>& function, const Entity ent, const std::index_sequence<Is...>&) const
 		{
 			if ((ent != InvalidEntityID) && (std::get<Is>(m_Components).HasEntity(ent) && ...))
+			{
 				std::apply(function, std::tuple<Ts&...>(std::get<Is>(m_Components).GetComponent(ent)...));
+			}
+		}
+
+		template<size_t ... Is>
+		void GetNrOfEntitiesImpl(const Entity Ent, int32& Count, const std::index_sequence<Is...>&) const
+		{
+			if ((Ent != InvalidEntityID) && (std::get<Is>(m_Components).HasEntity(Ent) && ...))
+			{
+				++Count;
+			}
 		}
 
 		ViewContainerType m_Components;

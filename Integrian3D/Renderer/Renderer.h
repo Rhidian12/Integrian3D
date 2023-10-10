@@ -22,7 +22,7 @@ namespace Integrian3D
 		Renderer& operator=(const Renderer&) noexcept = delete;
 		Renderer& operator=(Renderer&&) noexcept = delete;
 
-		void StartRenderLoop(const FreeCameraComponent& camera);
+		void StartRenderLoop(const FreeCameraComponent& camera, const TransformComponent& Transform);
 
 		void Render(const MeshComponent& mesh, const TransformComponent& transform) const;
 
@@ -36,6 +36,7 @@ namespace Integrian3D
 
 		Math::Mat4D View;
 		Math::Mat4D Projection;
+		Math::Vec3D CameraPosition;
 
 		bool bShouldRenderWireframe;
 	};

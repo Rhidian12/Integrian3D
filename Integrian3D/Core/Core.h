@@ -15,8 +15,6 @@ namespace Integrian3D
 	class Core final
 	{
 	public:
-		~Core();
-
 		static Core& GetInstance();
 		static Core& CreateCore(const int windowWidth, const int windowHeight);
 			
@@ -33,6 +31,7 @@ namespace Integrian3D
 
 	private:
 		Core(const int windowWidth, const int windowHeight);
+		void Shutdown();
 
 		Detail::Window Window;
 

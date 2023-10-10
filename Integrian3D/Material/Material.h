@@ -22,7 +22,7 @@ namespace Integrian3D
 
 		void AddTexture(Texture* const Texture);
 
-		void StartShader(const Math::Mat4D& Transform, const Math::Mat4D& View, const Math::Mat4D& Projection) const;
+		void StartShader(const Math::Mat4D& Transform, const Math::Mat4D& View, const Math::Mat4D& Projection, const Math::Vec3D& CameraPosition) const;
 
 		void SetBool(const std::string_view Name, const bool Value);
 		void SetInt(const std::string_view Name, const int Value);

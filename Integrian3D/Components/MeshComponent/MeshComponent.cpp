@@ -103,9 +103,9 @@ namespace Integrian3D
 		MeshMaterial->AddTexture(TextureToApply);
 	}
 
-	void MeshComponent::StartShader(const Math::Mat4D& Transform, const Math::Mat4D& View, const Math::Mat4D& Projection) const
+	void MeshComponent::StartShader(const Math::Mat4D& Transform, const Math::Mat4D& View, const Math::Mat4D& Projection, const Math::Vec3D& CameraPosition) const
 	{
-		MeshMaterial->StartShader(Transform, View, Projection);
+		MeshMaterial->StartShader(Transform, View, Projection, CameraPosition);
 	}
 
 	void MeshComponent::SetupMesh()
