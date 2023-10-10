@@ -8,13 +8,12 @@
 
 #include <iostream>
 
-#pragma warning ( push )
-#pragma warning ( disable : 4005 ) /* warning C4005: 'APIENTRY': macro redefinition */ 
 #	ifdef _WIN32
+	I_DISABLE_WARNING(4005) /* warning C4005: 'APIENTRY': macro redefinition */ 
 #		define WIN32_LEAN_AND_MEAN
 #		include <Windows.h>
+	I_ENABLE_WARNING(4005)
 #	endif
-#pragma warning ( pop )
 
 namespace Integrian3D
 {
