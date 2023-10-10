@@ -25,7 +25,6 @@ namespace Integrian3D
 
 		MaterialShader.SetMatrix("_Transform", Transform);
 
-		// [TODO]: we can convert everything to view space, which means we dont need to do this
 		MaterialShader.SetVec3("_ViewPos", CameraPosition);
 
 		for (const auto& Request : SetShaderVarRequests)
