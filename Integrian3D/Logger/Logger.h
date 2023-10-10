@@ -5,7 +5,7 @@
 #include "Win32Utils/Win32Handle.h"
 
 #include <format>
-#include <iostream>
+#include <string>
 #include <string_view>
 
 namespace Integrian3D
@@ -48,7 +48,7 @@ namespace Integrian3D
 
 			SetConsoleColour(ErrorLevel);
 
-			std::cout << std::format("[{}] {}\n", Category, std::vformat(Format, std::make_format_args(__FORWARD(Arguments)...)));
+			WriteMessage(std::format("[{}] {}\n", Category, std::vformat(Format, std::make_format_args(__FORWARD(Arguments)...))));
 
 			CheckErrorLevel(ErrorLevel);
 
@@ -64,6 +64,7 @@ namespace Integrian3D
 		void SetConsoleColour(const LogErrorLevel ErrorLevel) const;
 		void ResetConsoleColour() const;
 		void CheckErrorLevel(const LogErrorLevel ErrorLevel) const;
+		void WriteMessage(const std::string& Message) const;
 
 		Logger();
 
