@@ -71,11 +71,13 @@ namespace Integrian3D
 		const Math::Vec2D& lastMousePos{ inputManager.GetPreviousMousePosition() };
 
 		double xOffset{ mousePos.x - lastMousePos.x };
-		double yOffset{ lastMousePos.y - mousePos.y };
+		double yOffset{ mousePos.y - lastMousePos.y };
 
 		constexpr static float sensitivity{ 0.002f };
 		xOffset *= sensitivity;
 		yOffset *= sensitivity;
+
+		LOG(Log, LogErrorLevel::Log, "({}, {}, {})", yOffset, xOffset, 0.f);
 
 		transform.Rotate(Math::Vec3D{ yOffset, xOffset, 0.f });
 

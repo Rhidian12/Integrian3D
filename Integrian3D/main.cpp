@@ -22,19 +22,19 @@ int RunTestEngine(int argc, char* argv[]);
 
 int main(int argc, char* argv[])
 {
-	#ifdef ENGINE
+#ifdef ENGINE
 
 	return RunEngine(argc, argv);
 
-	#elif defined UNIT_TESTS
+#elif defined UNIT_TESTS
 
 	return RunUnitTests(argc, argv);
 
-	#elif defined TEST_ENGINE
+#elif defined TEST_ENGINE
 
 	return RunTestEngine(argc, argv);
 
-	#endif
+#endif
 }
 
 #ifdef TEST_ENGINE
@@ -128,6 +128,7 @@ int RunTestEngine(int, char* [])
 		MeshMaterial->SetVec3("_Light.Ambient", Math::Vec3D{ 0.2f, 0.2f, 0.2f });
 		MeshMaterial->SetVec3("_Light.Diffuse", Math::Vec3D{ 0.5f, 0.5f, 0.5f });
 		MeshMaterial->SetVec3("_Light.Specular", Math::Vec3D{ 1.f, 1.f, 1.f });
+		MeshMaterial->SetVec3("_Light.Position", Math::Vec3D{ 1.2f, 1.0f, -2.0f });
 		TestScene->AddComponent<MeshComponent>(entity, vertices, indices, __MOVE(MeshMaterial));
 	}
 
@@ -137,7 +138,7 @@ int RunTestEngine(int, char* [])
 		UniquePtr<Material> MeshMaterial = MakeUnique<Material>("Resources/LightVertexShader2.txt", "Resources/LightFragmentShader2.txt");
 		TestScene->AddComponent<MeshComponent>(Entity, vertices, indices, __MOVE(MeshMaterial));
 
-		TestScene->GetComponent<TransformComponent>(Entity).Translate(Math::Vec3D{ 1.2f,1.0f,-2.0f });
+		TestScene->GetComponent<TransformComponent>(Entity).Translate(Math::Vec3D{ 1.2f, 1.0f, -2.0f });
 	}
 
 	TestScene->AddUpdateCallback(0, [](Scene& scene)->void

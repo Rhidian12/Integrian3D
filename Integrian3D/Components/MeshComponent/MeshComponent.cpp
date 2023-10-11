@@ -108,6 +108,16 @@ namespace Integrian3D
 		MeshMaterial->StartShader(Transform, View, Projection, CameraPosition);
 	}
 
+	Material* const MeshComponent::GetMaterial()
+	{
+		return MeshMaterial.Get();
+	}
+
+	const Material* const MeshComponent::GetMaterial() const
+	{
+		return MeshMaterial.Get();
+	}
+
 	void MeshComponent::SetupMesh()
 	{
 		/* Generate a vertex array ID (VAO) */

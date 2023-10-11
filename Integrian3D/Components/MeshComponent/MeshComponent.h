@@ -33,6 +33,9 @@ namespace Integrian3D
 
 		void StartShader(const Math::Mat4D& Transform, const Math::Mat4D& View, const Math::Mat4D& Projection, const Math::Vec3D& CameraPosition) const;
 
+		__NODISCARD Material* const GetMaterial();
+		__NODISCARD const Material* const GetMaterial() const;
+
 		__NODISCARD uint32 GetVertexArrayID() const { return VertexArrayID; }
 		__NODISCARD uint32 GetIndexBufferID() const { return IndexBufferID; }
 		__NODISCARD uint32 GetVertexBufferID() const { return VertexBufferID; }
