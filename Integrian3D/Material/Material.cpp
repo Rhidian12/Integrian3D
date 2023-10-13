@@ -34,9 +34,11 @@ namespace Integrian3D
 
 		if (Textures.Size() > 0)
 		{
+			// [TODO]: Currently only able to process 1 texture
+			MaterialShader.SetInt("_Material.Diffuse", 0);
+
 			glActiveTexture(GL_TEXTURE0);
 
-			// [TODO]: Currently only able to process 1 texture
 			glBindTexture(GL_TEXTURE_2D, Textures[0]->GetTextureID());
 		}
 	}

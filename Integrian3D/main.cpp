@@ -58,7 +58,7 @@ int RunTestEngine(int, char* [])
 
 	Core& core{ Core::CreateCore(1080,720) };
 
-	// TextureManager::GetInstance().AddTexture("__Wall", "Resources/wall.jpg");
+	TextureManager::GetInstance().AddTexture("Box", "Resources/box.png");
 
 	UniquePtr<Scene> TestScene{ new Scene{ "TestScene" } };
 	SceneManager::GetInstance().AddScene(TestScene.Get());
@@ -120,10 +120,10 @@ int RunTestEngine(int, char* [])
 		// TestScene->AddComponent<TestRotateComponent>(entity);
 
 		UniquePtr<Material> MeshMaterial = MakeUnique<Material>("Resources/LightVertexShader.txt", "Resources/LightFragmentShader.txt");
-		MeshMaterial->SetVec3("_Material.Ambient", Math::Vec3D{ 1.0f, 0.5f, 0.3f });
-		MeshMaterial->SetVec3("_Material.Diffuse", Math::Vec3D{ 1.0f, 0.5f, 0.3f });
 		MeshMaterial->SetVec3("_Material.Specular", Math::Vec3D{ 0.5f, 0.5f, 0.5f });
 		MeshMaterial->SetFloat("_Material.Shininess", 32.f);
+
+		MeshMaterial->AddTexture(TextureManager::GetInstance().GetTexture("Box"));
 
 		MeshMaterial->SetVec3("_Light.Ambient", Math::Vec3D{ 0.2f, 0.2f, 0.2f });
 		MeshMaterial->SetVec3("_Light.Diffuse", Math::Vec3D{ 0.5f, 0.5f, 0.5f });

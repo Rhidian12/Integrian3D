@@ -2,8 +2,8 @@
 
 struct GLMaterial
 {
-    vec3 Ambient;
-    vec3 Diffuse;
+    sampler2D Diffuse;
+
     vec3 Specular;
     float Shininess;
 };
@@ -19,6 +19,7 @@ struct GLLight
 
 in vec3 vPos;
 in vec3 vNormal;
+in vec2 vTexCoords;
 
 out vec4 FragColor;
   
@@ -28,14 +29,15 @@ uniform GLLight _Light;
 
 vec3 CalculateAmbient()
 {
-    return _Material.Ambient * _Light.Ambient;
+    // for now diffuse and ambient aer the same
+    return vec3(texture(_Material.Diffuse, vTexCoords)) * _Light.Ambient;
 }
 
 vec3 CalculateDiffuse(vec3 normal, vec3 lightDirection)
 {
     float diff = max(dot(normal, lightDirection), 0.0);
 
-    return (diff * _Material.Diffuse) * _Light.Diffuse;
+    return diff * vec3(texture(_Material.Diffuse, vTexCoords)) * _Light.Diffuse;
 }
 
 vec3 CalculateSpecular(vec3 normal, vec3 lightDirection)
