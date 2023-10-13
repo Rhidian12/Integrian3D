@@ -28,11 +28,11 @@ namespace Integrian3D
 	void FreeCameraComponent::UpdateView(const TransformComponent& transform)
 	{
 		m_View = glm::lookAt
-			(
-				transform.GetLocalLocation(),
-				transform.GetLocalLocation() + transform.GetForward(),
-				transform.GetUp()
-			);
+		(
+			transform.GetLocalLocation(),
+			transform.GetLocalLocation() + transform.GetForward(),
+			transform.GetUp()
+		);
 	}
 
 	void FreeCameraComponent::UpdateTranslation(TransformComponent& transform)
@@ -58,7 +58,7 @@ namespace Integrian3D
 		transform.Translate(transform.GetRight() * dir.x
 			* m_Speed * Timer::GetInstance().GetElapsedSeconds());
 
-		transform.Translate(Math::Up * dir.y * m_Speed * Timer::GetInstance().GetElapsedSeconds());
+		transform.Translate(transform.GetUp() * dir.y * m_Speed * Timer::GetInstance().GetElapsedSeconds());
 
 		UpdateView(transform);
 	}
@@ -77,7 +77,15 @@ namespace Integrian3D
 		xOffset *= sensitivity;
 		yOffset *= sensitivity;
 
-		LOG(Log, LogErrorLevel::Log, "({}, {}, {})", yOffset, xOffset, 0.f);
+		static const Math::Quat PitchLimit = Math::Quat(Math::Vec3D(Math::ToRadians(44.5f), 0.f, 0.f));
+		if (yOffset > 0.f && transform.GetLocalAngle().x >= PitchLimit.x)
+		{
+			yOffset = 0.f;
+		}
+		else if (yOffset < 0.f && transform.GetLocalAngle().x <= -PitchLimit.x)
+		{
+			yOffset = 0.f;
+		}
 
 		transform.Rotate(Math::Vec3D{ yOffset, xOffset, 0.f });
 

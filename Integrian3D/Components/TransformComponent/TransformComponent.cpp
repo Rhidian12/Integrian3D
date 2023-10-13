@@ -94,8 +94,6 @@ namespace Integrian3D
 	{
 		LocalAngle *= Math::Quat(rotationRad);
 
-		LOG(Log, LogErrorLevel::Log, "({}, {}, {})", LocalAngle.x, LocalAngle.y, LocalAngle.z);
-
 		bShouldRecalculateTransform = true;
 		bShouldRecalculateWorldData = true;
 	}
