@@ -129,9 +129,11 @@ namespace Integrian3D
 
 		Math::SetSeed(SEED);
 
+		#if _DEBUG
 		glEnable(GL_DEBUG_OUTPUT);
 		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 		glDebugMessageCallback(LogGLError, nullptr);
+		#endif
 
 		LOG(CoreLog, LogErrorLevel::Log, "Finished initialisation of engine");
 

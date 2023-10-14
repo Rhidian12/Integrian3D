@@ -22,6 +22,11 @@ namespace Integrian3D
 			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 			glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
+			// [CRINGE]: Window should not be responsible for all of this initialization 
+			#if _DEBUG
+			glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
+			#endif
+
 			pWindow = glfwCreateWindow(width, height, "Integrian3D", nullptr, nullptr);
 
 			if (!pWindow)
