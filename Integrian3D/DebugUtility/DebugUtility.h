@@ -12,7 +12,7 @@ namespace Integrian3D
 #define LOG(Category, ErrorLevel, Format, ...) Integrian3D::Logger::GetInstance().LogMessage(#Category, ErrorLevel, Format, __VA_ARGS__)
 
 	/* __BREAK(), __ASSERT(), __CASSERT(), __CHECK */
-#ifdef _DEBUG
+#if _DEBUG
 #	define __BREAK() __debugbreak()
 
 #	define __ASSERT(Expr, Format, ...) \
