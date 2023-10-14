@@ -208,6 +208,8 @@ xcopy "$(SolutionDir)Config\*.*" "$(OutDir)Config\" /y /d /e /q</Command>
     <ClCompile Include="Components\FreeCameraComponent\FreeCameraComponent.cpp" />
     <ClCompile Include="Core\Core.cpp" />
     <ClCompile Include="IO\Ini\IniFile.cpp" />
+    <ClCompile Include="Light\Light.cpp" />
+    <ClCompile Include="Light\PointLight.cpp" />
     <ClCompile Include="LinkedList\LinkedList.cpp" />
     <ClCompile Include="Logger\LogCategory.cpp" />
     <ClCompile Include="Material\Material.cpp" />
@@ -271,6 +273,8 @@ xcopy "$(SolutionDir)Config\*.*" "$(OutDir)Config\" /y /d /e /q</Command>
     <ClInclude Include="DebugUtility\DebugUtility.h" />
     <ClInclude Include="EngineConstants.h" />
     <ClInclude Include="IO\OpenMode.h" />
+    <ClInclude Include="Light\Light.h" />
+    <ClInclude Include="Light\PointLight.h" />
     <ClInclude Include="LinkedList\LinkedList.h" />
     <ClInclude Include="Logger\ConsoleColours.h" />
     <ClInclude Include="Logger\LogCategory.h" />

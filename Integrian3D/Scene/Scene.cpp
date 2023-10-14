@@ -12,6 +12,8 @@
 #include "Components/TagComponent/TagComponent.h"
 #include "Components/TransformComponent/TransformComponent.h"
 
+#include "Light/PointLight.h"
+
 #include <gtc/matrix_transform.hpp>
 
 namespace Integrian3D
@@ -24,29 +26,46 @@ namespace Integrian3D
 		, m_Registry{}
 	{
 		// Render meshes
-		AddRenderCallback(0u, [](Scene& scene)->void
+		AddRenderCallback(0u, [](Scene& Scene)->void
 			{
-				auto& renderer{ Renderer::GetInstance() };
-
-				if (scene.GetNrOfEntities() > 0u && scene.CanViewBeCreated<TransformComponent, FreeCameraComponent>())
+				if (Scene.GetNrOfEntities() == 0u)
 				{
-					const View CameraView{ scene.CreateView<TransformComponent, FreeCameraComponent>() };
+					return;
+				}
 
-					__CHECK(CameraView.GetNrOfEntities() == 1);
+				Renderer& Renderer{ Renderer::GetInstance() };
 
-					CameraView.ForEach([&renderer](const auto& Transform, const auto& Camera)->void
+				// [CRINGE]: Shitty way of handling the camera
+				IASSERT((Scene.CanViewBeCreated<TransformComponent, FreeCameraComponent>()));
+
+				{
+					const View CameraView{ Scene.CreateView<TransformComponent, FreeCameraComponent>() };
+					IASSERT(CameraView.GetNrOfEntities() == 1);
+
+					CameraView.ForEach([&Renderer](const auto& Transform, const auto& Camera)->void
 						{
-							renderer.StartRenderLoop(Camera, Transform);
+							Renderer.StartRenderLoop(Camera, Transform);
 						});
 				}
 
-				if (scene.GetNrOfEntities() > 0u && scene.CanViewBeCreated<TransformComponent, MeshComponent>())
+				if (Scene.CanViewBeCreated<TransformComponent, PointLight>())
 				{
-					const View view{ scene.CreateView<TransformComponent, MeshComponent>() };
-
-					view.ForEach([&renderer](const auto& transform, const auto& mesh)->void
+					Scene.CreateView<TransformComponent, PointLight>().ForEach
+					(
+						[&Renderer](const TransformComponent& Transform, const PointLight& Light)->void
 						{
-							renderer.Render(mesh, transform);
+							Renderer.CollectLight(Transform, Light);
+						}
+					);
+				}
+
+				if (Scene.CanViewBeCreated<TransformComponent, MeshComponent>())
+				{
+					const View view{ Scene.CreateView<TransformComponent, MeshComponent>() };
+
+					view.ForEach([&Renderer](const auto& transform, const auto& mesh)->void
+						{
+							Renderer.Render(mesh, transform);
 						});
 				}
 			});

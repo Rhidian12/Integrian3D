@@ -20,7 +20,20 @@ namespace Integrian3D
 		else \
 		{ \
 			LOG(Assert, Integrian3D::LogErrorLevel::Fatal, Format, __VA_ARGS__); \
-			__BREAK(); \
+		}
+
+#	define IASSERT_MSG(Expr, Format, ...) \
+		if ((Expr)) {} \
+		else \
+		{ \
+			LOG(Assert, Integrian3D::LogErrorLevel::Fatal, Format, __VA_ARGS__); \
+		}
+
+#	define IASSERT(Expr) \
+		if ((Expr)) {} \
+		else \
+		{ \
+			LOG(Assert, Integrian3D::LogErrorLevel::Fatal, "Assert {} triggered at line {} in file {}", #Expr, __LINE__, __FILE__); \
 		}
 
 #	define __CASSERT(Expr, Format, ...) \
@@ -28,7 +41,6 @@ namespace Integrian3D
 		else \
 		{ \
 			LOG(Assert, Integrian3D::LogErrorLevel::Fatal, Format, __VA_ARGS__); \
-			__BREAK(); \
 		}
 
 #	define __CHECK(Expr) \

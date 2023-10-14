@@ -3,13 +3,14 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "DebugUtility/DebugUtility.h"
 #include "Components/MeshComponent/MeshComponent.h"
 #include "Components/TransformComponent/TransformComponent.h"
 #include "Components/FreeCameraComponent/FreeCameraComponent.h"
+#include "IO/Ini/IniFile.h"
+#include "Light/Light.h"
+#include "Material/Material.h"
 #include "Shader/Shader.h"
 #include "Texture/Texture.h"
-#include "IO/Ini/IniFile.h"
 
 namespace Integrian3D
 {
@@ -47,11 +48,18 @@ namespace Integrian3D
 		View = camera.GetView();
 		Projection = camera.GetProjection();
 		CameraPosition = Transform.GetLocalLocation();
+
+		Lights.Clear();
+	}
+
+	void Renderer::CollectLight(const TransformComponent& Transform, const PointLight& PLight)
+	{
+		Lights.Add(MakePair(Transform, static_cast<Light*>(const_cast<PointLight*>(&PLight))));
 	}
 
 	void Renderer::Render(const MeshComponent& mesh, const TransformComponent& transform) const
 	{
-		mesh.StartShader(transform.Transformation, View, Projection, CameraPosition);
+		mesh.GetMaterial()->StartShader(transform.Transformation, View, Projection, CameraPosition, Lights);
 
 		/* Bind the Vertex Array ID */
 		glBindVertexArray(mesh.GetVertexArrayID());

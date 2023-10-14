@@ -149,7 +149,9 @@ namespace Integrian3D
 		SceneManager& sceneManager{ SceneManager::GetInstance() };
 
 		for (Scene* const pScene : sceneManager.GetAllScenes())
+		{
 			pScene->Start();
+		}
 
 		double lag{};
 		const double timePerFrame{ timer.GetFixedElapsedTime<TimeLength::MilliSeconds>() };
