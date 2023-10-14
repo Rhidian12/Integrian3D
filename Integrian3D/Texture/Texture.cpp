@@ -32,6 +32,8 @@ namespace Integrian3D
 		int nrOfChannels{};
 		unsigned char* pData = stbi_load(filePath.data(), &Width, &Height, &nrOfChannels, 0);
 
+		ICHECK_MSG(pData != nullptr, "Texture could not be loaded from filepath {}", filePath);
+
 		/* Create Texture */
 		const std::string_view fileExtension{ filePath.substr(filePath.find_last_of('.')) };
 		if (fileExtension == ".png" || fileExtension == ".tiff")

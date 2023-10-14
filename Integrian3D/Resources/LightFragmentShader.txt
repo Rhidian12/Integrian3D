@@ -3,8 +3,8 @@
 struct GLMaterial
 {
     sampler2D Diffuse;
+    sampler2D Specular;
 
-    vec3 Specular;
     float Shininess;
 };
 
@@ -29,7 +29,7 @@ uniform GLLight _Light;
 
 vec3 CalculateAmbient()
 {
-    // for now diffuse and ambient aer the same
+    // for now diffuse and ambient are the same
     return vec3(texture(_Material.Diffuse, vTexCoords)) * _Light.Ambient;
 }
 
@@ -47,7 +47,7 @@ vec3 CalculateSpecular(vec3 normal, vec3 lightDirection)
 
     float specular = pow(max(dot(viewDirection, reflectDirection), 0.0), _Material.Shininess);
 
-    return (_Material.Specular * specular) * _Light.Specular;
+    return vec3(texture(_Material.Specular, vTexCoords)) * specular * _Light.Specular;
 }
 
 void main()

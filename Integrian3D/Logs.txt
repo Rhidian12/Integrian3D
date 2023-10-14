@@ -1,2 +1,3 @@
 [CoreLog] Finished initialisation of engine
 [ShaderLog] 1280: ERROR of HIGH severity, raised from API: GL_INVALID_ENUM error generated. Invalid target.
+[ShaderLog] 1280: ERROR of HIGH severity, raised from API: GL_INVALID_ENUM error generated. Invalid target.

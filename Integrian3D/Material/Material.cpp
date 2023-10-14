@@ -1,8 +1,34 @@
 #include "Material/Material.h"
 #include "Texture/Texture.h"
+#include "TPair/TPair.full.h"
 
 namespace Integrian3D
 {
+	namespace
+	{
+		static std::string_view GetStringFromTextureSlot(const TextureSlots TextureSlot)
+		{
+			switch (TextureSlot)
+			{
+				case TextureSlots::Diffuse:
+				{
+					constexpr static std::string_view Diffuse = "_Material.Diffuse";
+					return Diffuse;
+				}
+				break;
+				case TextureSlots::Specular:
+				{
+					constexpr static std::string_view Specular = "_Material.Specular";
+					return Specular;
+				}
+				break;
+			}
+
+			__CHECK(false);
+			return "";
+		}
+	}
+
 	Material::Material(const std::string& VertexShaderPath, const std::string& FragmentShaderPath)
 		: Textures{}
 		, MaterialShader{ VertexShaderPath, FragmentShaderPath }
@@ -10,9 +36,9 @@ namespace Integrian3D
 
 	Material::~Material() {}
 
-	void Material::AddTexture(Texture* const Texture)
+	void Material::AddTexture(const TextureSlots TextureSlot, Texture* const Texture)
 	{
-		Textures.Add(Texture);
+		Textures.insert(std::make_pair(TextureSlot, Texture));
 	}
 
 	void Material::StartShader(const Math::Mat4D& Transform, const Math::Mat4D& View, const Math::Mat4D& Projection, const Math::Vec3D& CameraPosition) const
@@ -32,14 +58,15 @@ namespace Integrian3D
 			Request();
 		}
 
-		if (Textures.Size() > 0)
+		for (const auto& [TextureSlot, Texture] : Textures)
 		{
-			// [TODO]: Currently only able to process 1 texture
-			MaterialShader.SetInt("_Material.Diffuse", 0);
+			MaterialShader.SetInt(GetStringFromTextureSlot(TextureSlot), static_cast<int32>(TextureSlot));
 
-			glActiveTexture(GL_TEXTURE0);
+			auto test = static_cast<int32>(TextureSlot);
 
-			glBindTexture(GL_TEXTURE_2D, Textures[0]->GetTextureID());
+			glActiveTexture(GL_TEXTURE0 + static_cast<int32>(TextureSlot));
+
+			glBindTexture(GL_TEXTURE_2D, Texture->GetTextureID());
 		}
 	}
 

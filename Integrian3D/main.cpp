@@ -58,7 +58,8 @@ int RunTestEngine(int, char* [])
 
 	Core& core{ Core::CreateCore(1080,720) };
 
-	TextureManager::GetInstance().AddTexture("Box", "Resources/box.png");
+	TextureManager::GetInstance().AddTexture("Box_Diffuse", "Resources/box.png");
+	TextureManager::GetInstance().AddTexture("Box_Specular", "Resources/box_specular.png");
 
 	UniquePtr<Scene> TestScene{ new Scene{ "TestScene" } };
 	SceneManager::GetInstance().AddScene(TestScene.Get());
@@ -120,10 +121,10 @@ int RunTestEngine(int, char* [])
 		// TestScene->AddComponent<TestRotateComponent>(entity);
 
 		UniquePtr<Material> MeshMaterial = MakeUnique<Material>("Resources/LightVertexShader.txt", "Resources/LightFragmentShader.txt");
-		MeshMaterial->SetVec3("_Material.Specular", Math::Vec3D{ 0.5f, 0.5f, 0.5f });
 		MeshMaterial->SetFloat("_Material.Shininess", 32.f);
 
-		MeshMaterial->AddTexture(TextureManager::GetInstance().GetTexture("Box"));
+		MeshMaterial->AddTexture(TextureSlots::Diffuse, TextureManager::GetInstance().GetTexture("Box_Diffuse"));
+		MeshMaterial->AddTexture(TextureSlots::Specular, TextureManager::GetInstance().GetTexture("Box_Specular"));
 
 		MeshMaterial->SetVec3("_Light.Ambient", Math::Vec3D{ 0.2f, 0.2f, 0.2f });
 		MeshMaterial->SetVec3("_Light.Diffuse", Math::Vec3D{ 0.5f, 0.5f, 0.5f });

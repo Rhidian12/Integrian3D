@@ -98,11 +98,6 @@ namespace Integrian3D
 		return *this;
 	}
 
-	void MeshComponent::AddTexture(Texture* const TextureToApply)
-	{
-		MeshMaterial->AddTexture(TextureToApply);
-	}
-
 	void MeshComponent::StartShader(const Math::Mat4D& Transform, const Math::Mat4D& View, const Math::Mat4D& Projection, const Math::Vec3D& CameraPosition) const
 	{
 		MeshMaterial->StartShader(Transform, View, Projection, CameraPosition);

@@ -29,8 +29,6 @@ namespace Integrian3D
 		MeshComponent& operator=(const MeshComponent&) noexcept = delete;
 		MeshComponent& operator=(MeshComponent&& other) noexcept;
 
-		void AddTexture(Texture* const TextureToApply);
-
 		void StartShader(const Math::Mat4D& Transform, const Math::Mat4D& View, const Math::Mat4D& Projection, const Math::Vec3D& CameraPosition) const;
 
 		__NODISCARD Material* const GetMaterial();
