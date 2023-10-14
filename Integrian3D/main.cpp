@@ -122,7 +122,7 @@ int RunTestEngine(int, char* [])
 		Entity entity{ TestScene->CreateEntity() };
 		// TestScene->AddComponent<TestRotateComponent>(entity);
 
-		UniquePtr<Material> MeshMaterial = MakeUnique<Material>("Resources/LightVertexShader.txt", "Resources/LightFragmentShader.txt");
+		UniquePtr<Material> MeshMaterial = MakeUnique<Material>("Resources/LightVertexShader.vert", "Resources/LightFragmentShader.frag");
 		MeshMaterial->SetFloat("_Material.Shininess", 32.f);
 
 		MeshMaterial->AddTexture(TextureSlots::Diffuse, TextureManager::GetInstance().GetTexture("Box_Diffuse"));
@@ -138,7 +138,7 @@ int RunTestEngine(int, char* [])
 		const Math::Vec3D Diffuse{ 0.5f, 0.5f, 0.5f };
 		const Math::Vec3D Specular { 1.f, 1.f, 1.f };
 
-		UniquePtr<Material> MeshMaterial = MakeUnique<Material>("Resources/LightVertexShader2.txt", "Resources/LightFragmentShader2.txt");
+		UniquePtr<Material> MeshMaterial = MakeUnique<Material>("Resources/LightVertexShader2.vert", "Resources/LightFragmentShader2.frag");
 		TestScene->AddComponent<MeshComponent>(PointLightEntity, vertices, indices, __MOVE(MeshMaterial));
 
 		TestScene->AddComponent<PointLight>(PointLightEntity, Ambient, Diffuse, Specular);

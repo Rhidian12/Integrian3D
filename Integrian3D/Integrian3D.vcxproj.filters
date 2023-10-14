@@ -171,6 +171,9 @@
     <ClCompile Include="Light\Light.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="IO\PathUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window\Window.h">
@@ -389,6 +392,9 @@
     <ClInclude Include="Light\Light.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="IO\PathUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
@@ -397,9 +403,9 @@
     <Natvis Include="NatvisFile.natvis" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Resources\LightVertexShader.txt" />
-    <Text Include="Resources\LightFragmentShader.txt" />
-    <Text Include="Resources\LightVertexShader2.txt" />
-    <Text Include="Resources\LightFragmentShader2.txt" />
+    <Text Include="Resources\LightVertexShader.vert" />
+    <Text Include="Resources\LightFragmentShader.frag" />
+    <Text Include="Resources\LightVertexShader2.vert" />
+    <Text Include="Resources\LightFragmentShader2.frag" />
   </ItemGroup>
 </Project>

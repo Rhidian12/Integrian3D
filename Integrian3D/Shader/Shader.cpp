@@ -1,6 +1,7 @@
 #include "Shader.h"
 
-#include "../IO/File/File.h"
+#include "IO/File/File.h"
+#include "IO/PathUtils.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -87,6 +88,9 @@ namespace Integrian3D
 
 	void Shader::SetupShaders(const std::string& VertexShader, const std::string& FragmentShader)
 	{
+		IASSERT_MSG(PathUtils::GetExtension(VertexShader) == ".vert", "VertexShader file must have .vert extension! Given file: {}", VertexShader);
+		IASSERT_MSG(PathUtils::GetExtension(FragmentShader) == ".frag", "FragmentShader file must have .frag extension! Given file: {}", FragmentShader);
+
 		uint32 vertexShaderID{}, fragmentShaderID{};
 
 		/* Get Vertex Shader */
