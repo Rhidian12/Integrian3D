@@ -6,11 +6,19 @@
 
 namespace Integrian3D
 {
+	enum class LightType : int32
+	{
+		PointLight,
+		DirectionalLight
+	};
+
 	class Light : public Component
 	{
 	public:
 		Light(const Math::Vec3D& Ambient, const Math::Vec3D& Diffuse, const Math::Vec3D& Specular);
 		virtual ~Light() = default;
+
+		virtual LightType GetLightType() const = 0;
 
 		const Math::Vec3D& GetAmbient() const;
 		const Math::Vec3D& GetDiffuse() const;

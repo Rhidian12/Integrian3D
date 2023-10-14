@@ -8,7 +8,6 @@
 #include "Shader/Shader.h"
 #include "TPair/TPair.h"
 
-#include <functional>
 #include <map>
 #include <string>
 #include <string_view>
@@ -43,7 +42,6 @@ namespace Integrian3D
 
 	private:
 		std::map<TextureSlots, Texture*> Textures;
-		TArray<std::function<void()>> SetShaderVarRequests;
 		Shader MaterialShader;
 	};
 }

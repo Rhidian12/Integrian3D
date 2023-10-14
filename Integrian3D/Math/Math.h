@@ -132,15 +132,15 @@ namespace Integrian3D::Math
 		return dist(Detail::RNGEngine);
 	}
 
-	__NODISCARD constexpr Vec2D RandomVec2D(const double min, const double max)
+	__NODISCARD constexpr Vec2D RandomVec2D(const float min, const float max)
 	{
 		return Vec2D{ RandomF(min, max),RandomF(min, max) };
 	}
-	__NODISCARD constexpr Vec3D RandomVec3D(const double min, const double max)
+	__NODISCARD constexpr Vec3D RandomVec3D(const float min, const float max)
 	{
 		return Vec3D{ RandomF(min, max),RandomF(min, max),RandomF(min, max) };
 	}
-	__NODISCARD constexpr Vec4D RandomVec4D(const double min, const double max)
+	__NODISCARD constexpr Vec4D RandomVec4D(const float min, const float max)
 	{
 		return Vec4D{ RandomF(min, max),RandomF(min, max),RandomF(min, max),RandomF(min, max) };
 	}

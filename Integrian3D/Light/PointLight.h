@@ -9,5 +9,7 @@ namespace Integrian3D
 	{
 	public:
 		PointLight(const Math::Vec3D& Ambient, const Math::Vec3D& Diffuse, const Math::Vec3D& Specular);
+
+		virtual LightType GetLightType() const;
 	};
 }

@@ -51,6 +51,7 @@ int main(int argc, char* argv[])
 #include "Components/TestRotateComponent/TestRotateComponent.h"
 #include "Components/FreeCameraComponent/FreeCameraComponent.h"
 #include "Material/Material.h"
+#include "Light/DirectionalLight.h"
 #include "Light/PointLight.h"
 #include "Renderer/Renderer.h"
 
@@ -119,8 +120,8 @@ int RunTestEngine(int, char* [])
 	}
 
 	{
-		Entity entity{ TestScene->CreateEntity() };
-		// TestScene->AddComponent<TestRotateComponent>(entity);
+		Entity Entity{ TestScene->CreateEntity() };
+		TestScene->AddComponent<TestRotateComponent>(Entity);
 
 		UniquePtr<Material> MeshMaterial = MakeUnique<Material>("Resources/LightVertexShader.vert", "Resources/LightFragmentShader.frag");
 		MeshMaterial->SetFloat("_Material.Shininess", 32.f);
@@ -128,7 +129,7 @@ int RunTestEngine(int, char* [])
 		MeshMaterial->AddTexture(TextureSlots::Diffuse, TextureManager::GetInstance().GetTexture("Box_Diffuse"));
 		MeshMaterial->AddTexture(TextureSlots::Specular, TextureManager::GetInstance().GetTexture("Box_Specular"));
 
-		TestScene->AddComponent<MeshComponent>(entity, vertices, indices, __MOVE(MeshMaterial));
+		TestScene->AddComponent<MeshComponent>(Entity, vertices, indices, __MOVE(MeshMaterial));
 	}
 
 	{
@@ -138,11 +139,31 @@ int RunTestEngine(int, char* [])
 		const Math::Vec3D Diffuse{ 0.5f, 0.5f, 0.5f };
 		const Math::Vec3D Specular { 1.f, 1.f, 1.f };
 
-		UniquePtr<Material> MeshMaterial = MakeUnique<Material>("Resources/LightVertexShader2.vert", "Resources/LightFragmentShader2.frag");
-		TestScene->AddComponent<MeshComponent>(PointLightEntity, vertices, indices, __MOVE(MeshMaterial));
+		// UniquePtr<Material> MeshMaterial = MakeUnique<Material>("Resources/LightVertexShader2.vert", "Resources/LightFragmentShader2.frag");
+		// TestScene->AddComponent<MeshComponent>(PointLightEntity, vertices, indices, __MOVE(MeshMaterial));
 
-		TestScene->AddComponent<PointLight>(PointLightEntity, Ambient, Diffuse, Specular);
+		// TestScene->AddComponent<PointLight>(PointLightEntity, Ambient, Diffuse, Specular);
+		TestScene->AddComponent<DirectionalLight>(PointLightEntity, Ambient, Diffuse, Specular, Math::Vec3D{ -0.2f, -1.0f, -0.3f });
 		TestScene->GetComponent<TransformComponent>(PointLightEntity).Translate(Math::Vec3D{ 1.2f, 1.0f, -2.0f });
+	}
+
+	{
+		for (int32 i{}; i < 10; ++i)
+		{
+			const Entity Entity{ TestScene->CreateEntity() };
+
+			TestScene->AddComponent<TestRotateComponent>(Entity);
+
+			UniquePtr<Material> MeshMaterial = MakeUnique<Material>("Resources/LightVertexShader.vert", "Resources/LightFragmentShader.frag");
+			MeshMaterial->SetFloat("_Material.Shininess", 32.f);
+
+			MeshMaterial->AddTexture(TextureSlots::Diffuse, TextureManager::GetInstance().GetTexture("Box_Diffuse"));
+			MeshMaterial->AddTexture(TextureSlots::Specular, TextureManager::GetInstance().GetTexture("Box_Specular"));
+
+			TestScene->AddComponent<MeshComponent>(Entity, vertices, indices, __MOVE(MeshMaterial));
+
+			TestScene->GetComponent<TransformComponent>(Entity).Translate(Math::RandomVec3D(-10.f, 10.f));
+		}
 	}
 
 	TestScene->AddUpdateCallback(0, [](Scene& scene)->void

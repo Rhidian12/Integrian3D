@@ -13,6 +13,7 @@
 #include "Components/TransformComponent/TransformComponent.h"
 
 #include "Light/PointLight.h"
+#include "Light/DirectionalLight.h"
 
 #include <gtc/matrix_transform.hpp>
 
@@ -54,7 +55,18 @@ namespace Integrian3D
 					(
 						[&Renderer](const TransformComponent& Transform, const PointLight& Light)->void
 						{
-							Renderer.CollectLight(Transform, Light);
+							Renderer.CollectPointLight(Transform, Light);
+						}
+					);
+				}
+
+				if (Scene.CanViewBeCreated<TransformComponent, DirectionalLight>())
+				{
+					Scene.CreateView<TransformComponent, DirectionalLight>().ForEach
+					(
+						[&Renderer](const TransformComponent& Transform, const DirectionalLight& Light)->void
+						{
+							Renderer.CollectDirectionalLight(Transform, Light);
 						}
 					);
 				}

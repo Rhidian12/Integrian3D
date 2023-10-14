@@ -4,7 +4,6 @@
 
 #include "Array/Array.h"
 #include "Math/Math.h"
-#include "Light/PointLight.h"
 #include "TPair/TPair.h"
 #include "Components/TransformComponent/TransformComponent.h"
 
@@ -12,9 +11,11 @@
 
 namespace Integrian3D
 {
+	class DirectionalLight;
 	class FreeCameraComponent;
-	class MeshComponent;
 	class Light;
+	class MeshComponent;
+	class PointLight;
 
 	class Renderer final
 	{
@@ -28,8 +29,8 @@ namespace Integrian3D
 
 		void StartRenderLoop(const FreeCameraComponent& camera, const TransformComponent& Transform);
 
-		// [CRINGE]: Just collect a pointer to a light base class
-		void CollectLight(const TransformComponent& Transform, const PointLight& Light);
+		void CollectPointLight(const TransformComponent& Transform, const PointLight& Light);
+		void CollectDirectionalLight(const TransformComponent& Transform, const DirectionalLight& DLight);
 
 		void Render(const MeshComponent& mesh, const TransformComponent& transform) const;
 
@@ -45,8 +46,8 @@ namespace Integrian3D
 		Math::Mat4D Projection;
 		Math::Vec3D CameraPosition;
 
-		// [CRINGE]: Change this to a pointer of a light base class
 		TArray<TPair<TransformComponent, Light*>> Lights;
+		TArray<Light*> DirectionalLights;
 
 		bool bShouldRenderWireframe;
 	};

@@ -6,8 +6,12 @@
 #include "Components/MeshComponent/MeshComponent.h"
 #include "Components/TransformComponent/TransformComponent.h"
 #include "Components/FreeCameraComponent/FreeCameraComponent.h"
+
 #include "IO/Ini/IniFile.h"
-#include "Light/Light.h"
+
+#include "Light/PointLight.h"
+#include "Light/DirectionalLight.h"
+
 #include "Material/Material.h"
 #include "Shader/Shader.h"
 #include "Texture/Texture.h"
@@ -52,9 +56,14 @@ namespace Integrian3D
 		Lights.Clear();
 	}
 
-	void Renderer::CollectLight(const TransformComponent& Transform, const PointLight& PLight)
+	void Renderer::CollectPointLight(const TransformComponent& Transform, const PointLight& PLight)
 	{
 		Lights.Add(MakePair(Transform, static_cast<Light*>(const_cast<PointLight*>(&PLight))));
+	}
+
+	void Renderer::CollectDirectionalLight(const TransformComponent& Transform, const DirectionalLight& DLight)
+	{
+		Lights.Add(MakePair(Transform, static_cast<Light*>(const_cast<DirectionalLight*>(&DLight))));
 	}
 
 	void Renderer::Render(const MeshComponent& mesh, const TransformComponent& transform) const

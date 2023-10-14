@@ -1,8 +1,11 @@
 #include "Material/Material.h"
 
-#include "Light/Light.h"
+#include "Light/DirectionalLight.h"
+
 #include "Texture/Texture.h"
 #include "TPair/TPair.full.h"
+
+#include <format>
 
 namespace Integrian3D
 {
@@ -26,7 +29,29 @@ namespace Integrian3D
 				break;
 			}
 
-			__CHECK(false);
+			IASSERT(false);
+			return "";
+		}
+
+		static std::string GetLightName(int32& PointLightNr, int32& DirectionalLightNr, const Light* const Light)
+		{
+			switch (Light->GetLightType())
+			{
+				case LightType::PointLight:
+				{
+					constexpr static std::string_view PointLightName = "_PointLights[{}].";
+					return std::vformat(PointLightName, std::make_format_args(PointLightNr++));
+				}
+				break;
+				case LightType::DirectionalLight:
+				{
+					constexpr static std::string_view DirectionalLightName = "_DirectionalLights[{}].";
+					return std::vformat(DirectionalLightName, std::make_format_args(DirectionalLightNr++));
+				}
+				break;
+			}
+
+			IASSERT(false);
 			return "";
 		}
 	}
@@ -56,20 +81,25 @@ namespace Integrian3D
 
 		MaterialShader.SetVec3("_ViewPos", CameraPosition);
 
-		// [TODO]: Currently only supports 1 light
-		if (!Lights.Empty())
+		// [TODO]: Fragment shader only supports 1 light
+		int32 PointLightNr{}, DirectionalLightNr{};
+		for (const auto& [LightTransform, Light] : Lights)
 		{
-			const TPair<TransformComponent, Light*>& Pair{ Lights[0] };
+			const std::string LightName{ GetLightName(PointLightNr, DirectionalLightNr, Light) };
 
-			MaterialShader.SetVec3("_Light.Position", Pair.Key().GetLocalLocation());
-			MaterialShader.SetVec3("_Light.Ambient", Pair.Value()->GetAmbient());
-			MaterialShader.SetVec3("_Light.Diffuse", Pair.Value()->GetDiffuse());
-			MaterialShader.SetVec3("_Light.Specular", Pair.Value()->GetSpecular());
-		}
+			MaterialShader.SetVec3(LightName + "Ambient", Light->GetAmbient());
+			MaterialShader.SetVec3(LightName + "Diffuse", Light->GetDiffuse());
+			MaterialShader.SetVec3(LightName + "Specular", Light->GetSpecular());
 
-		for (const auto& Request : SetShaderVarRequests)
-		{
-			Request();
+			switch (Light->GetLightType())
+			{
+				case LightType::PointLight:
+					MaterialShader.SetVec3(LightName + "Position", LightTransform.GetLocalLocation());
+					break;
+				case LightType::DirectionalLight:
+					MaterialShader.SetVec3(LightName + "Direction", static_cast<DirectionalLight*>(Light)->GetDirection());
+					break;
+			}
 		}
 
 		for (const auto& [TextureSlot, Texture] : Textures)
@@ -87,7 +117,6 @@ namespace Integrian3D
 		MaterialShader.Activate();
 
 		MaterialShader.SetBool(Name, Value);
-		// SetShaderVarRequests.Add([=]() { MaterialShader.SetBool(Name, Value); });
 	}
 
 	void Material::SetInt(const std::string_view Name, const int Value)
@@ -95,7 +124,6 @@ namespace Integrian3D
 		MaterialShader.Activate();
 
 		MaterialShader.SetInt(Name, Value);
-		// SetShaderVarRequests.Add([=]() { MaterialShader.SetInt(Name, Value); });
 	}
 
 	void Material::SetFloat(const std::string_view Name, const float Value)
@@ -103,7 +131,6 @@ namespace Integrian3D
 		MaterialShader.Activate();
 
 		MaterialShader.SetFloat(Name, Value);
-		// SetShaderVarRequests.Add([=]() { MaterialShader.SetFloat(Name, Value); });
 	}
 
 	void Material::SetMatrix(const std::string_view Name, const Math::Mat4D& Value)
@@ -111,7 +138,6 @@ namespace Integrian3D
 		MaterialShader.Activate();
 
 		MaterialShader.SetMatrix(Name, Value);
-		// SetShaderVarRequests.Add([=]() { MaterialShader.SetMatrix(Name, Value); });
 	}
 
 	void Material::SetVec3(const std::string_view Name, const Math::Vec3D& Value)
@@ -119,6 +145,5 @@ namespace Integrian3D
 		MaterialShader.Activate();
 
 		MaterialShader.SetVec3(Name, Value);
-		// SetShaderVarRequests.Add([=]() { MaterialShader.SetVec3(Name, Value); });
 	}
 }

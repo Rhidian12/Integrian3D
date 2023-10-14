@@ -209,6 +209,7 @@ xcopy "$(SolutionDir)Config\*.*" "$(OutDir)Config\" /y /d /e /q</Command>
     <ClCompile Include="Core\Core.cpp" />
     <ClCompile Include="IO\Ini\IniFile.cpp" />
     <ClCompile Include="IO\PathUtils.cpp" />
+    <ClCompile Include="Light\DirectionalLight.cpp" />
     <ClCompile Include="Light\Light.cpp" />
     <ClCompile Include="Light\PointLight.cpp" />
     <ClCompile Include="LinkedList\LinkedList.cpp" />
@@ -275,6 +276,7 @@ xcopy "$(SolutionDir)Config\*.*" "$(OutDir)Config\" /y /d /e /q</Command>
     <ClInclude Include="EngineConstants.h" />
     <ClInclude Include="IO\OpenMode.h" />
     <ClInclude Include="IO\PathUtils.h" />
+    <ClInclude Include="Light\DirectionalLight.h" />
     <ClInclude Include="Light\Light.h" />
     <ClInclude Include="Light\PointLight.h" />
     <ClInclude Include="LinkedList\LinkedList.h" />
