@@ -1,6 +1,7 @@
 #include "Material/Material.h"
 
 #include "Light/DirectionalLight.h"
+#include "Light/PointLight.h"
 
 #include "Texture/Texture.h"
 #include "TPair/TPair.full.h"
@@ -95,6 +96,7 @@ namespace Integrian3D
 			{
 				case LightType::PointLight:
 					MaterialShader.SetVec3(LightName + "Position", LightTransform.GetLocalLocation());
+					MaterialShader.SetFloat(LightName + "MaxRadius", static_cast<PointLight*>(Light)->GetMaxRadius());
 					break;
 				case LightType::DirectionalLight:
 					MaterialShader.SetVec3(LightName + "Direction", static_cast<DirectionalLight*>(Light)->GetDirection());

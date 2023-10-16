@@ -1,2 +1,2 @@
 [CoreLog] Finished initialisation of engine
-[ShaderLog] 131218: PERFORMANCE of MEDIUM severity, raised from API: Program/shader state performance warning: Vertex shader in program 33 is being recompiled based on GL state.
+[ShaderLog] 131218: PERFORMANCE of MEDIUM severity, raised from API: Program/shader state performance warning: Vertex shader in program 36 is being recompiled based on GL state.

@@ -21,6 +21,8 @@ struct GLPointLight
 {
     vec3 Position;
 
+    float MaxRadius;
+
     vec3 Ambient;
     vec3 Diffuse;
     vec3 Specular;
@@ -37,39 +39,90 @@ uniform GLMaterial _Material;
 uniform GLPointLight _PointLights[];
 uniform GLDirectionalLight _DirectionalLights[];
 
-vec3 CalculateAmbient()
+const int PointLightType = 0;
+const int DirectionalLightType = 1;
+
+float GetAttenuationRadius(float Distance, float MaxRadius)
 {
-    // for now diffuse and ambient are the same
-    // return vec3(texture(_Material.Diffuse, vTexCoords)) * _PointLights[0].Ambient;
-    return vec3(texture(_Material.Diffuse, vTexCoords)) * _DirectionalLights[0].Ambient;
+    float Falloff = Distance / MaxRadius;
+    Falloff *= Falloff;
+    Falloff = clamp(1.0 - Falloff * Falloff, 0.0, 1.0);
+    Falloff *= Falloff;
+
+    float Attenuation = Falloff;
+    Attenuation *= 1.0 / (Distance * Distance + 1.0);
+
+    return Attenuation;
 }
 
-vec3 CalculateDiffuse(vec3 normal, vec3 lightDirection)
+vec3 CalculateAmbient(int LightType, float Attenuation)
 {
-    float diff = max(dot(normal, lightDirection), 0.0);
-
-    // return diff * vec3(texture(_Material.Diffuse, vTexCoords)) * _PointLights[0].Diffuse;
-    return diff * vec3(texture(_Material.Diffuse, vTexCoords)) * _DirectionalLights[0].Diffuse;
+    if (LightType == PointLightType)
+    {
+        return texture(_Material.Diffuse, vTexCoords).rgb * _PointLights[0].Ambient * Attenuation;
+    }
+    else
+    {
+        return texture(_Material.Diffuse, vTexCoords).rgb * _DirectionalLights[0].Ambient;
+    }
 }
 
-vec3 CalculateSpecular(vec3 normal, vec3 lightDirection)
+vec3 CalculateDiffuse(int LightType, vec3 Normal, vec3 LightDirection, float Attenuation)
 {
-    vec3 viewDirection = normalize(_ViewPos - vPos);
-    vec3 reflectDirection = reflect(-lightDirection, normal);
+    float Diff = max(dot(Normal, LightDirection), 0.0);
 
-    float specular = pow(max(dot(viewDirection, reflectDirection), 0.0), _Material.Shininess);
+    if (LightType == PointLightType)
+    {
+        return Diff * texture(_Material.Diffuse, vTexCoords).rgb * _PointLights[0].Diffuse * Attenuation;
+    }
+    else
+    {
+        return Diff * texture(_Material.Diffuse, vTexCoords).rgb * _DirectionalLights[0].Diffuse;
+    }
+}
 
-    // return vec3(texture(_Material.Specular, vTexCoords)) * specular * _PointLights[0].Specular;
-    return vec3(texture(_Material.Specular, vTexCoords)) * specular * _DirectionalLights[0].Specular;
+vec3 CalculateSpecular(int LightType, vec3 Normal, vec3 LightDirection, float Attenuation)
+{
+    vec3 ViewDirection = normalize(_ViewPos - vPos);
+    vec3 ReflectDirection = reflect(-LightDirection, Normal);
+    float Specular = pow(max(dot(ViewDirection, ReflectDirection), 0.0), _Material.Shininess);
+
+    if (LightType == PointLightType)
+    {
+       return texture(_Material.Specular, vTexCoords).rgb * Specular * _PointLights[0].Specular * Attenuation;
+    }
+    else
+    {
+        return texture(_Material.Specular, vTexCoords).rgb * Specular * _DirectionalLights[0].Specular;
+    }
 }
 
 void main()
 {
-    vec3 normal = normalize(vNormal);
-    // vec3 lightDirection = normalize(_PointLights[0].Position - vPos);
-    vec3 lightDirection = normalize(-_DirectionalLights[0].Direction);
+    int LightType = PointLightType;
 
-    vec3 result = CalculateAmbient() + CalculateDiffuse(normal, lightDirection) + CalculateSpecular(normal, lightDirection);
+    float Distance = length(_PointLights[0].Position - vPos);
+    float Attenuation = GetAttenuationRadius(Distance, _PointLights[0].MaxRadius);
+
+    if (Attenuation <= 0.0)
+    {
+        FragColor = vec4(1,0,0,1);
+        return;
+    }
+
+    vec3 Normal = normalize(vNormal);
+    vec3 LightDirection = normalize(_PointLights[0].Position - vPos);
+    // vec3 LightDirection = normalize(-_DirectionalLights[0].Direction);
+
+    vec3 test = CalculateDiffuse(LightType, Normal, LightDirection, Attenuation);
+    if (test == vec3(0))
+    {
+        FragColor = vec4(0,1,0,1);
+        return;
+    }
+
+    vec3 result = CalculateAmbient(LightType, Attenuation) + CalculateDiffuse(LightType, Normal, LightDirection, Attenuation) +
+    CalculateSpecular(LightType, Normal, LightDirection, Attenuation);
 
     FragColor = vec4(result, 1.0);
 }

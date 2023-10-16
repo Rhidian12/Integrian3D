@@ -139,12 +139,12 @@ int RunTestEngine(int, char* [])
 		const Math::Vec3D Diffuse{ 0.5f, 0.5f, 0.5f };
 		const Math::Vec3D Specular { 1.f, 1.f, 1.f };
 
-		// UniquePtr<Material> MeshMaterial = MakeUnique<Material>("Resources/LightVertexShader2.vert", "Resources/LightFragmentShader2.frag");
-		// TestScene->AddComponent<MeshComponent>(PointLightEntity, vertices, indices, __MOVE(MeshMaterial));
-
-		// TestScene->AddComponent<PointLight>(PointLightEntity, Ambient, Diffuse, Specular);
-		TestScene->AddComponent<DirectionalLight>(PointLightEntity, Ambient, Diffuse, Specular, Math::Vec3D{ -0.2f, -1.0f, -0.3f });
+		UniquePtr<Material> MeshMaterial = MakeUnique<Material>("Resources/LightVertexShader2.vert", "Resources/LightFragmentShader2.frag");
+		TestScene->AddComponent<MeshComponent>(PointLightEntity, vertices, indices, __MOVE(MeshMaterial));
+		TestScene->AddComponent<PointLight>(PointLightEntity, Ambient, Diffuse, Specular, 1000.f);
 		TestScene->GetComponent<TransformComponent>(PointLightEntity).Translate(Math::Vec3D{ 1.2f, 1.0f, -2.0f });
+
+		// TestScene->AddComponent<DirectionalLight>(PointLightEntity, Ambient, Diffuse, Specular, Math::Vec3D{ -0.2f, -1.0f, -0.3f });
 	}
 
 	{
