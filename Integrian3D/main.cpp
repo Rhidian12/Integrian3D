@@ -148,22 +148,22 @@ int RunTestEngine(int, char* [])
 	}
 
 	{
-		for (int32 i{}; i < 10; ++i)
-		{
-			const Entity Entity{ TestScene->CreateEntity() };
+		//for (int32 i{}; i < 10; ++i)
+		//{
+		//	const Entity Entity{ TestScene->CreateEntity() };
 
-			TestScene->AddComponent<TestRotateComponent>(Entity);
+		//	TestScene->AddComponent<TestRotateComponent>(Entity);
 
-			UniquePtr<Material> MeshMaterial = MakeUnique<Material>("Resources/LightVertexShader.vert", "Resources/LightFragmentShader.frag");
-			MeshMaterial->SetFloat("_Material.Shininess", 32.f);
+		//	UniquePtr<Material> MeshMaterial = MakeUnique<Material>("Resources/LightVertexShader.vert", "Resources/LightFragmentShader.frag");
+		//	MeshMaterial->SetFloat("_Material.Shininess", 32.f);
 
-			MeshMaterial->AddTexture(TextureSlots::Diffuse, TextureManager::GetInstance().GetTexture("Box_Diffuse"));
-			MeshMaterial->AddTexture(TextureSlots::Specular, TextureManager::GetInstance().GetTexture("Box_Specular"));
+		//	MeshMaterial->AddTexture(TextureSlots::Diffuse, TextureManager::GetInstance().GetTexture("Box_Diffuse"));
+		//	MeshMaterial->AddTexture(TextureSlots::Specular, TextureManager::GetInstance().GetTexture("Box_Specular"));
 
-			TestScene->AddComponent<MeshComponent>(Entity, vertices, indices, __MOVE(MeshMaterial));
+		//	TestScene->AddComponent<MeshComponent>(Entity, vertices, indices, __MOVE(MeshMaterial));
 
-			TestScene->GetComponent<TransformComponent>(Entity).Translate(Math::RandomVec3D(-10.f, 10.f));
-		}
+		//	TestScene->GetComponent<TransformComponent>(Entity).Translate(Math::RandomVec3D(-10.f, 10.f));
+		//}
 	}
 
 	TestScene->AddUpdateCallback(0, [](Scene& scene)->void

@@ -115,8 +115,10 @@
     </Link>
     <PostBuildEvent>
       <Command>xcopy "$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022\*.dll" "$(OutDir)" /y /d
+rmdir "$(OutDir)Resources"
 mkdir "$(OutDir)Resources"
 xcopy "$(SolutionDir)Resources\*.*" "$(OutDir)Resources\" /y /d /e /q
+rmdir "$(OutDir)Config"
 mkdir "$(OutDir)Config"
 xcopy "$(SolutionDir)Config\*.*" "$(OutDir)Config\" /y /d /e /q</Command>
     </PostBuildEvent>
@@ -142,8 +144,10 @@ xcopy "$(SolutionDir)Config\*.*" "$(OutDir)Config\" /y /d /e /q</Command>
     </Link>
     <PostBuildEvent>
       <Command>xcopy "$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022\*.dll" "$(OutDir)" /y /d
+rmdir "$(OutDir)Resources"
 mkdir "$(OutDir)Resources"
 xcopy "$(SolutionDir)Resources\*.*" "$(OutDir)Resources\" /y /d /e /q
+rmdir "$(OutDir)Config"
 mkdir "$(OutDir)Config"
 xcopy "$(SolutionDir)Config\*.*" "$(OutDir)Config\" /y /d /e /q</Command>
     </PostBuildEvent>
@@ -165,8 +169,10 @@ xcopy "$(SolutionDir)Config\*.*" "$(OutDir)Config\" /y /d /e /q</Command>
     </Link>
     <PostBuildEvent>
       <Command>xcopy "$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022\*.dll" "$(OutDir)" /y /d
+rmdir "$(OutDir)Resources"
 mkdir "$(OutDir)Resources"
 xcopy "$(SolutionDir)Resources\*.*" "$(OutDir)Resources\" /y /d /e /q
+rmdir "$(OutDir)Config"
 mkdir "$(OutDir)Config"
 xcopy "$(SolutionDir)Config\*.*" "$(OutDir)Config\" /y /d /e /q</Command>
     </PostBuildEvent>
@@ -192,8 +198,10 @@ xcopy "$(SolutionDir)Config\*.*" "$(OutDir)Config\" /y /d /e /q</Command>
     </Link>
     <PostBuildEvent>
       <Command>xcopy "$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022\*.dll" "$(OutDir)" /y /d
+rmdir "$(OutDir)Resources"
 mkdir "$(OutDir)Resources"
 xcopy "$(SolutionDir)Resources\*.*" "$(OutDir)Resources\" /y /d /e /q
+rmdir "$(OutDir)Config"
 mkdir "$(OutDir)Config"
 xcopy "$(SolutionDir)Config\*.*" "$(OutDir)Config\" /y /d /e /q</Command>
     </PostBuildEvent>

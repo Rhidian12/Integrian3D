@@ -100,26 +100,15 @@ vec3 CalculateSpecular(int LightType, vec3 Normal, vec3 LightDirection, float At
 void main()
 {
     int LightType = PointLightType;
+    // int LightType = DirectionalLightType;
 
     float Distance = length(_PointLights[0].Position - vPos);
     float Attenuation = GetAttenuationRadius(Distance, _PointLights[0].MaxRadius);
 
-    if (Attenuation <= 0.0)
-    {
-        FragColor = vec4(1,0,0,1);
-        return;
-    }
-
     vec3 Normal = normalize(vNormal);
+
     vec3 LightDirection = normalize(_PointLights[0].Position - vPos);
     // vec3 LightDirection = normalize(-_DirectionalLights[0].Direction);
-
-    vec3 test = CalculateDiffuse(LightType, Normal, LightDirection, Attenuation);
-    if (test == vec3(0))
-    {
-        FragColor = vec4(0,1,0,1);
-        return;
-    }
 
     vec3 result = CalculateAmbient(LightType, Attenuation) + CalculateDiffuse(LightType, Normal, LightDirection, Attenuation) +
     CalculateSpecular(LightType, Normal, LightDirection, Attenuation);
