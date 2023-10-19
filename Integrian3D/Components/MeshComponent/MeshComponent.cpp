@@ -158,7 +158,7 @@ namespace Integrian3D
 		/* Enable the Normal attribute */
 		glEnableVertexAttribArray(1);
 
-		/* Set Vertex Buffer UV Coord Attribute layout */
+		/* Set Vertex Buffer Normal Attribute layout */
 		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), /* offset = */ reinterpret_cast<void*>(sizeof(Math::Vec3D)));
 
 		/* Enable the UV Coord attribute */

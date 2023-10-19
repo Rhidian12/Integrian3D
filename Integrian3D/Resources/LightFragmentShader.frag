@@ -71,6 +71,8 @@ vec3 CalculateDiffuse(int LightType, vec3 Normal, vec3 LightDirection, float Att
 {
     float Diff = max(dot(Normal, LightDirection), 0.0);
 
+    FragColor.rgb = Diff * texture(_Material.Diffuse, vTexCoords).rgb * _PointLights[0].Diffuse * Attenuation;
+
     if (LightType == PointLightType)
     {
         return Diff * texture(_Material.Diffuse, vTexCoords).rgb * _PointLights[0].Diffuse * Attenuation;
@@ -104,11 +106,19 @@ void main()
 
     float Distance = length(_PointLights[0].Position - vPos);
     float Attenuation = GetAttenuationRadius(Distance, _PointLights[0].MaxRadius);
+    FragColor.rgb = vec3(1,1,1);
+    FragColor.w = Attenuation;
+    return;
 
     vec3 Normal = normalize(vNormal);
 
     vec3 LightDirection = normalize(_PointLights[0].Position - vPos);
     // vec3 LightDirection = normalize(-_DirectionalLights[0].Direction);
+
+    CalculateDiffuse(LightType, Normal, LightDirection, Attenuation);
+    FragColor.rgb = vec3(Attenuation, Attenuation, Attenuation);
+    FragColor.w = 1.0;
+    return;
 
     vec3 result = CalculateAmbient(LightType, Attenuation) + CalculateDiffuse(LightType, Normal, LightDirection, Attenuation) +
     CalculateSpecular(LightType, Normal, LightDirection, Attenuation);

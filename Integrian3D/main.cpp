@@ -121,7 +121,7 @@ int RunTestEngine(int, char* [])
 
 	{
 		Entity Entity{ TestScene->CreateEntity() };
-		TestScene->AddComponent<TestRotateComponent>(Entity);
+		// TestScene->AddComponent<TestRotateComponent>(Entity);
 
 		UniquePtr<Material> MeshMaterial = MakeUnique<Material>("Resources/LightVertexShader.vert", "Resources/LightFragmentShader.frag");
 		MeshMaterial->SetFloat("_Material.Shininess", 32.f);
