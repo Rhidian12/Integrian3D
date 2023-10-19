@@ -211,6 +211,7 @@ xcopy "$(SolutionDir)Config\*.*" "$(OutDir)Config\" /y /d /e /q</Command>
     <ClCompile Include="CoreEngine.cpp" />
     <ClCompile Include="IO\FileContentCache\FileContentCache.cpp" />
     <ClCompile Include="IO\File\File.cpp" />
+    <ClCompile Include="IO\File\FileMonitor.cpp" />
     <ClCompile Include="IO\IAsset\IAssetReader.cpp" />
     <ClCompile Include="IO\IAsset\IAssetWriter.cpp" />
     <ClCompile Include="Components\FreeCameraComponent\FreeCameraComponent.cpp" />
@@ -242,6 +243,7 @@ xcopy "$(SolutionDir)Config\*.*" "$(OutDir)Config\" /y /d /e /q</Command>
     <ClCompile Include="Components\TagComponent\TagComponent.cpp" />
     <ClCompile Include="TextureManager\TextureManager.cpp" />
     <ClCompile Include="Texture\Texture.cpp" />
+    <ClCompile Include="Thread\ThreadManager.cpp" />
     <ClCompile Include="Timer\Timepoint\Timepoint.cpp" />
     <ClCompile Include="Timer\Timer.cpp" />
     <ClCompile Include="Components\TransformComponent\TransformComponent.cpp" />
@@ -271,6 +273,7 @@ xcopy "$(SolutionDir)Config\*.*" "$(OutDir)Config\" /y /d /e /q</Command>
     <ClInclude Include="IO\FileContentCache\FileContentCache.h" />
     <ClInclude Include="IO\FileMode.h" />
     <ClInclude Include="IO\File\File.h" />
+    <ClInclude Include="IO\File\FileMonitor.h" />
     <ClInclude Include="IO\IAsset\IAssetReader.h" />
     <ClInclude Include="IO\IAsset\IAssetWriter.h" />
     <ClInclude Include="IO\Ini\IniFile.h" />
@@ -320,6 +323,7 @@ xcopy "$(SolutionDir)Config\*.*" "$(OutDir)Config\" /y /d /e /q</Command>
     <ClInclude Include="Components\TestRotateComponent\TestRotateComponent.h" />
     <ClInclude Include="TextureManager\TextureManager.h" />
     <ClInclude Include="Texture\Texture.h" />
+    <ClInclude Include="Thread\ThreadManager.h" />
     <ClInclude Include="Timer\TimeLength.h" />
     <ClInclude Include="Timer\Timepoint\Timepoint.h" />
     <ClInclude Include="Timer\Timer.h" />

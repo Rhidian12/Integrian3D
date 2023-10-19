@@ -11,7 +11,9 @@ namespace Integrian3D
 	class Delegate final
 	{
 	public:
-		using Callback = std::function<void(Ts&&...)>;
+		using Callback = std::function<void(const Ts...)>;
+
+		Delegate() = default;
 
 		Delegate(const Delegate& Other)
 			: Callbacks{ Other.Callbacks }
