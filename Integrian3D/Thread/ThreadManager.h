@@ -24,7 +24,7 @@ namespace Integrian3D::Threading
 		~ThreadManager();
 		static ThreadManager& GetInstance();
 
-		void ScheduleTask(const int32 TaskID, const std::function<void()>& Task);
+		int32 ScheduleTask(const std::function<void()>& Task);
 		
 		Delegate<int32>& GetOnTaskCompletedDelegate();
 
@@ -35,6 +35,7 @@ namespace Integrian3D::Threading
 		TArray<Detail::ThreadTask> Tasks;
 		Delegate<int32> OnTaskCompleted;
 
+		int32 NextTaskID;
 		int32 MaxNrOfThreads;
 	};
 }

@@ -81,9 +81,11 @@ namespace Integrian3D::Threading
 		return Instance;
 	}
 
-	void ThreadManager::ScheduleTask(const int32 TaskID, const std::function<void()>& Task)
+	int32 ThreadManager::ScheduleTask(const std::function<void()>& Task)
 	{
+		const int32 TaskID{ NextTaskID++ };
 		Tasks.EmplaceBack(Task, TaskID);
+		return TaskID;
 	}
 
 	Delegate<int32>& ThreadManager::GetOnTaskCompletedDelegate()
