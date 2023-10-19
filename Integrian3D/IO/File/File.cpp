@@ -22,11 +22,12 @@ namespace Integrian3D::IO
 		}
 	}
 
-	File::File(const std::string_view Filepath, const OpenMode OpenMode, const FileMode Mode)
+	File::File(const std::string_view Filepath, const OpenMode OpenMode, const FileMode Mode, const bool bMonitorFile)
 		: Filepath{ Filepath }
 		, Handle{ INVALID_HANDLE_VALUE }
 		, Filesize{}
 		, Mode{ Mode }
+		, Monitor{ Filepath.data() }
 	{
 		Handle = OpenFile(OpenMode);
 
@@ -39,6 +40,11 @@ namespace Integrian3D::IO
 		Filesize = static_cast<int32>(GetFileSize(Handle, nullptr));
 
 		FileContentCache::GetInstance().AddFile(this);
+
+		if (bMonitorFile)
+		{
+			Monitor.StartMonitoringFile();
+		}
 	}
 
 	File::~File()
@@ -54,6 +60,7 @@ namespace Integrian3D::IO
 		, Handle{ __MOVE(Other.Handle) }
 		, Filesize{ __MOVE(Other.Filesize) }
 		, Mode{ __MOVE(Other.Mode) }
+		, Monitor{ __MOVE(Other.Monitor) }
 	{}
 
 	File& File::operator=(File&& Other) noexcept
@@ -62,6 +69,7 @@ namespace Integrian3D::IO
 		Handle = __MOVE(Other.Handle);
 		Filesize = __MOVE(Other.Filesize);
 		Mode = __MOVE(Other.Mode);
+		Monitor = __MOVE(Other.Monitor);
 
 		return *this;
 	}
@@ -99,6 +107,16 @@ namespace Integrian3D::IO
 	int32 File::GetFilepointer() const
 	{
 		return static_cast<int32>(SetFilePointer(Handle, 0, nullptr, FILE_CURRENT));
+	}
+
+	void File::StartMonitoringFile()
+	{
+		Monitor.StartMonitoringFile();
+	}
+
+	void File::StopMonitoringFile()
+	{
+		Monitor.StopMonitoringFile();
 	}
 
 	File& File::operator<<(const char* String)

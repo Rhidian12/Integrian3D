@@ -1,2 +1,3 @@
 [CoreLog] Finished initialisation of engine
-[ShaderLog] 131218: PERFORMANCE of MEDIUM severity, raised from API: Program/shader state performance warning: Vertex shader in program 3 is being recompiled based on GL state.
+[Win32Log] [C:\Users\rhidi\Documents\GitHub\Integrian3D\Integrian3D\IO\File\FileMonitor.cpp, 35] Win32 API Call Error: The directory name is invalid.
+

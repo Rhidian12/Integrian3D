@@ -1,6 +1,7 @@
 #pragma once
 
 #include "EngineConstants.h"
+#include "IO/File/File.h"
 #include "Math/Math.h"
 
 #include <string> /* std::string */
@@ -14,16 +15,13 @@ namespace Integrian3D
 	class Shader final
 	{
 	public:
-		Shader();
-		Shader(const std::string& vertexShaderPath, const std::string& fragmentShaderPath);
+		Shader(const std::string& VertexShaderPath, const std::string& FragmentShaderPath);
 		~Shader();
 
 		Shader(const Shader&) noexcept = delete;
 		Shader(Shader&& other) noexcept;
 		Shader& operator=(const Shader&) noexcept = delete;
 		Shader& operator=(Shader&& other) noexcept;
-
-		void SetShaders(const std::string& VertexShader, const std::string& FragmentShader);
 
 		void Activate() const;
 
@@ -34,8 +32,10 @@ namespace Integrian3D
 		void SetVec3(const std::string_view Name, const Math::Vec3D& Vec) const;
 
 	private:
-		void SetupShaders(const std::string& VertexShader, const std::string& FragmentShader);
+		void SetupShaders();
 
+		IO::File VertexShader;
+		IO::File FragmentShader;
 		uint32_t ProgramID;
 	};
 }

@@ -2,14 +2,20 @@
 
 #include "Logger/LogCategory.h"
 
+#include <functional>
+
 DEFINE_LOG_CATEGORY(Win32HandleLog, Integrian3D::LogVerbosity::Verbose);
 
 namespace Integrian3D::Win32Utils
 {
 	class Win32Handle final
 	{
+		using Deleter = std::function<bool(void*)>;
+
 	public:
+		Win32Handle();
 		explicit Win32Handle(void* const Handle);
+		Win32Handle(void* const Handle, const Deleter& CustomDeleter);
 		~Win32Handle();
 
 		Win32Handle(const Win32Handle&) noexcept = delete;
@@ -29,6 +35,7 @@ namespace Integrian3D::Win32Utils
 	private:
 		void CloseHandle();
 
+		Deleter CustomDeleter;
 		void* Handle;
 	};
 }

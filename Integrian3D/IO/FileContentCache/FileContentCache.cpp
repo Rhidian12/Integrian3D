@@ -28,9 +28,11 @@ namespace Integrian3D::IO
 			return;
 		}
 
+		File->Monitor.GetOnFileChangedDelegate().Bind(std::bind(&FileContentCache::OnFileChanged, this, std::placeholders::_1));
+
 		std::string FileContents{};
 		File->GetFileContents_Implementation(FileContents);
-		FileContentsCache.insert(std::make_pair(FileContentCache::FileInfo{ Filepath.data(), 1 }, FileContents));
+		FileContentsCache.insert(std::make_pair(FileContentCache::FileInfo{ Filepath.data(), File, 1 }, FileContents));
 	}
 
 	void FileContentCache::RemoveFile(const File* const File)
@@ -80,5 +82,16 @@ namespace Integrian3D::IO
 		}
 
 		return false;
+	}
+
+	void FileContentCache::OnFileChanged(const std::string& Filepath)
+	{
+		FileInfo FileInfo{};
+		if (ContainsFilepath(Filepath, FileInfo))
+		{
+			std::string FileContents{};
+			FileInfo.File->GetFileContents_Implementation(FileContents);
+			FileContentsCache[FileInfo] = FileContents;
+		}
 	}
 }

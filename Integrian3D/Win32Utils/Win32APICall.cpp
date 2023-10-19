@@ -28,6 +28,20 @@ namespace Integrian3D::Win32Utils
 		SetLastError(ERROR_SUCCESS);
 	}
 
+	Win32APICallInfo::Win32APICallInfo(const std::string_view File, const int32 Line, const TArray<DWORD>& ErrorsToIgnore)
+		: Result{}
+		, File{ File }
+		, Line{ Line }
+	{
+		const DWORD Error{ GetLastError() };
+		if (!ErrorsToIgnore.Contains(Error))
+		{
+			Result = Error;
+		}
+
+		SetLastError(ERROR_SUCCESS);
+	}
+
 	void Win32APICallInfo::LogError() const
 	{
 		if (GetSuccess())

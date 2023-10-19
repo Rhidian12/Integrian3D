@@ -11,10 +11,20 @@
 
 namespace Integrian3D::Win32Utils
 {
+	Win32Handle::Win32Handle()
+		: Handle{ INVALID_HANDLE_VALUE }
+		, CustomDeleter{}
+	{}
+
 	Win32Handle::Win32Handle(void* const Handle)
 		: Handle{ Handle }
-	{
-	}
+		, CustomDeleter{}
+	{}
+
+	Win32Handle::Win32Handle(void* const Handle, const Deleter& CustomDeleter)
+		: Handle{ Handle }
+		, CustomDeleter{ CustomDeleter }
+	{}
 
 	Win32Handle::~Win32Handle()
 	{
@@ -76,11 +86,21 @@ namespace Integrian3D::Win32Utils
 	{
 		if (Handle)
 		{
-			auto Call = CALL_WIN32(::CloseHandle(Handle));
-
-			if (!Call.GetSuccess())
+			if (CustomDeleter)
 			{
-				LOG(Win32HandleLog, LogErrorLevel::Error, "Handle could not be closed");
+				if (!CustomDeleter(Handle))
+				{
+					LOG(Win32HandleLog, LogErrorLevel::Error, "Handle could not be closed through Custom Deleter");
+				}
+			}
+			else
+			{
+				auto Call = CALL_WIN32(::CloseHandle(Handle));
+
+				if (!Call.GetSuccess())
+				{
+					LOG(Win32HandleLog, LogErrorLevel::Error, "Handle could not be closed");
+				}
 			}
 
 			Handle = INVALID_HANDLE_VALUE;

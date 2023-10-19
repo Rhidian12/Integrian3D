@@ -12,12 +12,15 @@ DEFINE_LOG_CATEGORY(FileContentCacheLog, Integrian3D::LogVerbosity::Verbose)
 
 namespace Integrian3D::IO
 {
+	class File;
+
 	class FileContentCache final
 	{
 	private:
 		struct FileInfo final
 		{
 			std::string Filepath;
+			File* File;
 			int32 ReferenceCounter;
 		};
 
@@ -40,14 +43,15 @@ namespace Integrian3D::IO
 	public:
 		__NODISCARD static FileContentCache& GetInstance();
 
-		void AddFile(class File* const File);
-		void RemoveFile(const class File* const File);
+		void AddFile(File* const File);
+		void RemoveFile(const File* const File);
 
 		__NODISCARD std::string_view GetFileContents(const std::string_view Filepath) const;
 
 	private:
 		FileContentCache() = default;
 		__NODISCARD bool ContainsFilepath(const std::string_view Filepath, FileInfo& OutFileInfo) const;
+		void OnFileChanged(const std::string& Filepath);
 
 		friend std::unique_ptr<FileContentCache> std::make_unique();
 		inline static std::unique_ptr<FileContentCache> Instance{};

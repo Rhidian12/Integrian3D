@@ -4,6 +4,8 @@
 #include "Delegate/Delegate.h"
 #include "IO/Ini/IniFile.h"
 
+#include <mutex>
+
 namespace Integrian3D::Threading
 {
 	namespace

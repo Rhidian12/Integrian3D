@@ -17,14 +17,15 @@ namespace Integrian3D
 {
 	static constexpr uint32 ShaderErrorValue = std::numeric_limits<uint32>::max();
 
-	Shader::Shader()
-		: ProgramID{ ShaderErrorValue } 
-	{}
-
-	Shader::Shader(const std::string& vertexShaderPath, const std::string& fragmentShaderPath)
+	Shader::Shader(const std::string& VertexShaderPath, const std::string& FragmentShaderPath)
 		: ProgramID{ ShaderErrorValue }
+		, VertexShader{ VertexShaderPath, IO::OpenMode::OpenAlways, IO::FileMode::ASCII, true }
+		, FragmentShader{ FragmentShaderPath, IO::OpenMode::OpenAlways, IO::FileMode::ASCII, true }
 	{
-		SetupShaders(vertexShaderPath, fragmentShaderPath);
+		IASSERT_MSG(PathUtils::GetExtension(VertexShaderPath) == ".vert", "VertexShader file must have .vert extension! Given file: {}", VertexShaderPath);
+		IASSERT_MSG(PathUtils::GetExtension(FragmentShaderPath) == ".frag", "FragmentShader file must have .frag extension! Given file: {}", FragmentShaderPath);
+
+		SetupShaders();
 	}
 
 	Shader::~Shader()
@@ -37,6 +38,8 @@ namespace Integrian3D
 
 	Shader::Shader(Shader&& other) noexcept
 		: ProgramID{ __MOVE(other.ProgramID) }
+		, VertexShader{ __MOVE(other.VertexShader) }
+		, FragmentShader{ __MOVE(other.FragmentShader) }
 	{
 		other.ProgramID = ShaderErrorValue;
 	}
@@ -44,15 +47,12 @@ namespace Integrian3D
 	Shader& Shader::operator=(Shader&& other) noexcept
 	{
 		ProgramID = __MOVE(other.ProgramID);
+		VertexShader = __MOVE(other.VertexShader);
+		FragmentShader = __MOVE(other.FragmentShader);
 
 		other.ProgramID = ShaderErrorValue;
 
 		return *this;
-	}
-
-	void Shader::SetShaders(const std::string& VertexShader, const std::string& FragmentShader)
-	{
-		SetupShaders(VertexShader, FragmentShader);
 	}
 
 	void Shader::Activate() const
@@ -86,22 +86,17 @@ namespace Integrian3D
 		glUniform3f(glGetUniformLocation(ProgramID, Name.data()), Vec.x, Vec.y, Vec.z);
 	}
 
-	void Shader::SetupShaders(const std::string& VertexShader, const std::string& FragmentShader)
+	void Shader::SetupShaders()
 	{
-		IASSERT_MSG(PathUtils::GetExtension(VertexShader) == ".vert", "VertexShader file must have .vert extension! Given file: {}", VertexShader);
-		IASSERT_MSG(PathUtils::GetExtension(FragmentShader) == ".frag", "FragmentShader file must have .frag extension! Given file: {}", FragmentShader);
-
 		uint32 vertexShaderID{}, fragmentShaderID{};
 
 		/* Get Vertex Shader */
 		{
-			const IO::File vertexShader{ VertexShader, IO::OpenMode::OpenExisting, IO::FileMode::ASCII };
-
 			/* Generate VertexShader ID */
 			vertexShaderID = glCreateShader(GL_VERTEX_SHADER);
 
 			/* Attach the Vertex Shader code to the ID and compile it */
-			const char* pShaderSource{ vertexShader.GetFileContents().data() };
+			const char* pShaderSource{ VertexShader.GetFileContents().data() };
 			glShaderSource(vertexShaderID, 1, &pShaderSource, nullptr);
 			glCompileShader(vertexShaderID);
 
@@ -119,13 +114,11 @@ namespace Integrian3D
 
 		/* Get Fragment Shader */
 		{
-			const IO::File fragmentShader{ FragmentShader, IO::OpenMode::OpenExisting, IO::FileMode::ASCII };
-
 			/* Generate Frament Shader ID */
 			fragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
 
 			/* Attach the Fragment Shader code to the ID and compile it */
-			const char* pShaderSource{ fragmentShader.GetFileContents().data() };
+			const char* pShaderSource{ FragmentShader.GetFileContents().data() };
 			glShaderSource(fragmentShaderID, 1, &pShaderSource, nullptr);
 			glCompileShader(fragmentShaderID);
 

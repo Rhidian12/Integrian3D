@@ -4,6 +4,7 @@
 #include "IO/FileMode.h"
 #include "IO/OpenMode.h"
 #include "IO/IOUtils.h"
+#include "IO/File/FileMonitor.h"
 #include "Win32Utils/Win32Handle.h"
 
 #include <cmath>
@@ -20,7 +21,7 @@ namespace Integrian3D::IO
 	class File final
 	{
 	public:
-		File(const std::string_view Filepath, const OpenMode OpenMode, const FileMode Mode);
+		File(const std::string_view Filepath, const OpenMode OpenMode, const FileMode Mode = FileMode::ASCII, const bool bMonitorFile = false);
 		~File();
 
 		File(const File&) noexcept = delete;
@@ -36,6 +37,9 @@ namespace Integrian3D::IO
 		__NODISCARD std::string_view GetFileContents() const;
 		__NODISCARD int32 GetFilesize() const;
 		__NODISCARD int32 GetFilepointer() const;
+
+		void StartMonitoringFile();
+		void StopMonitoringFile();
 
 		#pragma region operator<<
 		template<typename T, std::enable_if_t<bIsInteger<T>, bool> = true>
@@ -86,6 +90,7 @@ namespace Integrian3D::IO
 		void ReadFromFile(char* Buffer, const int32 BufferSize) const;
 		__NODISCARD void* OpenFile(const OpenMode OpenMode) const;
 
+		FileMonitor Monitor;
 		std::string Filepath;
 		Win32Utils::Win32Handle Handle;
 		int32 Filesize;

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "EngineConstants.h"
+#include "Delegate/Delegate.h"
 #include "Win32Utils/Win32Handle.h"
 
 #include <string>
@@ -14,7 +15,15 @@ namespace Integrian3D::IO
 	public:
 		FileMonitor(const std::string& Path);
 
+		void StartMonitoringFile();
+		void StopMonitoringFile();
+
+		Delegate<std::string>& GetOnFileChangedDelegate();
+
 	private:
 		Win32Utils::Win32Handle Handle;
+		std::string Filepath;
+		Delegate<std::string> OnFileChanged;
+		bool bIsMonitoring;
 	};
 }

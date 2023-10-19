@@ -17,4 +17,16 @@ namespace Integrian3D::PathUtils
 
 		return Path.substr(Path.find_last_of('.'));
 	}
+
+	std::string_view GetPathWithoutExtension(const std::string_view Path)
+	{
+		if (!HasExtension)
+		{
+			return Path;
+		}
+		else
+		{
+			return Path.substr(0, Path.find_last_of('.'));
+		}
+	}
 }
