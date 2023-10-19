@@ -81,6 +81,11 @@ namespace Integrian3D::Threading
 		return Instance;
 	}
 
+	void ThreadManager::ScheduleTask(const int32 TaskID, const std::function<void()>& Task)
+	{
+		Tasks.EmplaceBack(Task, TaskID);
+	}
+
 	Delegate<int32>& ThreadManager::GetOnTaskCompletedDelegate()
 	{
 		const std::unique_lock<std::mutex> Lock{ TaskMutex };
