@@ -13,7 +13,7 @@ namespace Integrian3D::Threading
 		static std::mutex TaskMutex;
 		static std::condition_variable ConditionVar;
 
-		static void ThreadTask_Internal(TArray<Detail::ThreadTask>& Tasks, bool& bShouldRun, int32 ID)
+		static void ThreadTask_Internal(TArray<Detail::ThreadTask>& Tasks, bool& bShouldRun)
 		{
 			using namespace Detail;
 
@@ -23,9 +23,7 @@ namespace Integrian3D::Threading
 				{
 					std::unique_lock<std::mutex> Lock{ TaskMutex };
 
-					LOG(ThreadingLog, LogErrorLevel::Log, "Thread with ID {} waiting!", ID);
-
-					ConditionVar.wait(Lock, [&Tasks, bShouldRun]()->bool
+					ConditionVar.wait_for(Lock, std::chrono::milliseconds(33), [&Tasks, bShouldRun]()->bool
 						{
 							return !bShouldRun || !Tasks.Empty();
 						});
@@ -65,8 +63,6 @@ namespace Integrian3D::Threading
 						});
 				}
 			}
-
-			LOG(ThreadingLog, LogErrorLevel::Log, "Thread {} finishing", ID);
 		}
 	}
 
@@ -85,7 +81,7 @@ namespace Integrian3D::Threading
 
 		for (int32 i{}; i < MaxNrOfThreads; ++i)
 		{
-			Threads.EmplaceBack(ThreadTask_Internal, std::ref(Tasks), std::ref(bShouldRun), i);
+			Threads.EmplaceBack(ThreadTask_Internal, std::ref(Tasks), std::ref(bShouldRun));
 		}
 	}
 

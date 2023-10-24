@@ -1,1 +1,15 @@
 [CoreLog] Finished initialisation of engine
+[ThreadingLog] Thread with ID 0 waiting!
+[ThreadingLog] Thread with ID 0 continuing, bShouldRun=true
+[ThreadingLog] Thread with ID 0 waiting!
+[ThreadingLog] Thread with ID 3 waiting!
+[ThreadingLog] Thread with ID 3 continuing, bShouldRun=false
+[ThreadingLog] Thread 3 finishing
+[ThreadingLog] Thread with ID 1 waiting!
+[ThreadingLog] Thread with ID 1 continuing, bShouldRun=false
+[ThreadingLog] Thread 1 finishing
+[ThreadingLog] Thread with ID 2 waiting!
+[ThreadingLog] Thread with ID 2 continuing, bShouldRun=false
+[ThreadingLog] Thread 2 finishing
+[ThreadingLog] Thread with ID 0 continuing, bShouldRun=false
+[ThreadingLog] Thread 0 finishing
