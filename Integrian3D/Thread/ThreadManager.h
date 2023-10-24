@@ -18,7 +18,6 @@ namespace Integrian3D::Threading
 			std::function<void()> Task;
 			int32 TaskIndex;
 			bool bInProgress;
-			bool bIsCompleted;
 
 			bool operator==(const ThreadTask& Other) const
 			{

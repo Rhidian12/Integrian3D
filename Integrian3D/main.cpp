@@ -61,8 +61,6 @@ int RunTestEngine(int, char* [])
 
 	Core& core{ Core::CreateCore(1080,720) };
 
-	// IO::File File{ "Resources/LightFragmentShader.frag", IO::OpenMode::OpenExisting, IO::FileMode::ASCII, true };
-
 	TextureManager::GetInstance().AddTexture("Box_Diffuse", "Resources/box.png");
 	TextureManager::GetInstance().AddTexture("Box_Specular", "Resources/box_specular.png");
 

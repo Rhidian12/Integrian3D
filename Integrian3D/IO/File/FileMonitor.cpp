@@ -65,8 +65,6 @@ namespace Integrian3D::IO
 
 					const int64 LastModified = GetLastTimeModified(Filepath.c_str());
 
-					LOG(FileMonitorLog, LogErrorLevel::Log, "bIsMonitoring: {}", bIsMonitoring);
-
 					if (LastModified > LastTimeModified)
 					{
 						OnFileChanged.Invoke(Filepath);

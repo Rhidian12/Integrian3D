@@ -1,15 +1,12 @@
 [CoreLog] Finished initialisation of engine
-[ThreadingLog] Thread with ID 0 waiting!
-[ThreadingLog] Thread with ID 0 continuing, bShouldRun=true
-[ThreadingLog] Thread with ID 0 waiting!
-[ThreadingLog] Thread with ID 3 waiting!
-[ThreadingLog] Thread with ID 3 continuing, bShouldRun=false
-[ThreadingLog] Thread 3 finishing
-[ThreadingLog] Thread with ID 1 waiting!
-[ThreadingLog] Thread with ID 1 continuing, bShouldRun=false
-[ThreadingLog] Thread 1 finishing
-[ThreadingLog] Thread with ID 2 waiting!
-[ThreadingLog] Thread with ID 2 continuing, bShouldRun=false
-[ThreadingLog] Thread 2 finishing
-[ThreadingLog] Thread with ID 0 continuing, bShouldRun=false
-[ThreadingLog] Thread 0 finishing
+[ThreadingLog] Starting Task with ID 0
+[ThreadingLog] Starting Task with ID 1
+[ThreadingLog] Starting Task with ID 2
+[ThreadingLog] Starting Task with ID 3
+[ShaderLog] 131218: PERFORMANCE of MEDIUM severity, raised from API: Program/shader state performance warning: Vertex shader in program 3 is being recompiled based on GL state.
+[ThreadingLog] Finishing Task with ID 1
+[ThreadingLog] Want to delete task: 1 and is it present in array: true
+[ThreadingLog] Finishing Task with ID 0
+[ThreadingLog] Want to delete task: 0 and is it present in array: true
+[ThreadingLog] Finishing Task with ID 3
+[ThreadingLog] Want to delete task: 3 and is it present in array: true
