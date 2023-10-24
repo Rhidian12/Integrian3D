@@ -13,7 +13,7 @@ namespace Integrian3D::Threading
 		static std::mutex TaskMutex;
 		static std::condition_variable ConditionVar;
 
-		static void ThreadTask_Internal(TArray<Detail::ThreadTask>& Tasks)
+		static void ThreadTask_Internal(TArray<Detail::ThreadTask>& Tasks, bool& bShouldRun, int32 ID)
 		{
 			using namespace Detail;
 
@@ -23,40 +23,57 @@ namespace Integrian3D::Threading
 				{
 					std::unique_lock<std::mutex> Lock{ TaskMutex };
 
-					ConditionVar.wait(Lock, [&Tasks]()->bool
+					LOG(ThreadingLog, LogErrorLevel::Log, "Thread with ID {} waiting!", ID);
+
+					ConditionVar.wait(Lock, [&Tasks, bShouldRun]()->bool
 						{
-							return !g_IsRunning || !Tasks.Empty();
+							return !bShouldRun || !Tasks.Empty();
 						});
 
 					// Check if the program has ended
-					if (!g_IsRunning)
+					if (!bShouldRun)
 					{
-						return;
+						break;
 					}
 
-					if (!Tasks.Empty())
+					for (Detail::ThreadTask& ThreadTask : Tasks)
 					{
-						Task = Tasks[0];
-						Tasks.PopFront();
+						if (!ThreadTask.bInProgress)
+						{
+							Task = ThreadTask;
+							ThreadTask.bInProgress = true; // although not entirely true yet, this prevents another thread from taking the task as well
+						}
 					}
 				}
 
 				if (Task.Task)
 				{
-					Task.Task();
-				}
+					LOG(ThreadingLog, LogErrorLevel::Log, "Starting Task with ID {}", Task.TaskIndex);
 
-				{
+					Task.Task();
+					Task.bIsCompleted = true;
+
 					const std::unique_lock<std::mutex> Lock{ TaskMutex };
 
-					ThreadManager::GetInstance().GetOnTaskCompletedDelegate().Invoke(Task.TaskID);
+					LOG(ThreadingLog, LogErrorLevel::Log, "Finishing Task with ID {}", Task.TaskIndex);
+
+					ThreadManager::GetInstance().GetOnTaskCompletedDelegate().Invoke(Task.TaskIndex);
+
+					Tasks.Erase([Task](const Detail::ThreadTask& TTask)->bool
+						{
+							return TTask.TaskIndex == Task.TaskIndex;
+						});
 				}
 			}
+
+			LOG(ThreadingLog, LogErrorLevel::Log, "Thread {} finishing", ID);
 		}
 	}
 
 	ThreadManager::ThreadManager()
 		: MaxNrOfThreads{}
+		, bShouldRun{ true }
+		, NextTaskIndex{}
 	{
 		const IniFile EngineIni{ "Config/Engine.ini" };
 		EngineIni.GetInteger("Threading", "MaxNrOfThreads", MaxNrOfThreads);
@@ -68,12 +85,14 @@ namespace Integrian3D::Threading
 
 		for (int32 i{}; i < MaxNrOfThreads; ++i)
 		{
-			Threads.EmplaceBack(ThreadTask_Internal, std::ref(Tasks));
+			Threads.EmplaceBack(ThreadTask_Internal, std::ref(Tasks), std::ref(bShouldRun), i);
 		}
 	}
 
 	ThreadManager::~ThreadManager()
 	{
+		bShouldRun = false;
+
 		ConditionVar.notify_all();
 	}
 
@@ -85,9 +104,20 @@ namespace Integrian3D::Threading
 
 	int32 ThreadManager::ScheduleTask(const std::function<void()>& Task)
 	{
-		const int32 TaskID{ NextTaskID++ };
-		Tasks.EmplaceBack(Task, TaskID);
-		return TaskID;
+		ThreadManager& Manager = ThreadManager::GetInstance();
+
+		return Manager.ScheduleTask_Impl(Task);
+	}
+
+	int32 ThreadManager::ScheduleTask_Impl(const std::function<void()>& Task)
+	{
+		std::unique_lock<std::mutex> Lock{ TaskMutex };
+
+		const int32 TaskIndex{ NextTaskIndex++ };
+		Tasks.EmplaceBack(Task, TaskIndex, false, false);
+		ConditionVar.notify_one();
+
+		return TaskIndex;
 	}
 
 	Delegate<int32>& ThreadManager::GetOnTaskCompletedDelegate()
@@ -95,5 +125,33 @@ namespace Integrian3D::Threading
 		const std::unique_lock<std::mutex> Lock{ TaskMutex };
 
 		return OnTaskCompleted;
+	}
+
+	void ThreadManager::WaitOnThread(const int32 TaskID)
+	{
+		Iterator It{ Tasks.end() };
+
+		do
+		{
+			{
+				const std::unique_lock<std::mutex> Lock{ TaskMutex };
+
+				It = Tasks.Find([TaskID](const Detail::ThreadTask& TTask)->bool
+					{
+						return TTask.TaskIndex == TaskID;
+					});
+			}
+
+			std::this_thread::sleep_for(std::chrono::milliseconds(15));
+
+		} while (It != Tasks.end());
+	}
+
+	void ThreadManager::StopAllThreads()
+	{
+		const std::unique_lock<std::mutex> Lock{ TaskMutex };
+
+		bShouldRun = false;
+		ConditionVar.notify_all();
 	}
 }

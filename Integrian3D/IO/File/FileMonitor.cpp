@@ -1,55 +1,76 @@
 #include "IO/File/FileMonitor.h"
 
 #include "IO/PathUtils.h"
+#include "IO/OpenMode.h"
 #include "Thread/ThreadManager.h"
 #include "Timer/TimeLength.h"
 #include "Win32Utils/Win32APICall.h"
 
+#ifdef _WIN32
 I_DISABLE_WARNING(4005) // warning C4005: 'APIENTRY': macro redefinition
 #include <Windows.h>
 I_ENABLE_WARNING(4005)
+#endif
 
 namespace Integrian3D::IO
 {
 	namespace
 	{
-		static bool CloseChangeNotificationHandle(void* Handle)
+		static int64 GetLastTimeModified(const char* Filepath)
 		{
-			return CALL_WIN32_RV_IGNORE_ERROR(FindCloseChangeNotification(Handle), TRUE);
+			struct _stat Result;
+			if (_stat(Filepath, &Result) == 0)
+			{
+				return Result.st_mtime;
+			}
+
+			return 0;
 		}
 	}
 
 	FileMonitor::FileMonitor(const std::string& Path)
-		: Handle{}
-		, Filepath{ Path }
+		: Filepath{ Path }
 		, bIsMonitoring{ false }
+		, LastTimeModified{ -1 }
+		, ThreadID{ -1 }
 	{}
+
+	FileMonitor::~FileMonitor()
+	{
+		bIsMonitoring = false;
+
+		if (ThreadID != -1)
+		{
+			Threading::ThreadManager::GetInstance().WaitOnThread(ThreadID);
+		}
+	}
 
 	void FileMonitor::StartMonitoringFile()
 	{
-		Handle = Win32Utils::Win32Handle
-		{ 
-			CALL_WIN32_RV
-			(
-				FindFirstChangeNotificationA(PathUtils::GetPathWithoutExtension(Filepath).data(), false, FILE_NOTIFY_CHANGE_SIZE)
-			),
-			CloseChangeNotificationHandle
-		};
-
 		bIsMonitoring = true;
 
-		Threading::ThreadManager::GetInstance().ScheduleTask([this]()->void
+		LastTimeModified = GetLastTimeModified(Filepath.c_str());
+		if (!LastTimeModified)
+		{
+			LOG(FileMonitorLog, LogErrorLevel::Error, "Could not retrieve LastTimeModified for file {}. Did not start monitoring file!", Filepath);
+			return;
+		}
+
+		ThreadID = Threading::ThreadManager::ScheduleTask([this]()->void
 			{
 				while (bIsMonitoring)
 				{
-					constexpr static int32 WaitTimeSec{ 1 };
-					const DWORD WaitStatus{ CALL_WIN32_RV_IGNORE_ERRORS(WaitForSingleObject(Handle, static_cast<DWORD>(WaitTimeSec * Time::SecToMilli)),
-						WAIT_OBJECT_0, WAIT_TIMEOUT) };
+					constexpr static int32 NrOfMSToWait{ 33 };
+					std::this_thread::sleep_for(std::chrono::milliseconds(NrOfMSToWait));
 
-					if (WaitStatus == WAIT_OBJECT_0)
+					const int64 LastModified = GetLastTimeModified(Filepath.c_str());
+
+					LOG(FileMonitorLog, LogErrorLevel::Log, "bIsMonitoring: {}", bIsMonitoring);
+
+					if (LastModified > LastTimeModified)
 					{
 						OnFileChanged.Invoke(Filepath);
-						CALL_WIN32_IGNORE_ERROR(FindNextChangeNotification(Handle), TRUE);
+						LastTimeModified = LastModified;
 					}
 				}
 			});

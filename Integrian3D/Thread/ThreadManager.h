@@ -7,6 +7,8 @@
 #include <functional>
 #include <thread>
 
+DEFINE_LOG_CATEGORY(ThreadingLog, Integrian3D::LogVerbosity::Verbose);
+
 namespace Integrian3D::Threading
 {
 	namespace Detail
@@ -14,7 +16,14 @@ namespace Integrian3D::Threading
 		struct ThreadTask final
 		{
 			std::function<void()> Task;
-			int32 TaskID;
+			int32 TaskIndex;
+			bool bInProgress;
+			bool bIsCompleted;
+
+			bool operator==(const ThreadTask& Other) const
+			{
+				return TaskIndex == Other.TaskIndex;
+			}
 		};
 	}
 
@@ -24,18 +33,24 @@ namespace Integrian3D::Threading
 		~ThreadManager();
 		static ThreadManager& GetInstance();
 
-		int32 ScheduleTask(const std::function<void()>& Task);
+		static int32 ScheduleTask(const std::function<void()>& Task);
 		
 		Delegate<int32>& GetOnTaskCompletedDelegate();
 
+		void WaitOnThread(const int32 TaskID);
+
+		void StopAllThreads();
+
 	private:
 		ThreadManager();
+		int32 ScheduleTask_Impl(const std::function<void()>& Task);
 
 		TArray<std::jthread> Threads;
 		TArray<Detail::ThreadTask> Tasks;
 		Delegate<int32> OnTaskCompleted;
 
-		int32 NextTaskID;
+		int32 NextTaskIndex;
 		int32 MaxNrOfThreads;
+		bool bShouldRun;
 	};
 }

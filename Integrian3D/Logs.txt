@@ -1,3 +1,1 @@
 [CoreLog] Finished initialisation of engine
-[Win32Log] [C:\Users\rhidi\Documents\GitHub\Integrian3D\Integrian3D\IO\File\FileMonitor.cpp, 35] Win32 API Call Error: The directory name is invalid.
-

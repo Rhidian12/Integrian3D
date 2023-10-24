@@ -1,4 +1,6 @@
 #include "File.h"
+
+#include "IO/PathUtils.h"
 #include "IO/FileContentCache/FileContentCache.h"
 #include "Win32Utils/Win32APICall.h"
 
@@ -12,16 +14,6 @@
 
 namespace Integrian3D::IO
 {
-	namespace
-	{
-		static bool DoesFileExist(const std::string_view Filepath)
-		{
-			DWORD Attributes = GetFileAttributesA(Filepath.data());
-
-			return Attributes != INVALID_FILE_ATTRIBUTES && !(Attributes & FILE_ATTRIBUTE_DIRECTORY);
-		}
-	}
-
 	File::File(const std::string_view Filepath, const OpenMode OpenMode, const FileMode Mode, const bool bMonitorFile)
 		: Filepath{ Filepath }
 		, Handle{ INVALID_HANDLE_VALUE }
@@ -255,15 +247,15 @@ namespace Integrian3D::IO
 		switch (OpenMode)
 		{
 		case OpenMode::CreateNew:
-			ICHECK_MSG(!DoesFileExist(Filepath), "File::File() > OpenMode::CreateNew > File {} already exists", Filepath);
+			ICHECK_MSG(!PathUtils::DoesFileExist(Filepath), "File::File() > OpenMode::CreateNew > File {} already exists", Filepath);
 			ErrorToIgnore = ERROR_FILE_EXISTS;
 			break;
 		case OpenMode::OpenExisting:
-			ICHECK_MSG(DoesFileExist(Filepath), "File::File() > OpenMode::OpenExisting > File {} does not exist", Filepath);
+			ICHECK_MSG(PathUtils::DoesFileExist(Filepath), "File::File() > OpenMode::OpenExisting > File {} does not exist", Filepath);
 			ErrorToIgnore = ERROR_FILE_NOT_FOUND;
 			break;
 		case OpenMode::TruncateExisting:
-			ICHECK_MSG(DoesFileExist(Filepath), "File::File() > OpenMode::TruncateExisting > File {} does not exist", Filepath);
+			ICHECK_MSG(PathUtils::DoesFileExist(Filepath), "File::File() > OpenMode::TruncateExisting > File {} does not exist", Filepath);
 			ErrorToIgnore = ERROR_FILE_NOT_FOUND;
 			break;
 		case OpenMode::CreateAlways:
@@ -280,7 +272,7 @@ namespace Integrian3D::IO
 				(
 					Filepath.data(),
 					GENERIC_READ | GENERIC_WRITE,
-					FILE_SHARE_READ,
+					FILE_SHARE_READ | FILE_SHARE_WRITE,
 					nullptr,
 					static_cast<DWORD>(OpenMode),
 					FILE_ATTRIBUTE_NORMAL,

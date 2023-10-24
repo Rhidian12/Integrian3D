@@ -1,11 +1,12 @@
 #include "Core.h"
 
-#include "../DebugUtility/DebugUtility.h"
-#include "../Timer/Timer.h"
-#include "../InputManager/InputManager.h"
-#include "../SceneManager/SceneManager.h"
-#include "../Components/MeshComponent/MeshComponent.h"
-#include "../Components/TransformComponent/TransformComponent.h"
+#include "Components/MeshComponent/MeshComponent.h"
+#include "Components/TransformComponent/TransformComponent.h"
+#include "DebugUtility/DebugUtility.h"
+#include "InputManager/InputManager.h"
+#include "SceneManager/SceneManager.h"
+#include "Thread/ThreadManager.h"
+#include "Timer/Timer.h"
 
 #include <string_view>
 
@@ -109,7 +110,7 @@ namespace Integrian3D
 
 	void Core::Shutdown()
 	{
-		Logger::Cleanup();
+		Threading::ThreadManager::GetInstance().StopAllThreads();
 	}
 
 	Core& Core::GetInstance()
@@ -135,6 +136,8 @@ namespace Integrian3D
 		glDebugMessageCallback(LogGLError, nullptr);
 		#endif
 
+		std::atexit(Logger::Cleanup);
+
 		LOG(CoreLog, LogErrorLevel::Log, "Finished initialisation of engine");
 
 		return *Instance.get();
@@ -143,8 +146,6 @@ namespace Integrian3D
 	void Core::Run()
 	{
 		using namespace Time;
-
-		g_IsRunning = true;
 
 		Timer& timer{ Timer::GetInstance() };
 		InputManager& inputManager{ InputManager::GetInstance() };

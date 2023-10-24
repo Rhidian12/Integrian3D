@@ -10,7 +10,7 @@ DEFINE_LOG_CATEGORY(CoreLog, Integrian3D::LogVerbosity::Verbose)
 namespace Integrian3D
 {
 	/* inline allows multiple definitions (in other translation units) */
-	inline volatile bool g_IsRunning{};
+	inline volatile bool g_IsRunning{ true };
 
 	class Core final
 	{

@@ -1,5 +1,11 @@
 #include "IO/PathUtils.h"
 
+#ifdef _WIN32
+	I_DISABLE_WARNING(4005) // warning C4005: 'APIENTRY': macro redefinition
+		#include <Windows.h>
+	I_ENABLE_WARNING(4005)
+#endif
+
 namespace Integrian3D::PathUtils
 {
 	bool HasExtension(const std::string_view Path)
@@ -20,7 +26,7 @@ namespace Integrian3D::PathUtils
 
 	std::string_view GetPathWithoutExtension(const std::string_view Path)
 	{
-		if (!HasExtension)
+		if (!HasExtension(Path))
 		{
 			return Path;
 		}
@@ -28,5 +34,12 @@ namespace Integrian3D::PathUtils
 		{
 			return Path.substr(0, Path.find_last_of('.'));
 		}
+	}
+
+	bool DoesFileExist(const std::string_view Path)
+	{
+		DWORD Attributes = GetFileAttributesA(Path.data());
+
+		return Attributes != INVALID_FILE_ATTRIBUTES && !(Attributes & FILE_ATTRIBUTE_DIRECTORY);
 	}
 }
