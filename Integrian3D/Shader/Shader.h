@@ -14,6 +14,12 @@ namespace Integrian3D
 {
 	class Shader final
 	{
+		enum class ShaderType
+		{
+			VertexShader,
+			FragmentShader
+		};
+
 	public:
 		Shader(const std::string& VertexShaderPath, const std::string& FragmentShaderPath);
 		~Shader();
@@ -33,9 +39,14 @@ namespace Integrian3D
 
 	private:
 		void SetupShaders();
+		void OnShaderChanged(const std::string& Filepath);
+		void CompileShader(const ShaderType ShaderType);
+		void CreateProgram();
 
 		IO::File VertexShader;
 		IO::File FragmentShader;
-		uint32_t ProgramID;
+		uint32 ProgramID;
+		uint32 VertexShaderID;
+		uint32 FragmentShaderID;
 	};
 }

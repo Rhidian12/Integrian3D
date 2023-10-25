@@ -63,13 +63,7 @@ namespace Integrian3D::Threading
 					Delegate<int32>& OnTaskCompleted = ThreadManager::GetInstance().GetOnTaskCompletedDelegate();
 					SCOPED_LOCK_WITH_EXPR(OnTaskCompleted.Invoke(Task.TaskIndex));
 
-					{
-						ACQUIRE_LOCK();
-						LOG(ThreadingLog, LogErrorLevel::Log, "Want to delete task: {} and is it present in array: {}", Task.TaskIndex, Tasks.Contains(Task));
-					}
-
 					SCOPED_LOCK_WITH_EXPR(Tasks.Erase(Task));
-					// SCOPED_LOCK_WITH_EXPR(Tasks.erase(std::remove(Tasks.begin(), Tasks.end(), Task), Tasks.end()));
 				}
 			}
 		}
@@ -151,10 +145,6 @@ namespace Integrian3D::Threading
 			{
 				ACQUIRE_LOCK();
 
-				// It = std::find_if(Tasks.begin(), Tasks.end(), [TaskID](const Detail::ThreadTask& TTask)->bool
-				// 	{
-				// 		return TaskID == TTask.TaskIndex;
-				// 	});
 				It = Tasks.Find([TaskID](const Detail::ThreadTask& TTask)->bool
 					{
 						return TTask.TaskIndex == TaskID;

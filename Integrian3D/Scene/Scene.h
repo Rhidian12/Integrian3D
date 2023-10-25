@@ -44,7 +44,7 @@ namespace Integrian3D
 		template<typename T>
 		T& AddComponent(const Entity entity) { return m_Registry.AddComponent<T>(entity); }
 		template<typename T, typename ... Ts>
-		T& AddComponent(const Entity entity, Ts&& ... args) { return m_Registry.AddComponent<T, Ts...>(entity, std::forward<Ts>(args)...); }
+		T& AddComponent(const Entity entity, Ts&& ... args) { return m_Registry.AddComponent<T>(entity, std::forward<Ts>(args)...); }
 
 		template<typename T>
 		void RemoveComponent(const Entity entity) { m_Registry.RemoveComponent<T>(entity); }

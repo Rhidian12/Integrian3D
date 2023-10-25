@@ -25,6 +25,9 @@ namespace Integrian3D
 		IASSERT_MSG(PathUtils::GetExtension(VertexShaderPath) == ".vert", "VertexShader file must have .vert extension! Given file: {}", VertexShaderPath);
 		IASSERT_MSG(PathUtils::GetExtension(FragmentShaderPath) == ".frag", "FragmentShader file must have .frag extension! Given file: {}", FragmentShaderPath);
 
+		VertexShader.GetOnFileChangedDelegate().Bind(std::bind(&Shader::OnShaderChanged, this, std::placeholders::_1));
+		FragmentShader.GetOnFileChangedDelegate().Bind(std::bind(&Shader::OnShaderChanged, this, std::placeholders::_1));
+
 		SetupShaders();
 	}
 
@@ -33,6 +36,9 @@ namespace Integrian3D
 		if (ProgramID != ShaderErrorValue)
 		{
 			glDeleteProgram(ProgramID);
+
+			glDeleteShader(VertexShaderID);
+			glDeleteShader(FragmentShaderID);
 		}
 	}
 
@@ -40,8 +46,12 @@ namespace Integrian3D
 		: ProgramID{ __MOVE(other.ProgramID) }
 		, VertexShader{ __MOVE(other.VertexShader) }
 		, FragmentShader{ __MOVE(other.FragmentShader) }
+		, VertexShaderID{ __MOVE(other.VertexShaderID) }
+		, FragmentShaderID{ __MOVE(other.FragmentShaderID) }
 	{
 		other.ProgramID = ShaderErrorValue;
+		other.VertexShaderID = ShaderErrorValue;
+		other.FragmentShaderID = ShaderErrorValue;
 	}
 
 	Shader& Shader::operator=(Shader&& other) noexcept
@@ -49,8 +59,12 @@ namespace Integrian3D
 		ProgramID = __MOVE(other.ProgramID);
 		VertexShader = __MOVE(other.VertexShader);
 		FragmentShader = __MOVE(other.FragmentShader);
+		VertexShaderID = __MOVE(other.VertexShaderID);
+		FragmentShaderID = __MOVE(other.FragmentShaderID);
 
 		other.ProgramID = ShaderErrorValue;
+		other.VertexShaderID = ShaderErrorValue;
+		other.FragmentShaderID = ShaderErrorValue;
 
 		return *this;
 	}
@@ -88,74 +102,101 @@ namespace Integrian3D
 
 	void Shader::SetupShaders()
 	{
-		uint32 vertexShaderID{}, fragmentShaderID{};
+		CompileShader(ShaderType::VertexShader);
+		CompileShader(ShaderType::FragmentShader);
 
-		/* Get Vertex Shader */
+		CreateProgram();
+	}
+
+	void Shader::OnShaderChanged(const std::string& Filepath)
+	{
+		//if (Filepath == VertexShader.GetFilepath())
+		//{
+		//	glDetachShader(ProgramID, VertexShaderID);
+		//	glDeleteShader(VertexShaderID);
+		//	CompileShader(ShaderType::VertexShader);
+		//}
+		//else if (Filepath == FragmentShader.GetFilepath())
+		//{
+		//	glDetachShader(ProgramID, FragmentShaderID);
+		//	glDeleteShader(FragmentShaderID);
+		//	CompileShader(ShaderType::FragmentShader);
+		//}
+
+		CompileShader(ShaderType::VertexShader);
+		CompileShader(ShaderType::FragmentShader);
+		CreateProgram();
+	}
+
+	void Shader::CompileShader(const ShaderType ShaderType)
+	{
+		uint32 CreateShaderID{};
+		IO::File* ShaderFile{};
+		uint32* ShaderID{};
+		std::string_view ShaderTypeName{};
+
+		switch (ShaderType)
 		{
-			/* Generate VertexShader ID */
-			vertexShaderID = glCreateShader(GL_VERTEX_SHADER);
-
-			/* Attach the Vertex Shader code to the ID and compile it */
-			const char* pShaderSource{ VertexShader.GetFileContents().data() };
-			glShaderSource(vertexShaderID, 1, &pShaderSource, nullptr);
-			glCompileShader(vertexShaderID);
-
-			/* Check if the compilation succeeded */
-			int success{};
-			char infoLog[512]{};
-			glGetShaderiv(vertexShaderID, GL_COMPILE_STATUS, &success);
-
-			if (!success)
-			{
-				glGetShaderInfoLog(vertexShaderID, 512, nullptr, infoLog);
-				LOG(ShaderLog, LogErrorLevel::Fatal, "Vertex Shader compilation failed: {}", infoLog);
-			}
+			case ShaderType::VertexShader:
+				CreateShaderID = GL_VERTEX_SHADER;
+				ShaderFile = &VertexShader;
+				ShaderTypeName = "Vertex Shader";
+				ShaderID = &VertexShaderID;
+				break;
+			case ShaderType::FragmentShader:
+				CreateShaderID = GL_FRAGMENT_SHADER;
+				ShaderFile = &FragmentShader;
+				ShaderTypeName = "Fragment Shader";
+				ShaderID = &FragmentShaderID;
+				break;
+			default:
+				IASSERT(false);
 		}
 
-		/* Get Fragment Shader */
+		// Generate Shader ID
+		*ShaderID = glCreateShader(CreateShaderID);
+		const uint32 ActualShaderID = *ShaderID;
+
+		// Attach the Shader code to the ID and compile it
+		const char* pShaderSource{ ShaderFile->GetFileContents().data() };
+		glShaderSource(ActualShaderID, 1, &pShaderSource, nullptr);
+		glCompileShader(ActualShaderID);
+
+		// Check if the compilation succeeded
+		int success{};
+		char infoLog[512]{};
+		glGetShaderiv(ActualShaderID, GL_COMPILE_STATUS, &success);
+
+		if (!success)
 		{
-			/* Generate Frament Shader ID */
-			fragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
+			glGetShaderInfoLog(ActualShaderID, 512, nullptr, infoLog);
+			LOG(ShaderLog, LogErrorLevel::Fatal, "{} Shader compilation failed: {}", ShaderTypeName, infoLog);
+		}
+	}
 
-			/* Attach the Fragment Shader code to the ID and compile it */
-			const char* pShaderSource{ FragmentShader.GetFileContents().data() };
-			glShaderSource(fragmentShaderID, 1, &pShaderSource, nullptr);
-			glCompileShader(fragmentShaderID);
-
-			/* Check if the compilation succeeded */
-			int success{};
-			char infoLog[512]{};
-			glGetShaderiv(fragmentShaderID, GL_COMPILE_STATUS, &success);
-
-			if (!success)
-			{
-				glGetShaderInfoLog(fragmentShaderID, 512, nullptr, infoLog);
-				LOG(ShaderLog, LogErrorLevel::Fatal, "Fragment Shader compilation failed: {}", infoLog);
-			}
+	void Shader::CreateProgram()
+	{
+		if (ProgramID != ShaderErrorValue)
+		{
+			glDeleteProgram(ProgramID);
 		}
 
-		/* Create shader program */
+		ProgramID = glCreateProgram();
+
+		// Link all previously created shaders to the shader program
+		glAttachShader(ProgramID, VertexShaderID);
+		glAttachShader(ProgramID, FragmentShaderID);
+		glLinkProgram(ProgramID);
+
+		// Check if the shader linking succeeded
+		int success{};
+		char infoLog[512]{};
+		glGetProgramiv(ProgramID, GL_LINK_STATUS, &success);
+
+		if (!success)
 		{
-			ProgramID = glCreateProgram();
-
-			/* Link all previously created shaders to the shader program */
-			glAttachShader(ProgramID, vertexShaderID);
-			glAttachShader(ProgramID, fragmentShaderID);
-			glLinkProgram(ProgramID);
-
-			/* Check if the shader linking succeeded */
-			int success{};
-			char infoLog[512]{};
-			glGetProgramiv(ProgramID, GL_LINK_STATUS, &success);
-
-			if (!success)
-			{
-				glGetProgramInfoLog(ProgramID, 512, nullptr, infoLog);
-				LOG(ShaderLog, LogErrorLevel::Fatal, "Shader program linking failed: {}", infoLog);
-			}
+			glGetProgramInfoLog(ProgramID, 512, nullptr, infoLog);
+			LOG(ShaderLog, LogErrorLevel::Fatal, "Shader program linking failed: {}", infoLog);
 		}
-
-		glDeleteShader(vertexShaderID);
-		glDeleteShader(fragmentShaderID);
 	}
 }

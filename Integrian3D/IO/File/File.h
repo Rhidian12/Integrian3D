@@ -40,6 +40,7 @@ namespace Integrian3D::IO
 
 		void StartMonitoringFile();
 		void StopMonitoringFile();
+		Delegate<std::string>& GetOnFileChangedDelegate();
 
 		#pragma region operator<<
 		template<typename T, std::enable_if_t<bIsInteger<T>, bool> = true>

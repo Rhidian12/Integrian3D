@@ -111,6 +111,11 @@ namespace Integrian3D::IO
 		Monitor.StopMonitoringFile();
 	}
 
+	Delegate<std::string>& File::GetOnFileChangedDelegate()
+	{
+		return Monitor.GetOnFileChangedDelegate();
+	}
+
 	File& File::operator<<(const char* String)
 	{
 		__CHECK(Handle.IsValid());

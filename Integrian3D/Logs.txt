@@ -1,45 +1,7 @@
-[Log] Getting destroyed
-[Log] Getting destroyed
-[Log] Getting destroyed
-[Log] Getting destroyed
-[Log] Getting destroyed
-[Log] Getting destroyed
-[Log] Getting destroyed
-[Log] Getting destroyed
-[Log] Getting destroyed
-[Log] Getting destroyed
-[Log] Getting destroyed
-[Log] Getting destroyed
-[Log] Getting destroyed
-[Log] Getting destroyed
-[Log] Getting destroyed
-[Log] Getting destroyed
-[Log] Getting destroyed
-[Log] Getting destroyed
-[Log] Getting destroyed
-[Log] Getting destroyed
-[Log] Getting destroyed
-[Log] Getting destroyed
-[Log] Getting destroyed
-[Log] Getting destroyed
-[Log] Getting destroyed
-[Log] Getting destroyed
-[Log] Getting destroyed
-[Log] Getting destroyed
-[Log] Getting destroyed
-[Log] Getting destroyed
-[Log] Getting destroyed
-[Log] Getting destroyed
-[Log] Getting destroyed
-[Log] Getting destroyed
-[Log] Getting destroyed
-[Log] Getting destroyed
-[Log] Getting destroyed
-[Log] Getting destroyed
-[Log] Getting destroyed
-[Log] Getting destroyed
-[Log] Getting destroyed
-[Log] Getting destroyed
-[Log] Getting destroyed
-[Log] Getting destroyed
-[Log] Getting destroyed
+[CoreLog] Finished initialisation of engine
+[ThreadingLog] Starting Task with ID 0
+[ThreadingLog] Starting Task with ID 1
+[ThreadingLog] Starting Task with ID 2
+[ThreadingLog] Starting Task with ID 3
+[ShaderLog] 131218: PERFORMANCE of MEDIUM severity, raised from API: Program/shader state performance warning: Vertex shader in program 3 is being recompiled based on GL state.
+[ShaderLog] Vertex Shader Shader compilation failed: 
