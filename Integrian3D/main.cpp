@@ -141,7 +141,7 @@ int RunTestEngine(int, char* [])
 
 		UniquePtr<Material> MeshMaterial = MakeUnique<Material>("Resources/LightVertexShader2.vert", "Resources/LightFragmentShader2.frag");
 		TestScene->AddComponent<MeshComponent>(PointLightEntity, vertices, indices, I_MOVE(MeshMaterial));
-		TestScene->AddComponent<PointLight>(PointLightEntity, Ambient, Diffuse, Specular, 1000.f);
+		TestScene->AddComponent<PointLight>(PointLightEntity, Ambient, Diffuse, Specular, 10.f);
 		TestScene->GetComponent<TransformComponent>(PointLightEntity).Translate(Math::Vec3D{ 1.2f, 1.0f, -2.0f });
 
 		// TestScene->AddComponent<DirectionalLight>(PointLightEntity, Ambient, Diffuse, Specular, Math::Vec3D{ -0.2f, -1.0f, -0.3f });
@@ -191,7 +191,7 @@ int RunTestEngine(int, char* [])
 				MeshMaterial->AddTexture(TextureSlots::Diffuse, TextureManager::GetInstance().GetTexture("Box_Diffuse"));
 				MeshMaterial->AddTexture(TextureSlots::Specular, TextureManager::GetInstance().GetTexture("Box_Specular"));
 
-				Scene.AddComponent<MeshComponent>(Entity, vertices, indices, I_MOVE(MeshMaterial)); // doesnt compile
+				Scene.AddComponent<MeshComponent>(Entity, vertices, indices, I_MOVE(MeshMaterial));
 
 				Scene.GetComponent<TransformComponent>(Entity).Translate(Math::RandomVec3D(-10.f, 10.f));
 			}

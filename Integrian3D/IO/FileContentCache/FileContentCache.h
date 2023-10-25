@@ -2,11 +2,13 @@
 
 #include "EngineConstants.h"
 
+#include "Array/Array.h"
+#include "TPair/TPair.h"
+
 #include <memory>
 #include <mutex>
 #include <string>
 #include <string_view>
-#include <unordered_map>
 
 DEFINE_LOG_CATEGORY(FileContentCacheLog, Integrian3D::LogVerbosity::Verbose)
 
@@ -22,21 +24,10 @@ namespace Integrian3D::IO
 			std::string Filepath;
 			File* File;
 			int32 ReferenceCounter;
-		};
 
-		struct FileInfoHasher final
-		{
-			SIZE_T operator()(const FileInfo& FInfo) const
+			bool operator==(const FileInfo& Other) const
 			{
-				return std::hash<std::string>{}(FInfo.Filepath);
-			}
-		};
-
-		struct FileInfoComparer final
-		{
-			bool operator()(const FileInfo& A, const FileInfo& B) const
-			{
-				return A.Filepath == B.Filepath;
+				return Filepath == Other.Filepath;
 			}
 		};
 
@@ -50,15 +41,16 @@ namespace Integrian3D::IO
 
 	private:
 		FileContentCache() = default;
-		__NODISCARD bool ContainsFilepath(const std::string_view Filepath, FileInfo& OutFileInfo) const;
+		__NODISCARD bool ContainsFilepath(const std::string_view Filepath) const;
 		void OnFileChanged(const std::string& Filepath);
+		__NODISCARD FileInfo& GetFileInfo(const std::string_view Filepath);
 
 		friend std::unique_ptr<FileContentCache> std::make_unique();
 		inline static std::unique_ptr<FileContentCache> Instance{};
 
-		std::mutex Mutex;
+		mutable std::mutex Mutex;
 
 		// [TODO]: Create custom Unordered Map
-		std::unordered_map<FileInfo, std::string, FileInfoHasher, FileInfoComparer> FileContentsCache; // [File | FileContents]
+		TArray<TPair<FileInfo, std::string>> FileContentsCache; // [File | FileContents]
 	};
 }

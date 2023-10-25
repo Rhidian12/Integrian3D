@@ -123,6 +123,9 @@ namespace Integrian3D
 		//	CompileShader(ShaderType::FragmentShader);
 		//}
 
+		auto VS = glCreateShader(GL_VERTEX_SHADER);
+		auto FS = glCreateShader(GL_FRAGMENT_SHADER);
+
 		CompileShader(ShaderType::VertexShader);
 		CompileShader(ShaderType::FragmentShader);
 		CreateProgram();

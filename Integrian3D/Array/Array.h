@@ -271,7 +271,7 @@ namespace Integrian3D
 
 			if (it != end())
 			{
-				return Erase(*it);
+				return EraseByIndex(TO_INT32(it.Data() - begin().Data()));
 			}
 
 			return end();

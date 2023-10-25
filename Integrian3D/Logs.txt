@@ -4,7 +4,32 @@
 [ThreadingLog] Starting Task with ID 2
 [ThreadingLog] Starting Task with ID 3
 [ShaderLog] 131218: PERFORMANCE of MEDIUM severity, raised from API: Program/shader state performance warning: Vertex shader in program 3 is being recompiled based on GL state.
+[ThreadingLog] Starting Task with ID 4
+[ThreadingLog] Starting Task with ID 5
+[ShaderLog] 131218: PERFORMANCE of MEDIUM severity, raised from API: Program/shader state performance warning: Vertex shader in program 9 is being recompiled based on GL state.
+[ThreadingLog] Starting Task with ID 6
+[ThreadingLog] Starting Task with ID 7
+[ShaderLog] 131218: PERFORMANCE of MEDIUM severity, raised from API: Program/shader state performance warning: Vertex shader in program 12 is being recompiled based on GL state.
+[ThreadingLog] Starting Task with ID 8
+[ThreadingLog] Starting Task with ID 9
+[ShaderLog] 131218: PERFORMANCE of MEDIUM severity, raised from API: Program/shader state performance warning: Vertex shader in program 15 is being recompiled based on GL state.
+[ThreadingLog] Starting Task with ID 10
+[ThreadingLog] Starting Task with ID 11
+[ShaderLog] 131218: PERFORMANCE of MEDIUM severity, raised from API: Program/shader state performance warning: Vertex shader in program 18 is being recompiled based on GL state.
+[ThreadingLog] Starting Task with ID 12
+[ThreadingLog] Starting Task with ID 13
+[ShaderLog] 131218: PERFORMANCE of MEDIUM severity, raised from API: Program/shader state performance warning: Vertex shader in program 21 is being recompiled based on GL state.
 [ThreadingLog] Finishing Task with ID 1
 [ThreadingLog] Finishing Task with ID 0
 [ThreadingLog] Finishing Task with ID 3
 [ThreadingLog] Finishing Task with ID 2
+[ThreadingLog] Finishing Task with ID 5
+[ThreadingLog] Finishing Task with ID 4
+[ThreadingLog] Finishing Task with ID 7
+[ThreadingLog] Finishing Task with ID 6
+[ThreadingLog] Finishing Task with ID 9
+[ThreadingLog] Finishing Task with ID 8
+[ThreadingLog] Finishing Task with ID 11
+[ThreadingLog] Finishing Task with ID 10
+[ThreadingLog] Finishing Task with ID 13
+[ThreadingLog] Finishing Task with ID 12

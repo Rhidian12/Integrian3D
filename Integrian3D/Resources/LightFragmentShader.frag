@@ -52,6 +52,8 @@ float GetAttenuationRadius(float Distance, float MaxRadius)
     float Attenuation = Falloff;
     Attenuation *= 1.0 / (Distance * Distance + 1.0);
 
+    int test = 10;
+
     return Attenuation;
 }
 
@@ -106,19 +108,11 @@ void main()
 
     float Distance = length(_PointLights[0].Position - vPos);
     float Attenuation = GetAttenuationRadius(Distance, _PointLights[0].MaxRadius);
-    FragColor.rgb = vec3(1,1,1);
-    FragColor.w = Attenuation;
-    return;
 
     vec3 Normal = normalize(vNormal);
 
     vec3 LightDirection = normalize(_PointLights[0].Position - vPos);
     // vec3 LightDirection = normalize(-_DirectionalLights[0].Direction);
-
-    CalculateDiffuse(LightType, Normal, LightDirection, Attenuation);
-    FragColor.rgb = vec3(Attenuation, Attenuation, Attenuation);
-    FragColor.w = 1.0;
-    return;
 
     vec3 result = CalculateAmbient(LightType, Attenuation) + CalculateDiffuse(LightType, Normal, LightDirection, Attenuation) +
     CalculateSpecular(LightType, Normal, LightDirection, Attenuation);
