@@ -48,20 +48,20 @@ namespace Integrian3D::IO
 	}
 
 	File::File(File&& Other) noexcept
-		: Filepath{ __MOVE(Other.Filepath) }
-		, Handle{ __MOVE(Other.Handle) }
-		, Filesize{ __MOVE(Other.Filesize) }
-		, Mode{ __MOVE(Other.Mode) }
-		, Monitor{ __MOVE(Other.Monitor) }
+		: Filepath{ I_MOVE(Other.Filepath) }
+		, Handle{ I_MOVE(Other.Handle) }
+		, Filesize{ I_MOVE(Other.Filesize) }
+		, Mode{ I_MOVE(Other.Mode) }
+		, Monitor{ I_MOVE(Other.Monitor) }
 	{}
 
 	File& File::operator=(File&& Other) noexcept
 	{
-		Filepath = __MOVE(Other.Filepath);
-		Handle = __MOVE(Other.Handle);
-		Filesize = __MOVE(Other.Filesize);
-		Mode = __MOVE(Other.Mode);
-		Monitor = __MOVE(Other.Monitor);
+		Filepath = I_MOVE(Other.Filepath);
+		Handle = I_MOVE(Other.Handle);
+		Filesize = I_MOVE(Other.Filesize);
+		Mode = I_MOVE(Other.Mode);
+		Monitor = I_MOVE(Other.Monitor);
 
 		return *this;
 	}

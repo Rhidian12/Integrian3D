@@ -99,9 +99,9 @@ namespace Integrian3D
 			}
 		}
 		constexpr Array(Array&& other) noexcept
-			: m_pHead{ __MOVE(other.m_pHead) }
-			, m_pTail{ __MOVE(other.m_pTail) }
-			, m_pCurrentEnd{ __MOVE(other.m_pCurrentEnd) }
+			: m_pHead{ I_MOVE(other.m_pHead) }
+			, m_pTail{ I_MOVE(other.m_pTail) }
+			, m_pCurrentEnd{ I_MOVE(other.m_pCurrentEnd) }
 		{
 			other.m_pHead = nullptr;
 			other.m_pTail = nullptr;
@@ -142,9 +142,9 @@ namespace Integrian3D
 				Release(m_pHead);
 			}
 
-			m_pHead = __MOVE(other.m_pHead);
-			m_pTail = __MOVE(other.m_pTail);
-			m_pCurrentEnd = __MOVE(other.m_pCurrentEnd);
+			m_pHead = I_MOVE(other.m_pHead);
+			m_pTail = I_MOVE(other.m_pTail);
+			m_pCurrentEnd = I_MOVE(other.m_pCurrentEnd);
 
 			other.m_pHead = nullptr;
 			other.m_pTail = nullptr;
@@ -161,7 +161,7 @@ namespace Integrian3D
 		}
 		constexpr void Add(T&& val)
 		{
-			EmplaceBack(__MOVE(val));
+			EmplaceBack(I_MOVE(val));
 		}
 
 		constexpr void AddUnique(const T& Val)
@@ -178,7 +178,7 @@ namespace Integrian3D
 		}
 		constexpr void AddFront(T&& val)
 		{
-			EmplaceFront(__MOVE(val));
+			EmplaceFront(I_MOVE(val));
 		}
 
 		constexpr void AddRange(std::initializer_list<T> elems)
@@ -333,7 +333,7 @@ namespace Integrian3D
 		}
 		constexpr void Insert(const int32 index, T&& val)
 		{
-			Emplace(index, __MOVE(val));
+			Emplace(index, I_MOVE(val));
 		}
 
 		constexpr void Pop()
@@ -784,7 +784,7 @@ namespace Integrian3D
 			{
 				for (int32 i{}; i < size; ++i)
 				{
-					new (newHead + i) T{ __MOVE(*(oldHead + i)) };
+					new (newHead + i) T{ I_MOVE(*(oldHead + i)) };
 				}
 			}
 			else

@@ -129,7 +129,7 @@ int RunTestEngine(int, char* [])
 		MeshMaterial->AddTexture(TextureSlots::Diffuse, TextureManager::GetInstance().GetTexture("Box_Diffuse"));
 		MeshMaterial->AddTexture(TextureSlots::Specular, TextureManager::GetInstance().GetTexture("Box_Specular"));
 
-		TestScene->AddComponent<MeshComponent>(Entity, vertices, indices, __MOVE(MeshMaterial));
+		TestScene->AddComponent<MeshComponent>(Entity, vertices, indices, I_MOVE(MeshMaterial));
 	}
 
 	{
@@ -140,7 +140,7 @@ int RunTestEngine(int, char* [])
 		const Math::Vec3D Specular{ 1.f, 1.f, 1.f };
 
 		UniquePtr<Material> MeshMaterial = MakeUnique<Material>("Resources/LightVertexShader2.vert", "Resources/LightFragmentShader2.frag");
-		TestScene->AddComponent<MeshComponent>(PointLightEntity, vertices, indices, __MOVE(MeshMaterial));
+		TestScene->AddComponent<MeshComponent>(PointLightEntity, vertices, indices, I_MOVE(MeshMaterial));
 		TestScene->AddComponent<PointLight>(PointLightEntity, Ambient, Diffuse, Specular, 1000.f);
 		TestScene->GetComponent<TransformComponent>(PointLightEntity).Translate(Math::Vec3D{ 1.2f, 1.0f, -2.0f });
 
@@ -160,7 +160,7 @@ int RunTestEngine(int, char* [])
 		//	MeshMaterial->AddTexture(TextureSlots::Diffuse, TextureManager::GetInstance().GetTexture("Box_Diffuse"));
 		//	MeshMaterial->AddTexture(TextureSlots::Specular, TextureManager::GetInstance().GetTexture("Box_Specular"));
 
-		//	TestScene->AddComponent<MeshComponent>(Entity, vertices, indices, __MOVE(MeshMaterial));
+		//	TestScene->AddComponent<MeshComponent>(Entity, vertices, indices, I_MOVE(MeshMaterial));
 
 		//	TestScene->GetComponent<TransformComponent>(Entity).Translate(Math::RandomVec3D(-10.f, 10.f));
 		//}
@@ -191,8 +191,7 @@ int RunTestEngine(int, char* [])
 				MeshMaterial->AddTexture(TextureSlots::Diffuse, TextureManager::GetInstance().GetTexture("Box_Diffuse"));
 				MeshMaterial->AddTexture(TextureSlots::Specular, TextureManager::GetInstance().GetTexture("Box_Specular"));
 
-				MeshComponent test{ vertices, indices, __MOVE(MeshMaterial) }; // works
-				Scene.AddComponent<MeshComponent>(Entity, vertices, indices, std::move(MeshMaterial)); // doesnt compile
+				Scene.AddComponent<MeshComponent>(Entity, vertices, indices, I_MOVE(MeshMaterial)); // doesnt compile
 
 				Scene.GetComponent<TransformComponent>(Entity).Translate(Math::RandomVec3D(-10.f, 10.f));
 			}

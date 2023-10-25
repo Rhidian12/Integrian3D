@@ -24,17 +24,17 @@ namespace Integrian3D
 	{}
 
 	//TransformComponent::TransformComponent(TransformComponent&& other) noexcept
-	//	: Transformation{ __MOVE(other.Transformation) }
-	//	, WorldLocation{ __MOVE(other.WorldLocation) }
-	//	, WorldScale{ __MOVE(other.WorldScale) }
-	//	, LocalScale{ __MOVE(other.LocalScale) }
-	//	, WorldAngle{ __MOVE(other.WorldAngle) }
-	//	, LocalAngle{ __MOVE(other.LocalAngle) }
-	//	, bShouldRecalculateTransform{ __MOVE(other.bShouldRecalculateTransform) }
-	//	, bShouldRecalculateWorldData{ __MOVE(other.bShouldRecalculateWorldData) }
-	//	, Forward{ __MOVE(other.Forward) }
-	//	, Right{ __MOVE(other.Right) }
-	//	, Up{ __MOVE(other.Up) }
+	//	: Transformation{ I_MOVE(other.Transformation) }
+	//	, WorldLocation{ I_MOVE(other.WorldLocation) }
+	//	, WorldScale{ I_MOVE(other.WorldScale) }
+	//	, LocalScale{ I_MOVE(other.LocalScale) }
+	//	, WorldAngle{ I_MOVE(other.WorldAngle) }
+	//	, LocalAngle{ I_MOVE(other.LocalAngle) }
+	//	, bShouldRecalculateTransform{ I_MOVE(other.bShouldRecalculateTransform) }
+	//	, bShouldRecalculateWorldData{ I_MOVE(other.bShouldRecalculateWorldData) }
+	//	, Forward{ I_MOVE(other.Forward) }
+	//	, Right{ I_MOVE(other.Right) }
+	//	, Up{ I_MOVE(other.Up) }
 	//{
 	//	other.bShouldRecalculateTransform = false;
 	//	other.bShouldRecalculateWorldData = false;
@@ -42,17 +42,17 @@ namespace Integrian3D
 
 	//TransformComponent& TransformComponent::operator=(TransformComponent&& other) noexcept
 	//{
-	//	Transformation = __MOVE(other.Transformation);
-	//	WorldLocation = __MOVE(other.WorldLocation);
-	//	WorldScale = __MOVE(other.WorldScale);
-	//	LocalScale = __MOVE(other.LocalScale);
-	//	WorldAngle = __MOVE(other.WorldAngle);
-	//	LocalAngle = __MOVE(other.LocalAngle);
-	//	bShouldRecalculateTransform = __MOVE(other.bShouldRecalculateTransform);
-	//	bShouldRecalculateWorldData = __MOVE(other.bShouldRecalculateWorldData);
-	//	Forward = __MOVE(other.Forward);
-	//	Right = __MOVE(other.Right);
-	//	Up = __MOVE(other.Up);
+	//	Transformation = I_MOVE(other.Transformation);
+	//	WorldLocation = I_MOVE(other.WorldLocation);
+	//	WorldScale = I_MOVE(other.WorldScale);
+	//	LocalScale = I_MOVE(other.LocalScale);
+	//	WorldAngle = I_MOVE(other.WorldAngle);
+	//	LocalAngle = I_MOVE(other.LocalAngle);
+	//	bShouldRecalculateTransform = I_MOVE(other.bShouldRecalculateTransform);
+	//	bShouldRecalculateWorldData = I_MOVE(other.bShouldRecalculateWorldData);
+	//	Forward = I_MOVE(other.Forward);
+	//	Right = I_MOVE(other.Right);
+	//	Up = I_MOVE(other.Up);
 
 	//	other.bShouldRecalculateTransform = false;
 	//	other.bShouldRecalculateWorldData = false;

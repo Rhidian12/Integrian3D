@@ -43,11 +43,11 @@ namespace Integrian3D
 	}
 
 	Shader::Shader(Shader&& other) noexcept
-		: ProgramID{ __MOVE(other.ProgramID) }
-		, VertexShader{ __MOVE(other.VertexShader) }
-		, FragmentShader{ __MOVE(other.FragmentShader) }
-		, VertexShaderID{ __MOVE(other.VertexShaderID) }
-		, FragmentShaderID{ __MOVE(other.FragmentShaderID) }
+		: ProgramID{ I_MOVE(other.ProgramID) }
+		, VertexShader{ I_MOVE(other.VertexShader) }
+		, FragmentShader{ I_MOVE(other.FragmentShader) }
+		, VertexShaderID{ I_MOVE(other.VertexShaderID) }
+		, FragmentShaderID{ I_MOVE(other.FragmentShaderID) }
 	{
 		other.ProgramID = ShaderErrorValue;
 		other.VertexShaderID = ShaderErrorValue;
@@ -56,11 +56,11 @@ namespace Integrian3D
 
 	Shader& Shader::operator=(Shader&& other) noexcept
 	{
-		ProgramID = __MOVE(other.ProgramID);
-		VertexShader = __MOVE(other.VertexShader);
-		FragmentShader = __MOVE(other.FragmentShader);
-		VertexShaderID = __MOVE(other.VertexShaderID);
-		FragmentShaderID = __MOVE(other.FragmentShaderID);
+		ProgramID = I_MOVE(other.ProgramID);
+		VertexShader = I_MOVE(other.VertexShader);
+		FragmentShader = I_MOVE(other.FragmentShader);
+		VertexShaderID = I_MOVE(other.VertexShaderID);
+		FragmentShaderID = I_MOVE(other.FragmentShaderID);
 
 		other.ProgramID = ShaderErrorValue;
 		other.VertexShaderID = ShaderErrorValue;

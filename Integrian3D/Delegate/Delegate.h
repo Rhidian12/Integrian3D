@@ -20,7 +20,7 @@ namespace Integrian3D
 		{}
 
 		Delegate(Delegate&& Other)
-			: Callbacks{ __MOVE(Other.Callbacks) }
+			: Callbacks{ I_MOVE(Other.Callbacks) }
 		{}
 
 		Delegate& operator=(const Delegate& Other)
@@ -32,7 +32,7 @@ namespace Integrian3D
 
 		Delegate& operator=(Delegate&& Other)
 		{
-			Callbacks = __MOVE(Other.Callbacks);
+			Callbacks = I_MOVE(Other.Callbacks);
 
 			return *this;
 		}

@@ -14,7 +14,7 @@ namespace Integrian3D::Memory
 				, pNext{}
 			{}
 			Node(T&& data)
-				: Data{ __MOVE(data) }
+				: Data{ I_MOVE(data) }
 				, pNext{}
 			{}
 
@@ -60,7 +60,7 @@ namespace Integrian3D::Memory
 			}
 		}
 		LowLevelLL(LowLevelLL&& other) noexcept
-			: m_pHead{ __MOVE(other.m_pHead) }
+			: m_pHead{ I_MOVE(other.m_pHead) }
 		{
 			other.m_pHead = nullptr;
 		}
@@ -94,7 +94,7 @@ namespace Integrian3D::Memory
 			if (m_pHead)
 				Clear();
 
-			m_pHead = __MOVE(other.m_pHead);
+			m_pHead = I_MOVE(other.m_pHead);
 			other.m_pHead = nullptr;
 
 			return *this;
@@ -123,7 +123,7 @@ namespace Integrian3D::Memory
 			Node* const pLast{ GetLastElement() };
 
 			Node* const pNewNode{ reinterpret_cast<Node*>(malloc(sizeof(Node))) };
-			new (pNewNode) Node{ __MOVE(data) };
+			new (pNewNode) Node{ I_MOVE(data) };
 
 			if (pLast)
 				pLast->pNext = pNewNode;

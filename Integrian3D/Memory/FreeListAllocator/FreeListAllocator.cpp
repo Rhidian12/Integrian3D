@@ -41,10 +41,10 @@ namespace Integrian3D::Memory
 	}
 
 	FreeListAllocator::Page::Page(Page&& other) noexcept
-		: m_pStart{ __MOVE(other.m_pStart) }
-		, m_FreeHeaders{ __MOVE(other.m_FreeHeaders) }
-		, m_UsedHeaders{ __MOVE(other.m_UsedHeaders) }
-		, m_PageSize{ __MOVE(other.m_PageSize) }
+		: m_pStart{ I_MOVE(other.m_pStart) }
+		, m_FreeHeaders{ I_MOVE(other.m_FreeHeaders) }
+		, m_UsedHeaders{ I_MOVE(other.m_UsedHeaders) }
+		, m_PageSize{ I_MOVE(other.m_PageSize) }
 	{
 		other.m_pStart = nullptr;
 		other.m_FreeHeaders.Clear();
@@ -80,10 +80,10 @@ namespace Integrian3D::Memory
 			m_UsedHeaders.Clear();
 		}
 
-		m_pStart = __MOVE(other.m_pStart);
-		m_FreeHeaders = __MOVE(other.m_FreeHeaders);
-		m_UsedHeaders = __MOVE(other.m_UsedHeaders);
-		m_PageSize = __MOVE(other.m_PageSize);
+		m_pStart = I_MOVE(other.m_pStart);
+		m_FreeHeaders = I_MOVE(other.m_FreeHeaders);
+		m_UsedHeaders = I_MOVE(other.m_UsedHeaders);
+		m_PageSize = I_MOVE(other.m_PageSize);
 
 		other.m_pStart = nullptr;
 		other.m_FreeHeaders.Clear();
@@ -234,7 +234,7 @@ namespace Integrian3D::Memory
 		: m_PlacementPolicy{ policy }
 		, m_Pages{}
 	{
-		m_Pages.Add(__MOVE(Page{ size }));
+		m_Pages.Add(I_MOVE(Page{ size }));
 	}
 
 #pragma region RuleOf5
@@ -243,12 +243,12 @@ namespace Integrian3D::Memory
 		, m_Pages{}
 	{
 		for (uint64_t i{}; i < other.m_Pages.Count(); ++i)
-			m_Pages.Add(__MOVE(Page{ other.m_Pages.Get(i).GetPageSize() }));
+			m_Pages.Add(I_MOVE(Page{ other.m_Pages.Get(i).GetPageSize() }));
 	}
 
 	FreeListAllocator::FreeListAllocator(FreeListAllocator&& other) noexcept
-		: m_PlacementPolicy{ __MOVE(other.m_PlacementPolicy) }
-		, m_Pages{ __MOVE(other.m_Pages) }
+		: m_PlacementPolicy{ I_MOVE(other.m_PlacementPolicy) }
+		, m_Pages{ I_MOVE(other.m_Pages) }
 	{
 		other.m_Pages.Clear();
 	}
@@ -262,7 +262,7 @@ namespace Integrian3D::Memory
 		m_Pages = other.m_Pages;
 
 		for (uint64_t i{}; i < other.m_Pages.Count(); ++i)
-			m_Pages.Add(__MOVE(Page{ other.m_Pages.Get(i).GetPageSize() }));
+			m_Pages.Add(I_MOVE(Page{ other.m_Pages.Get(i).GetPageSize() }));
 
 		return *this;
 	}
@@ -272,8 +272,8 @@ namespace Integrian3D::Memory
 		if (m_Pages.Count() > 0)
 			m_Pages.Clear();
 
-		m_PlacementPolicy = __MOVE(other.m_PlacementPolicy);
-		m_Pages = __MOVE(other.m_Pages);
+		m_PlacementPolicy = I_MOVE(other.m_PlacementPolicy);
+		m_Pages = I_MOVE(other.m_Pages);
 
 		other.m_Pages.Clear();
 
@@ -482,7 +482,7 @@ namespace Integrian3D::Memory
 	void FreeListAllocator::Reallocate(const uint64_t requiredSize)
 	{
 		const uint64_t newCap{ CalculateNewCapacity(m_Pages.Back().GetPageSize() + requiredSize + m_NodePadding + 1u) };
-		m_Pages.Add(__MOVE(Page{ newCap }));
+		m_Pages.Add(I_MOVE(Page{ newCap }));
 
 		//const uint64_t newCap{ CalculateNewCapacity(m_Capacity + requiredSize + m_NodePadding + 1u) };
 		//FreeHeader* const pNewStart{ static_cast<FreeHeader*>(malloc(newCap)) };
@@ -554,8 +554,8 @@ namespace Integrian3D::Memory
 		//free(m_FreeList);
 		//free(m_UsedList);
 
-		//m_FreeList = __MOVE(freeList);
-		//m_UsedList = __MOVE(usedList);
+		//m_FreeList = I_MOVE(freeList);
+		//m_UsedList = I_MOVE(usedList);
 
 		//free(m_pStart);
 		//// delete[] m_pStart;

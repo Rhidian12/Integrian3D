@@ -27,7 +27,7 @@ TEST_CASE("Creating Unique Pointer For Basic Types")
 	SECTION("Creating int pointer and then changing it")
 	{
 		int* IntPointer{ new int{ 5 } };
-		UniquePtr<int> Pointer{ __MOVE(IntPointer) };
+		UniquePtr<int> Pointer{ I_MOVE(IntPointer) };
 
 		REQUIRE(Pointer.Get() != nullptr);
 		REQUIRE(static_cast<bool>(Pointer) == true);
@@ -59,7 +59,7 @@ TEST_CASE("Creating Unique Pointer For Basic Types")
 		{
 			UniquePtr<int> Pointer{ MakeUnique<int>(5) };
 
-			UniquePtr<int> MoveCtorPointer{ __MOVE(Pointer) };
+			UniquePtr<int> MoveCtorPointer{ I_MOVE(Pointer) };
 
 			REQUIRE(Pointer.Get() == nullptr);
 			REQUIRE(static_cast<bool>(Pointer) == false);
@@ -73,7 +73,7 @@ TEST_CASE("Creating Unique Pointer For Basic Types")
 		{
 			UniquePtr<int> Pointer{ MakeUnique<int>(5) };
 
-			UniquePtr<int> MoveOpPointer = __MOVE(Pointer);
+			UniquePtr<int> MoveOpPointer = I_MOVE(Pointer);
 
 			REQUIRE(Pointer.Get() == nullptr);
 			REQUIRE(static_cast<bool>(Pointer) == false);
@@ -97,7 +97,7 @@ public:
 	{
 	}
 	TestData(TestData&& Other) noexcept
-		: Data{ __MOVE(Other.Data) }
+		: Data{ I_MOVE(Other.Data) }
 	{
 		Other.Data = nullptr;
 	}
@@ -121,7 +121,7 @@ public:
 			Data = nullptr;
 		}
 
-		Data = __MOVE(Other.Data);
+		Data = I_MOVE(Other.Data);
 		Other.Data = nullptr;
 
 		return *this;
@@ -166,7 +166,7 @@ TEST_CASE("Creating Unique Pointer For Custom Types")
 	SECTION("Creating Custom pointer and then changing it")
 	{
 		TestData* IntPointer{ new TestData{ 5 } };
-		UniquePtr<TestData> Pointer{ __MOVE(IntPointer) };
+		UniquePtr<TestData> Pointer{ I_MOVE(IntPointer) };
 
 		REQUIRE(Pointer.Get() != nullptr);
 		REQUIRE(static_cast<bool>(Pointer) == true);
@@ -198,7 +198,7 @@ TEST_CASE("Creating Unique Pointer For Custom Types")
 		{
 			UniquePtr<TestData> Pointer{ MakeUnique<TestData>(5) };
 
-			UniquePtr<TestData> MoveCtorPointer{ __MOVE(Pointer) };
+			UniquePtr<TestData> MoveCtorPointer{ I_MOVE(Pointer) };
 
 			REQUIRE(Pointer.Get() == nullptr);
 			REQUIRE(static_cast<bool>(Pointer) == false);
@@ -212,7 +212,7 @@ TEST_CASE("Creating Unique Pointer For Custom Types")
 		{
 			UniquePtr<TestData> Pointer{ MakeUnique<TestData>(5) };
 
-			UniquePtr<TestData> MoveOpPointer = __MOVE(Pointer);
+			UniquePtr<TestData> MoveOpPointer = I_MOVE(Pointer);
 
 			REQUIRE(Pointer.Get() == nullptr);
 			REQUIRE(static_cast<bool>(Pointer) == false);
@@ -274,7 +274,7 @@ TEST_CASE("Creating Unique Pointer For Int Array Types")
 		{
 			UniquePtr<int[]> Pointer{ MakeUnique<int[]>(5) };
 
-			UniquePtr<int[]> MoveCtorPointer{ __MOVE(Pointer) };
+			UniquePtr<int[]> MoveCtorPointer{ I_MOVE(Pointer) };
 
 			REQUIRE(Pointer.Get() == nullptr);
 			REQUIRE(static_cast<bool>(Pointer) == false);
@@ -286,7 +286,7 @@ TEST_CASE("Creating Unique Pointer For Int Array Types")
 		{
 			UniquePtr<int[]> Pointer{ MakeUnique<int[]>(5) };
 
-			UniquePtr<int[]> MoveOpPointer = __MOVE(Pointer);
+			UniquePtr<int[]> MoveOpPointer = I_MOVE(Pointer);
 
 			REQUIRE(Pointer.Get() == nullptr);
 			REQUIRE(static_cast<bool>(Pointer) == false);

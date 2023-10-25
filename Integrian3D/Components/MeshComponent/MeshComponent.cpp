@@ -19,7 +19,7 @@ namespace Integrian3D
 		, IndexBufferID{ MeshErrorValue }
 		, Vertices{}
 		, Indices{}
-		, MeshMaterial{ __MOVE(Material) }
+		, MeshMaterial{ I_MOVE(Material) }
 	{
 		if (!Filepath.empty())
 		{
@@ -37,7 +37,7 @@ namespace Integrian3D
 		, IndexBufferID{ MeshErrorValue }
 		, Vertices{ vertices }
 		, Indices{ indices }
-		, MeshMaterial{ __MOVE(Material) }
+		, MeshMaterial{ I_MOVE(Material) }
 	{
 		SetupMesh();
 	}
@@ -64,12 +64,12 @@ namespace Integrian3D
 	}
 
 	MeshComponent::MeshComponent(MeshComponent&& other) noexcept
-		: VertexArrayID{ __MOVE(other.VertexArrayID) }
-		, VertexBufferID{ __MOVE(other.VertexBufferID) }
-		, IndexBufferID{ __MOVE(other.IndexBufferID) }
-		, Vertices{ __MOVE(other.Vertices) }
-		, Indices{ __MOVE(other.Indices) }
-		, MeshMaterial{ __MOVE(other.MeshMaterial) }
+		: VertexArrayID{ I_MOVE(other.VertexArrayID) }
+		, VertexBufferID{ I_MOVE(other.VertexBufferID) }
+		, IndexBufferID{ I_MOVE(other.IndexBufferID) }
+		, Vertices{ I_MOVE(other.Vertices) }
+		, Indices{ I_MOVE(other.Indices) }
+		, MeshMaterial{ I_MOVE(other.MeshMaterial) }
 	{
 		other.Vertices.Clear();
 		other.Indices.Clear();
@@ -81,12 +81,12 @@ namespace Integrian3D
 
 	MeshComponent& MeshComponent::operator=(MeshComponent&& other) noexcept
 	{
-		VertexArrayID = __MOVE(other.VertexArrayID);
-		VertexBufferID = __MOVE(other.VertexBufferID);
-		IndexBufferID = __MOVE(other.IndexBufferID);
-		Vertices = __MOVE(other.Vertices);
-		Indices = __MOVE(other.Indices);
-		MeshMaterial = __MOVE(other.MeshMaterial);
+		VertexArrayID = I_MOVE(other.VertexArrayID);
+		VertexBufferID = I_MOVE(other.VertexBufferID);
+		IndexBufferID = I_MOVE(other.IndexBufferID);
+		Vertices = I_MOVE(other.Vertices);
+		Indices = I_MOVE(other.Indices);
+		MeshMaterial = I_MOVE(other.MeshMaterial);
 
 		other.Vertices.Clear();
 		other.Indices.Clear();

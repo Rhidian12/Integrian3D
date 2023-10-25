@@ -19,11 +19,7 @@
 #endif
 
 	/* std::move */
-#ifdef _DEBUG
-#define __MOVE(val) static_cast<std::remove_reference_t<decltype(val)>&&>(val)
-#else
-#define __MOVE(val) std::move((val))
-#endif
+#define I_MOVE(val) std::move(val)
 
 	/* std::forward */
 #ifdef _DEBUG

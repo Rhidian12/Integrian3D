@@ -59,8 +59,8 @@ namespace Integrian3D
 		UniquePtr(const UniquePtr&) noexcept = delete;
 		UniquePtr& operator=(const UniquePtr&) noexcept = delete;
 		UniquePtr(UniquePtr&& Other) noexcept
-			: Data{ __MOVE(Other.Data) }
-			, InvocableDeleter{ __MOVE(Other.InvocableDeleter) }
+			: Data{ I_MOVE(Other.Data) }
+			, InvocableDeleter{ I_MOVE(Other.InvocableDeleter) }
 		{
 			Other.Data = nullptr;
 		}
@@ -68,8 +68,8 @@ namespace Integrian3D
 		{
 			InvocableDeleter(Data);
 
-			Data = __MOVE(Other.Data);
-			InvocableDeleter = __MOVE(Other.InvocableDeleter);
+			Data = I_MOVE(Other.Data);
+			InvocableDeleter = I_MOVE(Other.InvocableDeleter);
 
 			Other.Data = nullptr;
 
@@ -162,8 +162,8 @@ namespace Integrian3D
 		UniquePtr(const UniquePtr&) noexcept = delete;
 		UniquePtr& operator=(const UniquePtr&) noexcept = delete;
 		UniquePtr(UniquePtr&& Other) noexcept
-			: Data{ __MOVE(Other.Data) }
-			, InvocableDeleter{ __MOVE(Other.InvocableDeleter) }
+			: Data{ I_MOVE(Other.Data) }
+			, InvocableDeleter{ I_MOVE(Other.InvocableDeleter) }
 		{
 			Other.Data = nullptr;
 		}
@@ -171,8 +171,8 @@ namespace Integrian3D
 		{
 			InvocableDeleter(Data);
 
-			Data = __MOVE(Other.Data);
-			InvocableDeleter = __MOVE(Other.InvocableDeleter);
+			Data = I_MOVE(Other.Data);
+			InvocableDeleter = I_MOVE(Other.InvocableDeleter);
 
 			Other.Data = nullptr;
 

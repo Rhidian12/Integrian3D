@@ -30,9 +30,9 @@ namespace Integrian3D
 			, UV{ Other.UV }
 		{}
 		Vertex(Vertex&& Other) noexcept
-			: Position{ __MOVE(Other.Position) }
-			, Normal{ __MOVE(Other.Normal) }
-			, UV{ __MOVE(Other.UV) }
+			: Position{ I_MOVE(Other.Position) }
+			, Normal{ I_MOVE(Other.Normal) }
+			, UV{ I_MOVE(Other.UV) }
 		{}
 		Vertex& operator=(const Vertex& Other) noexcept
 		{
@@ -44,9 +44,9 @@ namespace Integrian3D
 		}
 		Vertex& operator=(Vertex&& Other) noexcept
 		{
-			Position = __MOVE(Other.Position);
-			Normal = __MOVE(Other.Normal);
-			UV = __MOVE(Other.UV);
+			Position = I_MOVE(Other.Position);
+			Normal = I_MOVE(Other.Normal);
+			UV = I_MOVE(Other.UV);
 
 			return *this;
 		}

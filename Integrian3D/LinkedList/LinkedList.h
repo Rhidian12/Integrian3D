@@ -40,8 +40,8 @@ namespace Integrian3D
 				Add(*other.At(i));
 		}
 		LinkedList(LinkedList&& other) noexcept
-			: m_pHead{ __MOVE(other.m_pHead) }
-			, m_Size{ __MOVE(other.m_Size) }
+			: m_pHead{ I_MOVE(other.m_pHead) }
+			, m_Size{ I_MOVE(other.m_Size) }
 		{
 			other.m_pHead = nullptr;
 			other.m_Size = 0;
@@ -61,8 +61,8 @@ namespace Integrian3D
 			if (m_pHead)
 				Clear();
 
-			m_pHead = __MOVE(other.m_pHead);
-			m_Size = __MOVE(other.m_Size);
+			m_pHead = I_MOVE(other.m_pHead);
+			m_Size = I_MOVE(other.m_Size);
 
 			other.m_pHead = nullptr;
 			other.m_Size = 0;
@@ -78,7 +78,7 @@ namespace Integrian3D
 		}
 		constexpr void Add(T&& value)
 		{
-			EmplaceBack(__MOVE(value));
+			EmplaceBack(I_MOVE(value));
 		}
 
 		constexpr void AddFront(const T& value)
@@ -87,7 +87,7 @@ namespace Integrian3D
 		}
 		constexpr void AddFront(T&& value)
 		{
-			EmplaceFront(__MOVE(value));
+			EmplaceFront(I_MOVE(value));
 		}
 
 		constexpr void Erase(const T& value)

@@ -29,7 +29,7 @@ namespace Integrian3D::Memory
 			static_assert(Traits::IsCopyConstructable, "T::T(const T&) has not been defined");
 		}
 		constexpr Allocator(Allocator&& other) noexcept
-			: m_Allocator{ __MOVE(other.m_Allocator) }
+			: m_Allocator{ I_MOVE(other.m_Allocator) }
 		{
 			static_assert(Traits::IsMoveConstructable, "T::T(T&&) has not been defined");
 		}
@@ -45,7 +45,7 @@ namespace Integrian3D::Memory
 		{
 			static_assert(Traits::IsMoveAssignable, "T& T::operator=(T&&) has not been defined");
 
-			m_Allocator = __MOVE(other.m_Allocator);
+			m_Allocator = I_MOVE(other.m_Allocator);
 
 			return *this;
 		}

@@ -32,7 +32,7 @@ namespace Integrian3D::Win32Utils
 	}
 
 	Win32Handle::Win32Handle(Win32Handle&& Other) noexcept
-		: Handle{ __MOVE(Other.Handle) }
+		: Handle{ I_MOVE(Other.Handle) }
 	{
 		Other.Handle = INVALID_HANDLE_VALUE;
 	}
@@ -44,7 +44,7 @@ namespace Integrian3D::Win32Utils
 			CloseHandle();
 		}
 
-		Handle = __MOVE(Other.Handle);
+		Handle = I_MOVE(Other.Handle);
 		Other.Handle = INVALID_HANDLE_VALUE;
 
 		return *this;

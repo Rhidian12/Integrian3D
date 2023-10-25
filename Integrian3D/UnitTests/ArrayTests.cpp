@@ -207,7 +207,7 @@ TEST_CASE("Testing Basic Array of integers")
 			arr.Add(i);
 		}
 
-		TArray<int> newArr{ __MOVE(arr) };
+		TArray<int> newArr{ I_MOVE(arr) };
 
 		REQUIRE(arr.Size() == 0);
 		REQUIRE(arr.Capacity() == 0);
@@ -227,7 +227,7 @@ TEST_CASE("Testing Basic Array of integers")
 			arr.Add(i);
 		}
 
-		TArray<int> newArr = __MOVE(arr);
+		TArray<int> newArr = I_MOVE(arr);
 
 		REQUIRE(arr.Size() == 0);
 		REQUIRE(arr.Capacity() == 0);
@@ -684,7 +684,7 @@ TEST_CASE("Testing Array with Custom Structure")
 			: Variable{ new int{ *Other.Variable } }
 		{}
 		ArrayTestStruct(ArrayTestStruct&& Other)
-			: Variable{ __MOVE(Other.Variable) }
+			: Variable{ I_MOVE(Other.Variable) }
 		{
 			Other.Variable = nullptr;
 		}
@@ -708,7 +708,7 @@ TEST_CASE("Testing Array with Custom Structure")
 				Variable = nullptr;
 			}
 
-			Variable = __MOVE(Other.Variable);
+			Variable = I_MOVE(Other.Variable);
 			Other.Variable = nullptr;
 
 			return *this;

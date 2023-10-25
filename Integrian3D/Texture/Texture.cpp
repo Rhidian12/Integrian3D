@@ -61,18 +61,18 @@ namespace Integrian3D
 	}
 
 	Texture::Texture(Texture&& other) noexcept
-		: Width{ __MOVE(other.Width) }
-		, Height{ __MOVE(other.Height) }
-		, TextureID{ __MOVE(other.TextureID) }
+		: Width{ I_MOVE(other.Width) }
+		, Height{ I_MOVE(other.Height) }
+		, TextureID{ I_MOVE(other.TextureID) }
 	{
 		other.TextureID = std::numeric_limits<uint32_t>::max();
 	}
 
 	Texture& Texture::operator=(Texture&& other) noexcept
 	{
-		Width = __MOVE(other.Width);
-		Height = __MOVE(other.Height);
-		TextureID = __MOVE(other.TextureID);
+		Width = I_MOVE(other.Width);
+		Height = I_MOVE(other.Height);
+		TextureID = I_MOVE(other.TextureID);
 
 		other.TextureID = std::numeric_limits<uint32_t>::max();
 
