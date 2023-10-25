@@ -1,8 +1,14 @@
 #include <catch.hpp>
 
-#include "../Timer/Timer.h"
-#include "../Timer/Timepoint/Timepoint.h"
-#include "../Math/Math.h"
+#include "Timer/Timer.h"
+#include "Timer/Timepoint/Timepoint.h"
+#include "Math/Math.h"
+
+#ifdef _WIN32
+I_DISABLE_WARNING(4005) // warning C4005: 'APIENTRY': macro redefinition
+#include <Windows.h>
+I_ENABLE_WARNING(4005)
+#endif
 #include <type_traits>
 
 TEST_CASE("Testing Basic Timepoints")
@@ -63,6 +69,8 @@ TEST_CASE("Testing Timer")
 	REQUIRE(!AreEqual(timer.Now().Count(), 0.f));
 
 	Timepoint t1{ timer.Now() };
+
+	Sleep(100);
 
 	timer.Update();
 	REQUIRE(timer.Now() > t1);

@@ -21,14 +21,14 @@ namespace Integrian3D
 		virtual void AddTag(const std::string& tag);
 
 		void SetTag(std::string_view tag, const std::string& newTag);
-		void SetTagByIndex(const size_t i, const std::string& tag);
+		void SetTagByIndex(const int32 i, const std::string& tag);
 
 		void RemoveTag(std::string_view tag);
-		void RemoveTagByIndex(const size_t i);
+		void RemoveTagByIndex(const int32 i);
 
 		__NODISCARD bool HasTag(std::string_view tag) const;
 
-		__NODISCARD std::string_view GetTagByIndex(const size_t i) const;
+		__NODISCARD std::string_view GetTagByIndex(const int32 i) const;
 
 	protected:
 		TArray<std::string> m_Tags;

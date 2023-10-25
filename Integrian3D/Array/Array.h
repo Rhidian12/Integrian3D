@@ -9,6 +9,8 @@
 
 namespace Integrian3D
 {
+	#define TO_INT32(Expr) static_cast<int32>(Expr)
+
 	template<typename T>
 	class Array
 	{
@@ -32,7 +34,7 @@ namespace Integrian3D
 			, m_pTail{}
 			, m_pCurrentEnd{}
 		{
-			for (size_t i{}; i < size._Size; ++i)
+			for (int32 i{}; i < size._Size; ++i)
 				EmplaceBack(T{});
 		}
 		constexpr Array(const Size_P size, const T& val)
@@ -40,7 +42,7 @@ namespace Integrian3D
 			, m_pTail{}
 			, m_pCurrentEnd{}
 		{
-			for (size_t i{}; i < size._Size; ++i)
+			for (int32 i{}; i < size._Size; ++i)
 				EmplaceBack(val);
 		}
 		constexpr Array(const Capacity_P cap)
@@ -86,7 +88,7 @@ namespace Integrian3D
 		{
 			static_assert(std::is_copy_constructible_v<T>, "TArray > Type must be copy constructible");
 
-			const size_t cap{ other.Capacity() };
+			const int32 cap{ other.Capacity() };
 			if (cap > 0u)
 			{
 				m_pHead = static_cast<T*>(malloc(cap * sizeof(T)));
@@ -120,7 +122,7 @@ namespace Integrian3D
 			m_pTail = nullptr;
 			m_pCurrentEnd = nullptr;
 
-			const size_t cap{ other.Capacity() };
+			const int32 cap{ other.Capacity() };
 			if (cap > 0u)
 			{
 				m_pHead = static_cast<T*>(malloc(cap * sizeof(T)));
@@ -200,11 +202,11 @@ namespace Integrian3D
 				EmplaceBack(*beg);
 			}
 		}
-		constexpr void AddRange(T* pArr, const size_t n)
+		constexpr void AddRange(T* pArr, const int32 n)
 		{
 			__ASSERT(pArr != nullptr, "Array::AddRange > Passed array cannot be null");
 
-			for (size_t i{}; i < n; ++i)
+			for (int32 i{}; i < n; ++i)
 			{
 				EmplaceBack(pArr[i]);
 			}
@@ -217,11 +219,11 @@ namespace Integrian3D
 			}
 		}
 
-		constexpr It EraseByIndex(const size_t index)
+		constexpr It EraseByIndex(const int32 index)
 		{
-			__ASSERT(index < Size(), "Array::Erase() > index %i is out of range", index);
+			__ASSERT(index < Size(), "Array::Erase() > index {} is out of range", index);
 
-			const size_t oldSize{ Size() };
+			const int32 oldSize{ Size() };
 
 			if (index == oldSize - 1)
 			{
@@ -238,7 +240,7 @@ namespace Integrian3D
 			else
 			{
 				(m_pHead + index)->~T();
-				MoveRangeBackward(m_pHead + index + 1, m_pCurrentEnd--, m_pHead + index);
+				MoveRange(m_pHead + index + 1, m_pCurrentEnd--, m_pHead + index);
 
 				return It{ m_pHead + index };
 			}
@@ -248,12 +250,12 @@ namespace Integrian3D
 		{
 			__ASSERT(pos != end(), "Array::Erase() > Pos cannot be equal to end()");
 
-			return EraseByIndex(pos.Data() - begin().Data());
+			return EraseByIndex(TO_INT32(pos.Data() - begin().Data()));
 		}
 		constexpr It Erase(const T& val)
 		{
-			const size_t size{ Size() };
-			for (size_t i{}; i < size; ++i)
+			const int32 size{ Size() };
+			for (int32 i{}; i < size; ++i)
 			{
 				if (*(m_pHead + i) == val)
 				{
@@ -304,7 +306,7 @@ namespace Integrian3D
 			}
 		}
 
-		constexpr void EraseRange(const size_t start, const size_t count)
+		constexpr void EraseRange(const int32 start, const int32 count)
 		{
 			__ASSERT(start < Size(), "Array::EraseRange() > Start cannot be greater than the Array size");
 
@@ -325,11 +327,11 @@ namespace Integrian3D
 			}
 		}
 
-		constexpr void Insert(const size_t index, const T& val)
+		constexpr void Insert(const int32 index, const T& val)
 		{
 			Emplace(index, val);
 		}
-		constexpr void Insert(const size_t index, T&& val)
+		constexpr void Insert(const int32 index, T&& val)
 		{
 			Emplace(index, __MOVE(val));
 		}
@@ -353,7 +355,7 @@ namespace Integrian3D
 
 			m_pHead->~T();
 
-			MoveRangeBackward(m_pHead + 1, m_pCurrentEnd--, m_pHead);
+			MoveRange(m_pHead + 1, m_pCurrentEnd--, m_pHead);
 		}
 
 		constexpr void Clear()
@@ -376,11 +378,11 @@ namespace Integrian3D
 		}
 
 		template<typename ... Ts>
-		constexpr T& Emplace(const size_t index, Ts&&... args)
+		constexpr T& Emplace(const int32 index, Ts&&... args)
 		{
 			__ASSERT(index <= Size(), "Array::Emplace() > Index cannot be greater or equal to the Array size");
 
-			const size_t oldSize{ Size() };
+			const int32 oldSize{ Size() };
 
 			if (oldSize + 1 > Capacity())
 			{
@@ -397,7 +399,7 @@ namespace Integrian3D
 			}
 			else
 			{
-				MoveRangeForward(m_pHead + index, m_pCurrentEnd++ - 1, m_pHead + index + 1);
+				MoveRange(m_pHead + index, m_pCurrentEnd++ - 1, m_pHead + index + 1);
 				return *(new (m_pHead + index) T{ __FORWARD(args)... });
 			}
 		}
@@ -411,7 +413,7 @@ namespace Integrian3D
 				Reallocate();
 			}
 
-			MoveRangeForward(m_pHead, m_pCurrentEnd++, m_pHead + 1);
+			MoveRange(m_pHead, m_pCurrentEnd++, m_pHead + 1);
 
 			return *(new (m_pHead) T{ __FORWARD(args)... });
 		}
@@ -423,31 +425,31 @@ namespace Integrian3D
 			return Size() == 0;
 		}
 
-		__NODISCARD constexpr size_t Size() const
+		__NODISCARD constexpr int32 Size() const
 		{
-			return m_pCurrentEnd - m_pHead;
+			return TO_INT32(m_pCurrentEnd - m_pHead);
 		}
 
-		__NODISCARD constexpr size_t Capacity() const
+		__NODISCARD constexpr int32 Capacity() const
 		{
-			return m_pTail - m_pHead;
+			return TO_INT32(m_pTail - m_pHead);
 		}
 
-		__NODISCARD constexpr size_t MaxSize() const
+		__NODISCARD constexpr int32 MaxSize() const
 		{
-			return std::numeric_limits<size_t>::max();
+			return std::numeric_limits<int32>::max();
 		}
 
 		__NODISCARD constexpr bool operator==(const Array& other) const
 		{
-			const size_t size{ Size() };
+			const int32 size{ Size() };
 
 			if (size != other.Size())
 			{
 				return false;
 			}
 
-			for (size_t i{}; i < size; ++i)
+			for (int32 i{}; i < size; ++i)
 			{
 				if (*(m_pHead + i) != *(other.m_pHead + i))
 				{
@@ -465,7 +467,7 @@ namespace Integrian3D
 	#pragma endregion
 
 	#pragma region Manipulating Array
-		constexpr void Reserve(const size_t newCap)
+		constexpr void Reserve(const int32 newCap)
 		{
 			if (newCap > Capacity())
 			{
@@ -476,25 +478,25 @@ namespace Integrian3D
 			}
 		}
 
-		constexpr void Resize(const size_t newSize)
+		constexpr void Resize(const int32 newSize)
 		{
 			static_assert(std::is_default_constructible_v<T>, "Array::Resize() > T is not default constructable!");
 
 			Resize(newSize, T{});
 		}
 		template<typename U>
-		constexpr void Resize(const size_t newSize, U&& val)
+		constexpr void Resize(const int32 newSize, U&& val)
 		{
 			static_assert(std::is_default_constructible_v<U>, "Array::Resize() > T is not default constructable!");
 			static_assert(std::is_same_v<T, U>, "Array::Resize() > U and T must be the same!");
 
-			const size_t oldSize{ Size() };
+			const int32 oldSize{ Size() };
 
 			if (newSize > oldSize)
 			{
-				const size_t diff{ newSize - oldSize };
+				const int32 diff{ newSize - oldSize };
 
-				for (size_t i{}; i < diff; ++i)
+				for (int32 i{}; i < diff; ++i)
 				{
 					EmplaceBack(__FORWARD(val));
 				}
@@ -504,9 +506,9 @@ namespace Integrian3D
 
 			if (newSize < oldSize)
 			{
-				const size_t diff{ oldSize - newSize };
+				const int32 diff{ oldSize - newSize };
 
-				for (size_t i{}; i < diff; ++i)
+				for (int32 i{}; i < diff; ++i)
 				{
 					Pop();
 				}
@@ -527,11 +529,11 @@ namespace Integrian3D
 
 		constexpr Array Select(const UnaryPred& pred) const
 		{
-			const size_t size{ Size() };
+			const int32 size{ Size() };
 
 			Array arr{ Capacity_P{ size } };
 
-			for (size_t i{}; i < size; ++i)
+			for (int32 i{}; i < size; ++i)
 			{
 				const T* const elem{ m_pHead + i };
 
@@ -545,11 +547,11 @@ namespace Integrian3D
 		}
 		constexpr Array Select(UnaryPred&& pred) const
 		{
-			const size_t size{ Size() };
+			const int32 size{ Size() };
 
 			Array arr{ Capacity_P{ size } };
 
-			for (size_t i{}; i < size; ++i)
+			for (int32 i{}; i < size; ++i)
 			{
 				const T* const elem{ m_pHead + i };
 
@@ -562,12 +564,12 @@ namespace Integrian3D
 			return arr;
 		}
 
-		constexpr Array SubArray(const size_t startIndex, const size_t count = std::numeric_limits<size_t>::max()) const
+		constexpr Array SubArray(const int32 startIndex, const int32 count = std::numeric_limits<int32>::max()) const
 		{
 			Array arr{};
 
-			const size_t size{ Size() };
-			for (size_t i{ startIndex }; i < count; ++i)
+			const int32 size{ Size() };
+			for (int32 i{ startIndex }; i < count; ++i)
 			{
 				if (i >= size)
 				{
@@ -591,7 +593,7 @@ namespace Integrian3D
 		{
 			if (!m_pHead) return;
 
-			const size_t size{ Size() };
+			const int32 size{ Size() };
 
 			if (size < 64u)
 			{
@@ -631,24 +633,24 @@ namespace Integrian3D
 			return *(m_pCurrentEnd - 1);
 		}
 
-		constexpr T& At(const size_t index)
+		constexpr T& At(const int32 index)
 		{
 			__ASSERT(index < Size(), "Array::At() > Index is out of range");
 
 			return *(m_pHead + index);
 		}
-		constexpr const T& At(const size_t index) const
+		constexpr const T& At(const int32 index) const
 		{
 			__ASSERT(index < Size(), "Array::At() > Index is out of range");
 
 			return *(m_pHead + index);
 		}
 
-		constexpr T& operator[](const size_t index)
+		constexpr T& operator[](const int32 index)
 		{
 			return *(m_pHead + index);
 		}
-		constexpr const T& operator[](const size_t index) const
+		constexpr const T& operator[](const int32 index) const
 		{
 			return *(m_pHead + index);
 		}
@@ -674,8 +676,8 @@ namespace Integrian3D
 
 		constexpr It Find(const T& val)
 		{
-			const size_t size{ Size() };
-			for (size_t i{}; i < size; ++i)
+			const int32 size{ Size() };
+			for (int32 i{}; i < size; ++i)
 			{
 				if (*(m_pHead + i) == val)
 				{
@@ -687,8 +689,8 @@ namespace Integrian3D
 		}
 		constexpr CIt Find(const T& val) const
 		{
-			const size_t size{ Size() };
-			for (size_t i{}; i < size; ++i)
+			const int32 size{ Size() };
+			for (int32 i{}; i < size; ++i)
 			{
 				if (*(m_pHead + i) == val)
 				{
@@ -701,8 +703,8 @@ namespace Integrian3D
 
 		constexpr It Find(const UnaryPred& pred)
 		{
-			const size_t size{ Size() };
-			for (size_t i{}; i < size; ++i)
+			const int32 size{ Size() };
+			for (int32 i{}; i < size; ++i)
 			{
 				if (pred(*(m_pHead + i)))
 				{
@@ -714,8 +716,8 @@ namespace Integrian3D
 		}
 		constexpr CIt Find(const UnaryPred& pred) const
 		{
-			const size_t size{ Size() };
-			for (size_t i{}; i < size; ++i)
+			const int32 size{ Size() };
+			for (int32 i{}; i < size; ++i)
 			{
 				if (pred(*(m_pHead + i)))
 				{
@@ -730,8 +732,8 @@ namespace Integrian3D
 		{
 			Array arr{};
 
-			const size_t size{ Size() };
-			for (size_t i{}; i < size; ++i)
+			const int32 size{ Size() };
+			for (int32 i{}; i < size; ++i)
 			{
 				if (*(m_pHead + i) == val)
 				{
@@ -745,8 +747,8 @@ namespace Integrian3D
 		{
 			Array arr{};
 
-			const size_t size{ Size() };
-			for (size_t i{}; i < size; ++i)
+			const int32 size{ Size() };
+			for (int32 i{}; i < size; ++i)
 			{
 				if (pred(*(m_pHead + i)))
 				{
@@ -772,7 +774,7 @@ namespace Integrian3D
 	private:
 	#pragma region Internal Helpers
 		template<bool AllowMove>
-		constexpr void CopyData(T* const newHead, T* const oldHead, const size_t size) const
+		constexpr void CopyData(T* const newHead, T* const oldHead, const int32 size) const
 		{
 			if constexpr (std::is_trivially_copyable_v<T>)
 			{
@@ -780,14 +782,14 @@ namespace Integrian3D
 			}
 			else if constexpr (AllowMove && std::is_move_constructible_v<T>)
 			{
-				for (size_t i{}; i < size; ++i)
+				for (int32 i{}; i < size; ++i)
 				{
 					new (newHead + i) T{ __MOVE(*(oldHead + i)) };
 				}
 			}
 			else
 			{
-				for (size_t i{}; i < size; ++i)
+				for (int32 i{}; i < size; ++i)
 				{
 					new (newHead + i) T{ *(oldHead + i) };
 				}
@@ -796,8 +798,8 @@ namespace Integrian3D
 
 		constexpr void Reallocate()
 		{
-			const size_t size{ Size() };
-			const size_t newCap{ CalculateNewCapacity(size + 1) };
+			const int32 size{ Size() };
+			const int32 newCap{ CalculateNewCapacity(size + 1) };
 
 			T* const pNewHead{ static_cast<T*>(malloc(newCap * sizeof(T))) };
 
@@ -810,9 +812,9 @@ namespace Integrian3D
 			m_pTail = pNewHead + newCap;
 			m_pCurrentEnd = pNewHead + size;
 		}
-		constexpr void ReallocateExactly(const size_t newCap)
+		constexpr void ReallocateExactly(const int32 newCap)
 		{
-			const size_t size{ Size() };
+			const int32 size{ Size() };
 
 			T* const pNewHead{ static_cast<T*>(malloc(newCap * sizeof(T))) };
 
@@ -847,17 +849,17 @@ namespace Integrian3D
 			}
 		}
 
-		__NODISCARD constexpr size_t CalculateNewCapacity(const size_t min) const
+		__NODISCARD constexpr int32 CalculateNewCapacity(const int32 min) const
 		{
-			const size_t oldCap{ Capacity() };
-			const size_t maxCap{ MaxSize() };
+			const int32 oldCap{ Capacity() };
+			const int32 maxCap{ MaxSize() };
 
-			if (oldCap > maxCap - oldCap / 2u)
+			if (oldCap > maxCap - oldCap / 2)
 			{
 				return maxCap;
 			}
 
-			const size_t newCap{ oldCap + oldCap / 2u };
+			const int32 newCap{ oldCap + oldCap / 2 };
 
 			// If our growth is insufficient, return just the bare minimum
 			if (newCap < min)
@@ -868,14 +870,9 @@ namespace Integrian3D
 			return newCap;
 		}
 
-		constexpr void MoveRangeBackward(T* head, T* end, T* newHead) const
+		constexpr void MoveRange(T* head, T* end, T* newHead) const
 		{
-			memcpy(newHead, head, static_cast<size_t>(end - head) * sizeof(T));
-		}
-
-		constexpr void MoveRangeForward(T* head, T* end, T* newHead) const
-		{
-			memcpy(newHead, head, static_cast<int64_t>(end - head) * sizeof(T));
+			CopyData<true>(newHead, head, static_cast<int32>(end - head));
 		}
 	#pragma endregion
 
@@ -884,7 +881,7 @@ namespace Integrian3D
 		{
 			/* Don't use At() to make sure elements get copied instead of referenced around! */
 
-			const size_t size{ Size() };
+			const int32 size{ Size() };
 			for (int i{ 1 }; i < size; ++i)
 			{
 				T key = *(m_pHead + i);
@@ -899,7 +896,7 @@ namespace Integrian3D
 				*(m_pHead + j + 1) = key;
 			}
 		}
-		constexpr void MergeSort(const size_t begin, const size_t end, const BinaryPred& pred) const
+		constexpr void MergeSort(const int32 begin, const int32 end, const BinaryPred& pred) const
 		{
 			/* Check recursion stop */
 			if (begin >= end)
@@ -907,15 +904,15 @@ namespace Integrian3D
 				return;
 			}
 
-			const size_t mid{ begin + (end - begin) / 2u };
+			const int32 mid{ begin + (end - begin) / 2 };
 
 			MergeSort(begin, mid, pred);
 			MergeSort(mid + 1u, end, pred);
 			Merge(begin, mid, end, pred);
 		}
-		constexpr void Merge(size_t left, size_t mid, const size_t right, const BinaryPred& pred) const
+		constexpr void Merge(int32 left, int32 mid, const int32 right, const BinaryPred& pred) const
 		{
-			size_t halfStart{ mid + 1u };
+			int32 halfStart{ mid + 1 };
 
 			if (pred(*(m_pHead + mid), *(m_pHead + halfStart)))
 			{
@@ -931,7 +928,7 @@ namespace Integrian3D
 				else
 				{
 					T val{ *(m_pHead + halfStart) };
-					size_t i{ halfStart };
+					int32 i{ halfStart };
 
 					while (i != left)
 					{

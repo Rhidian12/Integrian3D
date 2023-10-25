@@ -1,12 +1,45 @@
-[CoreLog] Finished initialisation of engine
-[ThreadingLog] Starting Task with ID 0
-[ThreadingLog] Starting Task with ID 1
-[ThreadingLog] Starting Task with ID 2
-[ThreadingLog] Starting Task with ID 3
-[ShaderLog] 131218: PERFORMANCE of MEDIUM severity, raised from API: Program/shader state performance warning: Vertex shader in program 3 is being recompiled based on GL state.
-[ThreadingLog] Finishing Task with ID 1
-[ThreadingLog] Want to delete task: 1 and is it present in array: true
-[ThreadingLog] Finishing Task with ID 0
-[ThreadingLog] Want to delete task: 0 and is it present in array: true
-[ThreadingLog] Finishing Task with ID 3
-[ThreadingLog] Want to delete task: 3 and is it present in array: true
+[Log] Getting destroyed
+[Log] Getting destroyed
+[Log] Getting destroyed
+[Log] Getting destroyed
+[Log] Getting destroyed
+[Log] Getting destroyed
+[Log] Getting destroyed
+[Log] Getting destroyed
+[Log] Getting destroyed
+[Log] Getting destroyed
+[Log] Getting destroyed
+[Log] Getting destroyed
+[Log] Getting destroyed
+[Log] Getting destroyed
+[Log] Getting destroyed
+[Log] Getting destroyed
+[Log] Getting destroyed
+[Log] Getting destroyed
+[Log] Getting destroyed
+[Log] Getting destroyed
+[Log] Getting destroyed
+[Log] Getting destroyed
+[Log] Getting destroyed
+[Log] Getting destroyed
+[Log] Getting destroyed
+[Log] Getting destroyed
+[Log] Getting destroyed
+[Log] Getting destroyed
+[Log] Getting destroyed
+[Log] Getting destroyed
+[Log] Getting destroyed
+[Log] Getting destroyed
+[Log] Getting destroyed
+[Log] Getting destroyed
+[Log] Getting destroyed
+[Log] Getting destroyed
+[Log] Getting destroyed
+[Log] Getting destroyed
+[Log] Getting destroyed
+[Log] Getting destroyed
+[Log] Getting destroyed
+[Log] Getting destroyed
+[Log] Getting destroyed
+[Log] Getting destroyed
+[Log] Getting destroyed

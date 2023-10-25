@@ -142,7 +142,7 @@ namespace Integrian3D
 
 			__ASSERT(VectorComponents.Size() == 2, "IniFile::GetVector2D() > Requested Key is not a Vector2D");
 
-			for (SIZE_T I{}; I < VectorComponents.Size(); ++I)
+			for (int32 I{}; I < VectorComponents.Size(); ++I)
 			{
 				std::string& Component{ VectorComponents[I] };
 				Component.erase(std::remove_if(Component.begin(), Component.end(), [](const char C)->bool
@@ -150,7 +150,7 @@ namespace Integrian3D
 						return std::isspace(C);
 					}), Component.end());
 
-				Value[static_cast<int32>(I)] = std::stof(Component);
+				Value[I] = std::stof(Component);
 			}
 
 			return true;
@@ -173,7 +173,7 @@ namespace Integrian3D
 
 			__ASSERT(VectorComponents.Size() == 3, "IniFile::GetVector3D() > Requested Key is not a Vector3D");
 
-			for (SIZE_T I{}; I < VectorComponents.Size(); ++I)
+			for (int32 I{}; I < VectorComponents.Size(); ++I)
 			{
 				std::string& Component{ VectorComponents[I] };
 				Component.erase(std::remove_if(Component.begin(), Component.end(), [](const char C)->bool
@@ -181,7 +181,7 @@ namespace Integrian3D
 						return std::isspace(C);
 					}), Component.end());
 
-				Value[static_cast<int32>(I)] = std::stof(Component);
+				Value[I] = std::stof(Component);
 			}
 
 			return true;

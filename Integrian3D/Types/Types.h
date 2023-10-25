@@ -106,27 +106,28 @@ namespace Integrian3D
 {
 	struct Size_P final
 	{
-		constexpr explicit Size_P(const uint64 n)
+		constexpr explicit Size_P(const int32 n)
 			: _Size{ n }
 		{}
 
-		uint64 _Size;
+		int32 _Size;
 	};
 	struct Capacity_P final
 	{
-		constexpr explicit Capacity_P(const uint64 n)
+		constexpr explicit Capacity_P(const int32 n)
 			: _Capacity{ n }
 		{}
 
-		uint64 _Capacity;
+		int32 _Capacity;
 	};
 
+	// uint64 is required for for literal operator
 	constexpr Size_P operator""_size(const uint64 i)
 	{
-		return Size_P{ i };
+		return Size_P{ static_cast<int32>(i) };
 	}
 	constexpr Capacity_P operator""_capacity(const uint64 i)
 	{
-		return Capacity_P{ i };
+		return Capacity_P{ static_cast<int32>(i) };
 	}
 }

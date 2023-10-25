@@ -67,7 +67,7 @@ TEST_CASE("Testing Basic Array of integers")
 		REQUIRE(arr.Size() == 9);
 		REQUIRE(arr.Capacity() >= 10);
 
-		for (size_t i{}; i < 5; ++i)
+		for (int32 i{}; i < 5; ++i)
 		{
 			arr.Pop();
 		}
@@ -272,7 +272,7 @@ TEST_CASE("Testing Basic Array of integers")
 				return a > 5;
 			}) };
 
-		for (size_t i{}; i < newArr.Size(); ++i)
+		for (int32 i{}; i < newArr.Size(); ++i)
 		{
 			REQUIRE(newArr[i] > 5);
 		}
@@ -285,7 +285,7 @@ TEST_CASE("Testing Basic Array of integers")
 		REQUIRE(newArr.Size() == 10);
 		REQUIRE(newArr.Capacity() >= 10);
 
-		for (size_t i{}; i < newArr.Size(); ++i)
+		for (int32 i{}; i < newArr.Size(); ++i)
 		{
 			REQUIRE(newArr[i] == 15);
 		}
@@ -356,7 +356,7 @@ TEST_CASE("Testing Basic Array of integers")
 		REQUIRE(newArr.Back() == 3);
 		REQUIRE(newArr.Size() == arr.Size() - 2);
 
-		for (size_t i{}; i < newArr.Size(); ++i)
+		for (int32 i{}; i < newArr.Size(); ++i)
 		{
 			REQUIRE(newArr[i] == arr[i]);
 		}
@@ -368,7 +368,7 @@ TEST_CASE("Testing Basic Array of integers")
 		REQUIRE(newArr.Back() == 5);
 		REQUIRE(newArr.Size() == arr.Size());
 
-		for (size_t i{}; i < newArr.Size(); ++i)
+		for (int32 i{}; i < newArr.Size(); ++i)
 		{
 			REQUIRE(newArr[i] == arr[i]);
 		}
@@ -495,14 +495,14 @@ TEST_CASE("Testing Basic Array of integers")
 		REQUIRE(arr.Size() == nrOfElements + 1);
 		REQUIRE(arr[0] == 15);
 
-		for (uint64_t i{ 1u }; i < arr.Size(); ++i)
+		for (int32 i{ 1u }; i < arr.Size(); ++i)
 			REQUIRE(arr[i] == nrOfElements - i);
 
 		arr.AddFront(396);
 		REQUIRE(arr.Size() == nrOfElements + 2);
 		REQUIRE(arr[0] == 396);
 
-		for (uint64_t i{ 2u }; i < arr.Size(); ++i)
+		for (int32 i{ 2u }; i < arr.Size(); ++i)
 			REQUIRE(arr[i] == nrOfElements - i + 1);
 	}
 
@@ -647,7 +647,7 @@ TEST_CASE("Testing Basic Array of characters")
 		for (const char c : letters)
 			arr.Add(c);
 
-		for (size_t i{}; i < arr.Size(); ++i)
+		for (int32 i{}; i < arr.Size(); ++i)
 			REQUIRE(arr[i] == letters[i]);
 	}
 
@@ -658,7 +658,7 @@ TEST_CASE("Testing Basic Array of characters")
 		for (const char c : letters)
 			arr.AddFront(c);
 
-		size_t counter{};
+		int32 counter{};
 		for (int i{ static_cast<int>(arr.Size() - 1) }; i >= 0; --i)
 			REQUIRE(letters[i] == arr[counter++]);
 	}

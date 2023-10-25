@@ -6,6 +6,7 @@
 
 #include <functional>
 #include <thread>
+#include <vector>
 
 DEFINE_LOG_CATEGORY(ThreadingLog, Integrian3D::LogVerbosity::Verbose);
 

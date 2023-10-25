@@ -13,11 +13,11 @@ namespace Integrian3D::Threading
 		static std::mutex TaskMutex;
 		static std::condition_variable ConditionVar;
 
-	#define ACQUIRE_LOCK() const std::unique_lock<std::mutex> Lock{ TaskMutex }
-	#define SCOPED_LOCK_WITH_EXPR(Expr)	{ \
-											const std::unique_lock<std::mutex> Lock{ TaskMutex }; \
-											Expr; \
-										}
+		#define ACQUIRE_LOCK() const std::unique_lock<std::mutex> Lock{ TaskMutex }
+		#define SCOPED_LOCK_WITH_EXPR(Expr)	{ \
+												const std::unique_lock<std::mutex> Lock{ TaskMutex }; \
+												Expr; \
+											}
 
 		static void ThreadTask_Internal(TArray<Detail::ThreadTask>& Tasks, bool& bShouldRun)
 		{
@@ -35,7 +35,7 @@ namespace Integrian3D::Threading
 						{
 							return !bShouldRun || !Tasks.Empty();
 						});
-
+					
 					// Check if the program has ended
 					if (!bShouldRun)
 					{
@@ -68,10 +68,8 @@ namespace Integrian3D::Threading
 						LOG(ThreadingLog, LogErrorLevel::Log, "Want to delete task: {} and is it present in array: {}", Task.TaskIndex, Tasks.Contains(Task));
 					}
 
-					SCOPED_LOCK_WITH_EXPR(Tasks.Erase([Task](const Detail::ThreadTask& TTask)->bool
-						{
-							return TTask.TaskIndex == Task.TaskIndex;
-						}));
+					SCOPED_LOCK_WITH_EXPR(Tasks.Erase(Task));
+					// SCOPED_LOCK_WITH_EXPR(Tasks.erase(std::remove(Tasks.begin(), Tasks.end(), Task), Tasks.end()));
 				}
 			}
 		}
@@ -148,20 +146,28 @@ namespace Integrian3D::Threading
 			It = Tasks.end();
 		}
 
-		do
+		while (true)
 		{
 			{
 				ACQUIRE_LOCK();
 
+				// It = std::find_if(Tasks.begin(), Tasks.end(), [TaskID](const Detail::ThreadTask& TTask)->bool
+				// 	{
+				// 		return TaskID == TTask.TaskIndex;
+				// 	});
 				It = Tasks.Find([TaskID](const Detail::ThreadTask& TTask)->bool
 					{
 						return TTask.TaskIndex == TaskID;
 					});
+
+				if (It == Tasks.end())
+				{
+					break;
+				}
 			}
 
 			std::this_thread::sleep_for(std::chrono::milliseconds(15));
-
-		} while (It != Tasks.end());
+		}
 	}
 
 	void ThreadManager::StopAllThreads()

@@ -31,7 +31,7 @@ namespace Integrian3D
 		}
 	}
 
-	void TagComponent::SetTagByIndex(const size_t i, const std::string& tag)
+	void TagComponent::SetTagByIndex(const int32 i, const std::string& tag)
 	{
 		__ASSERT(i < m_Tags.Size(), "TagComponent::SetTagByIndex() > Index %i is out of range", i);
 
@@ -46,7 +46,7 @@ namespace Integrian3D
 			});
 	}
 
-	void TagComponent::RemoveTagByIndex(const size_t i)
+	void TagComponent::RemoveTagByIndex(const int32 i)
 	{
 		__ASSERT(i < m_Tags.Size(), "TagComponent::RemoveTagByIndex() > Index %i is out of range", i);
 
@@ -61,7 +61,7 @@ namespace Integrian3D
 			});
 	}
 
-	std::string_view TagComponent::GetTagByIndex(const size_t i) const
+	std::string_view TagComponent::GetTagByIndex(const int32 i) const
 	{
 		__ASSERT(i < m_Tags.Size(), "TagComponent::GetTagByIndex() > Index %i is out of range", i);
 
