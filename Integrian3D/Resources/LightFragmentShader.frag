@@ -52,8 +52,6 @@ float GetAttenuationRadius(float Distance, float MaxRadius)
     float Attenuation = Falloff;
     Attenuation *= 1.0 / (Distance * Distance + 1.0);
 
-    int test = 10;
-
     return Attenuation;
 }
 
@@ -108,6 +106,9 @@ void main()
 
     float Distance = length(_PointLights[0].Position - vPos);
     float Attenuation = GetAttenuationRadius(Distance, _PointLights[0].MaxRadius);
+
+    FragColor = vec4(0,1,0,1);
+    return;
 
     vec3 Normal = normalize(vNormal);
 

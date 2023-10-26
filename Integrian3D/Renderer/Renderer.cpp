@@ -66,7 +66,7 @@ namespace Integrian3D
 		Lights.Add(MakePair(Transform, static_cast<Light*>(const_cast<DirectionalLight*>(&DLight))));
 	}
 
-	void Renderer::Render(const MeshComponent& mesh, const TransformComponent& transform) const
+	void Renderer::Render(MeshComponent& mesh, const TransformComponent& transform) const
 	{
 		mesh.GetMaterial()->StartShader(transform.Transformation, View, Projection, CameraPosition, Lights);
 

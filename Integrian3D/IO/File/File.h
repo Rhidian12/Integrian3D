@@ -90,6 +90,7 @@ namespace Integrian3D::IO
 		__NODISCARD char ReadCharacterFromFile() const;
 		void ReadFromFile(char* Buffer, const int32 BufferSize) const;
 		__NODISCARD void* OpenFile(const OpenMode OpenMode) const;
+		void OnFileChanged(const std::string& Filepath);
 
 		FileMonitor Monitor;
 		std::string Filepath;

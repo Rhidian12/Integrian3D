@@ -36,6 +36,7 @@ namespace Integrian3D::IO
 		if (bMonitorFile)
 		{
 			Monitor.StartMonitoringFile();
+			Monitor.GetOnFileChangedDelegate().Bind(std::bind(&File::OnFileChanged, this, std::placeholders::_1));
 		}
 	}
 
@@ -229,6 +230,11 @@ namespace Integrian3D::IO
 		}
 
 		Seek(0);
+	}
+
+	void File::OnFileChanged(const std::string&)
+	{
+		Filesize = static_cast<int32>(GetFileSize(Handle, nullptr));
 	}
 
 	void File::WriteToFile(const char* Buffer, const int32 BufferSize)

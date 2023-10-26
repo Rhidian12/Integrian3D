@@ -2,6 +2,7 @@
 
 #include "IO/File/File.h"
 #include "IO/PathUtils.h"
+#include "Thread/ThreadUtils.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -75,6 +76,36 @@ namespace Integrian3D
 		glUseProgram(ProgramID);
 	}
 
+	void Shader::HotReloadShaders()
+	{
+		if (!(bReloadVertexShader || bReloadFragmentShader))
+		{
+			return;
+		}
+
+		if (bReloadVertexShader)
+		{
+			glDetachShader(ProgramID, VertexShaderID);
+			glDeleteShader(VertexShaderID);
+			VertexShaderID = ShaderErrorValue;
+			CompileShader(ShaderType::VertexShader);
+		}
+		if (bReloadFragmentShader)
+		{
+			glDetachShader(ProgramID, FragmentShaderID);
+			glDeleteShader(FragmentShaderID);
+			FragmentShaderID = ShaderErrorValue;
+			CompileShader(ShaderType::FragmentShader);
+		}
+
+		CompileShader(ShaderType::VertexShader);
+		CompileShader(ShaderType::FragmentShader);
+		CreateProgram();
+
+		bReloadVertexShader = 0;
+		bReloadFragmentShader = 0;
+	}
+
 	void Shader::SetBool(const std::string_view name, const bool value) const
 	{
 		glUniform1i(glGetUniformLocation(ProgramID, name.data()), static_cast<int>(value));
@@ -110,25 +141,14 @@ namespace Integrian3D
 
 	void Shader::OnShaderChanged(const std::string& Filepath)
 	{
-		//if (Filepath == VertexShader.GetFilepath())
-		//{
-		//	glDetachShader(ProgramID, VertexShaderID);
-		//	glDeleteShader(VertexShaderID);
-		//	CompileShader(ShaderType::VertexShader);
-		//}
-		//else if (Filepath == FragmentShader.GetFilepath())
-		//{
-		//	glDetachShader(ProgramID, FragmentShaderID);
-		//	glDeleteShader(FragmentShaderID);
-		//	CompileShader(ShaderType::FragmentShader);
-		//}
-
-		auto VS = glCreateShader(GL_VERTEX_SHADER);
-		auto FS = glCreateShader(GL_FRAGMENT_SHADER);
-
-		CompileShader(ShaderType::VertexShader);
-		CompileShader(ShaderType::FragmentShader);
-		CreateProgram();
+		if (Filepath == VertexShader.GetFilepath())
+		{
+			bReloadVertexShader = 1;
+		}
+		else if (Filepath == FragmentShader.GetFilepath())
+		{
+			bReloadFragmentShader = 1;
+		}
 	}
 
 	void Shader::CompileShader(const ShaderType ShaderType)
@@ -140,20 +160,20 @@ namespace Integrian3D
 
 		switch (ShaderType)
 		{
-			case ShaderType::VertexShader:
-				CreateShaderID = GL_VERTEX_SHADER;
-				ShaderFile = &VertexShader;
-				ShaderTypeName = "Vertex Shader";
-				ShaderID = &VertexShaderID;
-				break;
-			case ShaderType::FragmentShader:
-				CreateShaderID = GL_FRAGMENT_SHADER;
-				ShaderFile = &FragmentShader;
-				ShaderTypeName = "Fragment Shader";
-				ShaderID = &FragmentShaderID;
-				break;
-			default:
-				IASSERT(false);
+		case ShaderType::VertexShader:
+			CreateShaderID = GL_VERTEX_SHADER;
+			ShaderFile = &VertexShader;
+			ShaderTypeName = "Vertex Shader";
+			ShaderID = &VertexShaderID;
+			break;
+		case ShaderType::FragmentShader:
+			CreateShaderID = GL_FRAGMENT_SHADER;
+			ShaderFile = &FragmentShader;
+			ShaderTypeName = "Fragment Shader";
+			ShaderID = &FragmentShaderID;
+			break;
+		default:
+			IASSERT(false);
 		}
 
 		// Generate Shader ID

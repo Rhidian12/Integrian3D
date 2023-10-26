@@ -75,7 +75,7 @@ namespace Integrian3D
 				{
 					const View view{ Scene.CreateView<TransformComponent, MeshComponent>() };
 
-					view.ForEach([&Renderer](const auto& transform, const auto& mesh)->void
+					view.ForEach([&Renderer](const auto& transform, auto& mesh)->void
 						{
 							Renderer.Render(mesh, transform);
 						});

@@ -70,8 +70,10 @@ namespace Integrian3D
 	}
 
 	void Material::StartShader(const Math::Mat4D& Transform, const Math::Mat4D& View, const Math::Mat4D& Projection,
-		const Math::Vec3D& CameraPosition, const TArray<TPair<TransformComponent, Light*>>& Lights) const
+		const Math::Vec3D& CameraPosition, const TArray<TPair<TransformComponent, Light*>>& Lights)
 	{
+		MaterialShader.HotReloadShaders();
+
 		MaterialShader.Activate();
 
 		MaterialShader.SetMatrix("_View", View);

@@ -30,6 +30,7 @@ namespace Integrian3D
 		Shader& operator=(Shader&& other) noexcept;
 
 		void Activate() const;
+		void HotReloadShaders();
 
 		void SetBool(const std::string_view name, const bool value) const;
 		void SetInt(const std::string_view name, const int value) const;
@@ -48,5 +49,7 @@ namespace Integrian3D
 		uint32 ProgramID;
 		uint32 VertexShaderID;
 		uint32 FragmentShaderID;
+		uint8 bReloadVertexShader : 1;
+		uint8 bReloadFragmentShader : 1;
 	};
 }

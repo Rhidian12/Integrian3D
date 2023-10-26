@@ -32,7 +32,7 @@ namespace Integrian3D
 		void CollectPointLight(const TransformComponent& Transform, const PointLight& Light);
 		void CollectDirectionalLight(const TransformComponent& Transform, const DirectionalLight& DLight);
 
-		void Render(const MeshComponent& mesh, const TransformComponent& transform) const;
+		void Render(MeshComponent& mesh, const TransformComponent& transform) const;
 
 		void ShouldRenderWireframe(const bool bShouldRenderWireFrame) { bShouldRenderWireframe = bShouldRenderWireFrame; }
 
