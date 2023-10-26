@@ -329,7 +329,7 @@
     <ClInclude Include="Components\TestRotateComponent\TestRotateComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Macros\Macros.h">
+    <ClInclude Include="Macros.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Memory\LowLevelLL\LowLevelLL.h">

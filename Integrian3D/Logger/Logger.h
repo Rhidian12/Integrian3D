@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Logger/LogVerbosity.h"
-#include "Macros/Macros.h"
+#include "Macros.h"
 #include "Win32Utils/Win32Handle.h"
 
 #include <format>

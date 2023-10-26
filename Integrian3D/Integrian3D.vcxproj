@@ -298,7 +298,7 @@ xcopy "$(SolutionDir)Config\*.*" "$(OutDir)Config\" /y /d /e /q</Command>
     <ClInclude Include="Logger\LogVerbosity.h" />
     <ClInclude Include="Material\Material.h" />
     <ClInclude Include="Memory\LowLevelLL\LowLevelLL.h" />
-    <ClInclude Include="Macros\Macros.h" />
+    <ClInclude Include="Macros.h" />
     <ClInclude Include="Memory\AllocatorTraits\AllocatorTraits.h" />
     <ClInclude Include="Memory\Allocator\Allocator.h" />
     <ClInclude Include="Memory\MemoryTracker\MemoryTracker.h" />
