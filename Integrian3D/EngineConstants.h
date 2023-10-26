@@ -8,7 +8,7 @@
 #include "DebugUtility.h"
 #include "Globals.h"
 #include "Macros.h"
-#include "Types/Types.h"
+#include "TypeDefinitions.h"
 
 #include <bitset>
 

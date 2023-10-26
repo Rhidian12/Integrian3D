@@ -3,7 +3,7 @@
 #include "Iterator/Iterator.h"
 #include "DebugUtility.h"
 #include "Macros.h"
-#include "Types/Types.h"
+#include "TypeDefinitions.h"
 
 #include <functional> /* std::function */
 
