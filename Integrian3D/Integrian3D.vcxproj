@@ -285,7 +285,7 @@ xcopy "$(SolutionDir)Config\*.*" "$(OutDir)Config\" /y /d /e /q</Command>
     <ClInclude Include="ECS\ComponentArray\ComponentArray.h" />
     <ClInclude Include="ECS\ComponentIDGenerator\ComponentIDGenerator.h" />
     <ClInclude Include="Core\Core.h" />
-    <ClInclude Include="DebugUtility\DebugUtility.h" />
+    <ClInclude Include="DebugUtility.h" />
     <ClInclude Include="EngineConstants.h" />
     <ClInclude Include="IO\OpenMode.h" />
     <ClInclude Include="IO\PathUtils.h" />

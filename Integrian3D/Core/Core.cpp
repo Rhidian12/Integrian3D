@@ -2,7 +2,7 @@
 
 #include "Components/MeshComponent/MeshComponent.h"
 #include "Components/TransformComponent/TransformComponent.h"
-#include "DebugUtility/DebugUtility.h"
+#include "DebugUtility.h"
 #include "InputManager/InputManager.h"
 #include "SceneManager/SceneManager.h"
 #include "Thread/ThreadManager.h"

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Iterator/Iterator.h"
-#include "DebugUtility/DebugUtility.h"
+#include "DebugUtility.h"
 #include "Macros/Macros.h"
 #include "Types/Types.h"
 

@@ -1,7 +1,7 @@
 #include <catch.hpp>
 
-#include "../DebugUtility/DebugUtility.h"
-#include "../Array/Array.h"
+#include "Array/Array.h"
+#include "DebugUtility.h"
 
 #include <string>
 

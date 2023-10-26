@@ -1,7 +1,7 @@
 #include "Logger.h"
 
 #include "Array/Array.h"
-#include "DebugUtility/DebugUtility.h"
+#include "DebugUtility.h"
 #include "Logger/ConsoleColours.h"
 #include "Logger/LogCategory.h"
 #include "IO/File/File.h"

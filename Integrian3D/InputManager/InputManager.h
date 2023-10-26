@@ -1,9 +1,9 @@
 #pragma once
 
-#include "../EngineConstants.h"
+#include "EngineConstants.h"
 #include "KeyboardInput/KeyboardInput.h"
 #include "MouseInput/MouseInput.h"
-#include "../Math/Math.h"
+#include "Math/Math.h"
 
 #include <memory> /* std::unique_ptr */
 

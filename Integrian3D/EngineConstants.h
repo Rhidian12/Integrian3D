@@ -2,10 +2,12 @@
 
 #include "Config.h"
 
-#include "Globals.h"
+// For dependency reasons, Logger include must be first!
 #include "Logger/Logger.h"
+
+#include "DebugUtility.h"
+#include "Globals.h"
 #include "Macros/Macros.h"
-#include "DebugUtility/DebugUtility.h"
 #include "Types/Types.h"
 
 #include <bitset>

@@ -1,7 +1,7 @@
 #include "Window.h"
 
 #include "Core/Core.h" /* g_IsRunning */
-#include "DebugUtility/DebugUtility.h"
+#include "DebugUtility.h"
 #include "InputManager/InputManager.h"
 #include "Math/Math.h"
 

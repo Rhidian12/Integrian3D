@@ -1,8 +1,7 @@
 #include "InputManager.h"
 
-#include "../Core/Core.h"
-#include "../DebugUtility/DebugUtility.h"
-#include "../Window/Window.h"
+#include "Core/Core.h"
+#include "Window/Window.h"
 
 namespace Integrian3D
 {

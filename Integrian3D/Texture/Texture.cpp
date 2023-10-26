@@ -1,7 +1,4 @@
 #include "Texture.h"
-#include "../EngineConstants.h"
-#include "../DebugUtility/DebugUtility.h"
-#include "../Renderer/Renderer.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>

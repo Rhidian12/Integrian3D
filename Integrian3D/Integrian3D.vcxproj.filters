@@ -197,7 +197,7 @@
     <ClInclude Include="Logger\Logger.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DebugUtility\DebugUtility.h">
+    <ClInclude Include="DebugUtility.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Timer\Timer.h">
