@@ -85,12 +85,12 @@ namespace Integrian3D::IO
 		friend class FileContentCache;
 		// function is only called by FileContentCache
 		void GetFileContents_Implementation(std::string& OutFileContents);
+		void CalculateFilesize();
 
 		void WriteToFile(const char* Buffer, const int32 BufferSize);
 		__NODISCARD char ReadCharacterFromFile() const;
 		void ReadFromFile(char* Buffer, const int32 BufferSize) const;
 		__NODISCARD void* OpenFile(const OpenMode OpenMode) const;
-		void OnFileChanged(const std::string& Filepath);
 
 		FileMonitor Monitor;
 		std::string Filepath;

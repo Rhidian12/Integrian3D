@@ -7,6 +7,11 @@ namespace Integrian3D
 		, MaxRadius{ MaxRadius }
 	{}
 
+	void PointLight::SetMaxRadius(const float InMaxRadius)
+	{
+		MaxRadius = InMaxRadius;
+	}
+
 	LightType PointLight::GetLightType() const
 	{
 		return LightType::PointLight;

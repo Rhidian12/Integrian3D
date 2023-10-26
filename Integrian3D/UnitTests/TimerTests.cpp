@@ -70,7 +70,7 @@ TEST_CASE("Testing Timer")
 
 	Timepoint t1{ timer.Now() };
 
-	Sleep(100);
+	Sleep(1000);
 
 	timer.Update();
 	REQUIRE(timer.Now() > t1);

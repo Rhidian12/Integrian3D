@@ -107,10 +107,10 @@ void main()
     float Distance = length(_PointLights[0].Position - vPos);
     float Attenuation = GetAttenuationRadius(Distance, _PointLights[0].MaxRadius);
 
-    FragColor = vec4(0,1,0,1);
-    return;
-
     vec3 Normal = normalize(vNormal);
+
+    // FragColor = vec4(Attenuation, Attenuation, Attenuation, 1.0);
+    // return;
 
     vec3 LightDirection = normalize(_PointLights[0].Position - vPos);
     // vec3 LightDirection = normalize(-_DirectionalLights[0].Direction);

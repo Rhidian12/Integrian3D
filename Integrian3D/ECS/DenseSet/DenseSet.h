@@ -64,8 +64,8 @@ namespace Integrian3D
 			return false;
 		}
 
-		__forceinline T GetFirst(const T Val) const { __ASSERT(Contains(Val), "DenseSet::GetFirst does not contain %i", Val); return Packed[Sparse[Val]].first; }
-		__forceinline T GetSecond(const T Val) const { __ASSERT(Contains(Val), "DenseSet::GetSecond does not contain %i", Val); return Packed[Sparse[Val]].second; }
+		__forceinline T GetFirst(const T Val) const { __ASSERT(Contains(Val), "DenseSet::GetFirst does not contain {}", Val); return Packed[Sparse[Val]].first; }
+		__forceinline T GetSecond(const T Val) const { __ASSERT(Contains(Val), "DenseSet::GetSecond does not contain {}", Val); return Packed[Sparse[Val]].second; }
 
 	private:
 		std::vector<T> Sparse;

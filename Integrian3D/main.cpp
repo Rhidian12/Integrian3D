@@ -3,8 +3,8 @@
 #endif
 
 // #define ENGINE
-// #define UNIT_TESTS
-#define TEST_ENGINE
+#define UNIT_TESTS
+// #define TEST_ENGINE
 
 #ifdef ENGINE
 
@@ -120,7 +120,7 @@ int RunTestEngine(int, char* [])
 	}
 
 	{
-		Entity Entity{ TestScene->CreateEntity() };
+		Entity TestEntity{ TestScene->CreateEntity() };
 		// TestScene->AddComponent<TestRotateComponent>(Entity);
 
 		UniquePtr<Material> MeshMaterial = MakeUnique<Material>("Resources/LightVertexShader.vert", "Resources/LightFragmentShader.frag");
@@ -129,11 +129,11 @@ int RunTestEngine(int, char* [])
 		MeshMaterial->AddTexture(TextureSlots::Diffuse, TextureManager::GetInstance().GetTexture("Box_Diffuse"));
 		MeshMaterial->AddTexture(TextureSlots::Specular, TextureManager::GetInstance().GetTexture("Box_Specular"));
 
-		TestScene->AddComponent<MeshComponent>(Entity, vertices, indices, I_MOVE(MeshMaterial));
+		TestScene->AddComponent<MeshComponent>(TestEntity, vertices, indices, I_MOVE(MeshMaterial));
 	}
 
+	const Entity PointLightEntity{ TestScene->CreateEntity() };
 	{
-		const Entity PointLightEntity{ TestScene->CreateEntity() };
 
 		const Math::Vec3D Ambient{ 0.2f, 0.2f, 0.2f };
 		const Math::Vec3D Diffuse{ 0.5f, 0.5f, 0.5f };
@@ -177,24 +177,27 @@ int RunTestEngine(int, char* [])
 			}
 		});
 
-	TestScene->AddUpdateCallback(0, [=](Scene& Scene)->void
+	float MaxRadius{ 10.f };
+	TestScene->AddUpdateCallback(0, [&MaxRadius, PointLightEntity](Scene& Scene)->void
 		{
-			if (InputManager::GetInstance().GetIsKeyPressed(KeyboardInput::Space))
+			if (InputManager::GetInstance().GetIsKeyPressed(KeyboardInput::Up))
 			{
-				const Entity Entity{ Scene.CreateEntity() };
+				MaxRadius += 50.f;
 
-				Scene.AddComponent<TestRotateComponent>(Entity);
-
-				UniquePtr<Material> MeshMaterial = MakeUnique<Material>("Resources/LightVertexShader.vert", "Resources/LightFragmentShader.frag");
-				MeshMaterial->SetFloat("_Material.Shininess", 32.f);
-
-				MeshMaterial->AddTexture(TextureSlots::Diffuse, TextureManager::GetInstance().GetTexture("Box_Diffuse"));
-				MeshMaterial->AddTexture(TextureSlots::Specular, TextureManager::GetInstance().GetTexture("Box_Specular"));
-
-				Scene.AddComponent<MeshComponent>(Entity, vertices, indices, I_MOVE(MeshMaterial));
-
-				Scene.GetComponent<TransformComponent>(Entity).Translate(Math::RandomVec3D(-10.f, 10.f));
+				Scene.GetComponent<PointLight>(PointLightEntity).SetMaxRadius(MaxRadius);
 			}
+			else if (InputManager::GetInstance().GetIsKeyPressed(KeyboardInput::Down))
+			{
+				MaxRadius -= 50.f;
+				if (MaxRadius <= 0.f)
+				{
+					MaxRadius = 0.f;
+				}
+
+				Scene.GetComponent<PointLight>(PointLightEntity).SetMaxRadius(MaxRadius);
+			}
+
+			// LOG(Log, LogErrorLevel::Log, "Max Radius: {}", MaxRadius);
 		});
 
 	core.Run();

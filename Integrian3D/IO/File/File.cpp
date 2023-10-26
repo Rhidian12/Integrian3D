@@ -29,14 +29,13 @@ namespace Integrian3D::IO
 			return;
 		}
 
-		Filesize = static_cast<int32>(GetFileSize(Handle, nullptr));
+		CalculateFilesize();
 
 		FileContentCache::GetInstance().AddFile(this);
 
 		if (bMonitorFile)
 		{
 			Monitor.StartMonitoringFile();
-			Monitor.GetOnFileChangedDelegate().Bind(std::bind(&File::OnFileChanged, this, std::placeholders::_1));
 		}
 	}
 
@@ -232,7 +231,7 @@ namespace Integrian3D::IO
 		Seek(0);
 	}
 
-	void File::OnFileChanged(const std::string&)
+	void File::CalculateFilesize()
 	{
 		Filesize = static_cast<int32>(GetFileSize(Handle, nullptr));
 	}

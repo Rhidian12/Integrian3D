@@ -97,6 +97,7 @@ namespace Integrian3D::IO
 			FileInfo& FileInfo{ GetFileInfo(Filepath) };
 
 			std::string FileContents{};
+			FileInfo.File->CalculateFilesize();
 			FileInfo.File->GetFileContents_Implementation(FileContents);
 			FileContentsCache.Find([&FileInfo](const auto& Pair)->bool
 				{
