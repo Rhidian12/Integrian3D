@@ -2,6 +2,7 @@
 
 #include "Config.h"
 
+#include "Globals.h"
 #include "Logger/Logger.h"
 #include "Macros/Macros.h"
 #include "DebugUtility/DebugUtility.h"

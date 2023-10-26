@@ -244,6 +244,7 @@ xcopy "$(SolutionDir)Config\*.*" "$(OutDir)Config\" /y /d /e /q</Command>
     <ClCompile Include="TextureManager\TextureManager.cpp" />
     <ClCompile Include="Texture\Texture.cpp" />
     <ClCompile Include="Thread\ThreadManager.cpp" />
+    <ClCompile Include="Thread\ThreadUtils.cpp" />
     <ClCompile Include="Timer\Timepoint\Timepoint.cpp" />
     <ClCompile Include="Timer\Timer.cpp" />
     <ClCompile Include="Components\TransformComponent\TransformComponent.cpp" />
@@ -270,6 +271,7 @@ xcopy "$(SolutionDir)Config\*.*" "$(OutDir)Config\" /y /d /e /q</Command>
     <ClInclude Include="Config.h" />
     <ClInclude Include="ECS\ComponentIDGenerator.h" />
     <ClInclude Include="ECS\DenseSet\DenseSet.h" />
+    <ClInclude Include="Globals.h" />
     <ClInclude Include="IO\FileContentCache\FileContentCache.h" />
     <ClInclude Include="IO\FileMode.h" />
     <ClInclude Include="IO\File\File.h" />
@@ -324,6 +326,7 @@ xcopy "$(SolutionDir)Config\*.*" "$(OutDir)Config\" /y /d /e /q</Command>
     <ClInclude Include="TextureManager\TextureManager.h" />
     <ClInclude Include="Texture\Texture.h" />
     <ClInclude Include="Thread\ThreadManager.h" />
+    <ClInclude Include="Thread\ThreadUtils.h" />
     <ClInclude Include="Timer\TimeLength.h" />
     <ClInclude Include="Timer\Timepoint\Timepoint.h" />
     <ClInclude Include="Timer\Timer.h" />

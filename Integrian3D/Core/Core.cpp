@@ -6,9 +6,11 @@
 #include "InputManager/InputManager.h"
 #include "SceneManager/SceneManager.h"
 #include "Thread/ThreadManager.h"
+#include "Thread/ThreadUtils.h"
 #include "Timer/Timer.h"
 
 #include <string_view>
+#include <thread>
 
 namespace Integrian3D
 {
@@ -129,6 +131,8 @@ namespace Integrian3D
 		srand(static_cast<unsigned int>(time(nullptr)));
 
 		Math::SetSeed(SEED);
+
+		GMainThreadID = GetThreadID();
 
 		#if _DEBUG
 		glEnable(GL_DEBUG_OUTPUT);
