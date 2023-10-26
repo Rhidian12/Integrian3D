@@ -3,6 +3,9 @@
 #include "Core/Core.h"
 #include "Window/Window.h"
 
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
 namespace Integrian3D
 {
 	/* Defined in Core.h */

@@ -1,15 +1,14 @@
 #include "Window.h"
 
-#include "Core/Core.h" /* g_IsRunning */
 #include "DebugUtility.h"
 #include "InputManager/InputManager.h"
 #include "Math/Math.h"
 
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
 namespace Integrian3D
 {
-	/* Defined in Core.h */
-	extern inline volatile bool g_IsRunning;
-
 	namespace Detail
 	{
 		Window::Window(const int width, const int height)

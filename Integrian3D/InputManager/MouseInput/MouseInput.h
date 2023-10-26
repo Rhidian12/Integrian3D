@@ -1,13 +1,14 @@
 #pragma once
 
-#include "../../EngineConstants.h"
+#include "EngineConstants.h"
 
 namespace Integrian3D
 {
 	enum class MouseInput : int
 	{
-		LMB			= GLFW_MOUSE_BUTTON_LEFT,
-		MMB			= GLFW_MOUSE_BUTTON_MIDDLE,
-		RMB			= GLFW_MOUSE_BUTTON_RIGHT,
+		// based on GLFW
+		LMB			= 0,
+		RMB			= 1,
+		MMB			= 2,
 	};
 }

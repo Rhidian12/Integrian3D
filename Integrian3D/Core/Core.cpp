@@ -12,6 +12,9 @@
 #include <string_view>
 #include <thread>
 
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
 namespace Integrian3D
 {
 	namespace
