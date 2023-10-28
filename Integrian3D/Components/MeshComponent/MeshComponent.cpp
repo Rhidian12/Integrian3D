@@ -61,6 +61,8 @@ namespace Integrian3D
 			glDeleteBuffers(1, &IndexBufferID);
 			IndexBufferID = MeshErrorValue;
 		}
+		
+		LOG(LogMeshComponent, LogErrorLevel::Log, "Destroying Mesh Component");
 	}
 
 	MeshComponent::MeshComponent(MeshComponent&& other) noexcept
@@ -70,9 +72,11 @@ namespace Integrian3D
 		, Vertices{ I_MOVE(other.Vertices) }
 		, Indices{ I_MOVE(other.Indices) }
 		, MeshMaterial{ I_MOVE(other.MeshMaterial) }
+		, Textures{ I_MOVE(other.Textures) }
 	{
 		other.Vertices.Clear();
 		other.Indices.Clear();
+		other.Textures.Clear();
 
 		other.VertexArrayID = MeshErrorValue;
 		other.VertexBufferID = MeshErrorValue;
@@ -87,9 +91,11 @@ namespace Integrian3D
 		Vertices = I_MOVE(other.Vertices);
 		Indices = I_MOVE(other.Indices);
 		MeshMaterial = I_MOVE(other.MeshMaterial);
+		Textures = I_MOVE(other.Textures);
 
 		other.Vertices.Clear();
 		other.Indices.Clear();
+		other.Textures.Clear();
 
 		other.VertexArrayID = MeshErrorValue;
 		other.VertexBufferID = MeshErrorValue;

@@ -36,10 +36,15 @@ namespace Integrian3D
 	{
 		if (ProgramID != ShaderErrorValue)
 		{
+			glDetachShader(ProgramID, VertexShaderID);
+			glDeleteShader(VertexShaderID);
+
+			glDetachShader(ProgramID, FragmentShaderID);
+			glDeleteShader(FragmentShaderID);
+
 			glDeleteProgram(ProgramID);
 
-			glDeleteShader(VertexShaderID);
-			glDeleteShader(FragmentShaderID);
+			LOG(ShaderLog, LogErrorLevel::Log, "Destroying Shader");
 		}
 	}
 

@@ -3,8 +3,8 @@
 #endif
 
 // #define ENGINE
-#define UNIT_TESTS
-// #define TEST_ENGINE
+// #define UNIT_TESTS
+#define TEST_ENGINE
 
 #ifdef ENGINE
 
@@ -120,7 +120,7 @@ int RunTestEngine(int, char* [])
 	}
 
 	{
-		Entity TestEntity{ TestScene->CreateEntity() };
+		const Entity TestEntity{ TestScene->CreateEntity() };
 		// TestScene->AddComponent<TestRotateComponent>(Entity);
 
 		UniquePtr<Material> MeshMaterial = MakeUnique<Material>("Resources/LightVertexShader.vert", "Resources/LightFragmentShader.frag");
@@ -132,9 +132,8 @@ int RunTestEngine(int, char* [])
 		TestScene->AddComponent<MeshComponent>(TestEntity, vertices, indices, I_MOVE(MeshMaterial));
 	}
 
-	const Entity PointLightEntity{ TestScene->CreateEntity() };
 	{
-
+		const Entity PointLightEntity{ TestScene->CreateEntity() };
 		const Math::Vec3D Ambient{ 0.2f, 0.2f, 0.2f };
 		const Math::Vec3D Diffuse{ 0.5f, 0.5f, 0.5f };
 		const Math::Vec3D Specular{ 1.f, 1.f, 1.f };
@@ -177,28 +176,28 @@ int RunTestEngine(int, char* [])
 			}
 		});
 
-	float MaxRadius{ 10.f };
-	TestScene->AddUpdateCallback(0, [&MaxRadius, PointLightEntity](Scene& Scene)->void
-		{
-			if (InputManager::GetInstance().GetIsKeyPressed(KeyboardInput::Up))
-			{
-				MaxRadius += 50.f;
+	//float MaxRadius{ 10.f };
+	//TestScene->AddUpdateCallback(0, [&MaxRadius, PointLightEntity](Scene& Scene)->void
+	//	{
+	//		if (InputManager::GetInstance().GetIsKeyPressed(KeyboardInput::Up))
+	//		{
+	//			MaxRadius += 50.f;
 
-				Scene.GetComponent<PointLight>(PointLightEntity).SetMaxRadius(MaxRadius);
-			}
-			else if (InputManager::GetInstance().GetIsKeyPressed(KeyboardInput::Down))
-			{
-				MaxRadius -= 50.f;
-				if (MaxRadius <= 0.f)
-				{
-					MaxRadius = 0.f;
-				}
+	//			Scene.GetComponent<PointLight>(PointLightEntity).SetMaxRadius(MaxRadius);
+	//		}
+	//		else if (InputManager::GetInstance().GetIsKeyPressed(KeyboardInput::Down))
+	//		{
+	//			MaxRadius -= 50.f;
+	//			if (MaxRadius <= 0.f)
+	//			{
+	//				MaxRadius = 0.f;
+	//			}
 
-				Scene.GetComponent<PointLight>(PointLightEntity).SetMaxRadius(MaxRadius);
-			}
+	//			Scene.GetComponent<PointLight>(PointLightEntity).SetMaxRadius(MaxRadius);
+	//		}
 
-			// LOG(Log, LogErrorLevel::Log, "Max Radius: {}", MaxRadius);
-		});
+	//		// LOG(Log, LogErrorLevel::Log, "Max Radius: {}", MaxRadius);
+	//	});
 
 	core.Run();
 
