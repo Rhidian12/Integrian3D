@@ -41,10 +41,7 @@ namespace Integrian3D::IO
 
 	File::~File()
 	{
-		if (Handle.IsValid())
-		{
-			FileContentCache::GetInstance().RemoveFile(this);
-		}
+		FileContentCache::GetInstance().RemoveFile(this);
 	}
 
 	File::File(File&& Other) noexcept
@@ -88,6 +85,20 @@ namespace Integrian3D::IO
 
 	std::string_view File::GetFileContents() const
 	{
+		//__CHECK(Handle.IsValid());
+
+		//std::string FileContents{};
+		//FileContents.resize(Filesize);
+
+		//if (ReadFile(Handle, FileContents.data(), static_cast<DWORD>(Filesize), nullptr, nullptr) == 0)
+		//{
+		//	LOG(FileLog, LogErrorLevel::Warning, "File could not read the provided file: {}", Filepath);
+		//}
+
+		//Seek(0);
+
+		//return FileContents;
+
 		return FileContentCache::GetInstance().GetFileContents(Filepath);
 	}
 
@@ -201,7 +212,7 @@ namespace Integrian3D::IO
 
 		if (!Call.GetSuccess())
 		{
-			LOG(FileLog, LogErrorLevel::Warning, "File::operator>> could not read from file %s", Filepath);
+			LOG(FileLog, LogErrorLevel::Warning, "File::operator>> could not read from file {}", Filepath);
 		}
 
 		return CurrentChar;
@@ -213,7 +224,7 @@ namespace Integrian3D::IO
 
 		if (!Call.GetSuccess())
 		{
-			LOG(FileLog, LogErrorLevel::Warning, "File::operator>> could not read from file %s", Filepath);
+			LOG(FileLog, LogErrorLevel::Warning, "File::operator>> could not read from file {}", Filepath);
 		}
 	}
 
@@ -225,7 +236,7 @@ namespace Integrian3D::IO
 
 		if (ReadFile(Handle, OutFileContents.data(), static_cast<DWORD>(Filesize), nullptr, nullptr) == 0)
 		{
-			LOG(FileLog, LogErrorLevel::Warning, "File could not read the provided file: %s", Filepath);
+			LOG(FileLog, LogErrorLevel::Warning, "File could not read the provided file: {}", Filepath);
 		}
 
 		Seek(0);
@@ -242,7 +253,7 @@ namespace Integrian3D::IO
 
 		if (!Call.GetSuccess())
 		{
-			LOG(FileLog, LogErrorLevel::Warning, "File::operator<< could not write to file %s", Filepath);
+			LOG(FileLog, LogErrorLevel::Warning, "File::operator<< could not write to file {}", Filepath);
 		}
 		else
 		{

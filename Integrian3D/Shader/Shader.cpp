@@ -186,7 +186,8 @@ namespace Integrian3D
 		const uint32 ActualShaderID = *ShaderID;
 
 		// Attach the Shader code to the ID and compile it
-		const char* pShaderSource{ ShaderFile->GetFileContents().data() };
+		const std::string_view Source{ ShaderFile->GetFileContents() };
+		const char* pShaderSource{ Source.data() };
 		glShaderSource(ActualShaderID, 1, &pShaderSource, nullptr);
 		glCompileShader(ActualShaderID);
 

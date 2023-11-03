@@ -250,6 +250,7 @@ xcopy "$(SolutionDir)Config\*.*" "$(OutDir)Config\" /y /d /e /q</Command>
     <ClCompile Include="Components\TransformComponent\TransformComponent.cpp" />
     <ClCompile Include="UnitTests\AllocatorInterfaceTests.cpp" />
     <ClCompile Include="UnitTests\ArrayTests.cpp" />
+    <ClCompile Include="UnitTests\ECSTests.cpp" />
     <ClCompile Include="UnitTests\FileTests.cpp" />
     <ClCompile Include="UnitTests\FreeListAllocatorTests.cpp" />
     <ClCompile Include="UnitTests\IAssetTests.cpp" />

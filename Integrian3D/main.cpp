@@ -1,5 +1,11 @@
 #if __has_include(<vld.h>)
 #	include <vld.h>
+#	define USE_CRTDBG 0
+#else
+#	define USE_CRTDBG 1
+#	define _CRTDBG_MAP_ALLOC
+#	include <stdlib.h>
+#	include <crtdbg.h>
 #endif
 
 // #define ENGINE
@@ -22,6 +28,10 @@ int RunTestEngine(int argc, char* argv[]);
 
 int main(int argc, char* argv[])
 {
+#if USE_CRTDBG
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+#endif
+
 	#ifdef ENGINE
 
 	return RunEngine(argc, argv);

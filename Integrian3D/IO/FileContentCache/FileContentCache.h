@@ -5,7 +5,6 @@
 #include "Array/Array.h"
 #include "TPair/TPair.h"
 
-#include <memory>
 #include <mutex>
 #include <string>
 #include <string_view>
@@ -33,6 +32,9 @@ namespace Integrian3D::IO
 
 	public:
 		__NODISCARD static FileContentCache& GetInstance();
+		static void Cleanup();
+
+		~FileContentCache();
 
 		void AddFile(File* const File);
 		void RemoveFile(const File* const File);
@@ -45,8 +47,7 @@ namespace Integrian3D::IO
 		void OnFileChanged(const std::string& Filepath);
 		__NODISCARD FileInfo& GetFileInfo(const std::string_view Filepath);
 
-		friend std::unique_ptr<FileContentCache> std::make_unique();
-		inline static std::unique_ptr<FileContentCache> Instance{};
+		inline static FileContentCache* Instance{};
 
 		mutable std::mutex Mutex;
 

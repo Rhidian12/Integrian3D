@@ -11,10 +11,32 @@ namespace Integrian3D::IO
 	{
 		if (!Instance)
 		{
-			Instance = std::make_unique<FileContentCache>();
+			Instance = new FileContentCache();
 		}
 
 		return *Instance;
+	}
+
+	void FileContentCache::Cleanup()
+	{
+		if (Instance)
+		{
+			delete Instance;
+			Instance = nullptr;
+		}
+	}
+
+	FileContentCache::~FileContentCache()
+	{
+		LOG(FileContentCacheLog, LogErrorLevel::Log, "Destroying file content cache, remaining entries {}", FileContentsCache.Size());
+
+		if (!FileContentsCache.Empty())
+		{
+			for (int32 i{}; i < FileContentsCache.Size(); ++i)
+			{
+				LOG(FileContentCacheLog, LogErrorLevel::Log, "Remaining file #{}: {}", i, FileContentsCache[i].Key().Filepath);
+			}
+		}
 	}
 
 	void FileContentCache::AddFile(File* const File)
@@ -43,7 +65,7 @@ namespace Integrian3D::IO
 		const std::string_view Filepath{ File->GetFilepath() };
 		if (!ContainsFilepath(Filepath))
 		{
-			LOG(FileContentCacheLog, LogErrorLevel::Fatal, "FileContentCache is trying to remove {} which was never added!", Filepath);
+			LOG(FileContentCacheLog, LogErrorLevel::Warning, "FileContentCache is trying to remove {} which was never added!", Filepath);
 			return;
 		}
 

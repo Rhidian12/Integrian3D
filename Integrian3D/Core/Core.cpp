@@ -3,8 +3,10 @@
 #include "Components/MeshComponent/MeshComponent.h"
 #include "Components/TransformComponent/TransformComponent.h"
 #include "DebugUtility.h"
+#include "IO/FileContentCache/FileContentCache.h"
 #include "InputManager/InputManager.h"
 #include "SceneManager/SceneManager.h"
+#include "TextureManager/TextureManager.h"
 #include "Thread/ThreadManager.h"
 #include "Thread/ThreadUtils.h"
 #include "Timer/Timer.h"
@@ -116,6 +118,7 @@ namespace Integrian3D
 	void Core::Shutdown()
 	{
 		Threading::ThreadManager::GetInstance().StopAllThreads();
+		TextureManager::Cleanup();
 	}
 
 	Core& Core::GetInstance()
@@ -144,6 +147,7 @@ namespace Integrian3D
 		#endif
 
 		std::atexit(Logger::Cleanup);
+		std::atexit(IO::FileContentCache::Cleanup);
 
 		LOG(CoreLog, LogErrorLevel::Log, "Finished initialisation of engine");
 

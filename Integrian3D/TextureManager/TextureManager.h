@@ -12,6 +12,7 @@ namespace Integrian3D
 	{
 	public:
 		static TextureManager& GetInstance();
+		static void Cleanup();
 
 		void AddTexture(const std::string& name, const std::string& filePath);
 

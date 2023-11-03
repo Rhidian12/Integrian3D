@@ -13,6 +13,14 @@ namespace Integrian3D
 		return *Instance.get();
 	}
 
+	void TextureManager::Cleanup()
+	{
+		if (Instance)
+		{
+			Instance->Textures.clear();
+		}
+	}
+
 	void TextureManager::AddTexture(const std::string& name, const std::string& filePath)
 	{
 		Textures.insert(std::make_pair(name, std::make_unique<Texture>(filePath)));
@@ -22,7 +30,7 @@ namespace Integrian3D
 	{
 		const auto cIt{ Textures.find(name.data()) };
 
-		__ASSERT(cIt != Textures.cend(), "TextureManager::GetTexture() > Name %s cannot be found", name);
+		__ASSERT(cIt != Textures.cend(), "TextureManager::GetTexture() > Name {} cannot be found", name);
 
 		return cIt->second.get();
 	}

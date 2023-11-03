@@ -1,9 +1,10 @@
 #include <catch.hpp>
 
-#include "../IO/File/File.h"
-#include "../Math/Math.h"
+#include "IO/File/File.h"
+#include "Math/Math.h"
 
 #include <string>
+#include <mutex>
 
 struct FileTestData final
 {
@@ -109,7 +110,7 @@ TEST_CASE("Testing the File")
 
 		REQUIRE(File.GetFilesize() > 0);
 	}
-	
+
 	SECTION("Reading a Binary file with some simple information")
 	{
 		const File File{ "Resources/TestBinaryFile.bin", OpenMode::OpenExisting, FileMode::Binary };
@@ -131,4 +132,40 @@ TEST_CASE("Testing the File")
 		REQUIRE(F == 'D');
 		REQUIRE(G == "HelloWorld!");
 	}
+}
+
+static bool bWasFileChanged = false;
+static std::mutex Mutex;
+
+static void OnFileChanged(const std::string&)
+{
+	std::unique_lock<std::mutex> Lock{ Mutex };
+	bWasFileChanged = true;
+}
+
+TEST_CASE("Testing the File Monitor")
+{
+	using namespace Integrian3D::IO;
+	using namespace Integrian3D;
+
+	File File{ "Resources/TestASCIIFile.txt", OpenMode::OpenExisting, FileMode::ASCII, true };
+	const int32 OldFilesize{ File.GetFilesize() };
+
+	File.GetOnFileChangedDelegate().Bind(OnFileChanged);
+
+	while (true)
+	{
+		std::unique_lock<std::mutex> Lock{ Mutex };
+
+		File << "This is some changed text!\n";
+
+		if (bWasFileChanged)
+		{
+			break;
+		}
+
+		std::this_thread::sleep_for(std::chrono::milliseconds(200));
+	}
+
+	REQUIRE(File.GetFilesize() > OldFilesize);
 }
