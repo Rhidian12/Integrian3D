@@ -784,7 +784,7 @@ namespace Integrian3D
 			{
 				for (int32 i{}; i < size; ++i)
 				{
-					new (newHead + i) T{ I_MOVE(*(oldHead + i)) };
+					new (newHead + i) T{ std::move(*(oldHead + i)) };
 				}
 			}
 			else
