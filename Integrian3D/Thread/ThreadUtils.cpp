@@ -1,7 +1,5 @@
 #include "Thread/ThreadUtils.h"
 
-#include "Globals.h"
-
 #include <thread>
 
 namespace Integrian3D

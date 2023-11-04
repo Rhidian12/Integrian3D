@@ -5,14 +5,15 @@
 #include "Logger/ConsoleColours.h"
 #include "Logger/LogCategory.h"
 #include "IO/File/File.h"
+#include "Memory/UniquePtr.h"
 
 #include <iostream>
 
 #	ifdef _WIN32
-	I_DISABLE_WARNING(4005) /* warning C4005: 'APIENTRY': macro redefinition */ 
+I_DISABLE_WARNING(4005) /* warning C4005: 'APIENTRY': macro redefinition */
 #		define WIN32_LEAN_AND_MEAN
 #		include <Windows.h>
-	I_ENABLE_WARNING(4005)
+I_ENABLE_WARNING(4005)
 #	endif
 
 namespace Integrian3D
@@ -50,11 +51,21 @@ namespace Integrian3D
 	{
 		LoggerStatics()
 			: Categories{}
-			, File{ "Logs.txt", IO::OpenMode::CreateAlways, IO::FileMode::ASCII }
+			, File{}
 		{}
 
+		void Initialize()
+		{
+			File = MakeUnique<IO::File>("Logs.txt", IO::OpenMode::CreateAlways, IO::FileMode::ASCII);
+		}
+		
+		void StartCleanup()
+		{
+			File.Reset(nullptr);
+		}
+
 		TArray<LogCategory> Categories;
-		IO::File File;
+		UniquePtr<IO::File> File;
 
 		const LogCategory* const GetLogCategory(const std::string_view CategoryName) const
 		{
@@ -81,21 +92,19 @@ namespace Integrian3D
 
 	Logger& Logger::GetInstance()
 	{
-		if (!Instance)
-		{
-			Instance = new Logger{};
-		}
+		static Logger Instance{};
 
-		return *Instance;
+		return Instance;
 	}
 
-	void Logger::Cleanup()
+	void Logger::Initialize()
 	{
-		if (Instance)
-		{
-			delete Instance;
-			Instance = nullptr;
-		}
+		GetInstance().Statics->Initialize();
+	}
+
+	void Logger::StartCleanup()
+	{
+		GetInstance().Statics->StartCleanup();
 	}
 
 	void Logger::SetLogVerbosityLevel(const LogVerbosity NewVerbosity)
@@ -158,6 +167,9 @@ namespace Integrian3D
 	{
 		std::cout << Message;
 
-		Statics->File << Message;
+		if (Statics->File)
+		{
+			*Statics->File << Message;
+		}
 	}
 }

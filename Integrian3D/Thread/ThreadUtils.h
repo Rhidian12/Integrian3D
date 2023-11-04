@@ -1,6 +1,6 @@
 #pragma once
 
-#include "TypeDefinitions.h"
+#include "EngineConstants.h"
 
 namespace Integrian3D
 {

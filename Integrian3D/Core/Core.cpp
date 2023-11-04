@@ -10,6 +10,7 @@
 #include "Thread/ThreadManager.h"
 #include "Thread/ThreadUtils.h"
 #include "Timer/Timer.h"
+#include "Window/Window.h"
 
 #include <string_view>
 #include <thread>
@@ -109,30 +110,38 @@ namespace Integrian3D
 		}
 	}
 
-	Core::Core(const int windowWidth, const int windowHeight)
-		: Window{ windowWidth, windowHeight }
-	{
-		InputManager::CreateInputManager(&Window);
-	}
+	Core::Core() {}
 
 	void Core::Shutdown()
 	{
+		SceneManager::GetInstance().ClearAllScenes();
+
 		Threading::ThreadManager::GetInstance().StopAllThreads();
 		TextureManager::Cleanup();
+
+		__DELETE(GWindow);
+
+		LOG(CoreLog, LogErrorLevel::Log, "Shutdown of Engine is complete");
+
+		Logger::StartCleanup();
 	}
 
 	Core& Core::GetInstance()
 	{
-		__ASSERT(Instance != nullptr, "Core::GetInstance() > Ensure Core::CreateCore is called before Core::GetInstance");
+		__ASSERT(GWindow != nullptr, "Core::GetInstance() > Ensure Core::CreateCore is called before Core::GetInstance");
 
-		return *Instance.get();
+		static Core Instance{};
+
+		return Instance;
 	}
 
 	Core& Core::CreateCore(const int windowWidth, const int windowHeight)
 	{
-		__ASSERT(Instance == nullptr, "Core::CreateCore() > This function cannot be called more than once");
+		Logger::Initialize();
 
-		Instance = std::unique_ptr<Core>(new Core{ windowWidth, windowHeight });
+		__ASSERT(GWindow == nullptr, "Core::CreateCore() > This function cannot be called more than once");
+
+		GWindow = new Window{ windowWidth, windowHeight };
 
 		srand(static_cast<unsigned int>(time(nullptr)));
 
@@ -146,12 +155,9 @@ namespace Integrian3D
 		glDebugMessageCallback(LogGLError, nullptr);
 		#endif
 
-		std::atexit(Logger::Cleanup);
-		std::atexit(IO::FileContentCache::Cleanup);
-
 		LOG(CoreLog, LogErrorLevel::Log, "Finished initialisation of engine");
 
-		return *Instance.get();
+		return GetInstance();
 	}
 
 	void Core::Run()
@@ -160,12 +166,9 @@ namespace Integrian3D
 
 		Timer& timer{ Timer::GetInstance() };
 		InputManager& inputManager{ InputManager::GetInstance() };
-		SceneManager& sceneManager{ SceneManager::GetInstance() };
+		SceneManager& SceneManager{ SceneManager::GetInstance() };
 
-		for (Scene* const pScene : sceneManager.GetAllScenes())
-		{
-			pScene->Start();
-		}
+		SceneManager.InitializeAllScenes();
 
 		double lag{};
 		const double timePerFrame{ timer.GetFixedElapsedTime<TimeLength::MilliSeconds>() };
@@ -178,7 +181,7 @@ namespace Integrian3D
 
 			inputManager.ProcessInput();
 
-			Scene* const pActiveScene{ sceneManager.GetActiveScene() };
+			Scene* const pActiveScene{ SceneManager.GetActiveScene() };
 
 			pActiveScene->Update();
 
@@ -189,8 +192,8 @@ namespace Integrian3D
 
 			pActiveScene->Render();
 
-			/* Swap buffers */
-			Window.Update();
+			// Swap buffers
+			GWindow->Update();
 
 			// LogMessage("FPS: " + std::to_string(Timer::GetInstance().GetFPS()), false);
 		}

@@ -5,71 +5,92 @@
 namespace Integrian3D
 {
 	SceneManager::SceneManager()
-		: m_Scenes{}
-		, m_pActiveScene{}
+		: Scenes{}
+		, ActiveScene{}
 	{}
 
 	SceneManager& SceneManager::GetInstance()
 	{
-		if (!m_pInstance)
-			m_pInstance = std::make_unique<SceneManager>();
+		static SceneManager Instance{};
 
-		return *m_pInstance.get();
-	}
-
-	void SceneManager::AddScene(Scene* pScene)
-	{
-		m_Scenes.push_back(pScene);
-
-		if (!m_pActiveScene)
-			m_pActiveScene = pScene;
+		return Instance;
 	}
 
 	void SceneManager::ChangeScene(const std::string_view sceneName)
 	{
-		const auto cIt{ std::find_if(m_Scenes.cbegin(), m_Scenes.cend(), [sceneName](const Scene* const pScene)
+		const auto It{ Scenes.Find([sceneName](const UniquePtr<Scene>& Scene)
 			{
-				return pScene->GetSceneName() == sceneName;
+				return Scene->GetSceneName() == sceneName;
 			}) };
 
-		__ASSERT(cIt != m_Scenes.cend(), "SceneManager::ChangeScene() > No scene with the specified name %s was found", sceneName);
+		__ASSERT(It != Scenes.end(), "SceneManager::ChangeScene() > No scene with the specified name {} was found", sceneName);
 
 		// m_pActiveScene->OnSceneLeave();
 
-		m_pActiveScene = *cIt;
+		ActiveScene = It->Get();
 
 		// m_pActiveScene->OnSceneEnter();
 	}
 
+	Scene* const SceneManager::GetActiveScene()
+	{
+		return ActiveScene;
+	}
+
+	const Scene* const SceneManager::GetActiveScene() const
+	{
+		return ActiveScene;
+	}
+
 	Scene* const SceneManager::GetScene(const std::string_view sceneName)
 	{
-		const auto it{ std::find_if(m_Scenes.begin(), m_Scenes.end(), [sceneName](const Scene* const pScene)
+		// [CRINGE]: stop using the same lambda everywhere
+		const auto It{ Scenes.Find([sceneName](const UniquePtr<Scene>& Scene)
 			{
-				return pScene->GetSceneName() == sceneName;
+				return Scene->GetSceneName() == sceneName;
 			}) };
 
-		if (it == m_Scenes.end())
+		if (It == Scenes.end())
 		{
 			LOG(SceneManagerLog, LogErrorLevel::Error, "No scene with the name: %s was found", sceneName);
 			return nullptr;
 		}
 
-		return *it;
+		return It->Get();
 	}
 
 	const Scene* const SceneManager::GetScene(const std::string_view sceneName) const
 	{
-		const auto cIt{ std::find_if(m_Scenes.cbegin(), m_Scenes.cend(), [sceneName](const Scene* const pScene)
+		const auto It{ Scenes.Find([sceneName](const UniquePtr<Scene>& Scene)
 			{
-				return pScene->GetSceneName() == sceneName;
+				return Scene->GetSceneName() == sceneName;
 			}) };
 
-		if (cIt == m_Scenes.cend())
+		if (It == Scenes.cend())
 		{
 			LOG(SceneManagerLog, LogErrorLevel::Error, "No scene with the name: %s was found", sceneName);
 			return nullptr;
 		}
 
-		return *cIt;
+		return It->Get();
+	}
+
+	const TArray<UniquePtr<Scene>>& SceneManager::GetAllScenes() const
+	{
+		return Scenes;
+	}
+
+	void SceneManager::ClearAllScenes()
+	{
+		Scenes.Clear();
+		ActiveScene = nullptr;
+	}
+
+	void SceneManager::InitializeAllScenes()
+	{
+		for (UniquePtr<Scene>& Scene : Scenes)
+		{
+			Scene->Start();
+		}
 	}
 }

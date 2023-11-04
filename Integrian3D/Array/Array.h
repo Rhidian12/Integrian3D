@@ -374,7 +374,7 @@ namespace Integrian3D
 				Reallocate();
 			}
 
-			return *(new (m_pCurrentEnd++) T{ __FORWARD(args)... });
+			return *(new (m_pCurrentEnd++) T{ std::forward<Ts>(args)... });
 		}
 
 		template<typename ... Ts>

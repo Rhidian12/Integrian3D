@@ -26,7 +26,8 @@ namespace Integrian3D
 		~Logger();
 
 		static Logger& GetInstance();
-		static void Cleanup();
+		static void Initialize();
+		static void StartCleanup();
 
 		void SetLogVerbosityLevel(const LogVerbosity NewVerbosity);
 
@@ -67,8 +68,6 @@ namespace Integrian3D
 		void WriteMessage(const std::string& Message) const;
 
 		Logger();
-
-		inline static Logger* Instance{};
 
 		struct LoggerStatics* Statics;
 		Win32Utils::Win32Handle ConsoleHandle;

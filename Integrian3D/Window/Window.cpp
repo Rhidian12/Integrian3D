@@ -9,62 +9,59 @@
 
 namespace Integrian3D
 {
-	namespace Detail
+	Window::Window(const int width, const int height)
+		: pWindow{}
+		, Width{ width }
+		, Height{ height }
 	{
-		Window::Window(const int width, const int height)
-			: pWindow{}
-			, Width{ width }
-			, Height{ height }
+		glfwInit();
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+		// [CRINGE]: Window should not be responsible for all of this initialization 
+		#if _DEBUG
+		glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
+		#endif
+
+		pWindow = glfwCreateWindow(width, height, "Integrian3D", nullptr, nullptr);
+
+		if (!pWindow)
 		{
-			glfwInit();
-			glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-			glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+			LOG(WindowLog, LogErrorLevel::Fatal, "Failed to create GLFW window");
 
-			// [CRINGE]: Window should not be responsible for all of this initialization 
-			#if _DEBUG
-			glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
-			#endif
-
-			pWindow = glfwCreateWindow(width, height, "Integrian3D", nullptr, nullptr);
-
-			if (!pWindow)
-			{
-				LOG(WindowLog, LogErrorLevel::Fatal, "Failed to create GLFW window");
-
-				glfwTerminate();
-				return;
-			}
-
-			glfwMakeContextCurrent(pWindow);
-
-			if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-			{
-				LOG(WindowLog, LogErrorLevel::Fatal, "Failed to initialize GLAD");
-				return;
-			}
-
-			glViewport(0, 0, width, height);
-
-			glfwSetFramebufferSizeCallback(pWindow, OnResize);
-
-			glfwSetInputMode(pWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-			// glfwSetCursorPosCallback(pWindow, OnMouseMovement);
-		}
-
-		Window::~Window()
-		{
 			glfwTerminate();
+			return;
 		}
 
-		void Window::Update()
+		glfwMakeContextCurrent(pWindow);
+
+		if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 		{
-			__ASSERT(pWindow, "");
-
-			glfwSwapBuffers(pWindow);
-
-			g_IsRunning = !glfwWindowShouldClose(pWindow);
+			LOG(WindowLog, LogErrorLevel::Fatal, "Failed to initialize GLAD");
+			return;
 		}
+
+		glViewport(0, 0, width, height);
+
+		glfwSetFramebufferSizeCallback(pWindow, OnResize);
+
+		glfwSetInputMode(pWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		// glfwSetCursorPosCallback(pWindow, OnMouseMovement);
+	}
+
+	Window::~Window()
+	{
+		glfwTerminate();
+	}
+
+	void Window::Update()
+	{
+		__ASSERT(pWindow, "");
+
+		glfwSwapBuffers(pWindow);
+
+		g_IsRunning = !glfwWindowShouldClose(pWindow);
 	}
 
 	namespace

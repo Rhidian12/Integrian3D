@@ -9,21 +9,9 @@ namespace Integrian3D::IO
 {
 	FileContentCache& FileContentCache::GetInstance()
 	{
-		if (!Instance)
-		{
-			Instance = new FileContentCache();
-		}
+		static FileContentCache Instance{};
 
-		return *Instance;
-	}
-
-	void FileContentCache::Cleanup()
-	{
-		if (Instance)
-		{
-			delete Instance;
-			Instance = nullptr;
-		}
+		return Instance;
 	}
 
 	FileContentCache::~FileContentCache()
@@ -46,6 +34,8 @@ namespace Integrian3D::IO
 		if (ContainsFilepath(Filepath))
 		{
 			FileInfo& FileInfo{ GetFileInfo(Filepath) };
+
+			const std::unique_lock<std::mutex> Lock{ Mutex };
 
 			++FileInfo.ReferenceCounter;
 			return;
@@ -77,7 +67,7 @@ namespace Integrian3D::IO
 
 			if (--FileInfo.ReferenceCounter <= 0)
 			{
-				FileContentsCache.Erase([&FileInfo](const auto& Pair)->bool
+				FileContentsCache.Erase([&FileInfo](const TPair<FileContentCache::FileInfo, std::string>& Pair)->bool
 					{
 						return FileInfo == Pair.Key();
 					});

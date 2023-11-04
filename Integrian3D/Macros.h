@@ -19,11 +19,12 @@
 #endif
 
 	/* std::move */
+// [CRINGE]: just remove this for now
 #define I_MOVE(val) std::move(val)
 
 	/* std::forward */
 #ifdef _DEBUG
-#define __FORWARD(val) static_cast<decltype((val))&&>((val))
+#define __FORWARD(val) std::forward<decltype((val))>((val))
 #else
 #define __FORWARD(val) std::forward<decltype((val))>((val))
 #endif

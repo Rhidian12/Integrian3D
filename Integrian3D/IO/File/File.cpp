@@ -83,7 +83,7 @@ namespace Integrian3D::IO
 		return Filepath;
 	}
 
-	std::string_view File::GetFileContents() const
+	std::string File::GetFileContents() const
 	{
 		//__CHECK(Handle.IsValid());
 
@@ -99,7 +99,7 @@ namespace Integrian3D::IO
 
 		//return FileContents;
 
-		return FileContentCache::GetInstance().GetFileContents(Filepath);
+		return std::string{ FileContentCache::GetInstance().GetFileContents(Filepath) };
 	}
 
 	int32 File::GetFilesize() const

@@ -8,28 +8,16 @@
 
 namespace Integrian3D
 {
-	/* Defined in Core.h */
-	extern inline volatile bool g_IsRunning;
-
-	InputManager::InputManager(Detail::Window* pWindow)
+	InputManager::InputManager()
 		: PreviousMousePosition{}
 		, MousePosition{}
-		, pWindow{ pWindow }
 	{}
-
-	void InputManager::CreateInputManager(Detail::Window* pWindow)
-	{
-		if (!Instance)
-		{
-			Instance.reset(new InputManager{ pWindow });
-		}
-	}
 
 	InputManager& InputManager::GetInstance()
 	{
-		__CHECK(Instance != nullptr);
+		static InputManager Manager{};
 
-		return *Instance.get();
+		return Manager;;
 	}
 
 	void InputManager::ProcessInput()
@@ -37,7 +25,7 @@ namespace Integrian3D
 		glfwPollEvents();
 
 		double x{}, y{};
-		glfwGetCursorPos(Core::GetInstance().GetWindow().GetWindow(), &x, &y);
+		glfwGetCursorPos(GWindow->GetWindow(), &x, &y);
 
 		/* Update MousePosition and PreviousMousePosition */
 		SetMousePosition(Math::Vec2D{ x, y });
@@ -45,12 +33,12 @@ namespace Integrian3D
 
 	bool InputManager::GetIsKeyPressed(const KeyboardInput input) const
 	{
-		return glfwGetKey(pWindow->GetWindow(), static_cast<int>(input));
+		return glfwGetKey(GWindow->GetWindow(), static_cast<int>(input));
 	}
 
 	bool InputManager::GetIsMouseButtonPressed(const MouseInput mouseInput) const
 	{
-		return glfwGetMouseButton(pWindow->GetWindow(), static_cast<int>(mouseInput));
+		return glfwGetMouseButton(GWindow->GetWindow(), static_cast<int>(mouseInput));
 	}
 
 	void InputManager::SetMousePosition(const Math::Vec2D& mousePosition)

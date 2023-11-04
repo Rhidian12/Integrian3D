@@ -15,6 +15,8 @@
 #include "Light/PointLight.h"
 #include "Light/DirectionalLight.h"
 
+#include "Window/Window.h"
+
 #include <gtc/matrix_transform.hpp>
 
 namespace Integrian3D
@@ -182,7 +184,7 @@ namespace Integrian3D
 					0.1f,
 					100.f,
 					Math::ToRadians(90.f),
-					static_cast<float>(Core::GetInstance().GetWindowWidth() / Core::GetInstance().GetWindowHeight())
+					static_cast<float>(GWindow->GetWidth() / GWindow->GetHeight())
 					);
 
 			IniFile EngineIni{ "Config/Engine.ini" };

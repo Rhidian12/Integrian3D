@@ -32,7 +32,6 @@ namespace Integrian3D::IO
 
 	public:
 		__NODISCARD static FileContentCache& GetInstance();
-		static void Cleanup();
 
 		~FileContentCache();
 
@@ -46,8 +45,6 @@ namespace Integrian3D::IO
 		__NODISCARD bool ContainsFilepath(const std::string_view Filepath) const;
 		void OnFileChanged(const std::string& Filepath);
 		__NODISCARD FileInfo& GetFileInfo(const std::string_view Filepath);
-
-		inline static FileContentCache* Instance{};
 
 		mutable std::mutex Mutex;
 

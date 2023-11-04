@@ -34,7 +34,7 @@ namespace Integrian3D::IO
 		void Regress(const int32 RegressAmount) const;
 
 		__NODISCARD const std::string_view GetFilepath() const;
-		__NODISCARD std::string_view GetFileContents() const;
+		__NODISCARD std::string GetFileContents() const;
 		__NODISCARD int32 GetFilesize() const;
 		__NODISCARD int32 GetFilepointer() const;
 

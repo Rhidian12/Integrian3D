@@ -7,31 +7,29 @@ DEFINE_LOG_CATEGORY(WindowLog, Integrian3D::LogVerbosity::Verbose);
 struct GLFWwindow;
 namespace Integrian3D
 {
-	namespace Detail
+	class Window final
 	{
-		class Window final
-		{
-		public:
-			Window(const int width, const int height);
-			~Window();
+	public:
+		Window(const int width, const int height);
+		~Window();
 
-			Window(const Window&) noexcept = delete;
-			Window(Window&&) noexcept = delete;
-			Window& operator=(const Window&) noexcept = delete;
-			Window& operator=(Window&&) noexcept = delete;
+		Window(const Window&) noexcept = delete;
+		Window(Window&&) noexcept = delete;
+		Window& operator=(const Window&) noexcept = delete;
+		Window& operator=(Window&&) noexcept = delete;
 
-			void Update();
+		void Update();
 
-			__NODISCARD int GetWidth() const { return Width; }
-			__NODISCARD int GetHeight() const { return Height; }
-			__NODISCARD GLFWwindow* const GetWindow() const { return pWindow; }
+		__NODISCARD int GetWidth() const { return Width; }
+		__NODISCARD int GetHeight() const { return Height; }
+		__NODISCARD GLFWwindow* const GetWindow() { return pWindow; }
+		__NODISCARD const GLFWwindow* const GetWindow() const { return pWindow; }
 
-		private:
-			GLFWwindow* pWindow;
-			int Width;
-			int Height;
-		};
-	}
+	private:
+		GLFWwindow* pWindow;
+		int Width;
+		int Height;
+	};
 
 	namespace
 	{

@@ -74,8 +74,7 @@ int RunTestEngine(int, char* [])
 	TextureManager::GetInstance().AddTexture("Box_Diffuse", "Resources/box.png");
 	TextureManager::GetInstance().AddTexture("Box_Specular", "Resources/box_specular.png");
 
-	UniquePtr<Scene> TestScene{ new Scene{ "TestScene" } };
-	SceneManager::GetInstance().AddScene(TestScene.Get());
+	Scene* TestScene{ SceneManager::GetInstance().AddScene<Scene>("TestScene") };
 
 	TArray<Vertex> vertices =
 	{

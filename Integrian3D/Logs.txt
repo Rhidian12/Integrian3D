@@ -13,6 +13,4 @@
 [ShaderLog] Destroying Shader
 [ThreadingLog] Finishing Task with ID 3
 [ThreadingLog] Finishing Task with ID 2
-[FileContentCacheLog] Destroying file content cache, remaining entries 1
-[FileContentCacheLog] Remaining file #0: Logs.txt
-[FileContentCacheLog] FileContentCache is trying to remove Logs.txt which was never added!
+[CoreLog] Shutdown of Engine is complete
