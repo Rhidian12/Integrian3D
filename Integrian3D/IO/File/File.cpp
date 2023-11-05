@@ -19,7 +19,6 @@ namespace Integrian3D::IO
 		, Handle{ INVALID_HANDLE_VALUE }
 		, Filesize{}
 		, Mode{ Mode }
-		, Monitor{ Filepath.data() }
 	{
 		Handle = OpenFile(OpenMode);
 
@@ -31,12 +30,7 @@ namespace Integrian3D::IO
 
 		CalculateFilesize();
 
-		FileContentCache::GetInstance().AddFile(this);
-
-		if (bMonitorFile)
-		{
-			Monitor.StartMonitoringFile();
-		}
+		FileContentCache::GetInstance().AddFile(this, bMonitorFile);
 	}
 
 	File::~File()
@@ -49,7 +43,6 @@ namespace Integrian3D::IO
 		, Handle{ I_MOVE(Other.Handle) }
 		, Filesize{ I_MOVE(Other.Filesize) }
 		, Mode{ I_MOVE(Other.Mode) }
-		, Monitor{ I_MOVE(Other.Monitor) }
 	{}
 
 	File& File::operator=(File&& Other) noexcept
@@ -58,7 +51,6 @@ namespace Integrian3D::IO
 		Handle = I_MOVE(Other.Handle);
 		Filesize = I_MOVE(Other.Filesize);
 		Mode = I_MOVE(Other.Mode);
-		Monitor = I_MOVE(Other.Monitor);
 
 		return *this;
 	}
@@ -114,17 +106,17 @@ namespace Integrian3D::IO
 
 	void File::StartMonitoringFile()
 	{
-		Monitor.StartMonitoringFile();
+		FileContentCache::GetInstance().StartMonitoringFileForChanges(this);
 	}
 
 	void File::StopMonitoringFile()
 	{
-		Monitor.StopMonitoringFile();
+		FileContentCache::GetInstance().StopMonitoringFileForChanges(this);
 	}
 
-	Delegate<std::string>& File::GetOnFileChangedDelegate()
+	void File::BindToOnFileChanged(const std::function<void(std::string)>& Callback)
 	{
-		return Monitor.GetOnFileChangedDelegate();
+		FileContentCache::GetInstance().BindToOnFileChanged(Callback);
 	}
 
 	File& File::operator<<(const char* String)

@@ -3,6 +3,7 @@
 #include "EngineConstants.h"
 
 #include "Array/Array.h"
+#include "IO/File/FileMonitor.h"
 #include "TPair/TPair.h"
 
 #include <mutex>
@@ -35,13 +36,17 @@ namespace Integrian3D::IO
 
 		~FileContentCache();
 
-		void AddFile(File* const File);
+		void AddFile(File* const File, const bool bShouldMonitorFile);
 		void RemoveFile(const File* const File);
+
+		void StartMonitoringFileForChanges(const File* const File);
+		void StopMonitoringFileForChanges(const File* const File);
+		void BindToOnFileChanged(const std::function<void(std::string)>& Callback);
 
 		__NODISCARD std::string_view GetFileContents(const std::string_view Filepath) const;
 
 	private:
-		FileContentCache() = default;
+		FileContentCache();
 		__NODISCARD bool ContainsFilepath(const std::string_view Filepath) const;
 		void OnFileChanged(const std::string& Filepath);
 		__NODISCARD FileInfo& GetFileInfo(const std::string_view Filepath);
@@ -50,5 +55,7 @@ namespace Integrian3D::IO
 
 		// [TODO]: Create custom Unordered Map
 		TArray<TPair<FileInfo, std::string>> FileContentsCache; // [File | FileContents]
+
+		FileMonitor Monitor;
 	};
 }

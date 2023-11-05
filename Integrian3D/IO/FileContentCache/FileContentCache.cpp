@@ -14,6 +14,11 @@ namespace Integrian3D::IO
 		return Instance;
 	}
 
+	FileContentCache::FileContentCache()
+	{
+		Monitor.BindToOnFileChanged(std::bind(&FileContentCache::OnFileChanged, this, std::placeholders::_1));
+	}
+
 	FileContentCache::~FileContentCache()
 	{
 		LOG(FileContentCacheLog, LogErrorLevel::Log, "Destroying file content cache, remaining entries {}", FileContentsCache.Size());
@@ -27,7 +32,7 @@ namespace Integrian3D::IO
 		}
 	}
 
-	void FileContentCache::AddFile(File* const File)
+	void FileContentCache::AddFile(File* const File, const bool bShouldMonitorFile)
 	{
 		const std::string_view Filepath{ File->GetFilepath() };
 
@@ -43,7 +48,10 @@ namespace Integrian3D::IO
 
 		const std::unique_lock<std::mutex> Lock{ Mutex };
 
-		File->Monitor.GetOnFileChangedDelegate().Bind(std::bind(&FileContentCache::OnFileChanged, this, std::placeholders::_1));
+		if (bShouldMonitorFile)
+		{
+			StartMonitoringFileForChanges(File);
+		}
 
 		std::string FileContents{};
 		File->GetFileContents_Implementation(FileContents);
@@ -55,11 +63,12 @@ namespace Integrian3D::IO
 		const std::string_view Filepath{ File->GetFilepath() };
 		if (!ContainsFilepath(Filepath))
 		{
-			LOG(FileContentCacheLog, LogErrorLevel::Warning, "FileContentCache is trying to remove {} which was never added!", Filepath);
+			LOG(FileContentCacheLog, LogErrorLevel::Warning, "FileContentCache is trying to remove {} which isn't present!", Filepath);
 			return;
 		}
 
 		{
+			StopMonitoringFileForChanges(File);
 
 			FileInfo& FileInfo{ GetFileInfo(Filepath) };
 
@@ -73,6 +82,21 @@ namespace Integrian3D::IO
 					});
 			}
 		}
+	}
+
+	void FileContentCache::StartMonitoringFileForChanges(const File* const File)
+	{
+		Monitor.StartMonitoringFile(File->GetFilepath().data());
+	}
+
+	void FileContentCache::StopMonitoringFileForChanges(const File* const File)
+	{
+		Monitor.StopMonitoringFile(File->GetFilepath().data());
+	}
+
+	void FileContentCache::BindToOnFileChanged(const std::function<void(std::string)>& Callback)
+	{
+		Monitor.BindToOnFileChanged(Callback);
 	}
 
 	std::string_view FileContentCache::GetFileContents(const std::string_view Filepath) const

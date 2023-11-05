@@ -26,8 +26,8 @@ namespace Integrian3D
 		IASSERT_MSG(PathUtils::GetExtension(VertexShaderPath) == ".vert", "VertexShader file must have .vert extension! Given file: {}", VertexShaderPath);
 		IASSERT_MSG(PathUtils::GetExtension(FragmentShaderPath) == ".frag", "FragmentShader file must have .frag extension! Given file: {}", FragmentShaderPath);
 
-		VertexShader.GetOnFileChangedDelegate().Bind(std::bind(&Shader::OnShaderChanged, this, std::placeholders::_1));
-		FragmentShader.GetOnFileChangedDelegate().Bind(std::bind(&Shader::OnShaderChanged, this, std::placeholders::_1));
+		VertexShader.BindToOnFileChanged(std::bind(&Shader::OnShaderChanged, this, std::placeholders::_1));
+		FragmentShader.BindToOnFileChanged(std::bind(&Shader::OnShaderChanged, this, std::placeholders::_1));
 
 		SetupShaders();
 	}

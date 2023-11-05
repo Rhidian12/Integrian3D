@@ -1,8 +1,13 @@
 #pragma once
 
 #include "EngineConstants.h"
-#include "Delegate/Delegate.h"
 
+#include "Array/Array.h"
+#include "Delegate/Delegate.h"
+#include "TPair/TPair.h"
+
+#include <functional>
+#include <mutex>
 #include <string>
 
 DEFINE_LOG_CATEGORY(FileMonitorLog, Integrian3D::LogVerbosity::Verbose);
@@ -12,18 +17,18 @@ namespace Integrian3D::IO
 	class FileMonitor
 	{
 	public:
-		FileMonitor(const std::string& Path);
+		FileMonitor();
 		~FileMonitor();
 
-		void StartMonitoringFile();
-		void StopMonitoringFile();
+		void StartMonitoringFile(const std::string& Filepath);
+		void StopMonitoringFile(const std::string& Filepath);
 
-		Delegate<std::string>& GetOnFileChangedDelegate();
+		void BindToOnFileChanged(const std::function<void(std::string)>& Callback);
 
 	private:
-		std::string Filepath;
+		TArray<TPair<std::string, int64>> Filepaths;
 		Delegate<std::string> OnFileChanged;
-		int64 LastTimeModified;
+		std::mutex Mutex;
 		int32 ThreadID;
 		bool bIsMonitoring;
 	};

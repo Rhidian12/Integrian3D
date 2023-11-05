@@ -4,7 +4,6 @@
 #include "IO/FileMode.h"
 #include "IO/OpenMode.h"
 #include "IO/IOUtils.h"
-#include "IO/File/FileMonitor.h"
 #include "Win32Utils/Win32Handle.h"
 
 #include <cmath>
@@ -40,7 +39,7 @@ namespace Integrian3D::IO
 
 		void StartMonitoringFile();
 		void StopMonitoringFile();
-		Delegate<std::string>& GetOnFileChangedDelegate();
+		void BindToOnFileChanged(const std::function<void(std::string)>& Callback);
 
 		#pragma region operator<<
 		template<typename T, std::enable_if_t<bIsInteger<T>, bool> = true>
@@ -92,7 +91,6 @@ namespace Integrian3D::IO
 		void ReadFromFile(char* Buffer, const int32 BufferSize) const;
 		__NODISCARD void* OpenFile(const OpenMode OpenMode) const;
 
-		FileMonitor Monitor;
 		std::string Filepath;
 		Win32Utils::Win32Handle Handle;
 		int32 Filesize;

@@ -151,7 +151,7 @@ TEST_CASE("Testing the File Monitor")
 	File File{ "Resources/TestASCIIFile.txt", OpenMode::OpenExisting, FileMode::ASCII, true };
 	const int32 OldFilesize{ File.GetFilesize() };
 
-	File.GetOnFileChangedDelegate().Bind(OnFileChanged);
+	File.BindToOnFileChanged(OnFileChanged);
 
 	while (true)
 	{
