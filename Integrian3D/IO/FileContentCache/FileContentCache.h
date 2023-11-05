@@ -33,6 +33,7 @@ namespace Integrian3D::IO
 
 	public:
 		__NODISCARD static FileContentCache& GetInstance();
+		static void StartCleanup();
 
 		~FileContentCache();
 

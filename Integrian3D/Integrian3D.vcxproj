@@ -258,6 +258,7 @@ xcopy "$(SolutionDir)Config\*.*" "$(OutDir)Config\" /y /d /e /q</Command>
     <ClCompile Include="UnitTests\LowLevelLinkedListTests.cpp" />
     <ClCompile Include="UnitTests\MathTests.cpp" />
     <ClCompile Include="UnitTests\NewTests.cpp" />
+    <ClCompile Include="UnitTests\PairTests.cpp" />
     <ClCompile Include="UnitTests\TimerTests.cpp" />
     <ClCompile Include="UnitTests\UniquePtrTests.cpp" />
     <ClCompile Include="UnitTests\UnitTests.cpp" />

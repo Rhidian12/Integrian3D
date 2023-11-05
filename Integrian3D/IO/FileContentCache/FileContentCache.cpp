@@ -5,6 +5,8 @@
 
 #include <algorithm>
 
+#define ACQUIRE_LOCK() const std::unique_lock<std::mutex> Lock{ Mutex }
+
 namespace Integrian3D::IO
 {
 	FileContentCache& FileContentCache::GetInstance()
@@ -12,6 +14,11 @@ namespace Integrian3D::IO
 		static FileContentCache Instance{};
 
 		return Instance;
+	}
+
+	void FileContentCache::StartCleanup()
+	{
+		GetInstance().Monitor.StopMonitor();
 	}
 
 	FileContentCache::FileContentCache()
@@ -40,18 +47,18 @@ namespace Integrian3D::IO
 		{
 			FileInfo& FileInfo{ GetFileInfo(Filepath) };
 
-			const std::unique_lock<std::mutex> Lock{ Mutex };
+			ACQUIRE_LOCK();
 
 			++FileInfo.ReferenceCounter;
 			return;
 		}
 
-		const std::unique_lock<std::mutex> Lock{ Mutex };
-
 		if (bShouldMonitorFile)
 		{
 			StartMonitoringFileForChanges(File);
 		}
+
+		ACQUIRE_LOCK();
 
 		std::string FileContents{};
 		File->GetFileContents_Implementation(FileContents);
@@ -72,10 +79,11 @@ namespace Integrian3D::IO
 
 			FileInfo& FileInfo{ GetFileInfo(Filepath) };
 
-			const std::unique_lock<std::mutex> Lock{ Mutex };
+			ACQUIRE_LOCK();
 
 			if (--FileInfo.ReferenceCounter <= 0)
 			{
+
 				FileContentsCache.Erase([&FileInfo](const TPair<FileContentCache::FileInfo, std::string>& Pair)->bool
 					{
 						return FileInfo == Pair.Key();
@@ -103,7 +111,7 @@ namespace Integrian3D::IO
 	{
 		if (ContainsFilepath(Filepath))
 		{
-			const std::unique_lock<std::mutex> Lock{ Mutex };
+			ACQUIRE_LOCK();
 
 			return FileContentsCache.Find([Filepath](const TPair<FileInfo, std::string>& Pair)->bool
 				{
@@ -116,7 +124,7 @@ namespace Integrian3D::IO
 
 	bool FileContentCache::ContainsFilepath(const std::string_view Filepath) const
 	{
-		const std::unique_lock<std::mutex> Lock{ Mutex };
+		ACQUIRE_LOCK();
 
 		const auto CIt{ FileContentsCache.Find([Filepath](const TPair<FileInfo, std::string>& Pair)->bool
 			{
@@ -132,6 +140,8 @@ namespace Integrian3D::IO
 		{
 			FileInfo& FileInfo{ GetFileInfo(Filepath) };
 
+			ACQUIRE_LOCK();
+
 			std::string FileContents{};
 			FileInfo.File->CalculateFilesize();
 			FileInfo.File->GetFileContents_Implementation(FileContents);
@@ -146,7 +156,7 @@ namespace Integrian3D::IO
 	{
 		IASSERT(ContainsFilepath(Filepath));
 
-		const std::unique_lock<std::mutex> Lock{ Mutex };
+		ACQUIRE_LOCK();
 
 		return FileContentsCache.Find([Filepath](const TPair<FileInfo, std::string>& Pair)->bool
 			{

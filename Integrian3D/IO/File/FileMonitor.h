@@ -20,6 +20,8 @@ namespace Integrian3D::IO
 		FileMonitor();
 		~FileMonitor();
 
+		void StopMonitor();
+
 		void StartMonitoringFile(const std::string& Filepath);
 		void StopMonitoringFile(const std::string& Filepath);
 

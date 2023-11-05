@@ -119,6 +119,8 @@ namespace Integrian3D
 		Threading::ThreadManager::GetInstance().StopAllThreads();
 		TextureManager::Cleanup();
 
+		IO::FileContentCache::StartCleanup();
+
 		__DELETE(GWindow);
 
 		LOG(CoreLog, LogErrorLevel::Log, "Shutdown of Engine is complete");

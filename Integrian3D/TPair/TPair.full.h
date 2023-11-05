@@ -7,6 +7,12 @@
 namespace Integrian3D
 {
 	template<typename K, typename V>
+	TPair<K, V>::TPair()
+		: m_Key{}
+		, m_Value{}
+	{}
+
+	template<typename K, typename V>
 	template<typename KK, typename VV>
 	TPair<K, V>::TPair(KK&& key, VV&& val)
 		: m_Key{ key }

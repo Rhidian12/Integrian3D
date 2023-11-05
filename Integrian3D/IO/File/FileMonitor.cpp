@@ -11,6 +11,8 @@
 
 #include "Win32Utils/Win32APICall.h"
 
+#define ACQUIRE_LOCK() const std::unique_lock<std::mutex> Lock{ Mutex }
+
 #ifdef _WIN32
 I_DISABLE_WARNING(4005) // warning C4005: 'APIENTRY': macro redefinition
 #include <Windows.h>
@@ -35,7 +37,7 @@ namespace Integrian3D::IO
 
 	FileMonitor::FileMonitor()
 		: Filepaths{}
-		, bIsMonitoring{ true }
+		, bIsMonitoring{ false }
 		, ThreadID{ -1 }
 	{}
 
@@ -49,26 +51,40 @@ namespace Integrian3D::IO
 		}
 	}
 
+	void FileMonitor::StopMonitor()
+	{
+		bIsMonitoring = false;
+	}
+
 	void FileMonitor::StartMonitoringFile(const std::string& Filepath)
 	{
-		const std::unique_lock<std::mutex> Lock{ Mutex };
+		{
+			ACQUIRE_LOCK();
 
-		if (Filepaths.Contains([&Filepath](const TPair<std::string, int64>& Pair)->bool
+			if (Filepaths.Contains([&Filepath](const TPair<std::string, int64>& Pair)->bool
+				{
+					return Filepath == Pair.Key();
+				}))
 			{
-				return Filepath == Pair.Key();
-			}))
-		{
-			return;
+				return;
+			}
 		}
 
-		const int64 LastTimeModified{ GetLastTimeModified(Filepath.c_str()) };
-		Filepaths.Add(MakePair(Filepath, LastTimeModified));
-
-		if (!LastTimeModified)
 		{
-			LOG(FileMonitorLog, LogErrorLevel::Error, "Could not retrieve LastTimeModified for file {}. Did not start monitoring file!", Filepath);
-			return;
+			ACQUIRE_LOCK();
+
+			const int64 LastTimeModified{ GetLastTimeModified(Filepath.c_str()) };
+
+			if (!LastTimeModified)
+			{
+				LOG(FileMonitorLog, LogErrorLevel::Error, "Could not retrieve LastTimeModified for file {}. Did not start monitoring file!", Filepath);
+				return;
+			}
+
+			Filepaths.Add(MakePair(Filepath, LastTimeModified));
 		}
+
+		bIsMonitoring = true;
 
 		if (ThreadID == -1)
 		{
@@ -79,7 +95,7 @@ namespace Integrian3D::IO
 						constexpr static int32 NrOfMSToWait{ 33 };
 						std::this_thread::sleep_for(std::chrono::milliseconds(NrOfMSToWait));
 
-						const std::unique_lock<std::mutex> Lock{ Mutex };
+						ACQUIRE_LOCK();
 
 						for (auto& [Filepath, LastTimeModified] : Filepaths)
 						{
@@ -98,7 +114,7 @@ namespace Integrian3D::IO
 
 	void FileMonitor::StopMonitoringFile(const std::string& Filepath)
 	{
-		const std::unique_lock<std::mutex> Lock{ Mutex };
+		ACQUIRE_LOCK();
 
 		Filepaths.Erase([&Filepath](const TPair<std::string, int64>& Pair)->bool
 			{
@@ -108,7 +124,7 @@ namespace Integrian3D::IO
 
 	void FileMonitor::BindToOnFileChanged(const std::function<void(std::string)>& Callback)
 	{
-		const std::unique_lock<std::mutex> Lock{ Mutex };
+		ACQUIRE_LOCK();
 
 		OnFileChanged.Bind(Callback);
 	}

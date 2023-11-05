@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../EngineConstants.h"
+#include "EngineConstants.h"
 
 namespace Integrian3D
 {
@@ -8,7 +8,7 @@ namespace Integrian3D
 	class TPair final
 	{
 	public:
-		TPair() {}
+		TPair();
 		template<typename KK = K, typename VV = V>
 		TPair(KK&& key, VV&& val);
 

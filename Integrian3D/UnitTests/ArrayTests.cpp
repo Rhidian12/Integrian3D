@@ -734,4 +734,23 @@ TEST_CASE("Testing Array with Custom Structure")
 		REQUIRE(Array.Size() == NrOfElements);
 		REQUIRE(Array.Capacity() >= NrOfElements);
 	}
+
+	SECTION("Erasing elements from Array of Custom Structure")
+	{
+		for (int i{}; i < NrOfElements; ++i)
+		{
+			Array.Add(ArrayTestStruct{ i });
+		}
+
+		REQUIRE(Array.Size() == NrOfElements);
+		REQUIRE(Array.Capacity() >= NrOfElements);
+
+		Array.Erase([](const ArrayTestStruct& Elem)->bool
+			{
+				return *Elem.Variable == 3;
+			});
+
+		REQUIRE(Array.Size() == NrOfElements - 1);
+		REQUIRE(Array.Capacity() >= NrOfElements);
+	}
 }
