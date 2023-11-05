@@ -37,29 +37,7 @@ namespace Integrian3D::IO
 		: Filepaths{}
 		, bIsMonitoring{ true }
 		, ThreadID{ -1 }
-	{
-		ThreadID = Threading::ThreadManager::ScheduleTask([this]()->void
-			{
-				while (bIsMonitoring)
-				{
-					constexpr static int32 NrOfMSToWait{ 33 };
-					std::this_thread::sleep_for(std::chrono::milliseconds(NrOfMSToWait));
-
-					const std::unique_lock<std::mutex> Lock{ Mutex };
-
-					for (auto& [Filepath, LastTimeModified] : Filepaths)
-					{
-						const int64 LastModified = GetLastTimeModified(Filepath.c_str());
-	
-						if (LastModified > LastTimeModified)
-						{
-							OnFileChanged.Invoke(Filepath);
-							LastTimeModified = LastModified;
-						}
-					}
-				}
-			});
-	}
+	{}
 
 	FileMonitor::~FileMonitor()
 	{
@@ -90,6 +68,31 @@ namespace Integrian3D::IO
 		{
 			LOG(FileMonitorLog, LogErrorLevel::Error, "Could not retrieve LastTimeModified for file {}. Did not start monitoring file!", Filepath);
 			return;
+		}
+
+		if (ThreadID == -1)
+		{
+			ThreadID = Threading::ThreadManager::ScheduleTask([this]()->void
+				{
+					while (bIsMonitoring)
+					{
+						constexpr static int32 NrOfMSToWait{ 33 };
+						std::this_thread::sleep_for(std::chrono::milliseconds(NrOfMSToWait));
+
+						const std::unique_lock<std::mutex> Lock{ Mutex };
+
+						for (auto& [Filepath, LastTimeModified] : Filepaths)
+						{
+							const int64 LastModified = GetLastTimeModified(Filepath.c_str());
+
+							if (LastModified > LastTimeModified)
+							{
+								OnFileChanged.Invoke(Filepath);
+								LastTimeModified = LastModified;
+							}
+						}
+					}
+				});
 		}
 	}
 
