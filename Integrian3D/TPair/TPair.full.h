@@ -20,6 +20,39 @@ namespace Integrian3D
 	{}
 
 	template<typename K, typename V>
+	TPair<K, V>::~TPair() {}
+
+	template<typename K, typename V>
+	TPair<K, V>::TPair(const TPair& Other) noexcept
+		: m_Key{ Other.m_Key }
+		, m_Value{ Other.m_Value }
+	{}
+
+	template<typename K, typename V>
+	TPair<K, V>::TPair(TPair&& Other) noexcept
+		: m_Key{ std::move(Other.m_Key) }
+		, m_Value{ std::move(Other.m_Value) }
+	{}
+
+	template<typename K, typename V>
+	TPair<K, V>& TPair<K, V>::operator=(const TPair& Other) noexcept
+	{
+		m_Key = Other.m_Key;
+		m_Value = Other.m_Value;
+
+		return *this;
+	}
+
+	template<typename K, typename V>
+	TPair<K, V>& TPair<K, V>::operator=(TPair&& Other) noexcept
+	{
+		m_Key = std::move(Other.m_Key);
+		m_Value = std::move(Other.m_Value);
+
+		return *this;
+	}
+
+	template<typename K, typename V>
 	K& TPair<K, V>::Key() &
 	{
 		return m_Key;

@@ -12,6 +12,13 @@ namespace Integrian3D
 		template<typename KK = K, typename VV = V>
 		TPair(KK&& key, VV&& val);
 
+		~TPair();
+
+		TPair(const TPair& Other) noexcept;
+		TPair(TPair&& Other) noexcept;
+		TPair& operator=(const TPair& Other) noexcept;
+		TPair& operator=(TPair&& Other) noexcept;
+
 		K& Key() &;
 		const K& Key() const&;
 		K Key() &&;

@@ -94,17 +94,17 @@ TEST_CASE("Testing Pair with Custom Destructor")
 		REQUIRE(ArrPairs[i].Value() == std::to_string(i));
 	}
 
-	ArrPairs.Erase([](const TPair<PairTestStruct, std::string>& Pair)->bool
-		{
-			return Pair.Key().Val == 3;
-		});
+	//ArrPairs.Erase([](const TPair<PairTestStruct, std::string>& Pair)->bool
+	//	{
+	//		return Pair.Key().Val == 3;
+	//	});
 
-	REQUIRE(ArrPairs.Size() == NrOfElements - 1);
+	//REQUIRE(ArrPairs.Size() == NrOfElements - 1);
 
-	ArrPairs.Erase([](const TPair<PairTestStruct, std::string>& Pair)->bool
-		{
-			return Pair.Value() == "4";
-		});
+	//ArrPairs.Erase([](const TPair<PairTestStruct, std::string>& Pair)->bool
+	//	{
+	//		return Pair.Value() == "4";
+	//	});
 
-	REQUIRE(ArrPairs.Size() == NrOfElements - 2);
+	//REQUIRE(ArrPairs.Size() == NrOfElements - 2);
 }

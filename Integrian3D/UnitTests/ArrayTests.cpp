@@ -753,4 +753,12 @@ TEST_CASE("Testing Array with Custom Structure")
 		REQUIRE(Array.Size() == NrOfElements - 1);
 		REQUIRE(Array.Capacity() >= NrOfElements);
 	}
+
+	TArray<std::string> Test{};
+
+	Test.Add("Hello");
+	Test.Add("Hello2");
+	Test.Add("Hello3");
+
+	Test.PopFront();
 }
