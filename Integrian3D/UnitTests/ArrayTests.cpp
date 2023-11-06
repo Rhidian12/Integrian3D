@@ -753,12 +753,28 @@ TEST_CASE("Testing Array with Custom Structure")
 		REQUIRE(Array.Size() == NrOfElements - 1);
 		REQUIRE(Array.Capacity() >= NrOfElements);
 	}
+}
 
-	TArray<std::string> Test{};
+TEST_CASE("Testing Array with std::string")
+{
+	using namespace Integrian3D;
 
-	Test.Add("Hello");
-	Test.Add("Hello2");
-	Test.Add("Hello3");
+	constexpr int32 Size = 2;
 
-	Test.PopFront();
+	TArray<std::string> Arr{};
+
+	for (int32 i{}; i < Size; ++i)
+	{
+		Arr.Add(std::to_string(i));
+	}
+
+	for (int32 i{}; i < Size; ++i)
+	{
+		REQUIRE(Arr[i] == std::to_string(i));
+	}
+
+	// commenting out this line erases any memory leaks
+	Arr.EraseByIndex(0);
+
+	REQUIRE(Arr.Size() == Size - 1);
 }
