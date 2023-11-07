@@ -5,6 +5,7 @@
 #include "Win32Utils/Win32Handle.h"
 
 #include <format>
+#include <mutex>
 #include <string>
 #include <string_view>
 
@@ -40,6 +41,8 @@ namespace Integrian3D
 			Args&& ... Arguments
 		) const
 		{
+			const std::unique_lock<std::mutex> Lock{ Mutex };
+
 			const LogCategory* const LogCategory{ GetLogCategory(Category) };
 
 			if (!CheckLogCategory(LogCategory, Category))
@@ -71,6 +74,7 @@ namespace Integrian3D
 
 		struct LoggerStatics* Statics;
 		Win32Utils::Win32Handle ConsoleHandle;
+		mutable std::mutex Mutex;
 		LogVerbosity VerbosityLevel; 
 	};
 }

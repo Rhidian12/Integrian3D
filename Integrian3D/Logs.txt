@@ -1,10 +1,5 @@
 [CoreLog] Finished initialisation of engine
 [ThreadingLog] Starting Task with ID 0
-[LogMeshComponent] Destroying Mesh Component
 [ShaderLog] 131218: PERFORMANCE of MEDIUM severity, raised from API: Program/shader state performance warning: Vertex shader in program 3 is being recompiled based on GL state.
-[LogMeshComponent] Destroying Mesh Component
-[ShaderLog] Destroying Shader
-[LogMeshComponent] Destroying Mesh Component
-[ShaderLog] Destroying Shader
 [ThreadingLog] Finishing Task with ID 0
 [CoreLog] Shutdown of Engine is complete
