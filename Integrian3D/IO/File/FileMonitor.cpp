@@ -43,17 +43,19 @@ namespace Integrian3D::IO
 
 	FileMonitor::~FileMonitor()
 	{
-		bIsMonitoring = false;
-
-		if (ThreadID != -1)
-		{
-			Threading::ThreadManager::GetInstance().WaitOnThread(ThreadID);
-		}
+		StopMonitor();
 	}
 
 	void FileMonitor::StopMonitor()
 	{
 		bIsMonitoring = false;
+
+		if (ThreadID != -1)
+		{
+			Threading::ThreadManager::GetInstance().WaitOnThread(ThreadID);
+
+			ThreadID = -1;
+		}
 	}
 
 	void FileMonitor::StartMonitoringFile(const std::string& Filepath)
