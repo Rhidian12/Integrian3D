@@ -35,8 +35,6 @@ namespace Integrian3D::IO
 		__NODISCARD static FileContentCache& GetInstance();
 		static void StartCleanup();
 
-		~FileContentCache();
-
 		void AddFile(File* const File, const bool bShouldMonitorFile);
 		void RemoveFile(const File* const File);
 

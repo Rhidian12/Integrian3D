@@ -61,8 +61,6 @@ namespace Integrian3D
 			glDeleteBuffers(1, &IndexBufferID);
 			IndexBufferID = MeshErrorValue;
 		}
-		
-		LOG(LogMeshComponent, LogErrorLevel::Log, "Destroying Mesh Component");
 	}
 
 	MeshComponent::MeshComponent(MeshComponent&& other) noexcept

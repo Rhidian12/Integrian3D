@@ -43,8 +43,6 @@ namespace Integrian3D
 			glDeleteShader(FragmentShaderID);
 
 			glDeleteProgram(ProgramID);
-
-			LOG(ShaderLog, LogErrorLevel::Log, "Destroying Shader");
 		}
 	}
 

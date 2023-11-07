@@ -26,19 +26,6 @@ namespace Integrian3D::IO
 		Monitor.BindToOnFileChanged(std::bind(&FileContentCache::OnFileChanged, this, std::placeholders::_1));
 	}
 
-	FileContentCache::~FileContentCache()
-	{
-		LOG(FileContentCacheLog, LogErrorLevel::Log, "Destroying file content cache, remaining entries {}", FileContentsCache.Size());
-
-		if (!FileContentsCache.Empty())
-		{
-			for (int32 i{}; i < FileContentsCache.Size(); ++i)
-			{
-				LOG(FileContentCacheLog, LogErrorLevel::Log, "Remaining file #{}: {}", i, FileContentsCache[i].Key().Filepath);
-			}
-		}
-	}
-
 	void FileContentCache::AddFile(File* const File, const bool bShouldMonitorFile)
 	{
 		const std::string_view Filepath{ File->GetFilepath() };
