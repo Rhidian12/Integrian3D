@@ -759,7 +759,7 @@ TEST_CASE("Testing Array with std::string")
 {
 	using namespace Integrian3D;
 
-	constexpr int32 Size = 2;
+	constexpr int32 Size = 4;
 
 	TArray<std::string> Arr{};
 
@@ -777,4 +777,8 @@ TEST_CASE("Testing Array with std::string")
 	Arr.EraseByIndex(0);
 
 	REQUIRE(Arr.Size() == Size - 1);
+
+	Arr.EraseByIndex(1);
+
+	REQUIRE(Arr.Size() == Size - 2);
 }

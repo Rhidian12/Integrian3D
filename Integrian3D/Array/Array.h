@@ -95,7 +95,7 @@ namespace Integrian3D
 				m_pTail = m_pHead + cap;
 				m_pCurrentEnd = m_pHead + other.Size();
 
-				CopyData<false>(m_pHead, other.m_pHead, other.Size());
+				CopyData<false, false>(m_pHead, other.m_pHead, other.Size());
 			}
 		}
 		constexpr Array(Array&& other) noexcept
@@ -129,7 +129,7 @@ namespace Integrian3D
 				m_pTail = m_pHead + cap;
 				m_pCurrentEnd = m_pHead + other.Size();
 
-				CopyData<false>(m_pHead, other.m_pHead, other.Size());
+				CopyData<false, false>(m_pHead, other.m_pHead, other.Size());
 			}
 
 			return *this;
@@ -239,8 +239,9 @@ namespace Integrian3D
 			}
 			else
 			{
-				(m_pHead + index)->~T();
-				MoveRange(m_pHead + index + 1, m_pCurrentEnd--, m_pHead + index);
+				MoveRange<true>(m_pHead + index + 1, m_pCurrentEnd--, m_pHead + index);
+
+				m_pCurrentEnd->~T();
 
 				return It{ m_pHead + index };
 			}
@@ -353,9 +354,9 @@ namespace Integrian3D
 				return;
 			}
 
-			m_pHead->~T();
-
-			MoveRange(m_pHead + 1, m_pCurrentEnd--, m_pHead);
+			MoveRange<true>(m_pHead + 1, m_pCurrentEnd, m_pHead);
+			Back().~T();
+			--m_pCurrentEnd;
 		}
 
 		constexpr void Clear()
@@ -399,7 +400,7 @@ namespace Integrian3D
 			}
 			else
 			{
-				MoveRange(m_pHead + index, m_pCurrentEnd++ - 1, m_pHead + index + 1);
+				MoveRange<true>(m_pHead + index, m_pCurrentEnd++ - 1, m_pHead + index + 1);
 				return *(new (m_pHead + index) T{ __FORWARD(args)... });
 			}
 		}
@@ -413,7 +414,7 @@ namespace Integrian3D
 				Reallocate();
 			}
 
-			MoveRange(m_pHead, m_pCurrentEnd++, m_pHead + 1);
+			MoveRange<true>(m_pHead, m_pCurrentEnd++, m_pHead + 1);
 
 			return *(new (m_pHead) T{ __FORWARD(args)... });
 		}
@@ -773,7 +774,7 @@ namespace Integrian3D
 
 	private:
 	#pragma region Internal Helpers
-		template<bool AllowMove>
+		template<bool AllowMove, bool bCopyingToExisting>
 		constexpr void CopyData(T* const newHead, T* const oldHead, const int32 size) const
 		{
 			if constexpr (std::is_trivially_copyable_v<T>)
@@ -784,14 +785,28 @@ namespace Integrian3D
 			{
 				for (int32 i{}; i < size; ++i)
 				{
-					new (newHead + i) T{ std::move(*(oldHead + i)) };
+					if constexpr (bCopyingToExisting)
+					{
+						*(newHead + i) = std::move(*(oldHead + i));
+					}
+					else
+					{
+						new (newHead + i) T{ std::move(*(oldHead + i)) };
+					}
 				}
 			}
 			else
 			{
 				for (int32 i{}; i < size; ++i)
 				{
-					new (newHead + i) T{ *(oldHead + i) };
+					if constexpr (bCopyingToExisting)
+					{
+						*(newHead + i) = *(oldHead + i);
+					}
+					else
+					{
+						new (newHead + i) T{ *(oldHead + i) };
+					}
 				}
 			}
 		}
@@ -803,7 +818,7 @@ namespace Integrian3D
 
 			T* const pNewHead{ static_cast<T*>(malloc(newCap * sizeof(T))) };
 
-			CopyData<true>(pNewHead, m_pHead, size);
+			CopyData<true, false>(pNewHead, m_pHead, size);
 
 			DeleteData(m_pHead, m_pTail);
 			Release(m_pHead);
@@ -818,7 +833,7 @@ namespace Integrian3D
 
 			T* const pNewHead{ static_cast<T*>(malloc(newCap * sizeof(T))) };
 
-			CopyData<true>(pNewHead, m_pHead, size);
+			CopyData<true, false>(pNewHead, m_pHead, size);
 
 			DeleteData(m_pHead, m_pTail);
 			Release(m_pHead);
@@ -870,9 +885,10 @@ namespace Integrian3D
 			return newCap;
 		}
 
+		template<bool bCopyingToExisting>
 		constexpr void MoveRange(T* head, T* end, T* newHead) const
 		{
-			CopyData<true>(newHead, head, static_cast<int32>(end - head));
+			CopyData<true, bCopyingToExisting>(newHead, head, static_cast<int32>(end - head));
 		}
 	#pragma endregion
 
