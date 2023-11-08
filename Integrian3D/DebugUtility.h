@@ -11,7 +11,7 @@ namespace Integrian3D
 {
 #define LOG(Category, ErrorLevel, Format, ...) Integrian3D::Logger::GetInstance().LogMessage(#Category, ErrorLevel, Format, __VA_ARGS__)
 
-	/* __BREAK(), __ASSERT(), __CASSERT(), __CHECK */
+	/* __BREAK(), __ASSERT(), __CASSERT() */
 #if _DEBUG
 #	define __BREAK() __debugbreak()
 
@@ -42,7 +42,15 @@ namespace Integrian3D
 		{ \
 			LOG(Assert, Integrian3D::LogErrorLevel::Fatal, Format, __VA_ARGS__); \
 		}
+#else
+#	define __BREAK()
+#	define __ASSERT(Expr, Format, ...)
+#	define IASSERT_MSG(Expr, Format, ...)
+#	define IASSERT(Expr)
+#	define __CASSERT(Expr, Format, ...)
+#endif
 
+	// __CHECK and ICHECK_MSG are very similar to asserts, but do not intentionally crash the program, and are also NOT compiled out in Release
 #	define __CHECK(Expr) \
 		if ((Expr)) {} \
 		else \
@@ -56,10 +64,4 @@ namespace Integrian3D
 		{ \
 			LOG(Check, Integrian3D::LogErrorLevel::Error, Format, __VA_ARGS__); \
 		}
-#else
-#	define __BREAK()
-#	define __ASSERT(expr, message)
-#	define __CASSERT(expr, message)
-#	define __CHECK(Expr)
-#endif
 }

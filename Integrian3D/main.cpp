@@ -76,6 +76,8 @@ int RunTestEngine(int, char* [])
 
 	Scene* TestScene{ SceneManager::GetInstance().AddScene<Scene>("TestScene") };
 
+	LOG(Log, LogErrorLevel::Log, "Main ID: {}", GMainThreadID);
+
 	TArray<Vertex> vertices =
 	{
 		Vertex{ glm::vec3{ -0.5f, -0.5f, -0.5f }, Math::Vec3D{ 0.f, 0.f, -1.f }, glm::vec2{ 0.0f, 0.0f } },

@@ -35,6 +35,8 @@ namespace Integrian3D::IO
 
 	File::~File()
 	{
+		LOG(Log, LogErrorLevel::Log, "Closing file {}", GetFilepath());
+
 		FileContentCache::GetInstance().RemoveFile(this);
 	}
 

@@ -112,6 +112,8 @@ namespace Integrian3D
 
 	Core::Core() {}
 
+	#pragma optimize("", off)
+
 	void Core::Shutdown()
 	{
 		SceneManager::GetInstance().ClearAllScenes();
@@ -172,12 +174,11 @@ namespace Integrian3D
 
 		SceneManager.InitializeAllScenes();
 
-		double lag{};
-		const double timePerFrame{ timer.GetFixedElapsedTime<TimeLength::MilliSeconds>() };
+		const static float TimePerFrame{ timer.GetFixedElapsedTime<TimeLength::MilliSeconds>() };
 
 		while (g_IsRunning)
 		{
-			lag += timer.GetElapsedTime<TimeLength::MilliSeconds>();
+			const Timepoint Start = Timer::Now();
 
 			timer.Update();
 
@@ -187,17 +188,20 @@ namespace Integrian3D
 
 			pActiveScene->Update();
 
-			while (lag >= timePerFrame)
-			{
-				lag -= timePerFrame;
-			}
-
 			pActiveScene->Render();
 
 			// Swap buffers
 			GWindow->Update();
 
-			// LogMessage("FPS: " + std::to_string(Timer::GetInstance().GetFPS()), false);
+			const Timepoint End = Timer::Now();
+
+			const float FrameTime = (End - Start).Count<TimeLength::MilliSeconds>();
+			if (FrameTime <= TimePerFrame)
+			{
+				std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int32>(TimePerFrame - FrameTime)));
+			}
+
+			// LOG(Log, LogErrorLevel::Log, "FPS: {}", std::to_string(Timer::GetInstance().GetFPS()));
 		}
 
 		Shutdown();

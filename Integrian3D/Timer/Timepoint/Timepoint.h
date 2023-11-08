@@ -1,11 +1,24 @@
 #pragma once
 
-#include "../../EngineConstants.h"
-#include "../TimeLength.h"
-#include "../../Math/Math.h"
+#include "EngineConstants.h"
+#include "TimeLength.h"
 
 namespace Integrian3D::Time
 {
+	namespace Detail
+	{
+		struct _Milliseconds
+		{
+			int32 MS;
+		};
+	}
+
+	// uint64 is required for for literal operator
+	constexpr Detail::_Milliseconds operator""_ms(const uint64 i)
+	{
+		return Detail::_Milliseconds{ static_cast<int32>(i) };
+	}
+
 	/// <summary>
 	/// A Timepoint is similar to std::chrono::time_point and should be viewed as it
 	/// Timepoints can be initialised with a time value, received from Integrian3D::Time::Timer
@@ -15,10 +28,10 @@ namespace Integrian3D::Time
 	{
 	public:
 		constexpr Timepoint()
-			: m_Time{}
+			: MilliSeconds{}
 		{}
-		constexpr explicit Timepoint(const float time)
-			: m_Time{ time }
+		constexpr explicit Timepoint(const Detail::_Milliseconds time)
+			: MilliSeconds{ time.MS }
 		{}
 		constexpr ~Timepoint() = default;
 
@@ -27,38 +40,21 @@ namespace Integrian3D::Time
 		constexpr Timepoint& operator=(const Timepoint&) noexcept = default;
 		constexpr Timepoint& operator=(Timepoint&&) noexcept = default;
 
-		template<TimeLength T = TimeLength::Seconds>
-		__NODISCARD constexpr float Count() const
+		template<TimeLength T = TimeLength::MilliSeconds>
+		__NODISCARD constexpr int32 Count() const
 		{
 			if constexpr (T == TimeLength::NanoSeconds)
-				return m_Time * SecToNano;
+				return MilliSeconds * 1'000'000;
 			else if constexpr (T == TimeLength::MicroSeconds)
-				return m_Time * SecToMicro;
+				return MilliSeconds * 1000;
 			else if constexpr (T == TimeLength::MilliSeconds)
-				return m_Time * SecToMilli;
+				return MilliSeconds;
 			else if constexpr (T == TimeLength::Seconds)
-				return m_Time ;
+				return MilliSeconds / 1000;
 			else if constexpr (T == TimeLength::Minutes)
-				return m_Time * SecToMin;
+				return MilliSeconds / 1000 / 60;
 			else /* Hours */
-				return m_Time * SecToHours;
-		}
-
-		template<TimeLength T = TimeLength::Seconds, typename Ret>
-		__NODISCARD constexpr Ret Count() const
-		{
-			if constexpr (T == TimeLength::NanoSeconds)
-				return static_cast<Ret>(m_Time * SecToNano);
-			else if constexpr (T == TimeLength::MicroSeconds)
-				return static_cast<Ret>(m_Time * SecToMicro);
-			else if constexpr (T == TimeLength::MilliSeconds)
-				return static_cast<Ret>(m_Time * SecToMilli);
-			else if constexpr (T == TimeLength::Seconds)
-				return static_cast<Ret>(m_Time );
-			else if constexpr (T == TimeLength::Minutes)
-				return static_cast<Ret>(m_Time * SecToMin);
-			else /* Hours */
-				return static_cast<Ret>(m_Time * SecToHours);
+				return MilliSeconds / 1000 / 60 / 60;
 		}
 
 #pragma region Operators
@@ -78,33 +74,33 @@ namespace Integrian3D::Time
 #pragma endregion
 
 	private:
-		float m_Time; /* Stored in seconds */
+		int32 MilliSeconds;
 	};
 
 #pragma region Operators
 	constexpr Timepoint operator-(const Timepoint& a, const Timepoint& b)
 	{
-		return Timepoint{ a.m_Time - b.m_Time };
+		return Timepoint{ Detail::_Milliseconds{ a.MilliSeconds - b.MilliSeconds } };
 	}
 	constexpr Timepoint operator+(const Timepoint& a, const Timepoint& b)
 	{
-		return Timepoint{ a.m_Time + b.m_Time };
+		return Timepoint{ Detail::_Milliseconds{ a.MilliSeconds + b.MilliSeconds } };
 	}
 	constexpr Timepoint& operator+=(Timepoint& a, const Timepoint& b)
 	{
-		a.m_Time += b.m_Time;
+		a.MilliSeconds += b.MilliSeconds;
 
 		return a;
 	}
 	constexpr Timepoint& operator-=(Timepoint& a, const Timepoint& b)
 	{
-		a.m_Time -= b.m_Time;
+		a.MilliSeconds -= b.MilliSeconds;
 
 		return a;
 	}
 	constexpr bool operator==(const Timepoint& a, const Timepoint& b)
 	{
-		return Math::AreEqual(a.m_Time, b.m_Time);
+		return a.MilliSeconds == b.MilliSeconds;
 	}
 	constexpr bool operator!=(const Timepoint& a, const Timepoint& b)
 	{
@@ -112,19 +108,19 @@ namespace Integrian3D::Time
 	}
 	constexpr bool operator<(const Timepoint& a, const Timepoint& b)
 	{
-		return a.m_Time < b.m_Time;
+		return a.MilliSeconds < b.MilliSeconds;
 	}
 	constexpr bool operator<=(const Timepoint& a, const Timepoint& b)
 	{
-		return a.m_Time <= b.m_Time;
+		return a.MilliSeconds <= b.MilliSeconds;
 	}
 	constexpr bool operator>(const Timepoint& a, const Timepoint& b)
 	{
-		return a.m_Time > b.m_Time;
+		return a.MilliSeconds > b.MilliSeconds;
 	}
 	constexpr bool operator>=(const Timepoint& a, const Timepoint& b)
 	{
-		return a.m_Time >= b.m_Time;
+		return a.MilliSeconds >= b.MilliSeconds;
 	}
 
 #pragma endregion
