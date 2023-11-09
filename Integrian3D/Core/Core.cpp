@@ -174,7 +174,7 @@ namespace Integrian3D
 
 		SceneManager.InitializeAllScenes();
 
-		const static float TimePerFrame{ timer.GetFixedElapsedTime<TimeLength::MilliSeconds>() };
+		const static float TimePerFrame{ timer.GetFixedElapsedSeconds() };
 
 		while (g_IsRunning)
 		{
@@ -195,7 +195,7 @@ namespace Integrian3D
 
 			const Timepoint End = Timer::Now();
 
-			const float FrameTime = (End - Start).Count<TimeLength::MilliSeconds>();
+			const int64 FrameTime = (End - Start).Count();
 			if (FrameTime <= TimePerFrame)
 			{
 				std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int32>(TimePerFrame - FrameTime)));

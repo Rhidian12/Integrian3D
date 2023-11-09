@@ -14,13 +14,13 @@
 namespace Integrian3D::Time
 {
 	Timer::Timer()
-		: m_MaxElapsedSeconds{ 0.1f }
-		, m_ElapsedSeconds{}
-		, m_TotalElapsedSeconds{}
+		: MaxElapsedTime{ 100 }
+		, ElapsedTime{}
+		, TotalElapsedTime{}
 		, m_FPS{}
 		, m_FPSCounter{}
 		, m_FPSTimer{}
-		, m_TimePerFrame{ 1.f / 60.f }
+		, TimePerFrame{ 1.f / 60.f }
 		, m_StartTimepoint{}
 		, m_PreviousTimepoint{}
 	{
@@ -45,44 +45,63 @@ namespace Integrian3D::Time
 	{
 		m_StartTimepoint = Now();
 
-		m_ElapsedSeconds = (m_StartTimepoint - m_PreviousTimepoint).Count();
-		m_ElapsedSeconds = std::min(m_ElapsedSeconds, m_MaxElapsedSeconds);
+		ElapsedTime = (m_StartTimepoint - m_PreviousTimepoint).Count();
+		ElapsedTime = std::min(ElapsedTime, MaxElapsedTime);
 
-		m_TotalElapsedSeconds += m_ElapsedSeconds;
+		TotalElapsedTime += ElapsedTime;
 
 		m_PreviousTimepoint = m_StartTimepoint;
 
-		LOG(Log, LogErrorLevel::Log, "Elapsed Seconds {}", m_ElapsedSeconds);
-		m_FPS = static_cast<int>(1.f / m_ElapsedSeconds);
+		LOG(Log, LogErrorLevel::Log, "Elapsed Seconds {}", ElapsedTime);
+		m_FPS = static_cast<int>(1.f / ElapsedTime);
 	}
 
 	Timepoint Timer::Now()
 	{
-		const int64_t frequency{ _Query_perf_frequency() };
-		const int64_t counter{ _Query_perf_counter() };
+		const int64 frequency{ _Query_perf_frequency() };
+		const int64 counter{ _Query_perf_counter() };
 
-		// 10 MHz is a very common QPC frequency on modern PCs. Optimizing for
-		// this specific frequency can double the performance of this function by
-		// avoiding the expensive frequency conversion path.
-		constexpr int64_t tenMHz = 10'000'000;
+		static constexpr int64 NanoToMilliRatio = 1'000'000;
+		static constexpr int64 NanoRatio = 1'000'000'000;
 
-		if (frequency == tenMHz)
-		{
-			constexpr int64_t multiplier{ static_cast<int64_t>(SecToNano) / tenMHz };
-			return Timepoint{ (counter * multiplier) * NanoToSec };
-		}
-		else
-		{
-			// Instead of just having "(counter * static_cast<int64_t>(SecToNano)) / frequency",
-			// the algorithm below prevents overflow when counter is sufficiently large.
-			// It assumes that frequency * static_cast<int64_t>(SecToNano) does not overflow, which is currently true for nano period.
-			// It is not realistic for counter to accumulate to large values from zero with this assumption,
-			// but the initial value of counter could be large.
+		// Instead of just having "(counter * static_cast<int64_t>(SecToNano)) / frequency",
+		// the algorithm below prevents overflow when counter is sufficiently large.
+		// It assumes that frequency * static_cast<int64_t>(SecToNano) does not overflow, which is currently true for nano period.
+		// It is not realistic for counter to accumulate to large values from zero with this assumption,
+		// but the initial value of counter could be large.
 
-			const int64_t whole = (counter / frequency) * static_cast<int64_t>(SecToNano);
-			const int64_t part = (counter % frequency) * static_cast<int64_t>(SecToNano) / frequency;
-			return Timepoint{ (whole + part) * NanoToSec };
-		}
+		const int64_t whole = (counter / frequency) * NanoRatio;
+		const int64_t part = (counter % frequency) * NanoRatio / frequency;
+		return Timepoint{ Detail::_Milliseconds{ (whole + part) / NanoToMilliRatio } };
 	}
 
+	int Timer::GetFPS() const
+	{
+		return m_FPS;
+	}
+
+	float Timer::GetElapsedSeconds() const
+	{
+		return ConvertMilliToSeconds(ElapsedTime);
+	}
+
+	float Timer::GetTotalElapsedSeconds() const
+	{
+		return ConvertMilliToSeconds(TotalElapsedTime);
+	}
+
+	float Timer::GetFixedElapsedSeconds() const
+	{
+		return TimePerFrame;
+	}
+
+	int64 Timer::GetElapsedTime() const
+	{
+		return ElapsedTime;
+	}
+
+	int64 Timer::GetTotalElapsedTime() const
+	{
+		return TotalElapsedTime;
+	}
 }

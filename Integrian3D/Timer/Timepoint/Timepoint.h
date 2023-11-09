@@ -1,7 +1,7 @@
 #pragma once
 
 #include "EngineConstants.h"
-#include "TimeLength.h"
+#include "Timer/TimeLength.h"
 
 namespace Integrian3D::Time
 {
@@ -9,14 +9,14 @@ namespace Integrian3D::Time
 	{
 		struct _Milliseconds
 		{
-			int32 MS;
+			int64 MS;
 		};
 	}
 
 	// uint64 is required for for literal operator
 	constexpr Detail::_Milliseconds operator""_ms(const uint64 i)
 	{
-		return Detail::_Milliseconds{ static_cast<int32>(i) };
+		return Detail::_Milliseconds{ static_cast<int64>(i) };
 	}
 
 	/// <summary>
@@ -41,7 +41,7 @@ namespace Integrian3D::Time
 		constexpr Timepoint& operator=(Timepoint&&) noexcept = default;
 
 		template<TimeLength T = TimeLength::MilliSeconds>
-		__NODISCARD constexpr int32 Count() const
+		__NODISCARD constexpr int64 Count() const
 		{
 			if constexpr (T == TimeLength::NanoSeconds)
 				return MilliSeconds * 1'000'000;
@@ -74,7 +74,7 @@ namespace Integrian3D::Time
 #pragma endregion
 
 	private:
-		int32 MilliSeconds;
+		int64 MilliSeconds;
 	};
 
 #pragma region Operators

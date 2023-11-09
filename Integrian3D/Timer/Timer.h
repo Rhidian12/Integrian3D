@@ -25,129 +25,29 @@ namespace Integrian3D::Time
 		void Update();
 
 		__NODISCARD static Timepoint Now();
-		__NODISCARD float GetElapsedSeconds() const { return m_ElapsedSeconds; }
-		__NODISCARD float GetFixedElapsedSeconds() const { return m_TimePerFrame; }
-		__NODISCARD float GetTotalElapsedSeconds() const { return m_TotalElapsedSeconds; }
-		__NODISCARD int GetFPS() const { return m_FPS; }
-		__NODISCARD float GetTimePerFrame() const { return m_TimePerFrame; }
 
-#pragma region GetElapsedTime
-		template<TimeLength T>
-		__NODISCARD float GetElapsedTime() const
-		{
-			if constexpr (T == TimeLength::NanoSeconds)
-				return m_ElapsedSeconds * SecToNano;
-			else if constexpr (T == TimeLength::MicroSeconds)
-				return m_ElapsedSeconds * SecToMicro;
-			else if constexpr (T == TimeLength::MilliSeconds)
-				return m_ElapsedSeconds * SecToMilli;
-			else if constexpr (T == TimeLength::Seconds)
-				return m_ElapsedSeconds;
-			else if constexpr (T == TimeLength::Minutes)
-				return m_ElapsedSeconds * SecToMin;
-			else /* Hours */
-				return m_ElapsedSeconds * SecToHours;
-		}
-		template<TimeLength T, typename Ret>
-		__NODISCARD Ret GetElapsedTime() const
-		{
-			if constexpr (T == TimeLength::NanoSeconds)
-				return static_cast<Ret>(m_ElapsedSeconds * SecToNano);
-			else if constexpr (T == TimeLength::MicroSeconds)
-				return static_cast<Ret>(m_ElapsedSeconds * SecToMicro);
-			else if constexpr (T == TimeLength::MilliSeconds)
-				return static_cast<Ret>(m_ElapsedSeconds * SecToMilli);
-			else if constexpr (T == TimeLength::Seconds)
-				return static_cast<Ret>(m_ElapsedSeconds);
-			else if constexpr (T == TimeLength::Minutes)
-				return static_cast<Ret>(m_ElapsedSeconds * SecToMin);
-			else /* Hours */
-				return static_cast<Ret>(m_ElapsedSeconds * SecToHours);
-		}
-#pragma endregion
+		// [CRINGE]: Very basic way of calculating FPS
+		__NODISCARD int GetFPS() const;
 
-#pragma region GetFixedElapsedTime
-		template<TimeLength T>
-		__NODISCARD float GetFixedElapsedTime() const
-		{
-			if constexpr (T == TimeLength::NanoSeconds)
-				return m_TimePerFrame * SecToNano;
-			else if constexpr (T == TimeLength::MicroSeconds)
-				return m_TimePerFrame * SecToMicro;
-			else if constexpr (T == TimeLength::MilliSeconds)
-				return m_TimePerFrame * SecToMilli;
-			else if constexpr (T == TimeLength::Seconds)
-				return m_TimePerFrame;
-			else if constexpr (T == TimeLength::Minutes)
-				return m_TimePerFrame * SecToMin;
-			else /* Hours */
-				return m_TimePerFrame * SecToHours;
-		}
-		template<TimeLength T, typename Ret>
-		__NODISCARD Ret GetFixedElapsedTime() const
-		{
-			if constexpr (T == TimeLength::NanoSeconds)
-				return static_cast<Ret>(m_TimePerFrame * SecToNano);
-			else if constexpr (T == TimeLength::MicroSeconds)
-				return static_cast<Ret>(m_TimePerFrame * SecToMicro);
-			else if constexpr (T == TimeLength::MilliSeconds)
-				return static_cast<Ret>(m_TimePerFrame * SecToMilli);
-			else if constexpr (T == TimeLength::Seconds)
-				return static_cast<Ret>(m_TimePerFrame);
-			else if constexpr (T == TimeLength::Minutes)
-				return static_cast<Ret>(m_TimePerFrame * SecToMin);
-			else /* Hours */
-				return static_cast<Ret>(m_TimePerFrame * SecToHours);
-		}
-#pragma endregion
+		__NODISCARD float GetElapsedSeconds() const;
+		__NODISCARD float GetTotalElapsedSeconds() const;
+		__NODISCARD float GetFixedElapsedSeconds() const;
 
-#pragma region GetTotalElapsedTime
-		template<TimeLength T>
-		__NODISCARD float GetTotalElapsedTime() const
-		{
-			if constexpr (T == TimeLength::NanoSeconds)
-				return m_TotalElapsedSeconds * SecToNano;
-			else if constexpr (T == TimeLength::MicroSeconds)
-				return m_TotalElapsedSeconds * SecToMicro;
-			else if constexpr (T == TimeLength::MilliSeconds)
-				return m_TotalElapsedSeconds * SecToMilli;
-			else if constexpr (T == TimeLength::Seconds)
-				return m_TotalElapsedSeconds;
-			else if constexpr (T == TimeLength::Minutes)
-				return m_TotalElapsedSeconds * SecToMin;
-			else /* Hours */
-				return m_TotalElapsedSeconds * SecToHours;
-		}
-		template<TimeLength T, typename Ret>
-		__NODISCARD Ret GetTotalElapsedTime() const
-		{
-			if constexpr (T == TimeLength::NanoSeconds)
-				return static_cast<Ret>(m_TotalElapsedSeconds * SecToNano);
-			else if constexpr (T == TimeLength::MicroSeconds)
-				return static_cast<Ret>(m_TotalElapsedSeconds * SecToMicro);
-			else if constexpr (T == TimeLength::MilliSeconds)
-				return static_cast<Ret>(m_TotalElapsedSeconds * SecToMilli);
-			else if constexpr (T == TimeLength::Seconds)
-				return static_cast<Ret>(m_TotalElapsedSeconds);
-			else if constexpr (T == TimeLength::Minutes)
-				return static_cast<Ret>(m_TotalElapsedSeconds * SecToMin);
-			else /* Hours */
-				return static_cast<Ret>(m_TotalElapsedSeconds * SecToHours);
-		}
-#pragma endregion
+		__NODISCARD int64 GetElapsedTime() const;
+		__NODISCARD int64 GetTotalElapsedTime() const;
 
 	private:
 		Timer();
 
 		inline static std::unique_ptr<Timer> m_pInstance{};
 
-		const float m_MaxElapsedSeconds;
-		float m_ElapsedSeconds;
-		float m_TotalElapsedSeconds;
+		const int64 MaxElapsedTime;
+		int64 ElapsedTime;
+		int64 TotalElapsedTime;
 		int m_FPS;
 		int m_FPSCounter;
 		float m_FPSTimer;
-		float m_TimePerFrame;
+		float TimePerFrame;
 
 		Timepoint m_StartTimepoint;
 		Timepoint m_PreviousTimepoint;

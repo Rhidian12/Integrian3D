@@ -249,6 +249,7 @@ xcopy "$(SolutionDir)Config\*.*" "$(OutDir)Config\" /y /d /e /q</Command>
     <ClCompile Include="Texture\Texture.cpp" />
     <ClCompile Include="Thread\ThreadManager.cpp" />
     <ClCompile Include="Thread\ThreadUtils.cpp" />
+    <ClCompile Include="Timer\TimeLength.cpp" />
     <ClCompile Include="Timer\Timepoint\Timepoint.cpp" />
     <ClCompile Include="Timer\Timer.cpp" />
     <ClCompile Include="Components\TransformComponent\TransformComponent.cpp" />

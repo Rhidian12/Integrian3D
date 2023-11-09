@@ -16,42 +16,32 @@ TEST_CASE("Testing Basic Timepoints")
 	using namespace Integrian3D::Math;
 	using namespace Integrian3D::Time;
 
-	constexpr float epsilon = 0.00001f;
-
 	Timepoint t1{}, t2{};
 
 	REQUIRE(t1 == t2);
-	REQUIRE(AreEqual((t1 + t2).Count(), 0.f, epsilon));
-	REQUIRE(AreEqual((t2 + t1).Count(), 0.f, epsilon));
-	REQUIRE(AreEqual((t1 - t2).Count(), 0.f, epsilon));
-	REQUIRE(AreEqual((t2 - t1).Count(), 0.f, epsilon));
+	REQUIRE((t1 + t2).Count() == 0);
+	REQUIRE((t2 + t1).Count() == 0);
+	REQUIRE((t1 - t2).Count() == 0);
+	REQUIRE((t2 - t1).Count() == 0);
 
-	t1 = Timepoint{ 5.0 };
+	t1 = Timepoint{ 5_ms };
 
 	REQUIRE(t1 != t2);
-	REQUIRE(AreEqual((t1 + t2).Count(), 5.f, epsilon));
-	REQUIRE(AreEqual((t2 + t1).Count(), 5.f, epsilon));
-	REQUIRE(AreEqual((t1 - t2).Count(), 5.f, epsilon));
-	REQUIRE(AreEqual((t2 - t1).Count(), -5.f, epsilon));
-
-	REQUIRE(std::is_same_v<uint64_t, decltype((t1 + t2).Count<TimeLength::Seconds, uint64_t>())>);
-
-	REQUIRE(AreEqual((t1 + t2).Count<TimeLength::NanoSeconds>(), 5'000'000'000.f, epsilon));
-	REQUIRE(AreEqual((t1 + t2).Count<TimeLength::MicroSeconds>(), 5'000'000.f, epsilon));
-	REQUIRE(AreEqual((t1 + t2).Count<TimeLength::MilliSeconds>(), 5'000.f, epsilon));
-	REQUIRE(AreEqual((t1 + t2).Count<TimeLength::Minutes>(), 0.083333f, epsilon));
-	REQUIRE(AreEqual((t1 + t2).Count<TimeLength::Hours>(), 0.001389f, epsilon));
+	REQUIRE((t1 + t2).Count() == 5);
+	REQUIRE((t2 + t1).Count() == 5);
+	REQUIRE((t1 - t2).Count() == 5);
+	REQUIRE((t2 - t1).Count() == -5);
 
 	t2 += t1;
 
-	REQUIRE(AreEqual(t1.Count(), 5.f, epsilon));
-	REQUIRE(AreEqual(t2.Count(), 5.f, epsilon));
+	REQUIRE(t1.Count() == 5);
+	REQUIRE(t2.Count() == 5);
 	REQUIRE(t1 == t2);
 
 	t1 -= t2;
 
-	REQUIRE(AreEqual(t1.Count(), 0.f, epsilon));
-	REQUIRE(AreEqual(t2.Count(), 5.f, epsilon));
+	REQUIRE(t1.Count() == 0.f);
+	REQUIRE(t2.Count() == 5.f);
 	REQUIRE(t1 != t2);
 }
 
@@ -62,11 +52,11 @@ TEST_CASE("Testing Timer")
 
 	Timer& timer{ Timer::GetInstance() };
 	REQUIRE(AreEqual(timer.GetElapsedSeconds(), 0.f));
-	REQUIRE(!AreEqual(timer.Now().Count(), 0.f));
+	REQUIRE(timer.Now().Count() != 0);
 
 	timer.Start();
 	REQUIRE(AreEqual(timer.GetElapsedSeconds(), 0.f));
-	REQUIRE(!AreEqual(timer.Now().Count(), 0.f));
+	REQUIRE(timer.Now().Count() != 0);
 
 	Timepoint t1{ timer.Now() };
 
