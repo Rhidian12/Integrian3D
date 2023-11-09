@@ -16,6 +16,8 @@ I_DISABLE_WARNING(4005) /* warning C4005: 'APIENTRY': macro redefinition */
 I_ENABLE_WARNING(4005)
 #	endif
 
+PRAGMA_DISABLE_OPTIMIZATION
+
 namespace Integrian3D
 {
 	namespace Detail

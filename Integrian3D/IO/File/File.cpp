@@ -4,6 +4,8 @@
 #include "IO/FileContentCache/FileContentCache.h"
 #include "Win32Utils/Win32APICall.h"
 
+PRAGMA_DISABLE_OPTIMIZATION
+
 #ifdef _WIN32
 #	pragma warning ( push )
 #	pragma warning ( disable : 4005 ) /* warning C4005: 'APIENTRY': macro redefinition */ 
@@ -79,20 +81,6 @@ namespace Integrian3D::IO
 
 	std::string File::GetFileContents() const
 	{
-		//__CHECK(Handle.IsValid());
-
-		//std::string FileContents{};
-		//FileContents.resize(Filesize);
-
-		//if (ReadFile(Handle, FileContents.data(), static_cast<DWORD>(Filesize), nullptr, nullptr) == 0)
-		//{
-		//	LOG(FileLog, LogErrorLevel::Warning, "File could not read the provided file: {}", Filepath);
-		//}
-
-		//Seek(0);
-
-		//return FileContents;
-
 		return std::string{ FileContentCache::GetInstance().GetFileContents(Filepath) };
 	}
 
@@ -228,7 +216,7 @@ namespace Integrian3D::IO
 
 		OutFileContents.resize(Filesize);
 
-		if (ReadFile(Handle, OutFileContents.data(), static_cast<DWORD>(Filesize), nullptr, nullptr) == 0)
+		if (CALL_WIN32_RV(ReadFile(Handle, OutFileContents.data(), static_cast<DWORD>(Filesize), nullptr, nullptr)) == 0)
 		{
 			LOG(FileLog, LogErrorLevel::Warning, "File could not read the provided file: {}", Filepath);
 		}
@@ -238,7 +226,7 @@ namespace Integrian3D::IO
 
 	void File::CalculateFilesize()
 	{
-		Filesize = static_cast<int32>(GetFileSize(Handle, nullptr));
+		Filesize = static_cast<int32>(CALL_WIN32_RV(GetFileSize(Handle, nullptr)));
 	}
 
 	void File::WriteToFile(const char* Buffer, const int32 BufferSize)

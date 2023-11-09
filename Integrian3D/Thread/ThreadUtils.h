@@ -4,7 +4,7 @@
 
 namespace Integrian3D
 {
-	int32 GetThreadID();
+	uint32 GetThreadID();
 
 	bool IsMainThread();
 }

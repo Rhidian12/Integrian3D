@@ -51,17 +51,20 @@ namespace Integrian3D
 #endif
 
 	// __CHECK and ICHECK_MSG are very similar to asserts, but do not intentionally crash the program, and are also NOT compiled out in Release
-#	define __CHECK(Expr) \
-		if ((Expr)) {} \
-		else \
-		{ \
-			LOG(Check, Integrian3D::LogErrorLevel::Error, "Check {} triggered at line {} in file {}", #Expr, __LINE__, __FILE__); \
-		}
+#define __CHECK(Expr) \
+	if ((Expr)) {} \
+	else \
+	{ \
+		LOG(Check, Integrian3D::LogErrorLevel::Error, "Check {} triggered at line {} in file {}", #Expr, __LINE__, __FILE__); \
+	}
 
-#	define ICHECK_MSG(Expr, Format, ...) \
-		if (Expr) {} \
-		else \
-		{ \
-			LOG(Check, Integrian3D::LogErrorLevel::Error, Format, __VA_ARGS__); \
-		}
+#define ICHECK_MSG(Expr, Format, ...) \
+	if (Expr) {} \
+	else \
+	{ \
+		LOG(Check, Integrian3D::LogErrorLevel::Error, Format, __VA_ARGS__); \
+	}
+
+#define PRAGMA_DISABLE_OPTIMIZATION __pragma(optimize("", off))
+#define PRAGMA_ENABLE_OPTIMIZATION __pragma(optimize("", on))
 }

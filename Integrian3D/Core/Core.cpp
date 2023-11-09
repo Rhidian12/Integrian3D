@@ -112,7 +112,7 @@ namespace Integrian3D
 
 	Core::Core() {}
 
-	#pragma optimize("", off)
+	PRAGMA_DISABLE_OPTIMIZATION
 
 	void Core::Shutdown()
 	{

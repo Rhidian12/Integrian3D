@@ -52,7 +52,6 @@ namespace Integrian3D::Time
 
 		m_PreviousTimepoint = m_StartTimepoint;
 
-		LOG(Log, LogErrorLevel::Log, "Elapsed Seconds {}", ElapsedTime);
 		m_FPS = static_cast<int>(1.f / ElapsedTime);
 	}
 
