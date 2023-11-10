@@ -9,14 +9,16 @@
 
 #include "TPair/TPair.full.h"
 
-#include "Win32Utils/Win32APICall.h"
 
 #define ACQUIRE_LOCK() const std::unique_lock<std::mutex> Lock{ Mutex }
 
 #ifdef _WIN32
-I_DISABLE_WARNING(4005) // warning C4005: 'APIENTRY': macro redefinition
-#include <Windows.h>
-I_ENABLE_WARNING(4005)
+
+#	include "Win32Utils/Win32APICall.h"
+	I_DISABLE_WARNING(4005) // warning C4005: 'APIENTRY': macro redefinition
+#	include <Windows.h>
+	I_ENABLE_WARNING(4005)
+
 #endif
 
 namespace Integrian3D::IO
@@ -26,7 +28,7 @@ namespace Integrian3D::IO
 		static int64 GetLastTimeModified(const char* Filepath)
 		{
 			struct _stat Result;
-			if (_stat(Filepath, &Result) == 0)
+			if (CALL_WIN32_RV(_stat(Filepath, &Result)) == 0)
 			{
 				return Result.st_mtime;
 			}
@@ -75,7 +77,7 @@ namespace Integrian3D::IO
 		{
 			ACQUIRE_LOCK();
 
-			const int64 LastTimeModified{ GetLastTimeModified(Filepath.c_str()) };
+			const int64 LastTimeModified{ CALL_WIN32_RV(GetLastTimeModified(Filepath.c_str())) };
 
 			if (!LastTimeModified)
 			{
@@ -101,7 +103,7 @@ namespace Integrian3D::IO
 
 						for (auto& [Filepath, LastTimeModified] : Filepaths)
 						{
-							const int64 LastModified = GetLastTimeModified(Filepath.c_str());
+							const int64 LastModified = CALL_WIN32_RV(GetLastTimeModified(Filepath.c_str()));
 
 							if (LastModified > LastTimeModified)
 							{

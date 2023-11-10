@@ -1,22 +1,28 @@
 #include "Logger.h"
 
 #include "Array/Array.h"
+
 #include "DebugUtility.h"
+
 #include "Logger/ConsoleColours.h"
 #include "Logger/LogCategory.h"
+
 #include "IO/File/File.h"
 #include "Memory/UniquePtr.h"
 
 #include <iostream>
 
-#	ifdef _WIN32
-I_DISABLE_WARNING(4005) /* warning C4005: 'APIENTRY': macro redefinition */
+#ifdef _WIN32
+
+#	include "Win32Utils/Win32APICall.h"
+
+	I_DISABLE_WARNING(4005) /* warning C4005: 'APIENTRY': macro redefinition */
 #		define WIN32_LEAN_AND_MEAN
 #		include <Windows.h>
-I_ENABLE_WARNING(4005)
-#	endif
 
-PRAGMA_DISABLE_OPTIMIZATION
+	I_ENABLE_WARNING(4005)
+
+#endif
 
 namespace Integrian3D
 {
@@ -44,7 +50,7 @@ namespace Integrian3D
 			}
 
 			/* Set text colour to user defined colour */
-			SetConsoleTextAttribute(ConsoleHandle, colour);
+			CALL_WIN32(SetConsoleTextAttribute(ConsoleHandle, colour));
 			#endif
 		}
 	}

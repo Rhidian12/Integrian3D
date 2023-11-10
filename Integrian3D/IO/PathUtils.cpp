@@ -1,9 +1,14 @@
 #include "IO/PathUtils.h"
 
+
 #ifdef _WIN32
+
+#	include "Win32Utils/Win32APICall.h"
+
 	I_DISABLE_WARNING(4005) // warning C4005: 'APIENTRY': macro redefinition
-		#include <Windows.h>
+#		include <Windows.h>
 	I_ENABLE_WARNING(4005)
+
 #endif
 
 namespace Integrian3D::PathUtils
@@ -38,7 +43,7 @@ namespace Integrian3D::PathUtils
 
 	bool DoesFileExist(const std::string_view Path)
 	{
-		DWORD Attributes = GetFileAttributesA(Path.data());
+		DWORD Attributes = CALL_WIN32_RV(GetFileAttributesA(Path.data()));
 
 		return Attributes != INVALID_FILE_ATTRIBUTES && !(Attributes & FILE_ATTRIBUTE_DIRECTORY);
 	}

@@ -4,8 +4,6 @@
 #include "IO/FileContentCache/FileContentCache.h"
 #include "Win32Utils/Win32APICall.h"
 
-PRAGMA_DISABLE_OPTIMIZATION
-
 #ifdef _WIN32
 #	pragma warning ( push )
 #	pragma warning ( disable : 4005 ) /* warning C4005: 'APIENTRY': macro redefinition */ 
@@ -37,8 +35,6 @@ namespace Integrian3D::IO
 
 	File::~File()
 	{
-		LOG(Log, LogErrorLevel::Log, "Closing file {}", GetFilepath());
-
 		FileContentCache::GetInstance().RemoveFile(this);
 	}
 
@@ -61,17 +57,17 @@ namespace Integrian3D::IO
 
 	void File::Seek(const int32 NewFilepointerPos) const
 	{
-		SetFilePointer(Handle, NewFilepointerPos, nullptr, FILE_BEGIN);
+		CALL_WIN32(SetFilePointer(Handle, NewFilepointerPos, nullptr, FILE_BEGIN));
 	}
 
 	void File::Advance(const int32 AdvanceAmount) const
 	{
-		SetFilePointer(Handle, AdvanceAmount, nullptr, FILE_CURRENT);
+		CALL_WIN32(SetFilePointer(Handle, AdvanceAmount, nullptr, FILE_CURRENT));
 	}
 
 	void File::Regress(const int32 RegressAmount) const
 	{
-		SetFilePointer(Handle, RegressAmount, nullptr, FILE_CURRENT);
+		CALL_WIN32(SetFilePointer(Handle, RegressAmount, nullptr, FILE_CURRENT));
 	}
 
 	const std::string_view File::GetFilepath() const
@@ -91,7 +87,7 @@ namespace Integrian3D::IO
 
 	int32 File::GetFilepointer() const
 	{
-		return static_cast<int32>(SetFilePointer(Handle, 0, nullptr, FILE_CURRENT));
+		return static_cast<int32>(CALL_WIN32_RV(SetFilePointer(Handle, 0, nullptr, FILE_CURRENT)));
 	}
 
 	void File::StartMonitoringFile()
@@ -231,9 +227,7 @@ namespace Integrian3D::IO
 
 	void File::WriteToFile(const char* Buffer, const int32 BufferSize)
 	{
-		auto Call = CALL_WIN32(WriteFile(Handle, Buffer, static_cast<DWORD>(BufferSize), nullptr, nullptr));
-
-		if (!Call.GetSuccess())
+		if (CALL_WIN32_RV(WriteFile(Handle, Buffer, static_cast<DWORD>(BufferSize), nullptr, nullptr)) == 0)
 		{
 			LOG(FileLog, LogErrorLevel::Warning, "File::operator<< could not write to file {}", Filepath);
 		}

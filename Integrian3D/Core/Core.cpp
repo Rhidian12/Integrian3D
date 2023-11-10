@@ -112,8 +112,6 @@ namespace Integrian3D
 
 	Core::Core() {}
 
-	PRAGMA_DISABLE_OPTIMIZATION
-
 	void Core::Shutdown()
 	{
 		SceneManager::GetInstance().ClearAllScenes();

@@ -7,6 +7,18 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#ifdef _WIN32
+
+#	include "Win32Utils/Win32APICall.h"
+
+I_DISABLE_WARNING(4005) /* warning C4005: 'APIENTRY': macro redefinition */
+#		define WIN32_LEAN_AND_MEAN
+#		include <Windows.h>
+
+I_ENABLE_WARNING(4005)
+
+#endif
+
 namespace Integrian3D
 {
 	Window::Window(const int width, const int height)
@@ -52,12 +64,13 @@ namespace Integrian3D
 
 	Window::~Window()
 	{
-		glfwTerminate();
+		// I'm not sure why, but this call produces ERROR_FILE_NOT_FOUND
+		CALL_WIN32_IGNORE_ERROR(glfwTerminate(), ERROR_FILE_NOT_FOUND);
 	}
 
 	void Window::Update()
 	{
-		__ASSERT(pWindow, "");
+		__CHECK(pWindow != nullptr);
 
 		glfwSwapBuffers(pWindow);
 

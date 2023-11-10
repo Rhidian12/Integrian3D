@@ -1,12 +1,14 @@
 #include "Timer.h"
 
-#pragma warning ( push )
-#pragma warning ( disable : 4005 ) /* warning C4005: 'APIENTRY': macro redefinition */ 
 #ifdef _WIN32
-#define WIN32_LEAN_AND_MEAN
-#include <Windows.h>
+
+#	include "Win32Utils/Win32APICall.h"
+I_DISABLE_WARNING(4005) // warning C4005: 'APIENTRY': macro redefinition
+#	include <Windows.h>
+I_ENABLE_WARNING(4005)
+
 #endif
-#pragma warning ( pop )
+
 #ifdef min
 #undef min
 #endif
@@ -57,8 +59,8 @@ namespace Integrian3D::Time
 
 	Timepoint Timer::Now()
 	{
-		const int64 frequency{ _Query_perf_frequency() };
-		const int64 counter{ _Query_perf_counter() };
+		const int64 frequency{ CALL_WIN32_RV(_Query_perf_frequency()) };
+		const int64 counter{ CALL_WIN32_RV(_Query_perf_counter()) };
 
 		static constexpr int64 NanoToMilliRatio = 1'000'000;
 		static constexpr int64 NanoRatio = 1'000'000'000;
