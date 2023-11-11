@@ -110,6 +110,9 @@ namespace Integrian3D
 			}
 		}
 
+		MaterialShader.SetInt("_NrOfPointLights", PointLightNr);
+		MaterialShader.SetInt("_NrOfDirectionalLights", DirectionalLightNr);
+
 		for (const auto& [TextureSlot, Texture] : Textures)
 		{
 			MaterialShader.SetInt(GetStringFromTextureSlot(TextureSlot), static_cast<int32>(TextureSlot));

@@ -152,7 +152,7 @@ int RunTestEngine(int, char* [])
 		TestScene->AddComponent<PointLight>(PointLightEntity, Ambient, Diffuse, Specular, 10.f, 40.f);
 		TestScene->GetComponent<TransformComponent>(PointLightEntity).Translate(Math::Vec3D{ 1.2f, 1.0f, -2.0f });
 
-		// TestScene->AddComponent<DirectionalLight>(PointLightEntity, Ambient, Diffuse, Specular, Math::Vec3D{ -0.2f, -1.0f, -0.3f });
+		TestScene->AddComponent<DirectionalLight>(PointLightEntity, Ambient, Diffuse, Specular, Math::Vec3D{ -0.2f, -1.0f, -0.3f });
 	}
 
 	{
