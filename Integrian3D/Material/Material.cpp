@@ -102,6 +102,7 @@ namespace Integrian3D
 				case LightType::PointLight:
 					MaterialShader.SetVec3(LightName + "Position", LightTransform.GetLocalLocation());
 					MaterialShader.SetFloat(LightName + "MaxRadius", static_cast<PointLight*>(Light)->GetMaxRadius());
+					MaterialShader.SetFloat(LightName + "Intensity", static_cast<PointLight*>(Light)->GetIntensity());
 					break;
 				case LightType::DirectionalLight:
 					MaterialShader.SetVec3(LightName + "Direction", static_cast<DirectionalLight*>(Light)->GetDirection());

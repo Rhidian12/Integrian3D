@@ -22,6 +22,7 @@ struct GLPointLight
     vec3 Position;
 
     float MaxRadius;
+    float Intensity;
 
     vec3 Ambient;
     vec3 Diffuse;
@@ -115,8 +116,8 @@ void main()
     vec3 LightDirection = normalize(_PointLights[0].Position - vPos);
     // vec3 LightDirection = normalize(-_DirectionalLights[0].Direction);
 
-    vec3 result = CalculateAmbient(LightType, Attenuation) + CalculateDiffuse(LightType, Normal, LightDirection, Attenuation) +
-    CalculateSpecular(LightType, Normal, LightDirection, Attenuation);
+    vec3 result = CalculateAmbient(LightType, Attenuation) + ((CalculateDiffuse(LightType, Normal, LightDirection, Attenuation) +
+    CalculateSpecular(LightType, Normal, LightDirection, Attenuation)) * _PointLights[0].Intensity);
 
     FragColor = vec4(result, 1.0);
 }

@@ -8,14 +8,18 @@ namespace Integrian3D
 	class PointLight : public Light
 	{
 	public:
-		PointLight(const Math::Vec3D& Ambient, const Math::Vec3D& Diffuse, const Math::Vec3D& Specular, const float MaxRadius);
+		PointLight(const Math::Vec3D& Ambient, const Math::Vec3D& Diffuse, const Math::Vec3D& Specular,
+			const float MaxRadius, const float Intensity);
 
 		void SetMaxRadius(const float InMaxRadius);
+		void SetIntensity(const float InIntensity);
 
-		virtual LightType GetLightType() const;
+		__NODISCARD virtual LightType GetLightType() const;
 		__NODISCARD float GetMaxRadius() const;
+		__NODISCARD float GetIntensity() const;
 
 	private:
 		float MaxRadius;
+		float Intensity;
 	};
 }
