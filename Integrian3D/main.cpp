@@ -130,7 +130,6 @@ int RunTestEngine(int, char* [])
 
 	{
 		const Entity TestEntity{ TestScene->CreateEntity() };
-		// TestScene->AddComponent<TestRotateComponent>(Entity);
 
 		UniquePtr<Material> MeshMaterial = MakeUnique<Material>("Resources/LightVertexShader.vert", "Resources/LightFragmentShader.frag");
 		MeshMaterial->SetFloat("_Material.Shininess", 32.f);
@@ -149,54 +148,25 @@ int RunTestEngine(int, char* [])
 
 		UniquePtr<Material> MeshMaterial = MakeUnique<Material>("Resources/LightVertexShader2.vert", "Resources/LightFragmentShader2.frag");
 		TestScene->AddComponent<MeshComponent>(PointLightEntity, vertices, indices, I_MOVE(MeshMaterial));
-		TestScene->AddComponent<PointLight>(PointLightEntity, Ambient, Diffuse, Specular, 10.f, 40.f);
+		TestScene->AddComponent<PointLight>(PointLightEntity, Ambient, Diffuse, Specular, 1.f, 40.f);
 		TestScene->GetComponent<TransformComponent>(PointLightEntity).Translate(Math::Vec3D{ 1.2f, 1.0f, -2.0f });
 
-		TestScene->AddComponent<DirectionalLight>(PointLightEntity, Ambient, Diffuse, Specular, Math::Vec3D{ -0.2f, -1.0f, -0.3f });
+		// TestScene->AddComponent<DirectionalLight>(PointLightEntity, Ambient, Diffuse, Specular, Math::Vec3D{ -0.2f, -1.0f, -0.3f });
 	}
 
-	{
-		for (int32 i{}; i < 10; ++i)
-		{
-			const Entity Entity{ TestScene->CreateEntity() };
-
-			TestScene->AddComponent<TestRotateComponent>(Entity);
-
-			UniquePtr<Material> MeshMaterial = MakeUnique<Material>("Resources/LightVertexShader.vert", "Resources/LightFragmentShader.frag");
-			MeshMaterial->SetFloat("_Material.Shininess", 32.f);
-
-			MeshMaterial->AddTexture(TextureSlots::Diffuse, TextureManager::GetInstance().GetTexture("Box_Diffuse"));
-			MeshMaterial->AddTexture(TextureSlots::Specular, TextureManager::GetInstance().GetTexture("Box_Specular"));
-
-			TestScene->AddComponent<MeshComponent>(Entity, vertices, indices, I_MOVE(MeshMaterial));
-
-			TestScene->GetComponent<TransformComponent>(Entity).Translate(Math::RandomVec3D(-10.f, 10.f));
-		}
-	}
-
-	TestScene->AddUpdateCallback(0, [](Scene& scene)->void
-		{
-			if (scene.CanViewBeCreated<TestRotateComponent, TransformComponent>())
-			{
-				scene.CreateView<TestRotateComponent, TransformComponent>().ForEach([](TestRotateComponent& rotate, TransformComponent& transform)->void
-					{
-						rotate.Rotate(transform);
-					});
-			}
-		});
-
-	float MaxRadius{ 10.f };
+	float MaxRadius{ TestScene->GetComponent<PointLight>(PointLightEntity).GetMaxRadius() };
 	TestScene->AddUpdateCallback(0, [&MaxRadius, PointLightEntity](Scene& Scene)->void
 		{
+			const float step{ 0.025f };
 			if (InputManager::GetInstance().GetIsKeyPressed(KeyboardInput::Up))
 			{
-				MaxRadius += 50.f;
+				MaxRadius += step;
 
 				Scene.GetComponent<PointLight>(PointLightEntity).SetMaxRadius(MaxRadius);
 			}
 			else if (InputManager::GetInstance().GetIsKeyPressed(KeyboardInput::Down))
 			{
-				MaxRadius -= 50.f;
+				MaxRadius -= step;
 				if (MaxRadius <= 0.f)
 				{
 					MaxRadius = 0.f;
