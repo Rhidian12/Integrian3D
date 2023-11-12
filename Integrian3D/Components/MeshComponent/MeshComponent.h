@@ -3,9 +3,13 @@
 #include "EngineConstants.h"
 
 #include "Array/Array.h"
+
 #include "Component/Component.h"
-#include "Math/Math.h"
+#include "Components/TransformComponent/TransformComponent.h"
+#include "TPair/TPair.h"
+
 #include "Memory/UniquePtr.h"
+
 #include "Vertex/Vertex.h"
 
 #include <string>
@@ -14,14 +18,38 @@ DEFINE_LOG_CATEGORY(LogMeshComponent, Integrian3D::LogVerbosity::Verbose);
 
 namespace Integrian3D
 {
+	class Light;
 	class Texture;
 	class Material;
 
 	class MeshComponent final : public Component
 	{
+		// a submesh is part of a model, but we're naming the outer component a "mesh"
+		struct SubMesh
+		{
+			SubMesh(const TArray<Vertex>& InVertices, const TArray<uint32>& InIndices);
+			~SubMesh();
+
+			SubMesh(const SubMesh&) noexcept = delete;
+			SubMesh(SubMesh&& other) noexcept;
+			SubMesh& operator=(const SubMesh&) noexcept = delete;
+			SubMesh& operator=(SubMesh&& other) noexcept;
+
+			void Render(const Math::Mat4D& Transform, const Math::Mat4D& View, const Math::Mat4D& Projection,
+				const Math::Vec3D& CameraPosition, const TArray<TPair<TransformComponent, Light*>>& Lights);
+			void SetupSubMesh();
+
+			TArray<Vertex> Vertices;
+			TArray<uint32> Indices;
+			TArray<UniquePtr<Material>> Materials;
+
+			uint32 VertexArrayID;
+			uint32 VertexBufferID;
+			uint32 IndexBufferID;
+		};
+
 	public:
 		MeshComponent(const std::string_view Filepath, UniquePtr<Material>&& Material);
-		MeshComponent(const TArray<Vertex>& vertices, const TArray<uint32>& indices, UniquePtr<Material>&& Material);
 		~MeshComponent();
 
 		MeshComponent(const MeshComponent&) noexcept = delete;
@@ -29,27 +57,12 @@ namespace Integrian3D
 		MeshComponent& operator=(const MeshComponent&) noexcept = delete;
 		MeshComponent& operator=(MeshComponent&& other) noexcept;
 
-		__NODISCARD Material* const GetMaterial();
-		__NODISCARD const Material* const GetMaterial() const;
+		void AddSubMesh(const TArray<Vertex>& InVertices, const TArray<uint32>& InIndices);
 
-		__NODISCARD uint32 GetVertexArrayID() const { return VertexArrayID; }
-		__NODISCARD uint32 GetIndexBufferID() const { return IndexBufferID; }
-		__NODISCARD uint32 GetVertexBufferID() const { return VertexBufferID; }
-
-		__NODISCARD const TArray<Vertex>& GetVertices() const { return Vertices; }
-		__NODISCARD const TArray<uint32>& GetIndices() const { return Indices; }
+		void Render(const Math::Mat4D& Transform, const Math::Mat4D& View, const Math::Mat4D& Projection,
+			const Math::Vec3D& CameraPosition, const TArray<TPair<TransformComponent, Light*>>& Lights);
 
 	private:
-		void SetupMesh();
-
-		uint32 VertexArrayID;
-		uint32 VertexBufferID;
-		uint32 IndexBufferID;
-
-		UniquePtr<Material> MeshMaterial;
-
-		TArray<Vertex> Vertices;
-		TArray<uint32> Indices;
-		TArray<Texture*> Textures;
+		TArray<UniquePtr<SubMesh>> SubMeshes;
 	};
 }

@@ -137,7 +137,7 @@ int RunTestEngine(int, char* [])
 		MeshMaterial->AddTexture(TextureSlots::Diffuse, TextureManager::GetInstance().GetTexture("Box_Diffuse"));
 		MeshMaterial->AddTexture(TextureSlots::Specular, TextureManager::GetInstance().GetTexture("Box_Specular"));
 
-		TestScene->AddComponent<MeshComponent>(TestEntity, vertices, indices, I_MOVE(MeshMaterial));
+		// TestScene->AddComponent<MeshComponent>(TestEntity, vertices, indices, I_MOVE(MeshMaterial));
 	}
 
 	const Entity PointLightEntity{ TestScene->CreateEntity() };
@@ -147,7 +147,7 @@ int RunTestEngine(int, char* [])
 		const Math::Vec3D Specular{ 1.f, 1.f, 1.f };
 
 		UniquePtr<Material> MeshMaterial = MakeUnique<Material>("Resources/LightVertexShader2.vert", "Resources/LightFragmentShader2.frag");
-		TestScene->AddComponent<MeshComponent>(PointLightEntity, vertices, indices, I_MOVE(MeshMaterial));
+		// TestScene->AddComponent<MeshComponent>(PointLightEntity, vertices, indices, I_MOVE(MeshMaterial));
 		TestScene->AddComponent<PointLight>(PointLightEntity, Ambient, Diffuse, Specular, 1.f, 40.f);
 		TestScene->GetComponent<TransformComponent>(PointLightEntity).Translate(Math::Vec3D{ 1.2f, 1.0f, -2.0f });
 

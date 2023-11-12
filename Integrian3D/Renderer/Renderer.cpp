@@ -68,18 +68,6 @@ namespace Integrian3D
 
 	void Renderer::Render(MeshComponent& mesh, const TransformComponent& transform) const
 	{
-		mesh.GetMaterial()->StartShader(transform.Transformation, View, Projection, CameraPosition, Lights);
-
-		/* Bind the Vertex Array ID */
-		glBindVertexArray(mesh.GetVertexArrayID());
-
-		/* Bind the ID to a vertex buffer */
-		glBindBuffer(GL_ARRAY_BUFFER, mesh.GetVertexBufferID());
-
-		/* Bind the ID to an index buffer */
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.GetIndexBufferID());
-
-		/* Render our rectangle */
-		glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(mesh.GetIndices().Size()), GL_UNSIGNED_INT, 0);
+		mesh.Render(transform.Transformation, View, Projection, CameraPosition, Lights);
 	}
 }

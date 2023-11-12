@@ -1,48 +1,138 @@
 #include "MeshComponent.h"
 
-#include "IO/File/File.h"
 #include "Material/Material.h"
-#include "Renderer/Renderer.h"
 #include "Texture/Texture.h"
+#include "IO/PathUtils.h"
 
 #include <glad/glad.h>
+
 #include <gtx/vector_angle.hpp>
-#include <sstream>
+
+// Assimp stuff
+#include <Importer.hpp>
+#include <scene.h>
+#include <postprocess.h>
 
 namespace Integrian3D
 {
-	static constexpr uint32 MeshErrorValue = std::numeric_limits<uint32>::max();
-
-	MeshComponent::MeshComponent(const std::string_view Filepath, UniquePtr<Material>&& Material)
-		: VertexArrayID{ MeshErrorValue }
-		, VertexBufferID{ MeshErrorValue }
-		, IndexBufferID{ MeshErrorValue }
-		, Vertices{}
-		, Indices{}
-		, MeshMaterial{ I_MOVE(Material) }
+	namespace
 	{
-		if (!Filepath.empty())
+		static void ProcessAssimpMesh(MeshComponent* const StaticMesh, aiMesh* const AssimpMesh, const aiScene* const AssimpScene)
 		{
-			__ASSERT(Filepath.substr(Filepath.find_last_of('.')) == ".obj", "MeshComponent can only deserialize .obj files currently");
+			TArray<Vertex> Vertices{};
+			TArray<uint32> Indices{};
 
-			// ParseObjFile(Filepath, Vertices, Indices);
+			for (uint32 i{}; i < AssimpMesh->mNumVertices; ++i)
+			{
+				Vertex Vertex{};
 
-			SetupMesh();
+				Vertex.Position.x = AssimpMesh->mVertices[i].x;
+				Vertex.Position.y = AssimpMesh->mVertices[i].y;
+				Vertex.Position.z = AssimpMesh->mVertices[i].z;
+
+				Vertex.Normal.x = AssimpMesh->mNormals[i].x;
+				Vertex.Normal.y = AssimpMesh->mNormals[i].y;
+				Vertex.Normal.z = AssimpMesh->mNormals[i].z;
+
+				if (AssimpMesh->mTextureCoords[0])
+				{
+					Vertex.UV.x = AssimpMesh->mTextureCoords[0][i].x;
+					Vertex.UV.y = AssimpMesh->mTextureCoords[0][i].y;
+				}
+
+				Vertices.Add(Vertex);
+			}
+
+			for (uint32 i{}; i < AssimpMesh->mNumFaces; ++i)
+			{
+				aiFace Face{ AssimpMesh->mFaces[i] };
+				for (uint32 j{}; j < Face.mNumIndices; ++j)
+				{
+					Indices.Add(Face.mIndices[j]);
+				}
+			}
+
+			// if (AssimpMesh->mMaterialIndex >= 0)
+			// {
+			// 	aiMaterial* const AssimpMaterial{ AssimpScene->mMaterials[AssimpMesh->mMaterialIndex] };
+			// }
+
+			StaticMesh->AddSubmesh(Vertices, Indices);
+		}
+
+		static void ProcessAssimpNode(MeshComponent* const StaticMesh, aiNode* const AssimpNode, const aiScene* const AssimpScene)
+		{
+			// process all the node's meshes, if any
+			for (uint32 i{}; i < AssimpNode->mNumMeshes; ++i)
+			{
+				aiMesh* const AssimpMesh = AssimpScene->mMeshes[AssimpNode->mMeshes[i]];
+			}
+
+			// then do the same for each of its children
+			for (uint32 i{}; i < AssimpNode->mNumChildren; ++i)
+			{
+				ProcessAssimpNode(StaticMesh, AssimpNode->mChildren[i], AssimpScene);
+			}
 		}
 	}
 
-	MeshComponent::MeshComponent(const TArray<Vertex>& vertices, const TArray<uint32>& indices, UniquePtr<Material>&& Material)
-		: VertexArrayID{ MeshErrorValue }
-		, VertexBufferID{ MeshErrorValue }
-		, IndexBufferID{ MeshErrorValue }
-		, Vertices{ vertices }
-		, Indices{ indices }
-		, MeshMaterial{ I_MOVE(Material) }
+	static constexpr uint32 MeshErrorValue = std::numeric_limits<uint32>::max();
+
+	MeshComponent::MeshComponent(const std::string_view Filepath, UniquePtr<Material>&& Material)
 	{
-		SetupMesh();
+		if (!Filepath.empty() && PathUtils::DoesFileExist(Filepath))
+		{
+			Assimp::Importer Importer;
+			const aiScene* const AssimpScene = Importer.ReadFile(Filepath.data(), aiProcess_Triangulate | aiProcess_FlipUVs);
+
+			if (!AssimpScene || (AssimpScene->mFlags & AI_SCENE_FLAGS_INCOMPLETE) || !AssimpScene->mRootNode)
+			{
+				LOG(LogMeshComponent, Error, "Error loading 3D object: {}", Importer.GetErrorString());
+				return;
+			}
+
+			ProcessAssimpNode(this, AssimpScene->mRootNode, AssimpScene);
+		}
 	}
 
-	MeshComponent::~MeshComponent()
+	MeshComponent::~MeshComponent() {}
+
+	MeshComponent::MeshComponent(MeshComponent&& other) noexcept
+		: SubMeshes{ std::move(other.SubMeshes) }
+	{}
+
+	MeshComponent& MeshComponent::operator=(MeshComponent&& other) noexcept
+	{
+		SubMeshes = std::move(other.SubMeshes);
+
+		return *this;
+	}
+
+	void MeshComponent::AddSubMesh(const TArray<Vertex>& InVertices, const TArray<uint32>& InIndices)
+	{
+		SubMeshes.EmplaceBack(InVertices, InIndices);
+	}
+
+	void MeshComponent::Render(const Math::Mat4D& Transform, const Math::Mat4D& View, const Math::Mat4D& Projection, const Math::Vec3D& CameraPosition, const TArray<TPair<TransformComponent, Light*>>& Lights)
+	{
+		for (UniquePtr<SubMesh>& SubMesh : SubMeshes)
+		{
+			SubMesh->Render(Transform, View, Projection, CameraPosition, Lights);
+		}
+	}
+
+	MeshComponent::SubMesh::SubMesh(const TArray<Vertex>& InVertices, const TArray<uint32>& InIndices)
+		: Vertices{ InVertices }
+		, Indices{ InIndices }
+		, Materials{}
+		, VertexArrayID{ MeshErrorValue }
+		, VertexBufferID{ MeshErrorValue }
+		, IndexBufferID{ MeshErrorValue }
+	{
+		SetupSubMesh();
+	}
+
+	MeshComponent::SubMesh::~SubMesh()
 	{
 		if (VertexArrayID != MeshErrorValue)
 		{
@@ -63,37 +153,35 @@ namespace Integrian3D
 		}
 	}
 
-	MeshComponent::MeshComponent(MeshComponent&& other) noexcept
+	MeshComponent::SubMesh::SubMesh(SubMesh&& other) noexcept
 		: VertexArrayID{ I_MOVE(other.VertexArrayID) }
 		, VertexBufferID{ I_MOVE(other.VertexBufferID) }
 		, IndexBufferID{ I_MOVE(other.IndexBufferID) }
 		, Vertices{ I_MOVE(other.Vertices) }
 		, Indices{ I_MOVE(other.Indices) }
-		, MeshMaterial{ I_MOVE(other.MeshMaterial) }
-		, Textures{ I_MOVE(other.Textures) }
+		, Materials{ I_MOVE(other.Materials) }
 	{
 		other.Vertices.Clear();
 		other.Indices.Clear();
-		other.Textures.Clear();
+		other.Materials.Clear();
 
 		other.VertexArrayID = MeshErrorValue;
 		other.VertexBufferID = MeshErrorValue;
 		other.IndexBufferID = MeshErrorValue;
 	}
 
-	MeshComponent& MeshComponent::operator=(MeshComponent&& other) noexcept
+	MeshComponent::SubMesh& MeshComponent::SubMesh::operator=(SubMesh&& other) noexcept
 	{
 		VertexArrayID = I_MOVE(other.VertexArrayID);
 		VertexBufferID = I_MOVE(other.VertexBufferID);
 		IndexBufferID = I_MOVE(other.IndexBufferID);
 		Vertices = I_MOVE(other.Vertices);
 		Indices = I_MOVE(other.Indices);
-		MeshMaterial = I_MOVE(other.MeshMaterial);
-		Textures = I_MOVE(other.Textures);
+		Materials = I_MOVE(other.Materials);
 
 		other.Vertices.Clear();
 		other.Indices.Clear();
-		other.Textures.Clear();
+		other.Materials.Clear();
 
 		other.VertexArrayID = MeshErrorValue;
 		other.VertexBufferID = MeshErrorValue;
@@ -102,17 +190,27 @@ namespace Integrian3D
 		return *this;
 	}
 
-	Material* const MeshComponent::GetMaterial()
+	void MeshComponent::SubMesh::Render(const Math::Mat4D& Transform, const Math::Mat4D& View, const Math::Mat4D& Projection, const Math::Vec3D& CameraPosition, const TArray<TPair<TransformComponent, Light*>>& Lights)
 	{
-		return MeshMaterial.Get();
+		for (UniquePtr<Material>& Material : Materials)
+		{
+			Material->StartShader(Transform, View, Projection, CameraPosition, Lights);
+		}
+
+		/* Bind the Vertex Array ID */
+		glBindVertexArray(VertexArrayID);
+
+		/* Bind the ID to a vertex buffer */
+		glBindBuffer(GL_ARRAY_BUFFER, VertexBufferID);
+
+		/* Bind the ID to an index buffer */
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IndexBufferID);
+
+		/* Render our rectangle */
+		glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(Indices.Size()), GL_UNSIGNED_INT, 0);
 	}
 
-	const Material* const MeshComponent::GetMaterial() const
-	{
-		return MeshMaterial.Get();
-	}
-
-	void MeshComponent::SetupMesh()
+	void MeshComponent::SubMesh::SetupSubMesh()
 	{
 		/* Generate a vertex array ID (VAO) */
 		glGenVertexArrays(1, &VertexArrayID);
