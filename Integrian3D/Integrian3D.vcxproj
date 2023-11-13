@@ -75,28 +75,28 @@
     <OutDir>$(SolutionDir)Build\$(PlatformTarget)\</OutDir>
     <IntDir>$(SolutionDir)Build-Int\$(PlatformTarget)\</IntDir>
     <IncludePath>$(SolutionDir)Libraries\glad\include;$(SolutionDir)Libraries\glfw-3.3.8\include;$(SolutionDir)Libraries\glm;$(SolutionDir)Libraries\Catch2;$(SolutionDir)Libraries\assimp\include;$(SolutionDir);$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)Libraries\glad\src;$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022;$(SolutionDir)Libraries\assimp\lib\$(Configuration)\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)Libraries\glad\src;$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022;$(SolutionDir)Libraries\assimp\lib\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)Build\$(PlatformTarget)\</OutDir>
     <IntDir>$(SolutionDir)Build-Int\$(PlatformTarget)\</IntDir>
     <IncludePath>$(SolutionDir)Libraries\glad\include;$(SolutionDir)Libraries\glfw-3.3.8\include;$(SolutionDir)Libraries\glm;$(SolutionDir)Libraries\Catch2;$(SolutionDir)Libraries\assimp\include;$(SolutionDir);$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)Libraries\glad\src;$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022;$(SolutionDir)Libraries\assimp\lib\$(Configuration)\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)Libraries\glad\src;$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022;$(SolutionDir)Libraries\assimp\lib\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)Build\$(PlatformTarget)\</OutDir>
     <IntDir>$(SolutionDir)Build-Int\$(PlatformTarget)\</IntDir>
     <IncludePath>$(SolutionDir)Libraries\glad\include;$(SolutionDir)Libraries\glfw-3.3.8\include;$(SolutionDir)Libraries\glm;$(SolutionDir)Libraries\Catch2;$(SolutionDir)Libraries\assimp\include;$(SolutionDir);$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)Libraries\glad\src;$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022;$(SolutionDir)Libraries\assimp\lib\$(Configuration)\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)Libraries\glad\src;$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022;$(SolutionDir)Libraries\assimp\lib\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)Build\$(PlatformTarget)\</OutDir>
     <IntDir>$(SolutionDir)Build-Int\$(PlatformTarget)\</IntDir>
     <IncludePath>$(SolutionDir)Libraries\glad\include;$(SolutionDir)Libraries\glfw-3.3.8\include;$(SolutionDir)Libraries\glm;$(SolutionDir)Libraries\Catch2;$(SolutionDir)Libraries\assimp\include;$(SolutionDir);$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)Libraries\glad\src;$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022;$(SolutionDir)Libraries\assimp\lib\$(Configuration)\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)Libraries\glad\src;$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022;$(SolutionDir)Libraries\assimp\lib\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -116,6 +116,7 @@
     </Link>
     <PostBuildEvent>
       <Command>xcopy "$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022\*.dll" "$(OutDir)" /y /d
+xcopy "$(SolutionDir)Libraries\assimp\lib\$(Configuration)\*.dll" "$(OutDir)" /y /d
 rmdir "$(OutDir)Resources"
 mkdir "$(OutDir)Resources"
 xcopy "$(SolutionDir)Resources\*.*" "$(OutDir)Resources\" /y /d /e /q
@@ -146,6 +147,7 @@ xcopy "$(SolutionDir)Config\*.*" "$(OutDir)Config\" /y /d /e /q</Command>
     </Link>
     <PostBuildEvent>
       <Command>xcopy "$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022\*.dll" "$(OutDir)" /y /d
+xcopy "$(SolutionDir)Libraries\assimp\lib\$(Configuration)\*.dll" "$(OutDir)" /y /d
 rmdir "$(OutDir)Resources"
 mkdir "$(OutDir)Resources"
 xcopy "$(SolutionDir)Resources\*.*" "$(OutDir)Resources\" /y /d /e /q
@@ -172,6 +174,7 @@ xcopy "$(SolutionDir)Config\*.*" "$(OutDir)Config\" /y /d /e /q</Command>
     </Link>
     <PostBuildEvent>
       <Command>xcopy "$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022\*.dll" "$(OutDir)" /y /d
+xcopy "$(SolutionDir)Libraries\assimp\lib\$(Configuration)\*.dll" "$(OutDir)" /y /d
 rmdir "$(OutDir)Resources"
 mkdir "$(OutDir)Resources"
 xcopy "$(SolutionDir)Resources\*.*" "$(OutDir)Resources\" /y /d /e /q
@@ -202,6 +205,7 @@ xcopy "$(SolutionDir)Config\*.*" "$(OutDir)Config\" /y /d /e /q</Command>
     </Link>
     <PostBuildEvent>
       <Command>xcopy "$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022\*.dll" "$(OutDir)" /y /d
+xcopy "$(SolutionDir)Libraries\assimp\lib\$(Configuration)\*.dll" "$(OutDir)" /y /d
 rmdir "$(OutDir)Resources"
 mkdir "$(OutDir)Resources"
 xcopy "$(SolutionDir)Resources\*.*" "$(OutDir)Resources\" /y /d /e /q
@@ -211,6 +215,7 @@ xcopy "$(SolutionDir)Config\*.*" "$(OutDir)Config\" /y /d /e /q</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Components\MeshComponent\AssimpLoader.cpp" />
     <ClCompile Include="Component\Component.cpp" />
     <ClCompile Include="CoreEngine.cpp" />
     <ClCompile Include="IO\FileContentCache\FileContentCache.cpp" />
@@ -274,6 +279,7 @@ xcopy "$(SolutionDir)Config\*.*" "$(OutDir)Config\" /y /d /e /q</Command>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Array\Array.h" />
+    <ClInclude Include="Components\MeshComponent\AssimpLoader.h" />
     <ClInclude Include="Component\Component.h" />
     <ClInclude Include="Config.h" />
     <ClInclude Include="ECS\ComponentIDGenerator.h" />

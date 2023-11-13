@@ -195,6 +195,9 @@
     <ClCompile Include="Timer\TimeLength.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Components\MeshComponent\AssimpLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window\Window.h">
@@ -429,6 +432,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Thread\ThreadUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\MeshComponent\AssimpLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

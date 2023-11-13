@@ -27,7 +27,7 @@ namespace Integrian3D
 		// a submesh is part of a model, but we're naming the outer component a "mesh"
 		struct SubMesh
 		{
-			SubMesh(const TArray<Vertex>& InVertices, const TArray<uint32>& InIndices);
+			SubMesh(const TArray<Vertex>& InVertices, const TArray<uint32>& InIndices, UniquePtr<Material>&& InMaterial);
 			~SubMesh();
 
 			SubMesh(const SubMesh&) noexcept = delete;
@@ -41,7 +41,7 @@ namespace Integrian3D
 
 			TArray<Vertex> Vertices;
 			TArray<uint32> Indices;
-			TArray<UniquePtr<Material>> Materials;
+			UniquePtr<Material> MeshMaterial;
 
 			uint32 VertexArrayID;
 			uint32 VertexBufferID;
@@ -49,7 +49,7 @@ namespace Integrian3D
 		};
 
 	public:
-		MeshComponent(const std::string_view Filepath, UniquePtr<Material>&& Material);
+		MeshComponent(const std::string_view Filepath);
 		~MeshComponent();
 
 		MeshComponent(const MeshComponent&) noexcept = delete;
@@ -57,7 +57,7 @@ namespace Integrian3D
 		MeshComponent& operator=(const MeshComponent&) noexcept = delete;
 		MeshComponent& operator=(MeshComponent&& other) noexcept;
 
-		void AddSubMesh(const TArray<Vertex>& InVertices, const TArray<uint32>& InIndices);
+		void AddSubMesh(const TArray<Vertex>& InVertices, const TArray<uint32>& InIndices, UniquePtr<Material>&& InMaterial);
 
 		void Render(const Math::Mat4D& Transform, const Math::Mat4D& View, const Math::Mat4D& Projection,
 			const Math::Vec3D& CameraPosition, const TArray<TPair<TransformComponent, Light*>>& Lights);

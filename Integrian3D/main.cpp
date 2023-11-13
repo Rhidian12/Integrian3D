@@ -131,13 +131,13 @@ int RunTestEngine(int, char* [])
 	{
 		const Entity TestEntity{ TestScene->CreateEntity() };
 
-		UniquePtr<Material> MeshMaterial = MakeUnique<Material>("Resources/LightVertexShader.vert", "Resources/LightFragmentShader.frag");
-		MeshMaterial->SetFloat("_Material.Shininess", 32.f);
+		//UniquePtr<Material> MeshMaterial = MakeUnique<Material>("Resources/LightVertexShader.vert", "Resources/LightFragmentShader.frag");
+		//MeshMaterial->SetFloat("_Material.Shininess", 32.f);
 
-		MeshMaterial->AddTexture(TextureSlots::Diffuse, TextureManager::GetInstance().GetTexture("Box_Diffuse"));
-		MeshMaterial->AddTexture(TextureSlots::Specular, TextureManager::GetInstance().GetTexture("Box_Specular"));
+		//MeshMaterial->AddTexture(TextureSlots::Diffuse, TextureManager::GetInstance().GetTexture("Box_Diffuse"));
+		//MeshMaterial->AddTexture(TextureSlots::Specular, TextureManager::GetInstance().GetTexture("Box_Specular"));
 
-		// TestScene->AddComponent<MeshComponent>(TestEntity, vertices, indices, I_MOVE(MeshMaterial));
+		TestScene->AddComponent<MeshComponent>(TestEntity, "Resources/Spider.obj");
 	}
 
 	const Entity PointLightEntity{ TestScene->CreateEntity() };
