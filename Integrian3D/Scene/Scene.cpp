@@ -182,9 +182,10 @@ namespace Integrian3D
 				(
 					m_ActiveCameraEntity,
 					0.1f,
-					100.f,
-					Math::ToRadians(90.f),
-					static_cast<float>(GWindow->GetWidth() / GWindow->GetHeight())
+					10000.f,
+					Math::ToRadians(45.f),
+					static_cast<float>(GWindow->GetWidth() / GWindow->GetHeight()),
+					100.f
 					);
 
 			IniFile EngineIni{ "Config/Engine.ini" };

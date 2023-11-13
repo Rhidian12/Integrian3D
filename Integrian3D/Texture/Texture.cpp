@@ -32,8 +32,7 @@ namespace Integrian3D
 		ICHECK_MSG(pData != nullptr, "Texture could not be loaded from filepath {}", filePath);
 
 		/* Create Texture */
-		const std::string_view fileExtension{ filePath.substr(filePath.find_last_of('.')) };
-		if (fileExtension == ".png" || fileExtension == ".tiff")
+		if (nrOfChannels == 4)
 		{
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, Width, Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pData);
 		}

@@ -73,6 +73,7 @@ int RunTestEngine(int, char* [])
 
 	TextureManager::GetInstance().AddTexture("Box_Diffuse", "Resources/box.png");
 	TextureManager::GetInstance().AddTexture("Box_Specular", "Resources/box_specular.png");
+	TextureManager::GetInstance().AddTexture("Cube_1_Diffuse", "Resources/T_Cube1.png");
 
 	Scene* TestScene{ SceneManager::GetInstance().AddScene<Scene>("TestScene") };
 
@@ -129,15 +130,21 @@ int RunTestEngine(int, char* [])
 	}
 
 	{
-		const Entity TestEntity{ TestScene->CreateEntity() };
+		for (int32 i{}; i < 3; ++i)
+		{
+			const Entity TestEntity{ TestScene->CreateEntity() };
 
-		//UniquePtr<Material> MeshMaterial = MakeUnique<Material>("Resources/LightVertexShader.vert", "Resources/LightFragmentShader.frag");
-		//MeshMaterial->SetFloat("_Material.Shininess", 32.f);
+			UniquePtr<Material> MeshMaterial = MakeUnique<Material>("Resources/LightVertexShader.vert", "Resources/LightFragmentShader.frag");
+			MeshMaterial->SetFloat("_Material.Shininess", 32.f);
 
-		//MeshMaterial->AddTexture(TextureSlots::Diffuse, TextureManager::GetInstance().GetTexture("Box_Diffuse"));
-		//MeshMaterial->AddTexture(TextureSlots::Specular, TextureManager::GetInstance().GetTexture("Box_Specular"));
+			MeshMaterial->AddTexture(TextureSlots::Diffuse, TextureManager::GetInstance().GetTexture("Cube_1_Diffuse"));
+			// MeshMaterial->AddTexture(TextureSlots::Specular, TextureManager::GetInstance().GetTexture("Box_Specular"));
 
-		TestScene->AddComponent<MeshComponent>(TestEntity, "Resources/Spider.obj");
+			MeshComponent& Cube_1 = TestScene->AddComponent<MeshComponent>(TestEntity, "Resources/Cube_1.obj");
+			Cube_1.AddMaterial(0, std::move(MeshMaterial));
+
+			TestScene->GetComponent<TransformComponent>(TestEntity).Translate(Math::Vec3D{ i * 101.f, 0.f, -100.f });
+		}
 	}
 
 	const Entity PointLightEntity{ TestScene->CreateEntity() };
@@ -148,35 +155,33 @@ int RunTestEngine(int, char* [])
 
 		UniquePtr<Material> MeshMaterial = MakeUnique<Material>("Resources/LightVertexShader2.vert", "Resources/LightFragmentShader2.frag");
 		// TestScene->AddComponent<MeshComponent>(PointLightEntity, vertices, indices, I_MOVE(MeshMaterial));
-		TestScene->AddComponent<PointLight>(PointLightEntity, Ambient, Diffuse, Specular, 1.f, 40.f);
-		TestScene->GetComponent<TransformComponent>(PointLightEntity).Translate(Math::Vec3D{ 1.2f, 1.0f, -2.0f });
+		// TestScene->AddComponent<PointLight>(PointLightEntity, Ambient, Diffuse, Specular, 1.f, 40.f);
+		// TestScene->GetComponent<TransformComponent>(PointLightEntity).Translate(Math::Vec3D{ 1.2f, 1.0f, -2.0f });
 
-		// TestScene->AddComponent<DirectionalLight>(PointLightEntity, Ambient, Diffuse, Specular, Math::Vec3D{ -0.2f, -1.0f, -0.3f });
+		TestScene->AddComponent<DirectionalLight>(PointLightEntity, Ambient, Diffuse, Specular, Math::Vec3D{ -0.2f, -1.0f, -0.3f });
 	}
 
-	float MaxRadius{ TestScene->GetComponent<PointLight>(PointLightEntity).GetMaxRadius() };
-	TestScene->AddUpdateCallback(0, [&MaxRadius, PointLightEntity](Scene& Scene)->void
-		{
-			const float step{ 0.025f };
-			if (InputManager::GetInstance().GetIsKeyPressed(KeyboardInput::Up))
-			{
-				MaxRadius += step;
+	//float MaxRadius{ TestScene->GetComponent<PointLight>(PointLightEntity).GetMaxRadius() };
+	//TestScene->AddUpdateCallback(0, [&MaxRadius, PointLightEntity](Scene& Scene)->void
+	//	{
+	//		const float step{ 0.025f };
+	//		if (InputManager::GetInstance().GetIsKeyPressed(KeyboardInput::Up))
+	//		{
+	//			MaxRadius += step;
 
-				Scene.GetComponent<PointLight>(PointLightEntity).SetMaxRadius(MaxRadius);
-			}
-			else if (InputManager::GetInstance().GetIsKeyPressed(KeyboardInput::Down))
-			{
-				MaxRadius -= step;
-				if (MaxRadius <= 0.f)
-				{
-					MaxRadius = 0.f;
-				}
+	//			Scene.GetComponent<PointLight>(PointLightEntity).SetMaxRadius(MaxRadius);
+	//		}
+	//		else if (InputManager::GetInstance().GetIsKeyPressed(KeyboardInput::Down))
+	//		{
+	//			MaxRadius -= step;
+	//			if (MaxRadius <= 0.f)
+	//			{
+	//				MaxRadius = 0.f;
+	//			}
 
-				Scene.GetComponent<PointLight>(PointLightEntity).SetMaxRadius(MaxRadius);
-			}
-
-			LOG(Log, LogErrorLevel::Log, "Max Radius: {}", MaxRadius);
-		});
+	//			Scene.GetComponent<PointLight>(PointLightEntity).SetMaxRadius(MaxRadius);
+	//		}
+	//	});
 
 	core.Run();
 

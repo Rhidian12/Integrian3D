@@ -43,6 +43,14 @@ namespace Integrian3D
 		SubMeshes.EmplaceBack(MakeUnique<MeshComponent::SubMesh>(InVertices, InIndices, std::move(InMaterial)));
 	}
 
+	void MeshComponent::AddMaterial(const int32 Index, UniquePtr<Material>&& InMaterial)
+	{
+		if (Index >= 0 && Index < SubMeshes.Size())
+		{
+			SubMeshes[Index]->MeshMaterial = std::move(InMaterial);
+		}
+	}
+
 	void MeshComponent::Render(const Math::Mat4D& Transform, const Math::Mat4D& View, const Math::Mat4D& Projection, const Math::Vec3D& CameraPosition, const TArray<TPair<TransformComponent, Light*>>& Lights)
 	{
 		for (UniquePtr<SubMesh>& SubMesh : SubMeshes)

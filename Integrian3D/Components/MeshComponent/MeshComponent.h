@@ -58,6 +58,7 @@ namespace Integrian3D
 		MeshComponent& operator=(MeshComponent&& other) noexcept;
 
 		void AddSubMesh(const TArray<Vertex>& InVertices, const TArray<uint32>& InIndices, UniquePtr<Material>&& InMaterial);
+		void AddMaterial(const int32 Index, UniquePtr<Material>&& InMaterial);
 
 		void Render(const Math::Mat4D& Transform, const Math::Mat4D& View, const Math::Mat4D& Projection,
 			const Math::Vec3D& CameraPosition, const TArray<TPair<TransformComponent, Light*>>& Lights);
