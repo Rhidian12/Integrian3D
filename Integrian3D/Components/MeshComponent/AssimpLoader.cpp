@@ -53,6 +53,9 @@ namespace Integrian3D::AssimpWrapper
 		{
 			aiMaterial* const AssimpMaterial{ AssimpScene->mMaterials[AssimpMesh->mMaterialIndex] };
 
+			aiString Str;
+			auto test = AssimpMaterial->Get(AI_MATKEY_NAME, Str);
+
 			// [CRINGE]: Only 1 map allowed per type
 			if (AssimpMaterial->GetTextureCount(aiTextureType_DIFFUSE) > 0)
 			{

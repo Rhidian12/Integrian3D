@@ -1,5 +1,4 @@
 [CoreLog] Finished initialisation of engine
 [ThreadingLog] Starting Task with ID 0
-[ShaderLog] 131218: PERFORMANCE of MEDIUM severity, raised from API: Program/shader state performance warning: Vertex shader in program 9 is being recompiled based on GL state.
 [ThreadingLog] Finishing Task with ID 0
 [CoreLog] Shutdown of Engine is complete
