@@ -15,7 +15,6 @@ namespace Integrian3D
 	class Light : public Component
 	{
 	public:
-		Light(const Math::Vec3D& Ambient, const Math::Vec3D& Diffuse, const Math::Vec3D& Specular);
 		virtual ~Light() = default;
 
 		virtual LightType GetLightType() const = 0;

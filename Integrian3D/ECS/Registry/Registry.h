@@ -45,18 +45,6 @@ namespace Integrian3D
 
 			return static_cast<ComponentArray<T>*>(pool.get())->AddComponent(entity);
 		}
-		template<typename T, typename ... Ts>
-		T& AddComponent(const Entity entity, Ts&& ... args)
-		{
-			std::unique_ptr<IComponentArray>& pool{ GetComponentArray(ECS::GenerateComponentID<T>()) };
-
-			if (!pool)
-			{
-				pool.reset(new ComponentArray<T>{});
-			}
-
-			return static_cast<ComponentArray<T>*>(pool.get())->AddComponent(entity, std::forward<Ts>(args)...);
-		}
 
 		template<typename T>
 		void RemoveComponent(const Entity entity)

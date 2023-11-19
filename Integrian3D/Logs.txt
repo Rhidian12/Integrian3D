@@ -1,4 +1,7 @@
 [CoreLog] Finished initialisation of engine
 [ThreadingLog] Starting Task with ID 0
+[Log] Transform: -5.754236, 0. 18.21818
+[Log] Transform: -87.87365, 0. 27.454557
+[Log] Transform: -144.02, 0. 42.1604
 [ThreadingLog] Finishing Task with ID 0
 [CoreLog] Shutdown of Engine is complete

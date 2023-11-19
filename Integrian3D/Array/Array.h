@@ -441,6 +441,11 @@ namespace Integrian3D
 			return std::numeric_limits<int32>::max();
 		}
 
+		__NODISCARD constexpr bool IsIndexValid(const int32 Index) const
+		{
+			return Index >= 0 && Index < Size();
+		}
+
 		__NODISCARD constexpr bool operator==(const Array& other) const
 		{
 			const int32 size{ Size() };

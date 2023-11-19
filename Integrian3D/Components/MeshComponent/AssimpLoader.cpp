@@ -103,6 +103,31 @@ namespace Integrian3D::AssimpWrapper
 
 		ProcessAssimpNode(StaticMesh, AssimpScene->mRootNode, AssimpScene);
 
+		for (uint32 i{}; i < AssimpScene->mRootNode->mNumChildren; ++i)
+		{
+			aiNode* AssimpNode = AssimpScene->mRootNode->mChildren[i];
+			aiMatrix4x4 Transform = AssimpNode->mTransformation;
+			aiNode* Node{ AssimpNode->mParent };
+
+			while (Node != nullptr)
+			{
+				Transform *= Node->mTransformation;
+				Node = Node->mParent;
+			}
+
+			Math::Mat4D TransformationGLM
+			{
+				Transform.a1, Transform.b1, Transform.c1, Transform.d1,
+				Transform.a2, Transform.b2, Transform.c2, Transform.d2,
+				Transform.a3, Transform.b3, Transform.c3, Transform.d3,
+				Transform.a4, Transform.b4, Transform.c4, Transform.d4
+			};
+
+			StaticMesh->TransformSubMesh(i, TransformationGLM);
+
+			LOG(Log, LogErrorLevel::Log, "Transform: {}, {}. {}", Transform.a4, Transform.b4, Transform.c4);
+		}
+
 		return true;
 	}
 

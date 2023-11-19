@@ -2,12 +2,14 @@
 
 namespace Integrian3D
 {
-	PointLight::PointLight(const Math::Vec3D& Ambient, const Math::Vec3D& Diffuse, const Math::Vec3D& Specular,
-		const float MaxRadius, const float Intensity)
-		: Light(Ambient, Diffuse, Specular)
-		, MaxRadius{ MaxRadius }
-		, Intensity{ Intensity }
-	{}
+	void PointLight::Initialize(Scene* const, const Entity, const Math::Vec3D& InAmbient, const Math::Vec3D& InDiffuse, const Math::Vec3D& InSpecular, const float InMaxRadius, const float InIntensity)
+	{
+		Ambient = InAmbient;
+		Diffuse = InDiffuse;
+		Specular = InSpecular;
+		MaxRadius = InMaxRadius;
+		Intensity = InIntensity;
+	}
 
 	void PointLight::SetMaxRadius(const float InMaxRadius)
 	{

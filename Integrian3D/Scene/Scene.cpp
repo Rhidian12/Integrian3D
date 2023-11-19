@@ -178,7 +178,7 @@ namespace Integrian3D
 		{
 			m_ActiveCameraEntity = CreateEntity();
 
-			m_Registry.AddComponent<FreeCameraComponent>
+			AddComponent<FreeCameraComponent>
 				(
 					m_ActiveCameraEntity,
 					0.1f,

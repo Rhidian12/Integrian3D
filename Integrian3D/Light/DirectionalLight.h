@@ -5,10 +5,12 @@
 
 namespace Integrian3D
 {
+	class Scene;
+
 	class DirectionalLight : public Light
 	{
 	public:
-		DirectionalLight(const Math::Vec3D& Ambient, const Math::Vec3D& Diffuse, const Math::Vec3D& Specular, const Math::Vec3D& Direction);
+		void Initialize(Scene* const Scene, const Entity Entity, const Math::Vec3D& InAmbient, const Math::Vec3D& InDiffuse, const Math::Vec3D& InSpecular, const Math::Vec3D& InDirection);
 
 		virtual LightType GetLightType() const;
 

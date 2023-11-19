@@ -11,15 +11,17 @@
 
 namespace Integrian3D
 {
-	FreeCameraComponent::FreeCameraComponent(const float nearPlane, const float farPlane, const float fov, const float aspectRatio, const float speed)
-		: m_NearPlane{ nearPlane }
-		, m_FarPlane{ farPlane }
-		, m_FOV{ fov }
-		, m_AspectRatio{ aspectRatio }
-		, m_Speed{ speed }
-		, m_View{ 1.f }
-		, m_Projection{ 1.f }
+	FreeCameraComponent::FreeCameraComponent() {}
+
+	void FreeCameraComponent::Initialize(Scene* const, const Entity, const float nearPlane, const float farPlane, const float fov,
+		const float aspectRatio, const float speed)
 	{
+		m_NearPlane = nearPlane;
+		m_FarPlane = farPlane;
+		m_FOV = fov;
+		m_AspectRatio = aspectRatio;
+		m_Speed = speed;
+
 		const Math::Vec3D startPos{ 0.f, 0.f, -3.f };
 		m_View = glm::lookAt(startPos, startPos + Math::Forward, Math::Up);
 		m_Projection = glm::perspective(m_FOV, m_AspectRatio, m_NearPlane, m_FarPlane);

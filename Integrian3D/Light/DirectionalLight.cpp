@@ -2,10 +2,13 @@
 
 namespace Integrian3D
 {
-	DirectionalLight::DirectionalLight(const Math::Vec3D& Ambient, const Math::Vec3D& Diffuse, const Math::Vec3D& Specular, const Math::Vec3D& Direction)
-		: Light{ Ambient, Diffuse, Specular }
-		, Direction{ Direction }
-	{}
+	void DirectionalLight::Initialize(Scene* const, const Entity, const Math::Vec3D& InAmbient, const Math::Vec3D& InDiffuse, const Math::Vec3D& InSpecular, const Math::Vec3D& InDirection)
+	{
+		Ambient = InAmbient;
+		Diffuse = InDiffuse;
+		Specular = InSpecular;
+		Direction = InDirection;
+	}
 
 	LightType DirectionalLight::GetLightType() const
 	{

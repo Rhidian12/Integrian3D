@@ -1,14 +1,16 @@
 #pragma once
 
+#include "Macros.h"
+
 #include <type_traits>
 
 namespace Integrian3D::TUtils
 {
-#ifdef _MSC_VER
-#define __FUNCTION_NAME__ __FUNCSIG__
-#elif
-#define __FUNCTION_NAME__ __PRETTY_FUNCTION__
-#endif
+	#ifdef _MSC_VER
+	#define __FUNCTION_NAME__ __FUNCSIG__
+	#else
+	#define __FUNCTION_NAME__ __PRETTY_FUNCTION__
+	#endif
 
 	template<typename ...>
 	using Void = void;

@@ -5,11 +5,13 @@
 
 namespace Integrian3D
 {
+	class Scene;
+
 	class PointLight : public Light
 	{
 	public:
-		PointLight(const Math::Vec3D& Ambient, const Math::Vec3D& Diffuse, const Math::Vec3D& Specular,
-			const float MaxRadius, const float Intensity);
+		void Initialize(Scene* const Scene, const Entity Entity, const Math::Vec3D& InAmbient, const Math::Vec3D& InDiffuse,
+			const Math::Vec3D& InSpecular, const float InMaxRadius, const float InIntensity);
 
 		void SetMaxRadius(const float InMaxRadius);
 		void SetIntensity(const float InIntensity);

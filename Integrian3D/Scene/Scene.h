@@ -1,11 +1,13 @@
 #pragma once
 
-#include "../EngineConstants.h"
+#include "EngineConstants.h"
 
-#include "../TPair/TPair.h"
-#include "../ECS/Registry/Registry.h"
-#include "../ECS/View/View.h"
+#include "ECS/Registry/Registry.h"
+#include "ECS/View/View.h"
 
+#include "TPair/TPair.h"
+
+#include <concepts>
 #include <functional>
 #include <string>
 #include <string_view>
@@ -13,6 +15,15 @@
 namespace Integrian3D
 {
 	class FreeCameraComponent;
+
+	namespace Detail
+	{
+		template<typename T, typename ... Ts>
+		concept HasInitialize = requires (T Temp, Ts ... Args)
+		{
+			{ Temp.Initialize(nullptr, static_cast<Entity>(0), std::forward<Ts>(Args)...) } -> std::same_as<void>;
+		};
+	}
 
 	class Scene final
 	{
@@ -42,9 +53,29 @@ namespace Integrian3D
 		__NODISCARD View<Ts...> CreateView() { return m_Registry.CreateView<Ts...>(); }
 
 		template<typename T>
-		T& AddComponent(const Entity entity) { return m_Registry.AddComponent<T>(entity); }
+		T& AddComponent(const Entity entity)
+		{
+			T& Component = m_Registry.AddComponent<T>(entity);
+
+			if constexpr (Detail::HasInitialize<T>)
+			{
+				Component.Initialize(this, entity);
+			}
+
+			return Component;
+		}
 		template<typename T, typename ... Ts>
-		T& AddComponent(const Entity entity, Ts&& ... args) { return m_Registry.AddComponent<T>(entity, std::forward<Ts>(args)...); }
+		T& AddComponent(const Entity entity, Ts&& ... args)
+		{
+			T& Component = m_Registry.AddComponent<T>(entity);
+
+			if constexpr (Detail::HasInitialize<T, Ts...>)
+			{
+				Component.Initialize(this, entity, std::forward<Ts>(args)...);
+			}
+
+			return Component;
+		}
 
 		template<typename T>
 		void RemoveComponent(const Entity entity) { m_Registry.RemoveComponent<T>(entity); }

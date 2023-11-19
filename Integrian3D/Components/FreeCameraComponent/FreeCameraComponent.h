@@ -8,14 +8,17 @@
 namespace Integrian3D
 {
 	class TransformComponent;
+	class Scene;
 
 	// Can be inherited from
 	class FreeCameraComponent : public Component
 	{
 	public:
-		FreeCameraComponent(const float nearPlane, const float farPlane, const float fov,
-			const float aspectRatio, const float speed = 10.f);
+		FreeCameraComponent();
 		virtual ~FreeCameraComponent() = default;
+
+		void Initialize(Scene* const Scene, const Entity Entity, const float nearPlane, const float farPlane, const float fov,
+			const float aspectRatio, const float speed = 10.f);
 
 		void UpdateView(const TransformComponent& transform);
 		void UpdateTranslation(TransformComponent& transform);

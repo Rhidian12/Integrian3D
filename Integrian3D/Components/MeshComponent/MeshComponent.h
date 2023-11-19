@@ -6,6 +6,8 @@
 
 #include "Component/Component.h"
 #include "Components/TransformComponent/TransformComponent.h"
+
+#include "Math/Math.h"
 #include "TPair/TPair.h"
 
 #include "Memory/UniquePtr.h"
@@ -21,6 +23,7 @@ namespace Integrian3D
 	class Light;
 	class Texture;
 	class Material;
+	class Scene;
 
 	class MeshComponent final : public Component
 	{
@@ -43,13 +46,15 @@ namespace Integrian3D
 			TArray<uint32> Indices;
 			UniquePtr<Material> MeshMaterial;
 
+			Math::Mat4D Translation;
+
 			uint32 VertexArrayID;
 			uint32 VertexBufferID;
 			uint32 IndexBufferID;
 		};
 
 	public:
-		MeshComponent(const std::string_view Filepath);
+		MeshComponent();
 		~MeshComponent();
 
 		MeshComponent(const MeshComponent&) noexcept = delete;
@@ -57,8 +62,11 @@ namespace Integrian3D
 		MeshComponent& operator=(const MeshComponent&) noexcept = delete;
 		MeshComponent& operator=(MeshComponent&& other) noexcept;
 
+		void Initialize(Scene* const Scene, const Entity Entity, const std::string_view Filepath);
+
 		void AddSubMesh(const TArray<Vertex>& InVertices, const TArray<uint32>& InIndices, UniquePtr<Material>&& InMaterial);
 		void AddMaterial(const int32 Index, UniquePtr<Material>&& InMaterial);
+		void TransformSubMesh(const int32 Index, const Math::Mat4D& Transformation);
 
 		void Render(const Math::Mat4D& Transform, const Math::Mat4D& View, const Math::Mat4D& Projection,
 			const Math::Vec3D& CameraPosition, const TArray<TPair<TransformComponent, Light*>>& Lights);

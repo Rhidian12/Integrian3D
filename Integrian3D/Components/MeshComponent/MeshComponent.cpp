@@ -13,17 +13,7 @@ namespace Integrian3D
 {
 	static constexpr uint32 MeshErrorValue = std::numeric_limits<uint32>::max();
 
-	MeshComponent::MeshComponent(const std::string_view Filepath)
-	{
-		if (!Filepath.empty() && PathUtils::DoesFileExist(Filepath))
-		{
-			std::string ErrorStr;
-			if (!AssimpWrapper::LoadModel(this, Filepath.data(), ErrorStr))
-			{
-				LOG(LogMeshComponent, LogErrorLevel::Error, "Error loading 3D object: {}", ErrorStr);
-			}
-		}
-	}
+	MeshComponent::MeshComponent() {}
 
 	MeshComponent::~MeshComponent() {}
 
@@ -36,6 +26,18 @@ namespace Integrian3D
 		SubMeshes = std::move(other.SubMeshes);
 
 		return *this;
+	}
+
+	void MeshComponent::Initialize(Scene* const, const Entity, const std::string_view Filepath)
+	{
+		if (!Filepath.empty() && PathUtils::DoesFileExist(Filepath))
+		{
+			std::string ErrorStr;
+			if (!AssimpWrapper::LoadModel(this, Filepath.data(), ErrorStr))
+			{
+				LOG(LogMeshComponent, LogErrorLevel::Error, "Error loading 3D object: {}", ErrorStr);
+			}
+		}
 	}
 
 	void MeshComponent::AddSubMesh(const TArray<Vertex>& InVertices, const TArray<uint32>& InIndices, UniquePtr<Material>&& InMaterial)
@@ -51,11 +53,19 @@ namespace Integrian3D
 		}
 	}
 
+	void MeshComponent::TransformSubMesh(const int32 Index, const Math::Mat4D& Transformation)
+	{
+		IASSERT(SubMeshes.IsIndexValid(Index));
+
+		SubMeshes[Index]->Translation = Transformation * 4.f;
+	}
+
 	void MeshComponent::Render(const Math::Mat4D& Transform, const Math::Mat4D& View, const Math::Mat4D& Projection, const Math::Vec3D& CameraPosition, const TArray<TPair<TransformComponent, Light*>>& Lights)
 	{
+		// SubMeshes[2]->Render(Transform, View, Projection, CameraPosition, Lights);
 		for (UniquePtr<SubMesh>& SubMesh : SubMeshes)
 		{
-			SubMesh->Render(Transform, View, Projection, CameraPosition, Lights);
+			SubMesh->Render(Transform + SubMesh->Translation, View, Projection, CameraPosition, Lights);
 		}
 	}
 

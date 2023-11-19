@@ -140,7 +140,7 @@ int RunTestEngine(int, char* [])
 			MeshMaterial->AddTexture(TextureSlots::Diffuse, TextureManager::GetInstance().GetTexture("Cube_1_Diffuse"));
 			// MeshMaterial->AddTexture(TextureSlots::Specular, TextureManager::GetInstance().GetTexture("Box_Specular"));
 
-			MeshComponent& Cube_1 = TestScene->AddComponent<MeshComponent>(TestEntity, "Resources/ugly_cubes.fbx");
+			/*MeshComponent& Cube_1 = */TestScene->AddComponent<MeshComponent>(TestEntity, "Resources/ugly_cubes.fbx");
 			// Cube_1.AddMaterial(0, std::move(MeshMaterial));
 
 			// TestScene->GetComponent<TransformComponent>(TestEntity).Translate(Math::Vec3D{ i * 101.f, 0.f, -100.f });

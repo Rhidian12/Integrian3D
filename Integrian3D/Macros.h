@@ -35,3 +35,6 @@
 #define I_DISABLE_WARNING(WarningNr)	__pragma(warning( push )) \
 										__pragma(warning(disable:WarningNr))
 #define I_ENABLE_WARNING(WarningNr)	__pragma(warning( pop ))
+
+#define CONCAT_IMPL(x, y) x ## y
+#define MACRO_CONCAT(x, y) CONCAT_IMPL(x, y)
