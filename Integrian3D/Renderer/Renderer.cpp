@@ -19,7 +19,7 @@
 namespace Integrian3D
 {
 	Renderer::Renderer()
-		: bShouldRenderWireframe{}
+		: bShouldRenderWireframe{ true }
 	{
 		glEnable(GL_DEPTH_TEST);
 	}

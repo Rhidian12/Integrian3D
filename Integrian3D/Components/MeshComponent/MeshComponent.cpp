@@ -57,7 +57,7 @@ namespace Integrian3D
 	{
 		IASSERT(SubMeshes.IsIndexValid(Index));
 
-		SubMeshes[Index]->Translation = Transformation * 4.f;
+		SubMeshes[Index]->Translation = Transformation;
 	}
 
 	void MeshComponent::Render(const Math::Mat4D& Transform, const Math::Mat4D& View, const Math::Mat4D& Projection, const Math::Vec3D& CameraPosition, const TArray<TPair<TransformComponent, Light*>>& Lights)
