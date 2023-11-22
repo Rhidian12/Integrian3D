@@ -74,28 +74,28 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)Build\$(PlatformTarget)\</OutDir>
     <IntDir>$(SolutionDir)Build-Int\$(PlatformTarget)\</IntDir>
-    <IncludePath>$(SolutionDir)Libraries\glad\include;$(SolutionDir)Libraries\glfw-3.3.8\include;$(SolutionDir)Libraries\glm;$(SolutionDir)Libraries\Catch2;$(SolutionDir)Libraries\assimp\include;$(SolutionDir);$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Libraries\glad\include;$(SolutionDir)Libraries\glfw-3.3.8\include;$(SolutionDir)Libraries\glm;$(SolutionDir)Libraries\Catch2;$(SolutionDir)Libraries\assimp\include;$(SolutionDir)\Libraries\imgui;$(SolutionDir)\Libraries\imgui\imgui.h;$(SolutionDir)\Libraries\imgui\imgui_impl_glfw.h;$(SolutionDir)\Libraries\imgui\imgui_impl_opengl3.h;$(SolutionDir);$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)Libraries\glad\src;$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022;$(SolutionDir)Libraries\assimp\lib\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)Build\$(PlatformTarget)\</OutDir>
     <IntDir>$(SolutionDir)Build-Int\$(PlatformTarget)\</IntDir>
-    <IncludePath>$(SolutionDir)Libraries\glad\include;$(SolutionDir)Libraries\glfw-3.3.8\include;$(SolutionDir)Libraries\glm;$(SolutionDir)Libraries\Catch2;$(SolutionDir)Libraries\assimp\include;$(SolutionDir);$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Libraries\glad\include;$(SolutionDir)Libraries\glfw-3.3.8\include;$(SolutionDir)Libraries\glm;$(SolutionDir)Libraries\Catch2;$(SolutionDir)Libraries\assimp\include;$(SolutionDir)\Libraries\imgui;$(SolutionDir)\Libraries\imgui\imgui.h;$(SolutionDir)\Libraries\imgui\imgui_impl_glfw.h;$(SolutionDir)\Libraries\imgui\imgui_impl_opengl3.h;$(SolutionDir);$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)Libraries\glad\src;$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022;$(SolutionDir)Libraries\assimp\lib\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)Build\$(PlatformTarget)\</OutDir>
     <IntDir>$(SolutionDir)Build-Int\$(PlatformTarget)\</IntDir>
-    <IncludePath>$(SolutionDir)Libraries\glad\include;$(SolutionDir)Libraries\glfw-3.3.8\include;$(SolutionDir)Libraries\glm;$(SolutionDir)Libraries\Catch2;$(SolutionDir)Libraries\assimp\include;$(SolutionDir);$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Libraries\glad\include;$(SolutionDir)Libraries\glfw-3.3.8\include;$(SolutionDir)Libraries\glm;$(SolutionDir)Libraries\Catch2;$(SolutionDir)Libraries\assimp\include;$(SolutionDir)\Libraries\imgui;$(SolutionDir)\Libraries\imgui\imgui.h;$(SolutionDir)\Libraries\imgui\imgui_impl_glfw.h;$(SolutionDir)\Libraries\imgui\imgui_impl_opengl3.h;$(SolutionDir);$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)Libraries\glad\src;$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022;$(SolutionDir)Libraries\assimp\lib\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)Build\$(PlatformTarget)\</OutDir>
     <IntDir>$(SolutionDir)Build-Int\$(PlatformTarget)\</IntDir>
-    <IncludePath>$(SolutionDir)Libraries\glad\include;$(SolutionDir)Libraries\glfw-3.3.8\include;$(SolutionDir)Libraries\glm;$(SolutionDir)Libraries\Catch2;$(SolutionDir)Libraries\assimp\include;$(SolutionDir);$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Libraries\glad\include;$(SolutionDir)Libraries\glfw-3.3.8\include;$(SolutionDir)Libraries\glm;$(SolutionDir)Libraries\Catch2;$(SolutionDir)Libraries\assimp\include;$(SolutionDir)\Libraries\imgui;$(SolutionDir)\Libraries\imgui\imgui.h;$(SolutionDir)\Libraries\imgui\imgui_impl_glfw.h;$(SolutionDir)\Libraries\imgui\imgui_impl_opengl3.h;$(SolutionDir);$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)Libraries\glad\src;$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022;$(SolutionDir)Libraries\assimp\lib\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -104,7 +104,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Libraries\glad\include;$(SolutionDir)Libraries\glfw-3.3.8\include;$(SolutionDir)Libraries\glm;$(SolutionDir)Libraries\Catch2;$(SolutionDir)Libraries\assimp\include;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Libraries\glad\include;$(SolutionDir)Libraries\glfw-3.3.8\include;$(SolutionDir)Libraries\glm;$(SolutionDir)Libraries\Catch2;$(SolutionDir)Libraries\assimp\include;$(SolutionDir)\Libraries\imgui;$(SolutionDir)\Libraries\imgui\imgui.h;$(SolutionDir)\Libraries\imgui\imgui_impl_glfw.h;$(SolutionDir)\Libraries\imgui\imgui_impl_opengl3.h;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
@@ -133,7 +133,7 @@ xcopy "$(SolutionDir)Config\*.*" "$(OutDir)Config\" /y /d /e /q</Command>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Libraries\glad\include;$(SolutionDir)Libraries\glfw-3.3.8\include;$(SolutionDir)Libraries\glm;$(SolutionDir)Libraries\Catch2;$(SolutionDir)Libraries\assimp\include;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Libraries\glad\include;$(SolutionDir)Libraries\glfw-3.3.8\include;$(SolutionDir)Libraries\glm;$(SolutionDir)Libraries\Catch2;$(SolutionDir)Libraries\assimp\include;$(SolutionDir)\Libraries\imgui;$(SolutionDir)\Libraries\imgui\imgui.h;$(SolutionDir)\Libraries\imgui\imgui_impl_glfw.h;$(SolutionDir)\Libraries\imgui\imgui_impl_opengl3.h;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
@@ -162,7 +162,7 @@ xcopy "$(SolutionDir)Config\*.*" "$(OutDir)Config\" /y /d /e /q</Command>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Libraries\glad\include;$(SolutionDir)Libraries\glfw-3.3.8\include;$(SolutionDir)Libraries\glm;$(SolutionDir)Libraries\Catch2;$(SolutionDir)Libraries\assimp\include;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Libraries\glad\include;$(SolutionDir)Libraries\glfw-3.3.8\include;$(SolutionDir)Libraries\glm;$(SolutionDir)Libraries\Catch2;$(SolutionDir)Libraries\assimp\include;$(SolutionDir)\Libraries\imgui;$(SolutionDir)\Libraries\imgui\imgui.h;$(SolutionDir)\Libraries\imgui\imgui_impl_glfw.h;$(SolutionDir)\Libraries\imgui\imgui_impl_opengl3.h;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
@@ -191,7 +191,7 @@ xcopy "$(SolutionDir)Config\*.*" "$(OutDir)Config\" /y /d /e /q</Command>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Libraries\glad\include;$(SolutionDir)Libraries\glfw-3.3.8\include;$(SolutionDir)Libraries\glm;$(SolutionDir)Libraries\Catch2;$(SolutionDir)Libraries\assimp\include;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Libraries\glad\include;$(SolutionDir)Libraries\glfw-3.3.8\include;$(SolutionDir)Libraries\glm;$(SolutionDir)Libraries\Catch2;$(SolutionDir)Libraries\assimp\include;$(SolutionDir)\Libraries\imgui;$(SolutionDir)\Libraries\imgui\imgui.h;$(SolutionDir)\Libraries\imgui\imgui_impl_glfw.h;$(SolutionDir)\Libraries\imgui\imgui_impl_opengl3.h;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
@@ -227,6 +227,14 @@ xcopy "$(SolutionDir)Config\*.*" "$(OutDir)Config\" /y /d /e /q</Command>
     <ClCompile Include="Core\Core.cpp" />
     <ClCompile Include="IO\Ini\IniFile.cpp" />
     <ClCompile Include="IO\PathUtils.cpp" />
+    <ClCompile Include="Libraries\imgui\imgui.cpp" />
+    <ClCompile Include="Libraries\imgui\imgui_demo.cpp" />
+    <ClCompile Include="Libraries\imgui\imgui_draw.cpp" />
+    <ClCompile Include="Libraries\imgui\imgui_impl_glfw.cpp" />
+    <ClCompile Include="Libraries\imgui\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="Libraries\imgui\imgui_stdlib.cpp" />
+    <ClCompile Include="Libraries\imgui\imgui_tables.cpp" />
+    <ClCompile Include="Libraries\imgui\imgui_widgets.cpp" />
     <ClCompile Include="Light\DirectionalLight.cpp" />
     <ClCompile Include="Light\Light.cpp" />
     <ClCompile Include="Light\PointLight.cpp" />
@@ -302,6 +310,15 @@ xcopy "$(SolutionDir)Config\*.*" "$(OutDir)Config\" /y /d /e /q</Command>
     <ClInclude Include="EngineConstants.h" />
     <ClInclude Include="IO\OpenMode.h" />
     <ClInclude Include="IO\PathUtils.h" />
+    <ClInclude Include="Libraries\imgui\imconfig.h" />
+    <ClInclude Include="Libraries\imgui\imgui.h" />
+    <ClInclude Include="Libraries\imgui\imgui_impl_glfw.h" />
+    <ClInclude Include="Libraries\imgui\imgui_impl_opengl3.h" />
+    <ClInclude Include="Libraries\imgui\imgui_internal.h" />
+    <ClInclude Include="Libraries\imgui\imgui_stdlib.h" />
+    <ClInclude Include="Libraries\imgui\imstb_rectpack.h" />
+    <ClInclude Include="Libraries\imgui\imstb_textedit.h" />
+    <ClInclude Include="Libraries\imgui\imstb_truetype.h" />
     <ClInclude Include="Light\DirectionalLight.h" />
     <ClInclude Include="Light\Light.h" />
     <ClInclude Include="Light\PointLight.h" />

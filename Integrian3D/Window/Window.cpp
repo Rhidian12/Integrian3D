@@ -7,6 +7,10 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
+
 #ifdef _WIN32
 
 #	include "Win32Utils/Win32APICall.h"
@@ -55,6 +59,15 @@ namespace Integrian3D
 		}
 
 		glViewport(0, 0, width, height);
+
+		ImGui::CreateContext();
+		ImGuiIO& io = ImGui::GetIO();
+		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+
+		// Setup Platform/Renderer backends
+		ImGui_ImplGlfw_InitForOpenGL(pWindow, false);
+
+		CALL_WIN32_IGNORE_ERROR(ImGui_ImplOpenGL3_Init(), ERROR_PROC_NOT_FOUND);
 
 		glfwSetFramebufferSizeCallback(pWindow, OnResize);
 
