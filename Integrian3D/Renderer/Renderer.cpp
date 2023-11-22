@@ -19,7 +19,7 @@
 namespace Integrian3D
 {
 	Renderer::Renderer()
-		: bShouldRenderWireframe{ true }
+		: bShouldRenderWireframe{}
 	{
 		glEnable(GL_DEPTH_TEST);
 	}
@@ -40,13 +40,13 @@ namespace Integrian3D
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		if (!bShouldRenderWireframe)
+		if (bShouldRenderWireframe)
 		{
-			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		}
 		else
 		{
-			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		}
 
 		View = camera.GetView();

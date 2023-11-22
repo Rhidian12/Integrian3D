@@ -125,7 +125,7 @@ namespace Integrian3D::AssimpWrapper
 
 			StaticMesh->TransformSubMesh(i, TransformationGLM);
 
-			LOG(Log, LogErrorLevel::Log, "Transform: {}, {}. {}", Transform.a4, Transform.b4, Transform.c4);
+			// LOG(Log, LogErrorLevel::Log, "Transform: {}, {}. {}", Transform.a4, Transform.b4, Transform.c4);
 		}
 
 		return true;

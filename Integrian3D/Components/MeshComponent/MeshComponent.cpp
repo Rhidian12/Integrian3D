@@ -62,7 +62,6 @@ namespace Integrian3D
 
 	void MeshComponent::Render(const Math::Mat4D& Transform, const Math::Mat4D& View, const Math::Mat4D& Projection, const Math::Vec3D& CameraPosition, const TArray<TPair<TransformComponent, Light*>>& Lights)
 	{
-		// SubMeshes[2]->Render(Transform, View, Projection, CameraPosition, Lights);
 		for (UniquePtr<SubMesh>& SubMesh : SubMeshes)
 		{
 			SubMesh->Render(Transform + SubMesh->Translation, View, Projection, CameraPosition, Lights);
