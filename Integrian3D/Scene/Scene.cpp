@@ -29,7 +29,7 @@ namespace Integrian3D
 		, m_Registry{}
 	{
 		// Render meshes
-		AddRenderCallback(0u, [](Scene& Scene)->void
+		AddRenderCallback(UpdateOrder::CoreUpdate, [](Scene& Scene)->void
 			{
 				if (Scene.GetNrOfEntities() == 0u)
 				{
@@ -85,7 +85,7 @@ namespace Integrian3D
 			});
 
 		// Transform update
-		AddUpdateCallback(0u, [](Scene& scene)->void
+		AddUpdateCallback(UpdateOrder::CoreUpdate, [](Scene& scene)->void
 			{
 				if (scene.GetNrOfEntities() > 0u && scene.CanViewBeCreated<TransformComponent>())
 				{
@@ -99,7 +99,7 @@ namespace Integrian3D
 			});
 
 		// Camera update
-		AddUpdateCallback(0u, [](Scene& scene)->void
+		AddUpdateCallback(UpdateOrder::CoreUpdate, [](Scene& scene)->void
 			{
 				if (scene.GetNrOfEntities() > 0u && scene.CanViewBeCreated<FreeCameraComponent, TransformComponent>())
 				{
@@ -123,17 +123,17 @@ namespace Integrian3D
 		m_Registry.Clear();
 	}
 
-	void Scene::AddInitialisationCallback(const size_t prio, const std::function<void(Scene&)>& Function)
+	void Scene::AddInitialisationCallback(const UpdateOrder prio, const std::function<void(Scene&)>& Function)
 	{
 		m_InitCallbacks.emplace_back(MakePair(prio, Function));
 	}
 
-	void Scene::AddUpdateCallback(const size_t prio, const std::function<void(Scene&)>& Function)
+	void Scene::AddUpdateCallback(const UpdateOrder prio, const std::function<void(Scene&)>& Function)
 	{
 		m_UpdateCallbacks.emplace_back(MakePair(prio, Function));
 	}
 
-	void Scene::AddRenderCallback(const size_t prio, const std::function<void(Scene&)>& Function)
+	void Scene::AddRenderCallback(const UpdateOrder prio, const std::function<void(Scene&)>& Function)
 	{
 		m_RenderCallbacks.emplace_back(MakePair(prio, Function));
 	}
