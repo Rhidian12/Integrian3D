@@ -5,6 +5,8 @@ VisualStudioVersion = 17.1.32328.378
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Integrian3D", "Integrian3D.vcxproj", "{D854B726-9218-46B2-8236-DC82556A4256}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "I3Editor", "..\I3Editor\I3Editor.vcxproj", "{018E3738-A9BC-41BD-A446-22AD99C220DC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +23,14 @@ Global
 		{D854B726-9218-46B2-8236-DC82556A4256}.Release|x64.Build.0 = Release|x64
 		{D854B726-9218-46B2-8236-DC82556A4256}.Release|x86.ActiveCfg = Release|Win32
 		{D854B726-9218-46B2-8236-DC82556A4256}.Release|x86.Build.0 = Release|Win32
+		{018E3738-A9BC-41BD-A446-22AD99C220DC}.Debug|x64.ActiveCfg = Debug|x64
+		{018E3738-A9BC-41BD-A446-22AD99C220DC}.Debug|x64.Build.0 = Debug|x64
+		{018E3738-A9BC-41BD-A446-22AD99C220DC}.Debug|x86.ActiveCfg = Debug|Win32
+		{018E3738-A9BC-41BD-A446-22AD99C220DC}.Debug|x86.Build.0 = Debug|Win32
+		{018E3738-A9BC-41BD-A446-22AD99C220DC}.Release|x64.ActiveCfg = Release|x64
+		{018E3738-A9BC-41BD-A446-22AD99C220DC}.Release|x64.Build.0 = Release|x64
+		{018E3738-A9BC-41BD-A446-22AD99C220DC}.Release|x86.ActiveCfg = Release|Win32
+		{018E3738-A9BC-41BD-A446-22AD99C220DC}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
