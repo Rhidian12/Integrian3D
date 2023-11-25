@@ -72,15 +72,27 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(SolutionDir)Libraries\imgui;$(SolutionDir)Libraries\imgui\imgui.h;$(SolutionDir)Libraries\imgui\imgui_impl_glfw.h;$(SolutionDir)Libraries\imgui\imgui_impl_opengl3.h;$(IncludePath)</IncludePath>
+    <OutDir>$(SolutionDir)..\I3Editor\Build\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)..\I3Editor\Build-Int\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(SolutionDir)Libraries\imgui;$(SolutionDir)Libraries\imgui\imgui.h;$(SolutionDir)Libraries\imgui\imgui_impl_glfw.h;$(SolutionDir)Libraries\imgui\imgui_impl_opengl3.h;$(IncludePath)</IncludePath>
+    <OutDir>$(SolutionDir)..\I3Editor\Build\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)..\I3Editor\Build-Int\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(SolutionDir)Libraries\imgui;$(SolutionDir)Libraries\imgui\imgui.h;$(SolutionDir)Libraries\imgui\imgui_impl_glfw.h;$(SolutionDir)Libraries\imgui\imgui_impl_opengl3.h;$(IncludePath)</IncludePath>
+    <OutDir>$(SolutionDir)..\I3Editor\Build\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)..\I3Editor\Build-Int\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(SolutionDir)Libraries\imgui;$(SolutionDir)Libraries\imgui\imgui.h;$(SolutionDir)Libraries\imgui\imgui_impl_glfw.h;$(SolutionDir)Libraries\imgui\imgui_impl_opengl3.h;$(IncludePath)</IncludePath>
+    <OutDir>$(SolutionDir)..\I3Editor\Build\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)..\I3Editor\Build-Int\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -88,6 +100,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)Libraries\imgui;$(SolutionDir)Libraries\imgui\imgui.h;$(SolutionDir)Libraries\imgui\imgui_impl_glfw.h;$(SolutionDir)Libraries\imgui\imgui_impl_opengl3.h;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -102,6 +116,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)Libraries\imgui;$(SolutionDir)Libraries\imgui\imgui.h;$(SolutionDir)Libraries\imgui\imgui_impl_glfw.h;$(SolutionDir)Libraries\imgui\imgui_impl_opengl3.h;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -116,6 +132,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)Libraries\imgui;$(SolutionDir)Libraries\imgui\imgui.h;$(SolutionDir)Libraries\imgui\imgui_impl_glfw.h;$(SolutionDir)Libraries\imgui\imgui_impl_opengl3.h;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -130,6 +148,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)Libraries\imgui;$(SolutionDir)Libraries\imgui\imgui.h;$(SolutionDir)Libraries\imgui\imgui_impl_glfw.h;$(SolutionDir)Libraries\imgui\imgui_impl_opengl3.h;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
