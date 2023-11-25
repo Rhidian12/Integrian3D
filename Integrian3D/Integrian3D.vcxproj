@@ -72,29 +72,29 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)Build\$(PlatformTarget)\</OutDir>
-    <IntDir>$(SolutionDir)Build-Int\$(PlatformTarget)\</IntDir>
+    <OutDir>$(SolutionDir)Build\$(Configuration)\$(PlatformTarget)\</OutDir>
+    <IntDir>$(SolutionDir)Build-Int\$(Configuration)\$(PlatformTarget)\</IntDir>
     <IncludePath>$(SolutionDir)Libraries\glad\include;$(SolutionDir)Libraries\glfw-3.3.8\include;$(SolutionDir)Libraries\glm;$(SolutionDir)Libraries\Catch2;$(SolutionDir)Libraries\assimp\include;$(SolutionDir)\Libraries\imgui;$(SolutionDir)\Libraries\imgui\imgui.h;$(SolutionDir)\Libraries\imgui\imgui_impl_glfw.h;$(SolutionDir)\Libraries\imgui\imgui_impl_opengl3.h;$(SolutionDir);$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)Libraries\glad\src;$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022;$(SolutionDir)Libraries\assimp\lib\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)Build\$(PlatformTarget)\</OutDir>
-    <IntDir>$(SolutionDir)Build-Int\$(PlatformTarget)\</IntDir>
+    <OutDir>$(SolutionDir)Build\$(Configuration)\$(PlatformTarget)\</OutDir>
+    <IntDir>$(SolutionDir)Build-Int\$(Configuration)\$(PlatformTarget)\</IntDir>
     <IncludePath>$(SolutionDir)Libraries\glad\include;$(SolutionDir)Libraries\glfw-3.3.8\include;$(SolutionDir)Libraries\glm;$(SolutionDir)Libraries\Catch2;$(SolutionDir)Libraries\assimp\include;$(SolutionDir)\Libraries\imgui;$(SolutionDir)\Libraries\imgui\imgui.h;$(SolutionDir)\Libraries\imgui\imgui_impl_glfw.h;$(SolutionDir)\Libraries\imgui\imgui_impl_opengl3.h;$(SolutionDir);$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)Libraries\glad\src;$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022;$(SolutionDir)Libraries\assimp\lib\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)Build\$(PlatformTarget)\</OutDir>
-    <IntDir>$(SolutionDir)Build-Int\$(PlatformTarget)\</IntDir>
+    <OutDir>$(SolutionDir)Build\$(Configuration)\$(PlatformTarget)\</OutDir>
+    <IntDir>$(SolutionDir)Build-Int\$(Configuration)\$(PlatformTarget)\</IntDir>
     <IncludePath>$(SolutionDir)Libraries\glad\include;$(SolutionDir)Libraries\glfw-3.3.8\include;$(SolutionDir)Libraries\glm;$(SolutionDir)Libraries\Catch2;$(SolutionDir)Libraries\assimp\include;$(SolutionDir)\Libraries\imgui;$(SolutionDir)\Libraries\imgui\imgui.h;$(SolutionDir)\Libraries\imgui\imgui_impl_glfw.h;$(SolutionDir)\Libraries\imgui\imgui_impl_opengl3.h;$(SolutionDir);$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)Libraries\glad\src;$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022;$(SolutionDir)Libraries\assimp\lib\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)Build\$(PlatformTarget)\</OutDir>
-    <IntDir>$(SolutionDir)Build-Int\$(PlatformTarget)\</IntDir>
+    <OutDir>$(SolutionDir)Build\$(Configuration)\$(PlatformTarget)\</OutDir>
+    <IntDir>$(SolutionDir)Build-Int\$(Configuration)\$(PlatformTarget)\</IntDir>
     <IncludePath>$(SolutionDir)Libraries\glad\include;$(SolutionDir)Libraries\glfw-3.3.8\include;$(SolutionDir)Libraries\glm;$(SolutionDir)Libraries\Catch2;$(SolutionDir)Libraries\assimp\include;$(SolutionDir)\Libraries\imgui;$(SolutionDir)\Libraries\imgui\imgui.h;$(SolutionDir)\Libraries\imgui\imgui_impl_glfw.h;$(SolutionDir)\Libraries\imgui\imgui_impl_opengl3.h;$(SolutionDir);$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)Libraries\glad\src;$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022;$(SolutionDir)Libraries\assimp\lib\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
@@ -124,6 +124,9 @@ rmdir "$(OutDir)Config"
 mkdir "$(OutDir)Config"
 xcopy "$(SolutionDir)Config\*.*" "$(OutDir)Config\" /y /d /e /q</Command>
     </PostBuildEvent>
+    <Lib>
+      <AdditionalDependencies>assimp.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -155,6 +158,9 @@ rmdir "$(OutDir)Config"
 mkdir "$(OutDir)Config"
 xcopy "$(SolutionDir)Config\*.*" "$(OutDir)Config\" /y /d /e /q</Command>
     </PostBuildEvent>
+    <Lib>
+      <AdditionalDependencies>assimp.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -182,6 +188,9 @@ rmdir "$(OutDir)Config"
 mkdir "$(OutDir)Config"
 xcopy "$(SolutionDir)Config\*.*" "$(OutDir)Config\" /y /d /e /q</Command>
     </PostBuildEvent>
+    <Lib>
+      <AdditionalDependencies>assimp.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -213,6 +222,9 @@ rmdir "$(OutDir)Config"
 mkdir "$(OutDir)Config"
 xcopy "$(SolutionDir)Config\*.*" "$(OutDir)Config\" /y /d /e /q</Command>
     </PostBuildEvent>
+    <Lib>
+      <AdditionalDependencies>assimp.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Components\MeshComponent\AssimpLoader.cpp" />
