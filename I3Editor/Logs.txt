@@ -1,2 +1,10 @@
 [CoreLog] Using OpenGL version 4.6
 [CoreLog] Finished initialisation of engine
+[Win32Log] [C:\Users\rhidi\Documents\GitHub\Integrian3D\Integrian3D\IO\PathUtils.cpp, 46] Win32 API Call Error: The system cannot find the path specified.
+
+[Check] File::File() > OpenMode::OpenExisting > File Config/Engine.ini does not exist
+[Win32Log] [C:\Users\rhidi\Documents\GitHub\Integrian3D\Integrian3D\IO\File\File.cpp, 279] Win32 API Call Error: The system cannot find the path specified.
+
+[FileLog] File could not open the provided file: Config/Engine.ini Error:
+[FileContentCacheLog] FileContentCache is trying to remove Config/Engine.ini which isn't present!
+[CoreLog] Shutdown of Engine is complete

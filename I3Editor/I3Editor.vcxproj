@@ -115,7 +115,13 @@
     </Link>
     <PostBuildEvent>
       <Command>xcopy "$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022\*.dll" "$(OutDir)" /y /d
-xcopy "$(SolutionDir)Libraries\assimp\lib\$(Configuration)\*.dll" "$(OutDir)" /y /d</Command>
+xcopy "$(SolutionDir)Libraries\assimp\lib\$(Configuration)\*.dll" "$(OutDir)" /y /d
+rmdir "$(OutDir)Resources"
+mkdir "$(OutDir)Resources"
+xcopy "$(SolutionDir)Resources\*.*" "$(OutDir)Resources\" /y /d /e /q
+rmdir "$(OutDir)Config"
+mkdir "$(OutDir)Config"
+xcopy "$(SolutionDir)Config\*.*" "$(OutDir)Config\" /y /d /e /q</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -139,7 +145,13 @@ xcopy "$(SolutionDir)Libraries\assimp\lib\$(Configuration)\*.dll" "$(OutDir)" /y
     </Link>
     <PostBuildEvent>
       <Command>xcopy "$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022\*.dll" "$(OutDir)" /y /d
-xcopy "$(SolutionDir)Libraries\assimp\lib\$(Configuration)\*.dll" "$(OutDir)" /y /d</Command>
+xcopy "$(SolutionDir)Libraries\assimp\lib\$(Configuration)\*.dll" "$(OutDir)" /y /d
+rmdir "$(OutDir)Resources"
+mkdir "$(OutDir)Resources"
+xcopy "$(SolutionDir)Resources\*.*" "$(OutDir)Resources\" /y /d /e /q
+rmdir "$(OutDir)Config"
+mkdir "$(OutDir)Config"
+xcopy "$(SolutionDir)Config\*.*" "$(OutDir)Config\" /y /d /e /q</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -159,7 +171,13 @@ xcopy "$(SolutionDir)Libraries\assimp\lib\$(Configuration)\*.dll" "$(OutDir)" /y
     </Link>
     <PostBuildEvent>
       <Command>xcopy "$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022\*.dll" "$(OutDir)" /y /d
-xcopy "$(SolutionDir)Libraries\assimp\lib\$(Configuration)\*.dll" "$(OutDir)" /y /d</Command>
+xcopy "$(SolutionDir)Libraries\assimp\lib\$(Configuration)\*.dll" "$(OutDir)" /y /d
+rmdir "$(OutDir)Resources"
+mkdir "$(OutDir)Resources"
+xcopy "$(SolutionDir)Resources\*.*" "$(OutDir)Resources\" /y /d /e /q
+rmdir "$(OutDir)Config"
+mkdir "$(OutDir)Config"
+xcopy "$(SolutionDir)Config\*.*" "$(OutDir)Config\" /y /d /e /q</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -183,7 +201,13 @@ xcopy "$(SolutionDir)Libraries\assimp\lib\$(Configuration)\*.dll" "$(OutDir)" /y
     </Link>
     <PostBuildEvent>
       <Command>xcopy "$(SolutionDir)Libraries\glfw-3.3.8\lib-vc2022\*.dll" "$(OutDir)" /y /d
-xcopy "$(SolutionDir)Libraries\assimp\lib\$(Configuration)\*.dll" "$(OutDir)" /y /d</Command>
+xcopy "$(SolutionDir)Libraries\assimp\lib\$(Configuration)\*.dll" "$(OutDir)" /y /d
+rmdir "$(OutDir)Resources"
+mkdir "$(OutDir)Resources"
+xcopy "$(SolutionDir)Resources\*.*" "$(OutDir)Resources\" /y /d /e /q
+rmdir "$(OutDir)Config"
+mkdir "$(OutDir)Config"
+xcopy "$(SolutionDir)Config\*.*" "$(OutDir)Config\" /y /d /e /q</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
