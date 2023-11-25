@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Integrian3D", "Integrian3D.vcxproj", "{D854B726-9218-46B2-8236-DC82556A4256}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "I3Editor", "..\I3Editor\I3Editor.vcxproj", "{018E3738-A9BC-41BD-A446-22AD99C220DC}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D854B726-9218-46B2-8236-DC82556A4256} = {D854B726-9218-46B2-8236-DC82556A4256}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
