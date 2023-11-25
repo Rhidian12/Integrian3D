@@ -203,9 +203,11 @@ namespace Integrian3D
 
 			Scene* const pActiveScene{ SceneManager.GetActiveScene() };
 
-			pActiveScene->Update();
-
-			pActiveScene->Render();
+			if (pActiveScene)
+			{
+				pActiveScene->Render();
+				pActiveScene->Update();
+			}
 
 			ImGui::Render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

@@ -1,0 +1,2 @@
+[CoreLog] Using OpenGL version 4.6
+[CoreLog] Finished initialisation of engine

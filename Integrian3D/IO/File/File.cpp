@@ -24,7 +24,7 @@ namespace Integrian3D::IO
 
 		if (!Handle.IsValid())
 		{
-			LOG(FileLog, LogErrorLevel::Error, "File could not open the provided file: %s Error:", Filepath);
+			LOG(FileLog, LogErrorLevel::Error, "File could not open the provided file: {} Error:", Filepath);
 			return;
 		}
 
