@@ -41,6 +41,17 @@ namespace Integrian3D::PathUtils
 		}
 	}
 
+	std::string_view GetCurrentDirectory()
+	{
+		static char Buffer[MAX_PATH]{ '\0' };
+		if (Buffer[0] == '\0')
+		{
+			GetCurrentDirectoryA(MAX_PATH, Buffer);
+		}
+
+		return Buffer;
+	}
+
 	bool DoesFileExist(const std::string_view Path)
 	{
 		DWORD Attributes = CALL_WIN32_RV(GetFileAttributesA(Path.data()));

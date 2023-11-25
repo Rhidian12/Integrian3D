@@ -14,5 +14,7 @@ namespace Integrian3D::PathUtils
 
 	std::string_view GetPathWithoutExtension(const std::string_view Path);
 
+	std::string_view GetCurrentDirectory();
+
 	bool DoesFileExist(const std::string_view Path);
 }
