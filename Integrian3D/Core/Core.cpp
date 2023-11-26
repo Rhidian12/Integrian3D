@@ -11,6 +11,7 @@
 #include "Thread/ThreadUtils.h"
 #include "Timer/Timer.h"
 #include "Window/Window.h"
+#include "Win32Utils/Win32APICall.h"
 
 #include <string_view>
 #include <thread>
@@ -21,6 +22,8 @@
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
+
+#include <Windows.h>
 
 namespace Integrian3D
 {
@@ -198,7 +201,7 @@ namespace Integrian3D
 			inputManager.ProcessInput();
 
 			ImGui_ImplOpenGL3_NewFrame();
-			ImGui_ImplGlfw_NewFrame();
+			CALL_WIN32_IGNORE_ERROR(ImGui_ImplGlfw_NewFrame(), ERROR_FILE_NOT_FOUND);
 			ImGui::NewFrame();
 
 			Scene* const pActiveScene{ SceneManager.GetActiveScene() };

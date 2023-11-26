@@ -65,7 +65,7 @@ namespace Integrian3D
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
 		// Setup Platform/Renderer backends
-		ImGui_ImplGlfw_InitForOpenGL(pWindow, false);
+		ImGui_ImplGlfw_InitForOpenGL(pWindow, true);
 
 		CALL_WIN32_IGNORE_ERROR(ImGui_ImplOpenGL3_Init(), ERROR_PROC_NOT_FOUND);
 
