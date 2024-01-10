@@ -5,10 +5,14 @@
 #include "Memory/UniquePtr.h"
 #include "Material/Material.h"
 
-// Assimp stuff
+#ifdef _WIN32
+#	pragma warning ( push )
+#	pragma warning ( disable : 4005 ) /* warning C4005: 'APIENTRY': macro redefinition */ 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#	pragma warning ( pop )
+#endif
 
 namespace Integrian3D::AssimpWrapper
 {
